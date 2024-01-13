@@ -1,0 +1,92 @@
+\documentclass[tikz,border=2pt]{standalone}
+\usepackage{verbatim}
+\usepackage{tikz}
+\usetikzlibrary{external}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{shapes.arrows}
+\usetikzlibrary{positioning}
+\usepackage{array}
+\tikzset{basic/.style={draw,fill=blue!50!green!20,
+                       text badly centered,minimum width=2em}}
+\tikzset{fix_functions/.style={basic,circle,fill=blue!10}}
+
+\begin{document}
+\begin{tikzpicture} [
+    auto,
+    module/.style = { diamond, draw=orange, thick, fill=orange!20,
+                        minimum width=4em, minimum height=4em, text badly centered,
+                        inner sep=1pt, rounded corners },
+    legend_module/.style = { rectangle, draw=orange, thick, fill=orange!20,
+                                                minimum width=1.5em, minimum height=1.5em, text badly centered,
+                                                inner sep=1pt, rounded corners },
+    tensor/.style    = { rectangle, draw=blue, thick, 
+                        fill=blue!20, minimum width=3em, text centered,
+                        rounded corners, minimum height=3em },
+    legend_tensor/.style    = { rectangle, draw=blue, thick, 
+                            fill=blue!20, minimum width=1.5em, text centered,
+                            rounded corners, minimum height=1.5em },
+   function/.style    = { rectangle, draw=teal, thick, 
+                            fill=teal!20, minimum width=3em, text centered,
+                            rounded corners, minimum height=3em },
+    legend_function/.style    = { rectangle, draw=teal, thick, 
+                                fill=teal!20, minimum width=1.5em, text centered,
+                                rounded corners, minimum height=1.5em },
+    line/.style     = { draw, thick, ->, shorten >=2pt },
+  ]
+% Define nodes in a matrix
+\matrix [column sep=7mm, row sep=10mm] {
+       \node [tensor] (Cont) {$Z$}; 
+       & \node[module] (Enc) {Enc.}; 
+       & \node [function] (Emb) {$E(Z)$}; 
+       & \node[tensor] (DiscEmb) {$\overline{E}(Z)$}; 
+       & \node[module] (Decoder) {Dec.}; 
+	   &\node[tensor] (DecoderOutPreSigma) {
+	   	   	    $\overline{\mathbf{\Sigma}}^{0}_{Z}$
+	   	   	   };\\
+	   	 & & & & \node[tensor] (DecoderOutMean) {
+	   	   	   	   $\overline{\mathbf{m}}_{Z}$
+	   	   	   	   };& \node[tensor] (DecoderOutSigma) {
+	   	   	   	   	   	   	    $\overline{\mathbf{\Sigma}}_{Z}$
+	   	   	   	   	   	   	   };\\
+	   & & & & \node[function] (OutMean) {
+	   	   	          	   $\mathbf{m}_Z$
+	   	   	          	   }; & \node[function] (OutSigma) {
+	   	   	          	   	   	   	          	   $\mathbf{\Sigma}_Z$
+	   	   	          	   	   	   	          	   };
+	   \\          
+};
+  % connect all nodes defined above
+  \begin{scope} [every path/.style=line]
+    \path (Cont) -- (Enc);
+    \path (Enc) -- (Emb);
+    \path (Emb) -- node [above] {Dis.} (DiscEmb);
+    \path (DiscEmb) -- (Decoder);
+    \path (Decoder) -- (DecoderOutMean);
+    \path (DecoderOutMean) -- node [left] {Smoothing} (OutMean);
+    \path (Decoder) -- (DecoderOutPreSigma);
+    \path (DecoderOutPreSigma) -- node[left=-0.6em] {\begin{tabular}{l}
+    Cov. \\activ.\end{tabular}} node [right] (A) {\begin{tikzpicture}
+          \draw[line,-,thick] (1em,0.5em) -- (0.25em,0.5em) -- (0em,0em) -- (-0.25em,-0.5em)--(-1em,-0.5em);
+                 \draw[line,->,thick] (0em,-1em) -- (0em,1.25em);
+                 \draw[line,->,thick] (-1em,0em) -- (1.25em,0em);
+    \end{tikzpicture}
+    } (DecoderOutSigma);
+    \path (DecoderOutSigma) --node [right] {Smoothing} (OutSigma);
+    %\path (DecoderOut) -- node [right] {Smoothing} (Out);
+    %\path (doa)      --    node [near start] {DoAs} (uiddes);
+    %\path (tra)      --    (uiddes);
+    %\path (uiddes)   --++  (-3,0) node [near start] {no} |- (null1);
+    %\path (uiddes)   --    node [near start] {DoA} (track);
+    %\path (track)    --    node [near start] {DoA$_{\mathrm{T}}$} (pesos);
+    %\path (pesos)    --    node [near start] {\textbf{w}} (filtrado);
+    %\path (filtrado) --    (xf);
+ \end{scope}
+     %\draw[dashed, thick, ->, shorten >=2pt ] (Emb) -- node[above] {$\Psi$} (Out);
+     %\draw[dashed, <->] (null1) -- node[right] {Disc. error} (Decoder);
+\matrix [draw,below left] at (-0.8,0) {
+  \node [legend_module] {}; & \node {module}; \\
+  \node [legend_function] {}; & \node {feature field};\\
+   \node [legend_tensor] {}; & \node {array/tensor}; \\
+};
+\end{tikzpicture}
+\end{document}

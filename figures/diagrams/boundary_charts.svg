@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="6cm"
+   height="3cm"
+   viewBox="0 0 60 30"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3 (1:1.3+202307231459+0e150ed6c4)"
+   sodipodi:docname="boundary_charts.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="2.8284271"
+     inkscape:cx="130.99153"
+     inkscape:cy="28.814601"
+     inkscape:window-width="1920"
+     inkscape:window-height="1043"
+     inkscape:window-x="1920"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <marker
+       style="overflow:visible"
+       id="marker10"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Rounded arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="m -0.21114562,-4.1055728 6.42229122,3.21114561 a 1,1 90 0 1 0,1.78885438 L -0.21114562,4.1055728 A 1.236068,1.236068 31.717474 0 1 -2,3 v -6 a 1.236068,1.236068 148.28253 0 1 1.78885438,-1.1055728 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path10" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="RoundedArrow"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Rounded arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="m -0.21114562,-4.1055728 6.42229122,3.21114561 a 1,1 90 0 1 0,1.78885438 L -0.21114562,4.1055728 A 1.236068,1.236068 31.717474 0 1 -2,3 v -6 a 1.236068,1.236068 148.28253 0 1 1.78885438,-1.1055728 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path8" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="RoundedArrow-2"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Rounded arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="m -0.21114562,-4.1055728 6.42229122,3.21114561 a 1,1 90 0 1 0,1.78885438 L -0.21114562,4.1055728 A 1.236068,1.236068 31.717474 0 1 -2,3 v -6 a 1.236068,1.236068 148.28253 0 1 1.78885438,-1.1055728 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path8-6" />
+    </marker>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <circle
+       style="fill:none;fill-opacity:0.3;stroke:#1f77b4;stroke-width:0.3;stroke-linecap:round;stroke-dasharray:none"
+       id="path1"
+       cx="12.6"
+       cy="15.1"
+       r="12.5" />
+    <path
+       id="path3"
+       style="fill:#1f77b4;fill-opacity:0.3;stroke:#1f77b4;stroke-width:0.3;stroke-linecap:round;stroke-dasharray:1.80000007,1.80000007;stroke-dashoffset:0"
+       d="m 24.177522,19.812853 c -1.300331,3.194373 -3.862699,5.709545 -7.080692,6.950273 l -0.02129,-0.02177 c -0.647815,-0.864987 -0.997945,-1.916579 -0.997945,-2.997258 0,-2.761424 2.238576,-5 5,-5 1.114613,0 2.197268,0.372433 3.075997,1.058143"
+       sodipodi:nodetypes="cccssc" />
+    <circle
+       style="fill:#1f77b4;fill-opacity:0.3;stroke:#1f77b4;stroke-width:0.3;stroke-linecap:round;stroke-dasharray:1.80000007,1.80000007;stroke-dashoffset:0"
+       id="path2"
+       cx="10.040379"
+       cy="11.059154"
+       r="5" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.307836;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#RoundedArrow)"
+       d="M 33.27404,25.216043 H 58.542507"
+       id="path4" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.266127;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#RoundedArrow-2)"
+       d="M 45.780087,25.075156 V 6.1898933"
+       id="path4-8" />
+    <path
+       id="path5"
+       style="fill:#ff7f0e;fill-opacity:0.3;stroke:#ff7f0e;stroke-width:0.300003;stroke-linecap:round;stroke-dasharray:1.80002, 1.80002"
+       d="m 40.802196,25.074089 c 0,-1.786361 0.952999,-3.437025 2.500011,-4.330206 1.547011,-0.89318 3.453009,-0.89318 5.000021,0 1.547011,0.893181 2.50001,2.543845 2.50001,4.330206"
+       sodipodi:nodetypes="cssc" />
+    <ellipse
+       style="fill:#ff7f0e;fill-opacity:0.3;stroke:#ff7f0e;stroke-width:0.3;stroke-linecap:round;stroke-dasharray:1.80000201,1.80000201;stroke-dashoffset:0"
+       id="path6"
+       cx="38.991776"
+       cy="12.964537"
+       rx="5.000021"
+       ry="5.0000906" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.179058;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker10)"
+       d="M 14.697146,9.0796546 C 21.111843,5.962529 27.520376,5.5370538 33.918151,9.8072757"
+       id="path9"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.242836px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#RoundedArrow-2)"
+       d="m 21.323786,22.78591 c 8.169012,4.91286 12.628075,-4.300982 19.025507,-0.546993"
+       id="path11"
+       sodipodi:nodetypes="cc" />
+  </g>
+</svg>

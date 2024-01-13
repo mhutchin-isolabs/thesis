@@ -1,0 +1,15 @@
+\\rset - \R
+\\rmd - \mathrm{d}
+\\M - \c{M}
+\\id - \m{I}
+\\normLigne - \\norm
+\\expeLigne - \E\sbr
+\\rmc - \mathrm{C}
+\\nset - \N
+
+\\ccint - \cbr
+
+\\bf([A-Z_]) -- \v{$1}
+
+\\ensembleLigne\{(.+?)\}\{(.+?)\} - \cbr{$1 \; : \; $2}
+\\CPELigne\{(.+?)\}\{(.+?)\}\{(.+?)\} - \E\sbr{$1 \vert $2}

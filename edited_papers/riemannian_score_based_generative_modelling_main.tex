@@ -1,0 +1,542 @@
+
+\section{Introduction}
+\label{sec:introduction-rsgm}
+\emphmarginnote{Score-based Generative Models} (SGMs) also called diffusion models \parencite{song2019generative,song2020score,ho2020denoising,nichol2021beatgans} formulate generative modelling as a denoising process.
+Noise is incrementally added to data using a diffusion process until it becomes approximately Gaussian.
+The generative model is then obtained by simulating an approximation of the corresponding time-reversal process, which progressively denoises a Gaussian sample to obtain a data sample.
+This process is also a diffusion whose drift depends on the logarithmic gradients of the noised data densities, i.e. the Stein scores, estimated using a neural network via score matching \parencite{hyvarinen2005estimation,vincent2011connection}.
+
+SGMs have been primarily applied to data living on Euclidean spaces, i.e. manifolds with flat geometry.
+However, in a large number of scientific domains the distributions of interest are supported on Riemannian manifolds.
+These include, to name a few, protein modelling \parencite{shapovalov2011smoothed}, cell development \parencite{klimovskaia2020poincare}, image recognition \parencite{lui2012advances}, geological sciences \parencite{karpatne2018machine,peel2001fitting}, graph-structured and hierarchical data \parencite{roy2007learning,steyvers2005large}, robotics \parencite{feiten2013rigid,senanayake2018directional} and high-energy physics \parencite{brehmer2020flows}.
+
+We introduce in this work \emphmarginnote{Riemannian Score-based Generative Models} (RSGMs), an extension of SGMs to Riemannian manifolds which incorporate the geometry of the data by defining the forward diffusion process directly on the Riemannian manifold, inducing a manifold-valued reverse process.
+This requires constructing a noising process on the manifold that converges to an easy-to-sample reference distribution.
+We establish that, as in the Euclidean case, the corresponding time-reversal process is also a diffusion whose drift includes the Stein score which is intractable but can similarly be estimated via score matching.
+Methodological extensions are required as in most cases the transition kernel of the noising process cannot be sampled exactly.
+For example on compact manifolds it is typically only available as an infinite sum through the Sturm--Liouville decomposition \parencite{chavel1984eigenvalues}.
+To this end, we develop non-standard techniques for score estimation and rely on the use of Geodesic Random Walks for sampling \parencite{jorgensen1975central}.
+We provide theoretical convergence bounds for RSGMs on compact manifolds and demonstrate our approach on a range of manifolds and tasks, including modelling a number of natural disaster occurrence datasets collected by \textcite{mathieu2020riemannian}.
+We show that RGSMs achieve better performance than recent baselines \parencite{mathieu2020riemannian,rozen2021moser} and scale better to
+
+\section{Euclidean Score-Based Generative Modelling} \label{sec:eucl-sgm-riem} We recall here briefly the key concepts behind SGMs on the Euclidean space $\R^d$ and refer the readers to \textcite{song2020score} for a more detailed introduction.
+We consider a forward \emphmarginnote{noising process} $(\v{X}_t)_{t \geq 0}$ defined by the following Stochastic Differential Equation (SDE) \begin{equation}\label{eq:forward_SDE} \mathrm{d} \v{X}_t = -\v{X}_t \mathrm{d} t + \sqrt{2} \mathrm{d} \v{B}_t,\quad \v{X}_0 \sim p_0 , \end{equation} where $(\v{B}_t)_{t \geq 0}$ is a $d$-dimensional Brownian motion and $p_0$ is the data distribution.
+The available data gives us an empirical approximation of $p_0$.
+The process $(\v{X}_t)_{t \geq 0}$ is simply an Ornstein--Ulhenbeck (OU) process which converges with geometric rate to $\c{N}(0,\m{I})$.
+Under mild conditions on $p_0$, the \emphmarginnote{time-reversed process} $(\v{Y}_t)_{t \geq 0} = (\v{X}_{T-t})_{t \in \sbr{0,T}}$ also satisfies an SDE \parencite{cattiaux2021time,haussmann1986time} given by \begin{equation} \label{eq:backward_SDE} \mathrm{d} \v{Y}_t = \cbr{ \v{Y}_t + 2 \nabla \log p_{T-t}(\v{Y}_t)} \mathrm{d} t + \sqrt{2} \mathrm{d} \v{B}_t,\quad \v{Y}_0 \sim p_T , \end{equation} where $p_t$ denotes the density of $\v{X}_t$.
+By construction, the law of $\v{Y}_{T-t}$ is equal to the law of $\v{X}_t$ for $t \in \sbr{0,T}$ and in particular $\v{Y}_{T}\sim p_0$.
+Hence, if one could sample from $(\v{Y}_t)_{t \in \sbr{0,T}}$ then its final distribution would be the data distribution $p_0$.
+Unfortunately we cannot sample exactly from (\ref{eq:backward_SDE}) as $p_T$ and the \emphmarginnote{stein scores} $(\nabla \log p_t(x))_{t\in[0,T]}$ are intractable.
+Hence SGMs rely on a few approximations.
+First, $p_T$ is replaced by the reference distribution $\c{N}(0,\m{I})$ as we know that $p_T$ converges geometrically towards it.
+Second, the following \emphmarginnote{denoising score matching} identity is exploited to estimate the scores \begin{equation}\label{eq:scoreidentity} \nabla_{x_t} \log p_t(x_t) = \int_{\R^d} \nabla_{x_t} \log p_{t|0}(x_t|x_0)~p_{0|t}(x_0|x_t) \mathrm{d} x_0 \end{equation} where $p_{t|0}(x_t|x_0)$ is the transition density of the OU process (\ref{eq:forward_SDE}) which is available in closed-form.
+It follows directly that $\nabla \log p_t$ is the minimizer of $\ell_t(\mathbf{s}) = \E\sbr{\norm{\mathbf{s}(\v{X}_t) - \nabla_{x_t} \log p_{t|0}(\v{X}_t|\v{X}_0)}^2}$ over functions $\mathbf{s}$ where the expectation is over the joint distribution of $\v{X}_0,\v{X}_t$.
+This result can be leveraged by considering a neural network $\mathbf{s}_\theta: \sbr{0,T} \times \R^d \to \R^d$ trained by minimizing the loss function $\ell(\theta)=\int_0^T \lambda_t \ell_{t}(\mathbf{s}_\theta(t,\cdot))\mathrm{d} t$ for some weighting function $\lambda_t>0$.
+Finally, an \emphmarginnote{Euler--Maruyama discretization} of (\ref{eq:backward_SDE}) is performed using a discretization step $\gamma$ such that $T=\gamma N$ for $N \in \N$ \begin{align} \label{eq:backward_discrete_final} Y_{n+1} = Y_n + \gamma \{Y_n + 2 \mathbf{s}_\theta(T -n \gamma, Y_n) \} + \sqrt{2 \gamma} Z_{n+1}, \\ Y_0\sim \mathrm{N}(0,\m{I}), \quad Z_n \overset{\textup{i.i.d.
+		}}{\sim} \c{N}(0,\m{I}). \nonumber
+\end{align}
+The above showcases the basics of SGMs but we highlight that many improvements have been proposed; see e.g.~\textcite{song2020improved,jolicoeur2020adversarial,nichol2021beatgans}.
+In particular, selecting an adaptive stepsize $(\gamma_n)_{n \in \N}$ \parencite{bao2022analyticdpm,watson2021learning} and using a predictor-corrector scheme \parencite{song2020score} instead of a simple Euler--Maruyama discretization drastically improves performance.
+
+\section{Riemannian Score-Based Generative Modelling}
+
+\label{sec:score-appr-manif}
+We now move to the Riemannian manifold setting, and more specifically assume that $\c{M}$ is a complete, orientable connected and boundaryless Riemannian manifold, endowed with a Riemannian metric $g$~\footnote{ Metrics $g$ are sections of $\mathrm{T}^* \c{M} \otimes \mathrm{T}^* \c{M}$, the rank 2 tensor bundle of the dual tangent space, i.e.\ smooth varying bilinear maps on $\mathrm{T} \c{M}$, verifying symmetry and positive semi-definiteness.
+}.
+Four components are required to extend SGMs to this setting: \begin{enumerate*}[label=\roman*)] \item a forward \emph{noising} process on $\c{M}$ which converges to an easy-to-sample reference distribution, \item a time-reversal formula on $\c{M}$ which defines a backward generative process, \item a method for approximating samples of SDEs on manifolds, \item a method to efficiently approximate the drift of the time-reversal process.
+\end{enumerate*}
+Notation are gathered in \Cref{sec:notation-1}.
+
+\subsection{Noising processes on manifolds}
+
+\label{sec:non-compact}
+
+The first necessary component is a suitable generic noising process on manifolds that will converge to a convenient stationary distribution.
+A simple choice is to use \emphmarginnote{Langevin dynamics} described by \begin{equation} \label{eq:langevin} \mathrm{d} \v{X}_t = - \tfrac{1}{2}~\nabla_{\v{X}_t} U(\v{X}_t) \mathrm{d} t + \mathrm{d} \v{B}_t^\c{M}, \end{equation} which admits the invariant density (w.r.t. \ the volume form) given by $\mathrm{d} p_{\textup{inv}}/ \mathrm{d} \textrm{Vol}_\c{M}(x) \propto \mathrm{e}^{-U(x)}$ \parencite[Section 2.4]{durmus2016high}, where $\nabla$ is the Riemannian gradient\footnote{The (Riemannian) gradient $\nabla$ is defined s.t.
+	\ for any $f:\c{M} \rightarrow \R$, $x \in \c{M}, v \in \mathrm{T}_x\c{M}$, $\langle \nabla f, v \rangle_g = \mathrm{d} f (v)$.}.
+
+Two simple choices for $U(x)$ present themselves.
+Firstly, setting $U(x) = d_\c{M}(x, \mu)^2/(2 \gamma^2)$, where $d_\c{M}$ is the geodesic distance and $\mu \in \c{M}$ is an arbitrary mean location, induces the drift $\nabla_{\v{X}_t} U(\v{X}_t) = -\exp^{-1}_{\v{X}_t}(\mu) /\gamma^2$~\footnote{ $\exp_x: \mathrm{T}_x \c{M} \to \c{M}$ denotes the exponential mapping on the manifold, see e.g. \textcite[Chapter 20]{lee2013smooth}.
+}.
+This is the potential of the \emphmarginnote{Riemannian normal} \parencite{pennec2006Intrinsic} distribution, An alternative is to target the \emphmarginnote{exponential wrapped Gaussian}.
+This is the pushforward of a Gaussian distribution in the tangent space at the mean location along the exponential map.
+The potential is given by $U(x) = d_{\c{M}}(x, \mu)^2/(2 \gamma^2) + \log |D \exp^{-1}_{\mu}(x)|$\footnote{$|\cdot|$ denotes the absolute value of the determinant, and $\partial f$ the Jacobian of $f$.
+}.
+In contrast to the Riemannian normal, sampling and evaluating the density of this distribution is easy.
+The advantage of this process is that sampling for this exp-wrapped normal distribution is trivial and so is computing the log-likelihood of points under it.
+
+One recovers the standard Ornstein--Uhlenbeck noising process~\parencite{song2020score} for both of these target distributions when $\c{M}=\R^d$ and $\mu = 0$ since then the drift $b(t, \v{X}_t) = \tfrac{1}{2} ~\exp^{-1}_{\v{X}_t}(0) = -\tfrac{1}{2}~\v{X}_t$.
+On compact manifolds, the invariant measure $\textrm{Vol}_\c{M}$ has finite volume, thus a natural choice is to target the uniform distribution which is given by $\textrm{Vol}_\c{M} / |\c{M}|$.
+In this case, $\nabla_{\v{X}_t} U(\v{X}_t) = 0$ and the noising process is simply a Brownian motion on $\c{M}$.
+
+\subsection{Time-reversal on Riemannian manifolds}
+\label{sec:brown-moti-comp}
+
+In order to use these noising processes we prove the time-reversal formula for manifolds, a generalisation of the results in the Euclidean case, e.g.\ see \textcite[Theorem 4.9]{cattiaux2021time}.
+Consider an SDE of the form $\mathrm{d} \v{X}_t = b(\v{X}_t) \mathrm{d} t + \mathrm{d} \v{B}_t^\c{M}$ where $\v{B}_t^\c{M}$ is a Brownian motion on $\c{M}$.
+We refer to \Cref{sec:brown-moti-manif} for an introduction to Brownian motions on manifolds.
+This result shows that if $(\v{X}_t)_{t \in \sbr{0,T}}$ is a diffusion process then $(\v{X}_{T-t})_{t \in \sbr{0,T}}$ is also a diffusion process w.r.t. the backward filtration whose coefficients can be computed, and are shown in \cref{eq:time_reversal_manifold}.
+The proof relies on an extension of \textcite[Theorem 4.9]{cattiaux2021time} to the Riemannian manifold case and is postponed to \cref{sec:time-reversal}.
+
+\begin{theorem}[Manifold time-reversed process]
+	\label{thm:time_reversal_manifold}
+	Let $T \geq 0$ and $(\v{B}_t^\c{M})_{t \geq 0}$ be a Brownian motion on $\c{M}$ such that $\v{B}_0^\c{M}$ has distribution the volume form $p_{\textup{inv}}$\footnote{Note that in the case of a non-compact manifold $p_{\textup{inv}}$ is only a measure and not a probability measure.
+	}.
+	Let $(\v{X}_t)_{t \in \sbr{0,T}}$ be associated with the SDE $\mathrm{d} \v{X}_t = b(\v{X}_t) \mathrm{d} t + \mathrm{d} \v{B}_t^\c{M}$.
+	Let $(\v{Y}_t)_{t \in \sbr{0,T}} = (\v{X}_{T-t})_{t \in \sbr{0,T}}$ and assume that $KL\del{\mathbb{P}\;\mathbb{Q}} < +\infty$, where $\mathbb{Q}$ is the distribution of $(\v{B}_t^\c{M})_{t \in \sbr{0,T}}$ and $\mathbb{P} $ the distribution of $(\v{X}_t)_{t \in \sbr{0,T}}$.
+	In addition, assume that $\mathbb{P}_t=\mathcal{L}(\v{X}_t)$, the distribution of $\v{X}_t$, admits a smooth positive density $p_t$ w.r.t. \ $p_{\textup{inv}}$ for any $t \in \sbr{0,T}$.
+	Then, $(\v{Y}_t)_{t \in \sbr{0,T}}$ is associated with the SDE \begin{equation} \label{eq:time_reversal_manifold} \mathrm{d} \v{Y}_t = \{-b(\v{Y}_t) + \nabla \log p_{T-t}(\v{Y}_t)\} \mathrm{d} t + \mathrm{d} \v{B}_t^\c{M}.
+	\end{equation}
+\end{theorem}
+
+\subsection{Approximate sampling of diffusions} \label{sec:geodesic_random_walk}
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[t]{0.24\textwidth}
+		\includegraphics[width=\textwidth, trim={4.5em 4.5em 0em 0em},clip]{images/rsgm/grw_step.pdf}
+		\caption{A single step of a Geodesic Random Walk.}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{0.24\textwidth}
+		\includegraphics[width=\textwidth, trim={2.5em 4.5em 2.0em 0em},clip]{images/rsgm/grw.pdf}
+		\caption{Many steps yield an approximate trajectory.}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{0.48\textwidth}
+		\includegraphics[width=\textwidth, trim={2.5em 2.5em 2.5em 2.5em},clip]{images/rsgm/sigma_0.51.pdf}
+		\caption{Gaussian Random Walk [Left] and the Brownian motion density [Right] agree well for small time steps.}
+	\end{subfigure}
+	\caption{Geodesic Random Walks can be used to approximate Brownian motion and more generally SDEs on manifolds. (a) At each step, tangential noise is sampled (red), which is added the drift term (not pictured).
+		This tangent vector is then pushed through the exponential map to produce a geodesics step on the manifold (blue).
+		(b) Iterating this procedure yield approximate sample paths from the process.
+	}
+	\label{fig:grw}
+\end{figure}
+
+Obtaining samples from SDEs on a manifold is non-trivial in general.
+If $\c{M}$ is isometrically embedded into $\R^p$ (with $p \geq d$) one can define $(\v{B}_t^\c{M})_{t \geq 0}$ as a $\R^p$-valued process, see \Cref{sec:brown-moti-manif}.
+However, this approach is \emph{extrinsic}, as it requires the knowledge of the projection operator to place points back on the manifold at each step which can accumulate errors.
+
+Here we consider an \emph{intrisic} approach based on Geodesic Random Walks (GRWs), see \textcite{jorgensen1975central} for a review of their properties.
+GRWs can approximate \emph{any} well-behaved diffusion on $\c{M}$.
+Hence, we introduce GRWs in a general framework and consider a discrete-time process $(X_n^\gamma)_{n \in \N}$ which approximates the diffusion $(\v{X}_t)_{t \geq 0}$ defined by \begin{equation} \label{eq:generic} \mathrm{d} \v{X}_t = b(t, \v{X}_t) \mathrm{d} t + \sigma(t, \v{X}_t) \mathrm{d} \v{B}_t^\c{M}.
+\end{equation}
+This generalisation is key to sampling the backward diffusion process defined in \Cref{thm:time_reversal_manifold}.
+
+\begin{definition}[Geodesic Random Walk]
+	Let $X^\gamma_0$ be a $\c{M}$-valued random variable.
+	For any $\gamma > 0$, we define $(X_n^\gamma)_{n \in \N}$ such that for any $n \in \N$, $X_{n+1}^\gamma = \exp_{X_{n}^\gamma}[\gamma \{ b(X_{n}^\gamma) + \sqrt{\gamma} V_{n+1} \}]$, where $(V_n)_{n \in \N}$ is a sequence of $\mathrm{T}\c{M}$-valued random variables such that for any $n \in \N$, $\E\sbr{V_{n+1}|\c{F}_n} = 0$ and $\E\sbr{V_{n+1} V_{n+1}^\top | \c{F}_n} = \sigma \sigma^\top(X_n^\gamma)$, where $\c{F}_n$ is the filtration generated by $\{X_k^\gamma\}_{k=0}^n$.
+	We say that the $\c{M}$-valued process $(X_n^\gamma)_{n \in \N}$ is a Geodesic Random Walk.
+\end{definition}
+
+\cref{alg:grw_rsgm} approximately simulates the diffusion
+$(\v{X}_t)_{t \in \sbr{0,T}}$ defined in \cref{eq:generic} using GRWs; see \textcite{kuwada2012convergence,cheng2022theorymanifold} for quantitative error bounds in the time-homogeneous
+case and \Cref{sec:discr-bounds-grw} for a novel extentsion for the time-inhomogeneous case. \cref{fig:grw} provides a graphical illustration of this procedure.
+
+\begin{algorithm}[!t]
+	\caption{\small GRW (Geodesic Random Walk)}
+	\label{alg:grw_rsgm}
+	\begin{algorithmic}[1]
+		\small
+		\Require $T, N, X_0^\gamma, b, \sigma, \mathrm{P}$
+		\State $\gamma = T / N$ \Comment Step-size
+		\For{$k \in \{0, \dots, N-1\}$}
+		\State $Z_{k+1} \sim \mathrm{N}(0, \m{I})$ \Comment Sample a Gaussian in the tangent space of $X_{k}^\gamma$
+		\State $W_{k+1} = \gamma b(k \gamma, X_k^\gamma) + \sqrt{\gamma} \sigma(k \gamma, X_k^\gamma) Z_{k+1}$ \Comment Compute the Euler--Maruyama step on tangent space
+		\State $X_{k+1}^\gamma = \exp_{X_k^\gamma}[W_{k+1}]$ \Comment Move along the geodesic defined by $W_{k+1}$ and $X_{k}^\gamma$ on $\c{M}$
+		\EndFor
+		\State {\bfseries return} $\{ X_k^\gamma\}_{k=0}^{N}$
+	\end{algorithmic}
+\end{algorithm}
+
+\subsection{Score approximation on Riemannian manifolds}
+\label{sec:riem-score-appr}
+\paragraph{Score matching and loss functions.}
+The reverse process from \cref{eq:time_reversal_manifold} involves the Stein score $\nabla \log p_t$ which is unfortunately intractable.
+To derive an approximation, we first remark that for any $s,t \in \ocbr{0,T}$ with $t > s$ and $x_t \in \c{M}$, $p_t(x_t) = \int_{\c{M}} p_{t|s}(x_t|x_s) \mathrm{d} \mathbb{P}_s(x_s)$, where $\mathbb{P}_s = \mathcal{L}(\v{X}_s)$, the distribution of $\v{X}_s$.
+Thus, we have that for any $s, t \in \sbr{0,T}$ with $t > s$ and $x_t \in \c{M}$ \begin{equation} \nabla_{x_t} \log p_t(x_t) = \int_{\c{M}} \nabla_{x_t} \log p_{t|s}(x_t|x_s) \mathbb{P}_{s|t}(x_t, \mathrm{d} x_s).
+\end{equation}
+Hence, for any $s, t \in \sbr{0,T}$ with $t > s$ we have that \[\nabla \log p_t = \argmin \cbr{\ell_{t|s}(\mathbf{s}_t)}{\mathbf{s}_t \in \mathrm{L}^2(\mathbb{P}_t)}\], where $\ell_{t|s}(\mathbf{s}_t) = \int_{\c{M}^2} \norm{\nabla_x \log p_{t|s}(x_t|x_s) - \mathbf{s}_t(x_t)}^2 \mathrm{d} \mathbb{P}_{s,t}(x_s,x_t)$, which is referred as the Denoising Score Matching (DSM) loss.
+It can also be written in an \emph{implicit} fashion.
+
+\begin{proposition}[Implicit score-matching on manifolds]
+	\label{prop:implicit_der}
+	Let $t, s \in \ocbr{0,T}$ with $t>s$.
+	Then, under sufficient regularity of $p_{t|s}(x_t|x_s)s(x_t)$, for any $\mathbf{s}_t \in \mathrm{c}^\infty(\c{M})$, \[\ell_{t|s}(\mathbf{s}_t) = 2 \ell^{\textup{im}}_t(\mathbf{s}_t) + \int_{\c{M}^2} \norm{\nabla_{x_t} \log p_{t|s}(x_t|x_s)}^2 \mathrm{d} \mathbb{P}_{s,t}(x_s,x_t)\], where \(\ell^{\textup{im}}_t(\mathbf{s}_t) = \int_\c{M} \cbr{ \tfrac{1}{2}\norm{\mathbf{s}_t(x_t)}^2 + \mathrm{div}(\mathbf{s}_t)(x_t) } \mathrm{d} \mathbb{P}_t(x_t)\).
+\end{proposition}
+
+The proof is postponed to \Cref{sec:implicit-losses}.
+For any $t \in \ocbr{0,T}$ the minimizers of the loss $\ell^{\textup{im}}_t$ on $\c{X}(\c{M})$ (where $\c{X}(\c{M})$ is the set of vector fields on $\c{M}$) are the same as the ones for $\ell_{t|s}$.
+The loss $\ell^{\textup{im}}_t$ is referred to as the \emph{implicit} score matching (ISM) loss~\parencite{hyvarinen2005estimation}.
+These losses are direct analogous to the versions typically used in Euclidean space.
+
+In the case where we have access to $\cbr{\nabla \log p_{t|s}\;:\;T \le t > s \ge 0}$, the forward noising process transition kernels, or an approximation of this family, then we can use the DSM loss to learn $\cbr{\mathbf{s}_t \in \c{X}(\c{M}) \;:\;t \in \sbr{0,t}}$.
+If this is not the case then we turn to $\ell^{\textup{im}}_t$.
+Note that $\ell^{\textup{im}}_t$ requires the computation of a divergence term which requires $d$ Jacobian-vector calls.
+In high dimension, a stochastic estimator is necessary \parencite{hutchinson1989stochastic}.
+Following \textcite{song2020improved, nichol2021improved} the loss can be weighted with a term $\lambda_t > 0$.
+
+\paragraph{Parametric family of vector fields.}
+We approximate $(\nabla \log p_t)_{t \in \sbr{0,T}}$ by a family of functions $\{\mathbf{s}_\theta\}_{\theta \in \Theta}$ where $\Theta$ is a set of parameters and $\mathbf{s}_\theta: \ \sbr{0,T} \to \c{X}(\c{M})$.
+In a Euclidean space, vector fields are simply functions $\mathbf{s}_\theta: \R^d \rightarrow \R^d$.
+In manifolds, although for any $x \in \c{M}$, $\mathrm{T}_x\c{M} \cong \R^d$, there does not necessarily exist a set of $d$ smooth vector fields $\{E_i\}_{i=1}^d$ such that $\text{span}\left( \{E_i(x)\}_{i=1}^d \right) = \mathrm{T}_x\c{M}$~\parencite[Chapter 8, page 179,][]{lee2006riemannian}~\footnote{Manifolds for which there exists such a \emph{global frame} $\{E_i(x)\}_{i=1}^d$ are referred as \emph{parallelizable}.
+$\mathbb{S}^2$ is a well-known example of
+\emph{non-parallelizable} manifold as per the \emph{Hairy ball theorem}.}.
+Fortunately, one can rely on a larger set of smooth vector fields $\{E_i(x)\}_{i=1}^n$ with $n > d$ that \emph{does} span the tangent bundle.
+Then it suffices to construct a neural network $\mathbf{s}_\theta: [0, T] \times \c{M} \rightarrow \R^n$ to parametrise the score network as $\mathbf{s}_\theta(t,x) = \sum_{i=1}^n \mathbf{s}^i_\theta(t,x) E_i(x)$.
+See \cref{sec:vector_field} for a discussion on the different choices of generating sets $\{E_i(x)\}_{i=1}^n$.
+
+Combining this parameterization with the score matching losses, the time-reversal formula of \Cref{thm:time_reversal_manifold} and the sampling of forward and backward processes described in \cref{sec:geodesic_random_walk}, we define our RGSM algorithm in \cref{alg:rsgm}.
+This algorithm can also benefit from a predictor-corrector scheme as in \textcite{song2020score}, see \Cref{sec:predictor-corrector}.
+
+\begin{algorithm}[!t]
+	\caption{\small RSGM (Riemannian Score-Based Generative Model)}
+	\label{alg:rsgm}
+	\begin{algorithmic}[1]
+		\small
+		\Require $\varepsilon, T, N, \{X_0^m\}_{m=1}^M, \mathrm{loss}, \mathbf{s}, \theta_0, N_{\textrm{iter}}, p_{\textup{inv}}, \mathrm{P}$
+		\State{/// TRAINING ///}
+
+		\For{$n \in \{0, \dots, N_{\textrm{iter}}-1\}$}
+		\State $X_0 \sim (1/M) \sum_{m=1}^M \delta_{X_0^m}$ \Comment Random mini-batch from dataset
+		\State $t \sim U(\sbr{\varepsilon, T})$ \Comment Uniform sampling between $\varepsilon$ and $T$
+		\State $\v{X}_t = \textrm{GRW}(t, N, X_0, b, \m{I}, \mathrm{P})$ \Comment Approximate forward diffusion with \cref{alg:grw_rsgm}
+		\State $\ell(\theta_n) = \ell_t(T, N, X_0, \v{X}_t, \mathrm{loss}, \mathbf{s}_{\theta_n})$ \Comment Compute score matching loss from \cref{tab:sm_losses}
+		\State $\theta_{n+1} = \verb|optimizer_update|(\theta_n, \ell(\theta_n))$ \Comment ADAM optimizer step
+		\EndFor
+		\State $\theta^\star = \theta_{N_{\textrm{epoch}}}$
+		\State{/// SAMPLING ///}
+		\State $Y_0 \sim p_{\textup{inv}}$ \Comment Sample from uniform distribution
+		\State $b_\theta^\star(t, x) = \mathbf{s}_{\theta^\star}(T-t, x)$ for any $t \in \sbr{0,T}$, $x \in \c{M}$ \Comment Reverse process drift
+		\State $\{Y_k\}_{k=0}^{N} = \textrm{GRW}(T, N, Y_0, b_{\theta^\star}, \m{I}, \mathrm{P})$ \Comment Approximate reverse diffusion with \Cref{alg:grw_rsgm}
+		\State {\bfseries return} $\theta^\star, \{Y_k\}_{k=0}^{N}$
+	\end{algorithmic}
+\end{algorithm}
+
+\section{Riemannian Score-Based Generative Modelling on Compact Manifolds}
+
+\label{sec:compact}
+
+Assuming compactness of the manifold $\c{M}$, we can leverage a number of special properties to implement a specific case of our algorithm.
+In particular we benefit from the fact that on compact manifolds we have a proper \textit{uniform} distribution over the manifold, and have access to a variety of approximations of the heat kernel.
+As highlighted in \cref{sec:non-compact}, in the compact setting we use Brownian motion as the noising SDE, which targets the uniform distribution as the stationary distribution.
+\cref{tab:difference} highlights the main differences between
+RSGMs on compact manifolds, generic manifolds and Euclidean score-based models.
+
+\begin{table*}[t]
+	\small
+	\centering
+	\renewcommand*{\arraystretch}{1.2}
+	\begin{tabular}{lccc}
+		\toprule
+		Ingredient \textbackslash ~Space                    & Euclidean                                                        & `Generic' Manifold                & Compact Manifold \\ \hline
+		Forward process $\mathrm{d} \v{X}_t=$               & $- \tfrac{1}{2} \v{X}_t \mathrm{d} t + \mathrm{d} \v{B}_t^\c{M}$ & $ - \tfrac{1}{2} \nabla_{\v{X}_t}
+		U(\v{X}_t) \mathrm{d} t + \mathrm{d} \v{B}_t^\c{M}$ & $\mathrm{d} \v{B}_t^\c{M}$                                                                                              \\ Easy-to-sample distribution & Gaussian & Wrapped Gaussian & Uniform \\ Time reversal & \textcite{cattiaux2021time} & \multicolumn{2}{c}{\Cref{thm:time_reversal_manifold}} \\ Sampling forward process & Direct & \multicolumn{2}{c}{Geodesic Random Walk (\Cref{alg:grw_rsgm})}\\ Sampling backward process & Euler--Maruyama & \multicolumn{2}{c}{Geodesic Random Walk (\Cref{alg:grw_rsgm})} \\ \bottomrule\end{tabular} \caption{\small Differences between SGM on Euclidean spaces and RSGM on Riemannian manifolds.
+	}
+	\label{tab:difference}
+\end{table*}
+
+\paragraph{Heat kernel on compact Riemannian manifolds.}
+For any $x_0 \in \c{M}$ and $t \geq s \geq 0$, the heat kernel $p_{t|s}(\cdot|x_s)$ is defined as the density of $\v{B}_t^\c{M}$ w.r.t. the uniform measure on the manifold.
+
+Contrary to the Gaussian transition density of the OU process (or the Brownian motion) in the Euclidean setting, it is typically only available as an infinite series.
+In order to circumvent this issue we consider two techniques: \begin{enumerate*}[label=\roman*)] \item a truncation approach, \item a Taylor expansion around $t=0$ called a Varadhan asymptotics.
+\end{enumerate*}
+First, we recall that in the case of compact manifolds the heat kernel is given by the \emphmarginnote{Sturm--Liouville decomposition} \parencite{chavel1984eigenvalues} given for any $t > 0$ and $x_0, x_t \in \c{M}$ by \begin{equation} \label{eq:infinite_sum1} \textstyle{p_{t|0}(x_t|x_0) = \sum_{j \in \N} \mathrm{e}^{-\lambda_j t} \phi_j(x_0)\phi_j(x_t),} \end{equation} where the convergence occurs in $\mathrm{L}^2(p_{\textup{inv}} \otimes p_{\textup{inv}})$, $(\lambda_j)_{j \in \N}$ and $(\phi_j)_{j \in \N}$ are the eigenvalues, respectively the eigenvectors, of $-\Delta_\c{M}$, the Laplace-Beltrami operator in the manifold, in $\mathrm{L}^2(p_{\textup{inv}})$ \cite[Section 2]{saloff1994precise}.
+When the eigenvalues and eigenvectors are known, we rely on an approximation of the logarithmic gradient of $p_{t|0}$ by truncating the sum in \cref{eq:infinite_sum1} with $J \in \N$ terms to obtain for any $t > 0$ and $x_0,x_t \in \c{M}$ \begin{equation} \label{eq:heat_kernel_trunc} \nabla_{x_t} \log p_{t|0}(x_t|x_0) \approx \textstyle{S_{J,t}(x_0,x_t) \triangleq \nabla_{x_t} \log {\sum_{j=0}^J \mathrm{e}^{-\lambda_j t} \phi_j(x_0)\phi_j(x_t)} .
+	}
+\end{equation}
+
+Under regularity conditions on $\c{M}$ it can be shown that for any $x,y \in \c{M}$ and $t \geq 0$, $\lim_{J \to +\infty} S_{J,t}(x_0,x_t) = \nabla_{x_t} \log p_{t|0}(x_t|x_0)$ \cite[Lemma 1]{jones2008Manifold}.
+In the case of the $d$-dimensional torus or sphere the eigenvalues and eigenvectors are computable \cite[Section 2]{saloff1994precise} and we can apply this method to approximate $p_{t|0}$ for any $t > 0$, see \cref{sec:eigenf-eigenv-lapl}
+
+When the eigenvalues and eigenvectors are unknown or not tractable, we can still derive an approximation of the heat kernel for small times $t$.
+Using \emphmarginnote{Varadhan's asymptotics}---see \textcite[Theorem 3.8]{bismut1984large} or \textcite[Theorem 2.1]{chen2021logarithmic}---for any $x, y \in \c{M}$ with $y \notin \mathrm{Cut}(x)$ (where $\mathrm{Cut}(x)$ is the cut-locus of $x$ in $\c{M}$ \cite[Chapter 10]{lee2018introduction}) we have that \begin{equation} \label{eq:varadhan} \textstyle{\lim_{t \to 0} t \nabla_{x_t} \log p_{t|0}(x_t|x_0) = \exp^{-1}_{x_t}(x_0) .
+	}
+\end{equation}
+
+Using the previously defined score-matching losses and the approximations to the heat kernel above, we highlight three methods to compute $\nabla \log p_t$ in \cref{tab:sm_losses}.
+\begin{table*}[t]
+	\centering
+	\small
+	\renewcommand*{\arraystretch}{1.4}
+	\renewcommand*{\tabcolsep}{0.5em}
+	\begin{tabular}{lc|c|cc|c}
+		\toprule
+		\multirow{2}{5em}{Loss}                           & \multirow{2}{6em}{Approximation}        & \multirow{2}{6em}{Loss function}                                                                                        & \multicolumn{2}{c|}{Requirements}                  & \multirow{2}{5em}{Complexity}                    \\
+		                                                  &                                         &                                                                                                                         & $p_{t|0}$                                          & $\exp^{-1}_{\v{X}_t}$         &                  \\
+		\midrule
+		\multirow{3}{4.5em}{$\ell_{t|0}$ (DSM)}           & None                                    & $\frac{1}{2} \E \left[ \| \mathbf{s}(\v{X}_t) - \nabla \log  p_{t|0}(\v{X}_t | \v{X}_0) \|^2 \right]$                   & \cmark                                             & \xmark                        & $\mathcal{O}(1)$ \\
+		                                                  & Truncation~\eqref{eq:heat_kernel_trunc} & $\frac{1}{2} \E \left[ \| \mathbf{s}(\v{X}_t) - S_{J,t}(\v{X}_0,\v{X}_t) \|^2 \right]$                                  & \begin{tabular}{@{}c@{}}
+			                                                                                                                                                                                                                        \def\arraystretch{0.1}
+			                                                                                                                                                                                                                        asymptotic\vspace{-0.5em} \\expansion\end{tabular} & \xmark                        & $\mathcal{O}(1)$ \\
+		                                                  & Varhadan~\eqref{eq:varadhan}            & $\frac{1}{2} \E \left[ \| \mathbf{s}(\v{X}_t) - \exp_{\v{X}_t}^{-1}(\v{X}_0) / t \|^2 \right]$                          & \xmark                                             & \cmark                        & $\mathcal{O}(1)$ \\ \midrule
+		$\ell_{t|s}$ (DSM)                                & Varhadan~\eqref{eq:varadhan}            & $\frac{1}{2} \E \left[ \| \mathbf{s}(\v{X}_t) - \exp^{-1}_{\v{X}_t}(\v{X}_s) / (t-s) \|^2 \right]$                      & \xmark                                             & \cmark                        & $\mathcal{O}(1)$ \\ \midrule
+		\multirow{2}{4.5em}{$\ell^{\textup{im}}_t$ (ISM)} & Deterministic                           & $\E \left[\frac{1}{2} \| \mathbf{s}(\v{X}_t) \|^2 + \mathrm{div}( \mathbf{s})(\v{X}_t)  \right]$                        & \xmark                                             & \xmark                        & $\mathcal{O}(d)$ \\
+		                                                  & Stochastic                              & $\E \left[\frac{1}{2} \| \mathbf{s}(\v{X}_t) \|^2 + \varepsilon^\top \partial \mathbf{s}(\v{X}_t) \varepsilon  \right]$ & \xmark                                             & \xmark                        & $\mathcal{O}(1)$ \\ \bottomrule
+	\end{tabular}
+	\caption{\small
+	Computational complexity of score matching losses w.r.t. score network forward and backward passes. $\varepsilon$ is a random variable on $\mathrm{T}_{\v{X}_t}\c{M}$ such that $\E\sbr{\varepsilon}=0$ and $\E\sbr{\varepsilon\varepsilon^\top}=\m{I}$.}
+	\label{tab:sm_losses}
+\end{table*}
+
+\paragraph{Convergence results in the compact setting}
+\label{sec:convergence-results}
+We now provide a theoretical analysis of RSGM under the assumption that $\c{M}$ is compact.
+The following result ensures that RSGM generates samples whose distribution is close to the data distribution $p_0$.
+Let us denote $\{Y_k\}_{n \in \{0, \dots, N\}}$ the sequence generated by \Cref{alg:rsgm}.
+This result relies on the following assumption, which is satisfied for a large class of manifolds $\c{M}$ such as the $d$-dimensional sphere and torus, compact matrix groups and products of these manifolds.
+\begin{assumption}
+	\label{assum:manifold}
+	There exist $C, \alpha >0$ such that for any $t \in \ocbr{0,1}$ and $x \in \c{M}$, $p_{t|0}(x|x) \leq C t^{-\alpha/2}$, where $p_{t|0}(\cdot|x_0)$ is the density of the heat kernel, i.e. the density of $\v{B}_t^\c{M}$ with initial condition $x_0$ \footnote{The diagonal upper-bound is implied by Sobolev inequalities which control of the growth of some functions by the growth of their gradient.
+		\Cref{assum:manifold} is satisfied in our experiments, see  \textcite{saloff1994precise,gross1992logarithmic}.}.
+\end{assumption}
+
+\begin{theorem}
+	\label{thm:weak_qualitative}
+	Assume \cref{assum:manifold}, that $p_0$ is smooth and positive and that there exists $\mathtt{M} \geq 0$ such that for any $t \in \sbr{0,T}$ and $x \in \c{M}$, $\norm{\mathbf{s}_{\theta^{\star}}(t,x) - \nabla \log p_{t}(x)} \leq \mathtt{M}$, with $\mathbf{s}_{\theta^\star} \in \mathrm{c}(\sbr{0,T}, \mathcal{X}(\c{M}))$.
+	Then if $T > 1/2$, there exists $C \geq 0$ independent on $T$ such that \begin{equation} \textstyle{\v{W}_1\del{\mathcal{L}(Y_N), p_0} = C ( \mathrm{e}^{-\lambda_1 T} + \sqrt{T/2} \mathtt{M} + \mathrm{e}^T \gamma^{1/2}) , } \end{equation} where $\v{W}_1$ is the Wasserstein distance of order one on the probability measures on $\c{M}$.
+\end{theorem}
+
+The proof is postponed to \Cref{sec:convergence-rsgm}.
+In particular, for any $\varepsilon > 0$, choosing $T > 0$ large enough, $\mathtt{M}$ small enough (which can be achieved using the universal property of neural networks) and $\gamma$ small enough, we get that $\v{W}_1\del{\mathcal{L}(Y_N), p_0} \leq \varepsilon$.
+This result might seem weaker than the result obtained for Moser flows in \textcite[Theorem 3]{rozen2021moser}, but we emphasize that our bound takes into account the time-discretization contrary to \textcite{rozen2021moser} which considers the continuous-time flow.
+If we consider the time-reversed continuous-time SDE then we recover a bound in total variation distance, see \Cref{sec:convergence-rsgm}.
+Note that the upper bound $\mathtt{M}$ encompasses both the bias introduced by the use of a neural network and the bias introduced by the use of an approximation of the score.
+
+\section{Related Work}
+\label{sec:related-works}
+
+In this section we discuss previous work on parametrizing family of distributions for manifold-valued data.
+Here, the manifold structure is considered to be prescribed, in contrast with methods that jointly learn the manifold structure and density~\parencite[e.g.][]{brehmer2020flows,caterini2021Rectangular}.
+
+\textbf{Push-forward of Euclidean normalizing flows.}
+More recently, approaches leveraging the flexibility of normalizing flows \parencite{papamakarios2019normalizing} have been proposed.
+Following the wrapping method described above, these methods parametrize a normalizing flow in $\R^n$ before being pushed along an invertible map $\psi: \R^n \rightarrow \c{M}$.
+However, to globally represent the manifold, the map $\psi$ needs to be a homeomorphism, which can only happen if $\c{M}$ is topologically equivalent to $\R^n$, hence limiting the scope of that approach.
+One natural choice for this map is the exponential map $\exp_x: \mathrm{T}_x \c{M} \cong \R^d$.
+This approach has been taken, for instance, by \textcite{falorsi2019reparameterizing} and \textcite{bose2020latent}, respectively parametrizing distributions on Lie groups and hyperbolic space.
+
+\textbf{Neural ODE on manifolds.}
+To avoid artifacts or numerical instabilities due to the manifold embedding, another line of work uses tools from Riemannian geometry to define flows directly on the manifold of interest \parencite{falorsi2020neural,mathieu2020riemannian,falorsi2021Continuous}.
+Since these methods do not require a specific embedding mapping, they are referred as \emph{Riemannian}.
+They extend continuous normalizing flows (CNFs) \parencite{grathwohl2019Scalable} to the manifold setting, by implicitly parametrizing flows as solutions of Ordinary Differential Equations (ODEs).
+As such, the parametric flow is a \emph{continuous} function of time.
+This approach has recently been extended by \textcite{rozen2021moser} introducing Moser flows, whose main appeal being that it circumvents the need to solve an ODE in the training process.
+We refer to \Cref{sec:comp-with-moser} for an in-depth discussion on the links between our work and Moser flows.
+
+\textbf{Optimal transport on manifolds.}
+Another line of work has developed flows on manifolds using tools from optimal transport.
+\cite{sei2013jacobian} introduced a flow that is given by $f_\theta: x \mapsto \exp_x(\nabla \psi^c_\theta)$
+with $\psi^c_\theta$ a $c$-convex function and $c=d^2_{\c{M}}$ the squared
+geodesic distance.
+This approach is motivated by the fact that the optimal transport map takes such an expression \parencite{ambrosio2003Optimal}.
+These methods operate directly on the manifold, similarly to CNFs, yet in contrast they are \emph{discrete} in time.
+The benefits of this approach depend on the specific choice of parametric family of $c$-convex functions \parencite{rezende2021Implicit,cohen2021riemannian}, trading-off expressivity with scalability.
+
+\section{Experiments}
+
+\label{sec:experiments-rsgm}
+\begin{table*}[t]
+	\centering
+	\small
+	\renewcommand*{\arraystretch}{1.4}
+	\begin{tabular}{l|cccc}
+		\toprule
+		Method     & Training                                                     & Likelihood evaluation                   & Sampling                     \\
+		\midrule
+		RCNF       & Solving ODE $\mathcal{O}(dN)$                                & Solving augmented ODE $\mathcal{O}(dN)$ & Solving ODE $\mathcal{O}(N)$ \\
+		Moser flow & Computing $\text{div}$ $\mathcal{O}(dk)$ or $\mathcal{O}(k)$ & Solving augmented ODE $\mathcal{O}(dN)$ & Solving ODE $\mathcal{O}(N)$ \\ RSGM & Score matching $\mathcal{O}(d)$ or $\mathcal{O}(1)$ & Solving augmented ODE $\mathcal{O}(dN)$ & Solving SDE $\mathcal{O}(N^*)$ \\ \bottomrule\end{tabular}
+
+	\caption{ \small Summary of computational complexity (w.r.t. \ neural network forward and backward passes) for different methods.
+		$d$ is the manifold
+		dimension, $k$ the number of Monte Carlo batches in Moser flow's regularizer,
+		$N$ is the number of steps in the (adaptive) ODE solver, whereas $N^*$ is the
+		number of steps in the SDE Euler-Maruyama solver--which can usually be lower
+		than $N$.
+		Moser flow and RSGM training complexity varies if the Hutchinson stochastic estimator is used.
+		See \cref{tab:sm_losses} for score matching losses complexity.
+	}
+	\label{tab:comparison_methods}
+\end{table*}
+In this section we benchmark the empirical performance of RSGMs along with other manifold-valued methods introduced in \cref{sec:related-works}.
+We also compare to a `Stereographic` score-based model, introduced in \cref{sec:stereo_exp}.
+First, we assess their modelling capacity on earth and climate science spherical data.
+Then, we test the methods scalability with respect to manifold dimensions with a synthetic experiment on the torus $\mathbb{T}^d$.
+Eventually, we evaluate the models' regularity and time complexity with a synthetic $\mathrm{SO}_3(\R)$ target.
+Experimental details are provided in \Cref{sec:exp_detail}.
+The code used to run the experiments can be found at \href{https://github.com/oxcsml/riemannian-score-sde}{github.com/oxcsml/riemannian-score-sde}.
+
+\subsection{Earth and climate science datasets on the sphere}
+\label{sec:exp_sphere}
+\begin{table*}[t]
+	\centering
+	\small
+	\begin{tabular}{lrrrrr}
+		\toprule
+		\scshape Method                    & \scshape {Volcano}                               & \scshape {Earthquake}                              & \scshape {Flood}                                  & \scshape {Fire}                                    \\
+		\midrule
+		\scshape Mixture of Kent           & $-0.80_{\pm 0.47}$                      & $0.33_{\pm 0.05}$                         & $0.73_{\pm 0.07}$                        & $-1.18_{\pm 0.06}$                        \\
+		\scshape Riemannian CNF            & $\bm{-6.05_{\pm 0.61}}$                  & ${0.14_{\pm 0.23}}$                       & ${1.11_{\pm 0.19}}$                      & $\v{-0.80_{\pm 0.54}}$                    \\
+		\scshape Moser Flow                & ${-4.21_{\pm 0.17}}$                    & $\v{-0.16_{\pm 0.06}}$                    & $\v{0.57_{\pm 0.10}}$                    & $\v{-1.28_{\pm 0.05}}$                    \\
+		\rowcolor{pearDark!20} \scshape Stereographic Score-Based & ${-3.80_{\pm 0.27}}$ & $\v{-0.19_{\pm 0.05}}$ & $\v{0.59_{\pm 0.07}}$ & $\v{-1.28_{\pm 0.12}}$ \\
+		\rowcolor{pearDark!20} \scshape Riemannian Score-Based    & ${-4.92_{\pm 0.25}}$ & $\v{-0.19_{\pm 0.07}}$ & $\v{0.45_{\pm 0.17}}$ & $\v{-1.33_{\pm 0.06}}$ \\
+		\midrule
+		\scshape Dataset size              & 827                                     & 6120                                      & 4875                                     & 12809                                     \\
+		\bottomrule
+	\end{tabular}
+	\caption{
+		Negative log-likelihood scores for each method on the earth and climate science datasets.
+		Bold indicates best results (up to statistical significance).
+		Means and confidence intervals are computed over 5 different runs.
+		Novel methods are shown with blue shading.
+	}
+	\label{tab:geoscience}
+\end{table*}
+
+We start by evaluating RSGMs on a collection of simple datasets, each containing an empirical distribution of occurrences of earth and climate science events on the surface of the earth.
+These events are: volcanic eruptions \cite{volcanoe_dataset}, earthquakes \cite{earthquake_dataset}, floods \parencite{flood_dataset} and wild fires \parencite{fire_dataset}.
+We compare to previous baseline methods: Riemannian Continuous Normalizing Flows \parencite{mathieu2020riemannian}, Moser Flows \parencite{rozen2021moser} and a mixture of Kent distributions \parencite{peel2001fitting}.
+Additionally, we consider a standard SGM on the 2D plane followed by the inverse stereographic projection which induces a density on the sphere \parencite{gemici2016normalizing}.
+We evaluate the log-likelihood of each model, extending to the manifold setting the likelihood computation techniques of SGMs, see \Cref{sec:likel-comp}.
+We observe from \cref{tab:geoscience},
+
+that all benchmarked methods have comparable performance when evaluated on these simple tasks with RSGM performing marginally better on most datasets.
+However, we empirically notice that Moser flows are slow to train and additionally that both Moser flows and stereographic SGMs are computationally expensive to evaluate.
+
+\begin{figure*}[t]
+	\centering
+	\begin{subfigure}{0.22\textwidth}
+		\includegraphics[width=\textwidth]{images/rsgm/pdf_volcanoe_310122.pdf}
+		\caption{Volcano}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.22\textwidth}
+		\includegraphics[width=\textwidth]{images/rsgm/pdf_earthquake_310122.pdf}
+		\caption{Earthquake}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.22\textwidth}
+		\includegraphics[width=\textwidth]{images/rsgm/pdf_flood_310122.pdf}
+		\caption{Flood}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.22\textwidth}
+		\includegraphics[width=\textwidth]{images/rsgm/pdf_fire_310122.pdf}
+		\caption{Fire}
+	\end{subfigure}
+	\caption{
+		Trained score-based generative models on earth sciences data.
+		The learned density is colored green-blue.
+		Blue and red dots represent training and testing datapoints, respectively.
+	}
+	\label{fig:geoscience}
+\end{figure*}
+\subsection{Synthetic data on tori}
+\label{sec:exp_torus}
+\begin{figure*}[t]
+	\centering
+	\includegraphics[width=\textwidth]{images/rsgm/high-dim.pdf}
+	\caption{Comparison of Moser flows and RSGMs training speed and performance on the synthetic high-dimension torus task.
+		Moser flows trained with $\lambda_{\min}=1$.
+		We report two likelihoods, the `Moser' closed form density---not guaranteed to be normalized---and the `ODE' likelihood given by solving an augmented ODE (as in CNFs) with the vector field induced by the Moser flow density---which is guaranteed to have unit volume.
+	}
+	\label{fig:high-dim}
+\end{figure*}
+
+We now move to another manifold, that is the torus $\mathbb{T}^d = {\mathbb{S}^1 \times \dots \times \mathbb{S}^1}$, so as to assess the scalability of the different methods with respect to the dimension $d$.
+We consider a wrapped Gaussian target distribution on $\mathbb{T}^d$ with a random mean and unit variance.
+Moser flows'~\parencite{rozen2021moser} loss involves a regularization term which involves an integral over the manifold, approximated by a Monte Carlo (MC) estimator with uniform proposal.
+This term regularizes Moser flows towards probability measures, i.e.\ with unit volume.
+We thus expect Moser flows to fail in high-dimension as the number of samples $K$ required for the MC estimator to be accurate will grows as $\mathcal{O}(\mathrm{e}^d)$, and the memory required to compute this estimator grows either in $\mathcal{O}(Kd)$ for exact divergences or $\mathcal{O}(K)$ for approximated divergences (see \cref{tab:comparison_methods}).
+
+In \Cref{fig:high-dim}, we observe that RSGMs are able to fit well the target distribution even in high dimension, with a linear or constant computational cost---depending on the divergence estimator.
+In contrast, Moser flows scale poorly with the dimension, to the extent that we are unable to train them for $d \ge 10$.
+This is due to the combination of the complexity which grows linearly with both the dimension $d$ and the number of MC samples $K$, which itself ought to grow exponentially with $d$---as discussed in the previous paragraph.
+This is illustrated by the gap between the `Moser' and `ODE' likelihoods which increases with the manifold dimension (see left \Cref{fig:high-dim}).
+
+\subsection{Synthetic data on the Special Orthogonal group}
+\label{sec:exp_so3}
+In order to demonstrate the broad range of applicability of our model we now turn to the task of density estimation on the special orthogonal group $\mathrm{SO}_d(\R) = \cbr{\mathrm{Q} \in \mathrm{M}_d(\R) \;:\;\mathrm{Q} \mathrm{Q}^\top = \m{I}, \ \det(\mathrm{Q})=1}$.
+We consider the synthetic dataset consisting of samples in $\mathrm{SO}_3(\R)$ from a mixture of wrapped normal distributions with $M$ components.
+We compare RSGMs against Moser flows and a wrapped-exponential baseline inspired by \textcite{falorsi2019reparameterizing}---where we parametrize a standard Euclidean SGM on $\mathfrak{so}(3)$ that is then pushed-forward on $\mathrm{SO}_3(\R)$.
+RSGMs are trained using the $\ell_{t|0}$ (DSM) loss with the Varadhan approximation (see \cref{tab:sm_losses}).
+From \cref{tab:so3} we observe that, RSGMs perform consistently, whether the target distribution has few or many mixture components $M$, as opposed to Exp-wrapped SGMs and Moser flows which only perform well in some range of $M$.
+Similarly to \cref{sec:exp_torus}, we find Moser flows to be much slower to train due to the large number of Monte Carlo samples needed in the reguralizer ($K=10^4$).
+We also note from \cref{tab:so3} that the number of score network evaluations (NFE) is significantly lower for RSGMs, and is particularly detrimental for Moser flows ($\gg 10^3$).
+
+\begin{figure*}[t]
+	\centering
+	\begin{subfigure}[t]{0.48\textwidth}
+		\includegraphics[width=\textwidth]{images/rsgm/so3_conditional.pdf}
+		\caption{Histograms of $\mathrm{SO}_3(\R)$ samples from a target mixture distribution with $M=4$ components, represented via their Euler angles.}
+		\label{fig:so3_conditional}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{0.48\textwidth}
+		\includegraphics[width=\textwidth]{{images/rsgm/so3_heatmap}.pdf}
+		\caption{
+			RSGMs are much more robust to hyperparameters than Exp-wrapped SGMs.
+			The diffusion coefficient is given by $\sigma(t, \v{X}_t) = \sqrt{\beta(t)}$, $\beta(t) = \beta_{0} + (\beta_{f} - \beta_{0})t$.
+		}
+		\label{fig:so3_heamtap}
+	\end{subfigure}
+	\caption{
+		Trained score-based generative models on synthetic $\mathrm{SO}_3(\R)$ data.
+	}
+	\label{fig:so3}
+\end{figure*}
+\begin{table*}[t]
+	\centering
+	\small
+	\begin{tabular}{lrrrrrrrr}
+		\toprule
+		\multirow{2}{4.5em}{Method} & \multicolumn{2}{c}{$M=16$}                & \multicolumn{2}{c}{$M=32$}              & \multicolumn{2}{c}{$M=64$}                                                                                                                                                  \\ \cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
+		                            & log-likelihood                            & NFE                                     & log-likelihood                            & NFE                                      & log-likelihood                             & NFE                                     \\
+
+		\midrule
+
+		Moser Flow                  & ${0.85_{\pm 0.03}}$                       & ${2.3_{\pm 0.5}}$                       & ${0.17_{\pm 0.03}}$                       & ${2.3_{\pm 0.9}}$                        & $\v{-0.49_{\pm 0.02}}$                     & ${7.3_{\pm 1.4}}$                       \\ Exp-wrapped SGM           & \cellcolor{blue!
+		20} $\v{0.87_{\pm 0.04}}$   & \cellcolor{blue!20} ${0.5_{\pm 0.1}}$     & \cellcolor{blue!20} ${0.16_{\pm 0.03}}$ & \cellcolor{blue!20} ${0.5_{\pm 0.0}}$     & \cellcolor{blue!20} ${-0.58_{\pm 0.04}}$ & \cellcolor{blue!20} ${0.5_{\pm 0.0}}$                                                \\
+		RSGM                        & \cellcolor{blue!20} $\v{0.89_{\pm 0.03}}$ & \cellcolor{blue!20} $\v{0.1_{\pm 0.0}}$ & \cellcolor{blue!20} $\v{0.20_{\pm 0.03}}$ & \cellcolor{blue!20} $\v{0.1_{\pm 0.0}}$  & \cellcolor{blue!20} $\v{-0.49_{\pm 0.02}}$ & \cellcolor{blue!20} $\v{0.1_{\pm 0.0}}$ \\
+
+		\bottomrule
+	\end{tabular}
+	\caption{
+		Test log-likelihood and associated number of function evaluations (NFE) in $10^3$ on the synthetic mixture distribution with $M$ components on $\mathrm{SO}_3(\R)$.
+		Bold indicates best results (up to statistical significance).
+		Means and standard deviations are computed over 5 different runs.
+		Novel methods are shown with blue shading.
+	}
+	\label{tab:so3}
+\end{table*}
+
+\subsection{Synthetic data on hyperbolic space}
+
+Finally we demonstrate RSGM on a non-compact manifold: the two dimensional hyperbolic space $\mathbb{H}^2$, which is defined as the simply connected space of constant negative curvature.
+We use Langevin dynamics as the noising process (\cref{eq:langevin}) and target a wrapped Gaussian as the invariant distribution.
+We again consider a synthetic dataset of samples from a mixture of exp-wrapped normal distribution.
+From \cref{fig:hyperbolic}, we can qualitatively see that both score-based models are able to fit the target distribution.
+
+\begin{figure}[t]
+	\centering
+	\hfill
+	\begin{subfigure}[t]{0.28\textwidth}
+		\includegraphics[width=\textwidth, trim={0.0em 0.0em 0.0em 5em},clip]{images/rsgm/hyperbolic/ref.pdf}
+		\caption{Target distribution.}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{0.28\textwidth}
+		\includegraphics[width=\textwidth, trim={0.0em 0.0em 0.0em 5em},clip]{images/rsgm/hyperbolic/exp_wrap.pdf}
+		\caption{Exp-wrapped SGM.}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{0.28\textwidth}
+		\includegraphics[width=\textwidth, trim={0.0em 0.0em 0.0em 5em},clip]{images/rsgm/hyperbolic/rsgm_quadratic.pdf}
+		\caption{RSGM.}
+	\end{subfigure}
+	\hfill
+	\caption{Samples from different probability distributions on $\mathbb{H}^2$ coloured w.r.t\ their density.}
+	\label{fig:hyperbolic}
+\end{figure}

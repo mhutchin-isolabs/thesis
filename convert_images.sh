@@ -1,0 +1,1 @@
+for file in $(find images -name *.png -or -name *.jpg -or -name *.jpeg); do convert -quality 100 "${file}" "${file:0:-4}.pdf"; done

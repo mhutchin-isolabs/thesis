@@ -1,0 +1,459 @@
+The work in this section has been published as
+
+\fullcite{hutchinson2021vector}
+
+and is presented here with minor modification for clarity.
+The work was done collaboratively, and my personal contributions are as follows \1 Initiation of the project, and definition of the problem.
+\2 Initial formulation of the projection approach.
+\3 Joint development of the technical formulation, in collaboration with Alex, So, and Slava.
+\4 Development of the core codebase and dynamical systems experiments.
+The weather experiments were performed by So Tako, using the previously developed codebase.
+\5 Production of the graphics and figures, in collaboration with Alex.
+\6 Writing of the paper in conjunction with Alex, So and Slava.
+\0
+
+\section{Introduction}
+
+Gaussian processes are an effective model class for learning unknown functions.
+They are particularly attractive for use within data-efficient decision systems, including Bayesian optimization \cite{Brochu2009, Osborne2009, Shahriari2016}, model-based reinforcement learning \cite{Rasmussen2004, Deisenroth2011c}, and active learning \cite{Krause2008}.
+In these settings, Gaussian processes can represent and propagate uncertainty, as well as encode inductive biases as prior information in order to drive data efficiency.
+A key aspect of prior information is the geometry of the domain on which the Gaussian process is defined, which often encodes key properties, such as symmetry.
+Following the growing deployment of Gaussian processes, a number of recent works have focused on how to define Gaussian processes on non-Euclidean domains in ways that reflect their geometric structure \cite{Borovitskiy2020, Borovitskiy2021}.
+
+In many applications, such as climate science, quantities of interest are vector-valued.
+For example, global wind velocity modeling must take into account both speed and direction, and is represented by a vector field.
+On geometric domains, the mathematical properties of vector fields can differ noticeably from their Euclidean counterparts: for instance, one can prove that every smooth vector field on a sphere must vanish in at least one point \cite{lee2013smooth}.
+Behavior such as this simultaneously highlights the need to represent geometry correctly when modeling vector-valued data, and presents a number of non-trivial technical challenges in constructing models that are mathematically sound.
+
+In particular, even the classical definition of a vector-valued Gaussian process---that is, a random function with multivariate Gaussian marginals at any finite set of points---already fails to be a fully satisfactory notion when considering smooth vector fields on a sphere.
+This is because tangent vectors at distinct points live within different tangent spaces, and it is not clear how to construct a cross-covariance between them that does not depend on a completely arbitrary choice of basis vectors within each space.
+Constructions that are independent of this choice of basis are called \emph{gauge independent}, and recent work \cite{weiler2021coordinate,cohen2019gauge,haan2021gauge} in geometric machine learning has focused on satisfying this key property for convolutional neural networks that deal with non-Euclidean data.
+
+Our contributions include the following.
+We (a) present a differential-geometric formalism for defining Gaussian vector fields on manifolds in a coordinate-free way, suitable for Gaussian process practitioners with minimal familiarity with differential geometry, (b) present a universal and fully constructive technique for defining prior Gaussian vector fields on Riemannian manifolds, which we term the \emph{projected kernel} construction, and (c) discuss how to adapt key components in the computational Gaussian process toolkit, such as inducing point methods, to the vector field setting.
+
+The structure of the chapter is as follows.
+In Section~\ref{sec:gp}, we define vector-valued Gaussian processes on smooth manifolds.
+We start by reviewing the multi-output Gaussian process set-up, which is typically used in machine learning.
+We then detail a differential-geometric formalism for defining vector-valued Gaussian processes on smooth manifolds.
+In Section~\ref{sec:model construction}, we provide a concrete construction for these Gaussian processes on Riemannian manifolds and discuss how they can be trained using variational sparse approximations.
+Section~\ref{sec:examples} showcases Gaussian vector fields on two tasks, namely weather imputation from satellite observations and learning the dynamics of a mechanical system.
+
+\section{Vector-valued Gaussian Processes on Smooth Manifolds}
+\label{sec:gp}
+
+A \emphmarginnote{vector-valued Gaussian process} (GP) is a random function $\v{f} : X \-> \R^d$ such that, for any finite set of points $\v{x} \in X^n$, the random variable $\v{f}(\v{x}) \in \R^{n \v{x} d}$ is jointly Gaussian.
+Every such GP is characterized by its mean function $\v{\mu} : X \-> \R^d$ and matrix-valued covariance kernel $k : X \times X \-> \R^{d \times d}$, which is a positive-definite function in the matrix sense.
+These functions satisfy $\E(\v{f}(\v{x})) = \v{\mu}(\v{x})$ and $\Cov(\v{f}(\v{x}), \v{f}(\v{x}^\prime)) = k(\v{x},\v{x}^\prime)$ for any $\v{x}, \v{x}^\prime\in X$.
+Here, dependence between function values is encoded in the kernel's variability along its input domain, and correlations between different dimensions of the vector-valued output are encoded in the matrix that the kernel outputs.
+
+Consider a function $\v{f}$ with $\v{y} = \v{f}(\v{x}) + \v\eps$, where $\v\eps\sim \mathrm{N}(\v{0}, \sigma^2\m{I})$ and training data $(\v{x}, \v{y})$.
+Placing a GP prior $\v{f}\~[GP](0,k)$ on the unknown function results in a GP posterior, whose mean and covariance are given by \begin{align} \marginnote{Gaussian Process posterior} \label{eqn:gp_dist_cond} \E(\v{f}\given\v{y}) & = \m{K}_{(\.)
+              \v{x}} (\m{K}_{\v{x}\v{x}} + \sigma^2\m{I})^{-1}\v{y}
+              \\
+              \Cov(\v{f}\given\v{y})                                                                & = \m{K}_{(\.,\.)} -   \m{K}_{(\.)\v{x}} (\m{K}_{\v{x}\v{x}} + \sigma^2\m{I})^{-1}  \m{K}_{\v{x}(\.)}.
+\end{align}
+Here, $(\.)
+$ denotes an arbitrary set of test locations, $\m{K}_{\v{x} \v{x}} = k(\v{x}, \v{x})$ is the kernel matrix, and $\m{K}_{ (\cdot)\v{x}} = k(\v{x}, \cdot)$ is the cross-covariance matrix between function values evaluated at the training and test inputs.
+The GP posterior can also be written as \begin{align} \label{eqn:gp_path_cond} \marginnote{Path-wise conditioning} (\v{f}\given\v{y})(\.)
+	       & = \v{f}(\.) + \m{K}_{(\.)\v{x}} (\m{K}_{\v{x}\v{x}} + \sigma^2\m{I})^{-1}(\v{y} - \v{f}(\v{x}) - \v\eps), \\
+	\v\eps & \~[N](\v{0},\sigma^2\m{I})
+\end{align}
+where $\v{f}(\.)$ is the prior GP, and equality holds in distribution \cite{wilson2020pathwise,wilson2021pathwise}.
+These expressions form the foundation upon which Gaussian-process-based methods in machine learning are built.
+
+Recent works have studied techniques for working with the expressions \eqref{eqn:gp_dist_cond} and \eqref{eqn:gp_path_cond} when the input domain $X$ is a Riemannian manifold, focusing both on defining general classes of kernels \cite{Borovitskiy2020}, and on efficient computational techniques \cite{wilson2020pathwise,wilson2021pathwise}.
+In this setting, namely for $f : X \-> \R$, defining kernels already presents technical challenges: the seemingly-obvious first choice one might consider, namely the geodesic squared exponential kernel, is ill-defined in general \cite{feragen2015geodesic}.
+We build on these recent developments to model vector fields on manifolds using GPs.
+We do not consider manifold-valued generalizations of Gaussian processes, for instance $f : \R \-> X$: various constructions in this setting are instead studied by \textcite{stroock2000introduction, emery2012stochastic,mallasto2018wrapped,mallasto2019probabilistic}.
+To begin, we review what a vector field on a manifold actually is.
+
+\subsection{Vector Fields on Manifolds}
+
+\sloppy Let $X$ be a $d$-dimensional smooth manifold with $T_x X$ denoting its tangent space at $x$.
+Let ${TX = \cbr{(x, v) \,|\, x \in X, v \in T_xX}}$ be its \emphmarginnote{tangent bundle}, and let ${T^* X = \cbr{(x, \phi) \,|\, x \in X, \phi \in T_x^*X}}$ be its \emphmarginnote{cotangent bundle}---endow both spaces with the structure of smooth manifolds.
+Define the projection map $\proj_X : TX \-> X$ by $\proj_X (x, v) = x$.
+A \emphmarginnote{vector field} on $X$ is a map that assigns each point in $X$ to a tangent vector attached to that point.
+More formally, a vector field is a \emph{cross-section}, or simply a \emphmarginnote{section}, of the tangent bundle, which is a map $f : X \-> TX$, such that $\proj_X f(x) = x$ for all $x$.
+\footnote{A vector field is \emph{not the same as} a map $\tilde{f} : X \to \R^d$: an output value $f(x) \in TX$ formally consists of both a copy of the input point $x$, and vector within the tangent space $T_x X$ at this point.
+	This encodes the geometric structure of the underlying manifold.
+	The algebraic requirement $\proj_X f(x) = x$ for all $x$ ensures that the tangent vector chosen correctly corresponds to the point at which it is attached.
+}
+A vector field is called \emph{smooth} if this map $f$ is smooth.
+
+To represent a vector field on a manifold numerically, one must choose a basis in each tangent space, which serves as a coordinate system for vectors in the tangent space.
+On many manifolds it is \emph{impossible} to choose these basis vectors in a way that they vary smoothly in space.
+\footnote{If a smooth choice of basis vectors existed, it would define a smooth non-vanishing vector field.
+	On the sphere, by the \emph{hairy ball theorem}, all smooth vector fields vanish in at least one point, so no such bases exist.
+}
+This can be handled by working with local coordinates, or with bases that are non-smooth.
+Any chosen set of basis vectors is arbitrary, so objects constructed using them should not depend on this choice.
+Constructions that satisfy this property are called \emphmarginnote{gauge independent}.
+This notion is illustrated in Figure \ref{fig:gauges}, and will play a key role in the sequel.
+
+\begin{figure}
+	\begin{tikzpicture}
+		\node at (0,2.3375) {\includegraphics[scale=0.25]{images/kernels_on_manifolds/illustration/s2_a.pdf}};
+		\node at (0,0) {\includegraphics[scale=0.25]{images/kernels_on_manifolds/illustration/s2_x.pdf}};
+		\node at (2.26875,2.3375) {\includegraphics[scale=0.25]{images/kernels_on_manifolds/illustration/s2_b.pdf}};
+		\node at (2.26875,0) {\includegraphics[scale=0.25]{images/kernels_on_manifolds/illustration/s2_y.pdf}};
+		\node at (3.678125,2.3375) {\LARGE\ensuremath{\x}};
+		\node at (3.678125,0) {\LARGE\ensuremath{\x}};
+		\node at (5.3625,2.3375) {\includegraphics[scale=0.25]{images/kernels_on_manifolds/illustration/s2_vab.pdf}};
+		\node at (5.3625,0) {\includegraphics[scale=0.25]{images/kernels_on_manifolds/illustration/s2_vxy.pdf}};
+		\node at (6.7375,1.16875) {\Huge\ensuremath{=}};
+		\node at (9.7625,1.1) {\includegraphics[scale=0.25]{images/kernels_on_manifolds/illustration/s2_xy.pdf}};
+		\node at (0.9625,3.9875) {Basis coefficients};
+		\node at (5.190625,3.9875) {Frame};
+		\node at (9.384375,3.9875) {Vector field};
+	\end{tikzpicture}
+	\caption{Illustration on $\mathbb{S}^2$.
+		Here we illustrate two possible bases (also called frames), consisting of green and orange basis vectors (center), that can be chosen locally on the manifold $\mathbb{S}^2$.
+		The vector field on $\mathbb{S}^2$ (right) can be produced by taking two scalar fields (left) in each respective color, and combining them with the basis vectors (center) to form the vector field.
+	}
+	\label{fig:gauges}
+\end{figure}
+\subsection{Gaussian Vector Fields}
+\label{sec:vv-manifold-gp}
+
+Upon reflecting on the above considerations in the context of GPs, the first issue one encounters is that, for a random vector field $f : X \-> TX$, it is not clear what it means for finite-dimensional marginal distributions to be \emph{multivariate Gaussian} given that $f$ takes its values in a bundle rather than a vector space.
+The first step towards constructing Gaussian vector fields, therefore, involves adapting the notion of \emph{finite-dimensional marginal distributions} appropriately.
+
+\begin{definition}[Finite-dimensional marginals of a vector field]
+	\label{def:vect-gp}
+	Let $X$ be a smooth manifold.
+	We say that a random vector field $f$ is \emph{Gaussian} if for any finite set of locations $x_1, \ldots, x_n \in X$, the random vector $(f(x_1),\ldots,f(x_n)) \in T_{x_1}X \oplus \ldots \oplus T_{x_n}X$ is Gaussian (either in the sense of duality or in any basis: see Appendix A for details).
+\end{definition}
+
+This definition is near-identical to the Euclidean case: the only difference is that finite-dimensional marginals are now supported in a direct sum of tangent spaces, instead of $\R^{n \x d}$.
+With this definition, the standard multi-output GP properties, such as conditioning, carry over, virtually unmodified.
+Definition \ref{def:vect-gp} is a natural choice: if we embed our manifold into Euclidean space, the induced GP is a vector-valued GP as defined in the beginning of Section~\ref{sec:gp}.
+
+\begin{proposition}[Embedded Gaussian Processes] \label{prop:embedding}
+	Let $X$ be a manifold and $\f{emb} : X \-> \R^p$ be a smooth embedding.
+	Let $f$ be a Gaussian vector field (as defined in Definition~\ref{def:vect-gp}), and let $f_{\f{emb}} : \f{emb}(X) \-> \R^p$ be its pushforward along the embedding.
+	Then $f_{\f{emb}}$ is a vector-valued Gaussian process in the Euclidean sense.
+\end{proposition}
+
+All proofs in this work can be found in Appendix \ref{apdx:theory}.
+Having established the notion of a vector-valued Gaussian process on a smooth manifold, we proceed to deduce what mathematical objects play the role of a mean function and kernel, so that it is clear what ingredients are needed to construct and determine such a process.
+
+The former is clear: the mean of a Gaussian vector field should be an ordinary vector field, and will determine the mean vector at all finite-dimensional marginals.
+The kernel, on the other hand, is less obvious: because distinct tangent vectors live in different tanget spaces, it is unclear whether or not a Gaussian vector field is characterized by an appropriate notion of a matrix-valued kernel, or by something else.
+Now, we define the right notion for kernel in this setting.
+
+\begin{definition}[Fibrewise bilinear]
+	We call a function $k : T^*X \x T^*X \-> \R$ \emph{fiberwise bilinear} if for all pairs of points $x, x' \in X$
+	\begin{align}
+		k(\kappa \alpha_x + \lambda \beta_x, \gamma_{x'}) & = \kappa k(\alpha_x, \gamma_{x'}) + \lambda k(\beta_x, \gamma_{x'}) \\
+		k( \alpha_x, \mu \gamma_{x'} + \nu \delta_{x'})   & = \nu k(\alpha_x, \gamma_{x'}) + \mu k(\alpha, \delta{x'})
+	\end{align}
+	holds for any $\alpha_x, \beta_x \in T^*_x X$, $\gamma_{x'}, \delta_{x'} \in T^*_{x'}
+		X$ and $\kappa, \lambda, \mu, \nu \in \R$ \end{definition}
+
+\begin{definition}[Positive semi-definite kernel] A symmetric fibrewise bilinear function $k: T^*X \times T^*X \to \R$ is called a \emph{positive semi-definite kernel} if for any set of covectors $\alpha_{x_1}, \ldots, \alpha_{x_n} \in T^*X$, we have $\sum_{i=1}^n\sum_{j=1}^n k(\alpha_{x_i}, \alpha_{x_j}) \geq 0$.
+	We call a symmetric fiberwise bilinear positive semi-definite function a \emph{cross-covariance kernel}.
+\end{definition}
+
+At first this definition of a kernel function might seem surprising; why should it be defined on the \emph{cotanget} bundle of the manifold, rather than the tangent bundle?
+A clue can be found in the analogous definition in the Euclidean setting.
+For pairs of points and vectors $((x,\v{v}),(x',\v{v}'))$ the covariance is evaluated as $\v{v}^T\m{K}_{x,x'}\v{v}'$.
+Note the presence of the inverse in this expression.
+Since the inverse acts pairs of vectors, the covariance kernel itself should act on dual vectors.
+This is clarified further by considering the kernel of a given Gaussian vector field.
+
+\begin{definition}[Cross-covariance kernel]
+	The \emph{cross-covariance kernel} of a Gaussian vector field is defined by the map
+	\begin{align}
+		\alpha_x, \beta_x \to \Cov \del{ \innerprod{\alpha_x}{f(\cdot, x)}, \innerprod{\beta}{f(\cdot, x)} }
+	\end{align}
+\end{definition}
+
+In order to prove that this is indeed the correct notion of a kernel for the given setting, we require the more general form of the Kolmogorov Extension Theorem \begin{result}[Kolmogorov Extension Theorem \cite{tao11}] \label{result:tao} Let $(X_\alpha,\c{B}_\alpha,\c{O}_\alpha)_{\alpha\in A}$ be a family of measurable spaces, each equipped with a topology.
+	For each finite $B \subseteq A$, let $\mu_B$ be an inner regular probability measure on $X_B = \prod_{\alpha\in B} X_\alpha$ with $\sigma$-algebra $\c{B}_B$ and with the product topology $\c{O}_B$ obeying \[\label{project-measure} \del{\proj_C}_* \mu_B = \mu_C \] whenever $C \subseteq B \subseteq A$ are two nested finite subsets of $A$.
+	Here projections $\proj_C: X_B \-> X_C$ are defined by $\proj_C(\cbr{x_\alpha}_{\alpha \in B}) = \cbr{x_\alpha}_{\alpha \in C}$ and $\del{\proj_C}_*$ denotes the pushforward by $\proj_{C}$.
+	Then there exists a unique probability measure $\mu_A$ on $\c{B}_A$ with the property that $\del{\proj_B}_* \mu_A = \mu_B$ for all finite $B \subseteq A$.
+\end{result}
+
+We can now state the main result of this section, the unique correspondence between a mean vector field and cross-covariance kernel, as defined in this setting, and a Gaussian vector field.
+
+\begin{theorem}[Gaussian vector field unique characterisation]
+	\label{prop:riem-kern}
+	The distribution of every Gaussian vector field is uniquely determined by a mean vector field and cross-covariance kernel.
+	Moreover, each such pair defines a Gaussian vector field.
+\end{theorem}
+
+By virtue of defining and characterizing all Gaussian vector fields, Theorem~\ref{prop:riem-kern} assures us the definition of a kernel introduced is the correct mathematical notion.
+The constructions presented here are all intrinsic or, in other words, coordinate-free, and do not involve the use of bases.
+To understand how to perform numerical calculations with these kernels we proceed to study their coordinate representations with respect to a specific choice of basis.
+
+\subsection{Matrix-valued Kernels}
+\label{sec:gauge-equivariant-kernels}
+
+In Section~\ref{sec:vv-manifold-gp}, we defined what a Gaussian vector field on a manifold is.
+However, by nature of the manifold setting, the resulting objects are more abstract than usual and do not describe how it can be represented numerically.
+We now develop a point of view suitable for this task.
+
+The first step is to understand how to represent a vector field in coordinates.
+We do so by introducing a basis into the tangent space at each point.
+\begin{definition}
+	A \emphmarginnote{frame} is a collection of not necessarily smooth sections $e_i: X \to TX$ for $i=1<.
+		.., d$ such that for every $x \in X$, the vectors $e_i(x)$ form a basis of $T_xX$.
+	Given a frame, we define the \emphmarginnote{coframe} $F^*$ as the collection of dual sections $\bar{e}_i: X \to T^*X$ that pointwise form the dual basis of $F$.
+\end{definition}
+
+In physics, a frame is also referred to as a \emphmarginnote{gauge}.
+The frame allows us to express a vector field $f$ on $X$ as simply a vector-valued function $\v{f} = (f^1, \ldots, f^d) : X \-> \R^d$, such that $f(x) = \sum_{i=1}^d f^i(x) e_i(x)$ for all $x \in X$.
+
+In the following proposition, we show that if $f$ is a Gaussian vector field on $X$ (in the sense of Definition \ref{def:vect-gp}), then the corresponding vector representation~$\v{f}$ expressed in a given frame is a vector-valued GP in the standard sense.
+\begin{proposition}[Cross-covariance kernel in a frame]
+	\label{prop:matrix-representation}
+	Let $f$ be a Gaussian vector field defined on $X$ with cross-covariance kernel ${k : T^*X \x T^*X \-> \R}$.
+	Given a frame $F = (e_1, \ldots, e_d)$ on $X$, define $\v{f} : X \-> \R^d$ as above.
+	Then $\v{f}$ is a vector-valued GP in the usual sense with kernel ${\m{K}_F : X \x X \-> \R^{d \x d}}$ given by \[ \m{K}_F(x, x') = \begin{bmatrix} \label{eq:K_F} k(e^1(x), e^1(x')) & \dots & k(e^1(x), e^d(x')) \\ \vdots & \ddots & \vdots \\ k(e^d(x), e^1(x')) & \dots & k(e^d(x), e^d(x')) \end{bmatrix}, \] where $(e^i)$, with raised indices, is the coframe corresponding to $(e_i)$.
+	Conversely, given a vector-valued GP $\v{f} = (f^1, \ldots, f^d): X \-> \R^d$ and a frame $F = (e_1, \ldots, e_d)$ on $X$, $f(\cdot) := \sum_{i=1}^d f^i(\cdot) e_i(\cdot)$ defines a Gaussian vector field on $X$.
+\end{proposition}
+
+This result shows precisely how numerical representations of a Gaussian vector field depends on the choice of frame.
+While this representation is not \emph{invariant} under this choice, it is \emph{equivariant}, meaning that a transformation in the frame results in an appropriate transformation of the kernel.
+To make this notion precise, we introduce a matrix subgroup $G = \f{GL}(d, \R)$, called the \emphmarginnote{gauge group}, that acts on $\R^d$ by a standard matrix-vector multiplication.
+Given two frames $F, F'$ on $X$, an abstract vector $f_x \in T_xX$ has two vector representations $\v{f}_x, \v{f}'_x$ in the respective frames.
+We say that $F'$ is obtained from $F$ by a \emphmarginnote{gauge transformation} with respect to a matrix field $\m{A}: X \-> G \subseteq \R^{d \x d}$, if \[ \v{f}'_x = \m{A}(x) \v{f}_x \] holds for all $x \in X$, and we write $F' = \m{A}F$.
+Note that $\m{A}(x)$ need not be smooth in $x$.
+We see that the gauge transformation is therefore just a linear change of basis of the frame $F$ at each point for which one can identify vectors in $T_xX$ as elements in $\R^d$.
+The corresponding gauge dependant matrix-valued kernels must also respect this transformation rule, a statement of \emph{gauge independence}.
+
+\begin{corollary}[Gauge independence]
+	\label{cor:equivariance}
+	Let $F$ be a frame on $X$ and $\m{K}_F : X \x X \-> \R^{d\x d}$ be the corresponding matrix representation \eqref{eq:K_F} of a cross-covariance kernel $k: T^*X \x T^*X \-> \R$.
+	This satisfies the \emph{equivariance condition} \[ \m{K}_{\m{A} F}(x, x') = \m{A}(x) \m{K}_{F}(x,x') \m{A}(x')^T, \] where $\m{A} : X \-> G \subseteq \R^{d \x d}$ is a gauge transformation.
+	All cross-covariance kernels in the sense of Proposition~\ref{prop:riem-kern} arise this way.
+\end{corollary}
+
+Hence, one way to define a Gaussian vector field on a manifold is to find a gauge independent kernel.
+In summary, we have described Gaussian vector fields in a coordinate-free differential-geometric language, and deduced enough properties to confirm the objects defined truly deserve to be called GPs.
+In doing so, we have both introduced the necessary formalism to the GP community, and obtained a recipe for defining kernels, through a simple condition atop standard matrix-valued kernels.
+To proceed towards practical machine learning methods, we therefore study techniques for constructing such kernels explicitly.
+
+\section{Model Construction and Bayesian Learning for Riemannian Manifolds}
+\label{sec:model construction}
+
+In Section~\ref{sec:gp}, we introduced a notion of a Gaussian vector field.
+We now study how to use vector fields for machine learning purposes.
+This entails two primary issues: (a) how to construct practically useful kernels, and (b) once a kernel is constructed, how to train Gaussian processes.
+
+To construct a Gaussian vector field prior, the preceding theory tells us that we need to specify a mean vector field and a cross-covariance kernel.
+From the definition, it is not at all obvious how to specify a natural kernel, and experience with the scalar-valued case---where the innocuous-looking geodesic squared exponential kernel is generally not positive semi-definite on most Riemannian manifolds \cite{feragen2015geodesic}---suggests that the problem is delicate, i.e., simply guessing the kernel's form is unlikely to succeed.
+Our goal, therefore, is to introduce a general construction for building wide classes of kernels from simple building blocks.
+
+The same issues are present if we consider variational approximations to posterior GPs, such as the inducing point framework of \textcite{Titsias2009}: these are formulated using matrix-vector expressions involving kernel matrices, and it is important for the approximate posterior covariance to be gauge independent in order to lead to a valid approximate process.
+We proceed to address these issues.
+
+\subsection{Projected Kernels}
+
+Here, we introduce a general technique for defining cross-covariance kernels $k : T^*X \x T^*X \-> \R$ and for working with such functions numerically.
+Section~\ref{sec:gp} gives us a promising strategy to construct a suitable kernel---namely, it suffices to find a \emph{gauge independent matrix-valued kernel}.
+At first glance, it is not obvious how to construct such a kernel in the manifold setting.
+On many manifolds, such as the sphere, owing to the hairy ball theorem, every frame must be discontinuous: therefore, constructing a continuous kernel in such a choice of frame appears difficult.
+
+To both get around these obstacles, and aid numerical implementation, we propose to isometrically embed the manifold into higher dimension Euclidean space.
+\footnote{An embedding $\f{emb}: X \to \R^{d'}$ is called \emph{isometric} if it preserves the metric tensor.
+	By Nash's Theorem \cite{lee2013smooth}, such embeddings exist for any $d$-dimensional manifold, with an embedded dimension $d' \leq 2d+1$.
+}
+Doing so greatly simplifies these issues by virtue of making it possible to represent the manifold using a single global coordinate system.
+On the other hand, the main trade-off from this choice is that by its extrinsic nature, the construction can make theoretical analysis more difficult.
+To proceed, we need two ingredients.
+\1 An isometric embedding $\f{emb}: X \-> \R^{d'}$ of the manifold.
+\2 A vector-valued Gaussian process $\v{f}': X \-> \R^{d'}$ in the standard sense.\footnote{We emphasize again that $\v{f}'$ is \emph{not} a Gaussian vector field because it is not a random section.
+	In particular, note that $d' > d$ for most embeddings.
+}
+\0
+A simple choice which reflects the geometry of the manifold is to take $\v{f}'$ to be $d'$ independent scalar-valued GPs on $X$.
+
+By standard resul>ts in differential geometry, any smooth map $\phi : X \-> X'$ between two manifolds induces a corresponding linear map on the tangent spaces $\d_x\phi : T_xX \-> T_{\phi(x)}X'$, which can loosely be thought of as mapping $\phi$ to its first-order Taylor expansion at $x$.
+Thus, an embedding $\f{emb}: X \-> \R^{d'}$, induces a map $\d_x\!
+	\f{emb}: T_xX \-> T_{\f{emb}(x)}\R^{d'}$.
+Now fixing a frame $F$ on $X$, each tangent space $T_xX$ can be identified with $\R^d$, so without loss of generality, the map $\d_x\!
+	\f{emb}$ can be expressed simply as a position-dependent matrix $\m{P}_x^T \in \R^{d' \x d}$.
+Taking the transpose, we obtain $\m{P}_x \in \R^{d \x d'}$, which we call the \emphmarginnote{projection matrix}.
+The desired Gaussian vector field on $X$, with respect to $F$, is then constructed as $\v{f}(x) = \m{P}_x \v{f}'(x)$.
+This procedure is illustrated in Figure \ref{fig:kernel-embedding}: there we see that to get a vector field on an $\R^3$-embedded sphere, we may take a vector-valued function on it and project its values to make vectors tangential to this sphere, thus obtaining a valid vector field.
+Since the projection operator preserves smoothness and since we can take a smooth vector-valued GP to begin with, it is clear that this approach may be used to build smooth vector fields.
+
+\begin{figure}
+
+	\begin{tikzpicture}
+		\node at (1.1,1.1) {\includegraphics[scale=0.25]{images/kernels_on_manifolds/illustration/s2_ex.pdf}};
+		\node at (0,-0.9625) {\includegraphics[scale=0.25]{images/kernels_on_manifolds/illustration/s2_ey.pdf}};
+		\node at (2.2,-0.9625) {\includegraphics[scale=0.25]{images/kernels_on_manifolds/illustration/s2_ez.pdf}};
+		\node at (5.6375,0) {\includegraphics[scale=0.25]{images/kernels_on_manifolds/illustration/s2_ev.pdf}};
+		\node at (10.0375,0) {\includegraphics[scale=0.25]{images/kernels_on_manifolds/illustration/s2_pr.pdf}};
+		\node at (0.928125,2.646875) {Scalar processes};
+		\node at (5.29375,2.646875) {Embedded process};
+		\node at (9.69375,2.646875) {Projected process};
+	\end{tikzpicture}
+	\caption{Illustration of the construction process of the projected process.
+		The manifold $\mathbb{S}^2$ is embedded into $\R^3$.
+		Three identical scalar GPs (left) are placed on the manifold.
+		These three scalar GPs are combined to construct a vector-valued GP in the ambient Euclidean space (center).
+		This GP is then projected onto the tangent space of $\mathbb{S}^2$ as a subspace of the tangent space of $\R^3$ (right).
+	}
+	\label{fig:kernel-embedding}
+\end{figure}
+
+We prove that (a) the resulting expression is, indeed, a kernel, and that (b) no expressivity is lost via the construction because all cross-covariance kernels arise this way.
+
+\begin{proposition}[Projected kernels] \label{prop:projected-kernel}
+	Let $(X, g)$ be a Riemannian manifold, $\f{emb} : X \-> \R^{d'}$ be an isometric embedding and $F$ be a frame on $X$.
+	We denote by $\m{P}_{(\.)
+		} : X \-> \R^{d \x d'}$ the associated projection matrix under $F$, and let $\v{f}' : X \-> \R^{d'}$ be any vector-valued Gaussian process with matrix-valued kernel $\v\kappa : X \x X \-> \R^{d' \x d'}$.
+	Then, the vector-valued function $\v{f} = \m{P}\v{f}'$ defines a Gaussian vector field $f$ on $X$ using the construction in Proposition \ref{prop:matrix-representation}, whose kernel under the frame $F$ has matrix representation \[\label{eq:projection-relation} \m{K}_F(x, x') = \m{P}_x \v\kappa(x,x') \m{P}_{x'}^T.
+	\]
+	Moreover, all cross-covariance kernels $k : T^*X \x T^*X \-> \R$ arise this way.
+	We call a kernel defined this way a \emph{projected kernel}.
+\end{proposition}
+
+To construct these kernels we require scalar-valued kernels on manifolds to use as a basic building block.
+These are studied in the general Riemannian setting by \textcite{lindgren11} and \textcite{Borovitskiy2020}: relying on these kernels is the only reason we require the Riemannian structure.
+It is also possible to obtain such kernels using embeddings, following \textcite{lin2019extrinsic}.
+Similar techniques to those we consider are used by \textcite{freeden2008spherical} to construct vector-valued zonal kernels on the sphere: in contrast, we work with arbitrary manifolds.
+The projection kernel idea is a very general way to build kernels for vector fields by combining scalar kernels, but effective scalar kernels, naturally, rely on Riemannian structure.
+\footnote{The structure of a smooth manifold is not rigid enough to define natural kernels.
+	For instance, the smooth structure of the sphere is indistinguishable from the smooth structure of an ellipsoid or even of the dragon manifold from~\textcite{Borovitskiy2020}, but their Riemannian structures differ considerably.
+}
+\Cref{fig:example_samples} shows random samples from Gaussian processes constructed with the described kernels.
+
+The projected kernel construction both makes it easy to define cross-covariance kernels on general manifolds, and describes a straightforward way to implement them numerically by representing the embedded manifold in coordinates and calculating the resulting matrix-vector expressions.
+The constructed kernel depends on the embedding, but can be transformed appropriately if switching to a different embedding.
+Embeddings, in turn, are available for most manifolds of practical interest, and are obtained automatically for manifolds approximated numerically as meshes.
+Everything described is constructive and fully compatible with the modern automatic-differentiation-based machine learning toolkit, and most operations for constructing and/or sampling from specialized priors \cite{vanderwilk20,lange2018algorithmic, lange2021linearly}, including on spaces such as the sphere where specific analytic tools are available \cite{creasey2018fast, dutordoir2020sparse, emery2019simulating, emery2019turning}.
+With these kernels in hand, we thus proceed to study training methods.
+
+\begin{figure}
+	\begin{tikzpicture}
+		\node at (-3.5,0) {};
+		\node[anchor=south] at (0,0) {\includegraphics[scale=0.25]{images/kernels_on_manifolds/extra/torus.pdf}};
+		\node[anchor=south] at (6,0) {\includegraphics[scale=0.25]{images/kernels_on_manifolds/extra/klein_bottle.pdf}};
+	\end{tikzpicture}
+	\caption{Random samples from Gaussian processes with gauge independent projected kernels, on the torus and Klein bottle, respectively.
+		The latter is a non-orientable manifold: the ability to handle such cases highlights the generality of projected kernels.
+	}
+	\label{fig:example_samples}
+\end{figure}
+\subsection{Gauge Independent Variational Approximations}
+
+We now discuss variational inference for training GPs in the Riemannian vector field setting.
+Approximations, such as the inducing-point framework by \textcite{Titsias2009} and \textcite{hensman13}, approximate the posterior GP with another GP, termed the \emphmarginnote{variational approximation}.
+The latter is typically constructed by specifying a multivariate Gaussian at a set of test locations with a parameterized mean and kernel matrix.
+For example, \textcite{opper2009variational} consider $\f{N}(\m{m}, \m{S})$, where \begin{align} \label{eqn:opper_variational} \m{m} & = \m{K}_{(\.)
+              \v{z}}(\m{K}_{\v{z}\v{z}} + \m\Sigma)^{-1} \v\mu
+              \\
+              \m{S}                               & =  \m{K}_{(\.,\.)} - \m{K}_{(\.)\v{z}}(\m{K}_{\v{z}\v{z}} + \m\Sigma)^{-1} \m{K}_{\v{z}\v{z}} (\m{K}_{\v{z}\v{z}} + \m\Sigma)^{-1} \m{K}_{\v{z}(\.)}.
+\end{align}
+
+The variational parameters include a set of inducing locations $\v{z}$, a mean vector $\v\mu$, and a block-diagonal cross-covariance matrix $\m\Sigma$.
+Training proceeds by optimizing these parameters to minimize the Kullback--Leibler divergence of the variational distribution from the true posterior, typically using mini-batch stochastic gradient descent.
+
+In the last decade, a wide and diverse range of inducing point approximations suited for many different settings have been proposed \cite{Titsias2009,opper2009variational,lazaro2009inter,vanderwilk20,wu2021hierarchical}.
+The vast majority of them employ coordinate-dependent matrix-vector expressions.
+This raises the question, which of these constructions can be adapted to define valid variational approximations in the vector field setting?
+
+To proceed, one can choose a frame and formulate a given variational approximation using matrices defined with respect to this frame.
+To ensure well-definedness, one must ensure that all these matrices, such as the kernel matrix and the variational parameter $\m\Sigma$ in \eqref{eqn:opper_variational}, are gauge independent.
+These considerations can be simplified adopting the pathwise view of GPs, and examining the random variables directly.
+For example, the variational approximation of \textcite{opper2009variational} shown previously in \eqref{eqn:opper_variational} can be reinterpreted pathwise as the GP \begin{align} (f\given y)(\.)
+	       & \approx f(\.) + \m{K}_{(\.)\v{z}}(\m{K}_{\v{z}\v{z}} + \m\Sigma)^{-1} (\v\mu - f(\v{z}) - \v\eps)
+	       &
+	\v\eps & \~[N](\v{0},\m\Sigma)
+\end{align}
+where we view the matrices $\m{K}_{(\.)\v{z}}, \m{K}_{\v{z}\v{z}}, \m\Sigma$ as \emph{linear operators} between direct sums of tangent spaces: $\m{K}_{(\.)\v{z}} : T_{z_1}
+	X \oplus \ldots \oplus T_{z_m}X \-> T_{(\.)
+		}
+	X$ and $\m{K}_{\v{z}\v{z}}, \m\Sigma : T_{z_1}X \oplus \ldots \oplus T_{z_m}X \-> T_{z_1}X \oplus \ldots \oplus T_{z_m}X$.
+By virtue of being defined at the level of vector fields using components that are all intrinsically valid, the posterior covariance of the resulting variational approximation is \emph{automatically} gauge independent.
+Hence, checking gauge independence is then equivalent to deducing the domains and ranges of these operators from their coordinate representations, and checking if they are compatible.
+This applies to any variational family that can be constructed in the given manner.
+
+The vast majority of inducing point constructions can be interpreted in this manner and thus extend readily to the Riemannian vector field setting by simply representing the necessary matrices in a chosen frame.
+In particular, the classical approach of \textcite{Titsias2009} is gauge independent.
+
+\section{Illustrated Examples}
+\label{sec:examples}
+
+Here, we showcase a number of examples that illustrate potential use cases of the models developed.
+
+\subsection{Dynamical Systems Modeling}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{images/kernels_on_manifolds/dynamics/dynamics.pdf}
+	\caption{Upper left: pendulum with friction state space.
+		Lower left: Two rollouts used to train the GP.
+		Upper middle: State space plot of rollouts from a standard Euclidean GP condtioned on the training data.
+		Upper right: temporal plot of rollouts from a standard Euclidean vector GP.
+		Solid line is the true rollout, dashed line and shade is the mean and $\pm$ 1 std of the GP rollouts.
+		Lower middle and right: same for a geometric manifold vector field kernel on $\mathbb{S}^1\x\R$.
+	}
+	\label{fig:dynamics}
+\end{figure}
+
+Here, we show how Gaussian vector fields can be used to learn the equations of motion of a physical system---an important task in imitation learning, model-based reinforcement learning, and robotics.
+GPs are an attractive model class in this area owing to their ability to represent and propagate uncertainty, which enables them to separate what is known about an environment from what is not, thereby driving data-efficient exploration.
+
+For a prototype physical system, we consider an ideal pendulum, whose configuration space is the circle $\bb{S}^1$, representing the angle of the pendulum, with zero being at the bottom of the loop, and whose position-momentum state-space is the cylinder $\bb{S}^1\x \R$.
+We consider conservative dynamics with additional friction applied at the pivot.
+Since this system is non-conservative, we cannot just learn the Hamiltonian of the system, but must learn the vector field over the state space that defines the dynamics of the system.
+The true dynamics of the system are given by the differential equations \begin{align} \c{H} & = \frac{p^2}{2ml^2} + mgl(1 - \cos(q)) & \od{q}{t} & = \pd{\c{H}}{p} & \od{p}{t} & = -\pd{\c{H}}{q} - \frac{b}{m} p, \end{align} where $\c{H}$ is the Hamiltonian of the system defining the conservative part of the dynamics, $q$ and $p$ are the position and momentum of the pendulum, $m$ is the mass, $l$ is the length, $g$ is the gravitational field strength and $b$ is a friction parameter.
+Experimental details can be found in Appendix \ref{apdx:experiments}.
+
+To learn this model, we initialise the system at two start points, and evolve the system using leapfrog integration.
+From these observations of position, we backward Euler integrate the momentum of the system, and from these position-momentum trajectories we estimate observations of the dynamics field.
+Using these observations, we condition a sparse GP.
+The result is an estimate of the system dynamics with suitable uncertainty estimates.
+In order to compute rollouts of these dynamics, we use pathwise sampling of this sparse GP \cite{wilson2020pathwise,wilson2021pathwise} for speed together with leapfrog integration.
+
+Results can be seen in Figure \ref{fig:dynamics}.
+While the Euclidean GP performs reasonably well at the start of the rollouts, once the trajectory crosses the discontinuity caused by looping the angle back around to zero, the system starts to make incoherent predictions: this is due to the discontinuity arising from wrap-around condition of the angle.
+The manifold vector-valued GP does not have this issue as the learned and sampled dynamics fields are continuous throughout the state-space.
+
+\subsection{Weather Modeling}\label{sec:weather-modeling}
+
+\begin{figure}
+	\begin{tikzpicture}
+		\node at (0,0) {\includegraphics[scale=0.25]{images/kernels_on_manifolds/climate/s2_sphere.pdf}};
+		\node at (6.5,0.12) {\includegraphics[scale=0.25]{images/kernels_on_manifolds/climate/s2_flat.pdf}};
+		\node at (0,4.5) {\includegraphics[scale=0.25]{images/kernels_on_manifolds/climate/r2_sphere.pdf}};
+		\node at (6.5,4.62) {\includegraphics[scale=0.25]{images/kernels_on_manifolds/climate/r2_flat.pdf}};
+	\end{tikzpicture}
+	\caption{Top row: Euclidean GP trained on wind measurements along the chosen Aeolus satellite trajectory, viewed as deviation from normal with respect to the historical average vector field.
+		White arrows are the satellite measurements, black arrows and ellipsoids are the posterior mean and cross-covariance of the vector field, colors indicate the posterior standard deviation norm, and the solid red line indicates the latitudinal boundary when the sphere is projected onto the plane using the lat/lon projection.
+		Bottom row: Same as above except using a manifold kernel on $\mathbb{S}^2$.
+	}
+	\label{fig:aeolus}
+\end{figure}
+
+In this experiment, we show how vector-valued GPs on manifolds can be used in the context of meteorology, where geometric information often plays an important role in accurately modeling global weather fields \cite{weyn2020improving, scher2020spherical, llorens2020}.
+\emph{Data assimilation} in numerical weather forecasting refers to the practice of using observed data to update predictions of the atmosphere closer to the truth.
+Uncertainty plays a critical role here: it is not usually possible to observe the weather at all locations on the globe simultaneously, and taking into account observation uncertainty is crucial in numerical weather forecasting during the data assimilation step \cite{law2015data, reich2015probabilistic}.
+In this section, we explore Gaussian processes as a tool for carrying out global interpolation of wind fields, while simultaneously performing uncertainty quantification, mirroring \emph{optimal interpolation} techniques in data assimilation \cite{kalnay2003atmospheric}.
+
+We consider a simplified setting, where the goal is to interpolate the wind velocity observed by the Aeolus satellite \cite{reitebuch2012spaceborne}, which uses LiDAR sensors to measure wind velocity directly.
+To mimic this setting, we use an hour of the Aeolus satellite track during the period 2019/01/01 09:00-10:00 for the input locations and the wind velocity data (10m above ground) from the ERA5 atmospheric reanalysis data \cite{hersbach2016era5} interpolated at these locations, to simulate measurements taken from the Aeolus satellite.
+We subtract the weekly historical average wind velocity from the observations, before training the GP models, where the historical mean is computed from the hourly wind data ($10$\,m above ground) from the WeatherBench dataset \cite{rasp2020weatherbench}, available from 1979--2018.
+Further details can be found in Appendix \ref{apdx:experiments}.
+We compare the results of a Mat\'ern-3/2 manifold vector-valued GP regression model fitted on the wind anomaly observations along the Aeolus trajectory, with the results from a Euclidean Mat\'ern-3/2 multi-output GP trained on the same data, except projected onto a latitude-longitude map.
+
+Results are shown in Figure \ref{fig:aeolus}, where the benefits of using a manifold vector-valued GP become clear.
+When the satellite crosses the left/right boundary in the lat/lon projection, the outputs from the Euclidean vector-valued GP give rise to a spurious discontinuity in the uncertainty along the solid pink line.
+In addition, predictions become less certain in the Euclidean case as the satellite approaches the poles, which is simply an artifact of the distortion caused by projecting the spherical data onto the plane.
+By construction, the manifold vector-valued GP is able to avoid both of these issues, resulting in a more realistic prediction with much more uniform uncertainty along the satellite trajectory from pole to pole.
+In addition, the predictions from the manifold GP are more certain overall, due to the useful structural bias embedded in the kernel.
+
+\section{Conclusion}
+In this work we propose techniques that generalize Gaussian processes to model vector fields on Riemannian manifolds.
+This is done by first providing a well-defined notion of such processes on manifolds and then introducing an explicit method to construct them in a way that respects the underlying geometry.
+By virtue of satisfying the key condition of gauge independence, our construction is coordinate-free and thus meaningful on manifolds.
+In addition to this, we extend standard Gaussian process training methods, such as variational inference, to this setting, and verify that such methods are also compatible with gauge independence.
+This theoretical work gives practitioners additional tools for stochastic modeling of vector fields on manifolds.
+As such, its societal impact will be mainly determined by the applications that belong to the domain of future work.
+We demonstrate our techniques on a series of examples in modeling dynamical systems and weather science, and show that incorporating geometric structural bias into probabilistic modeling is beneficial in these settings to obtain coherent predictions and uncertainties.

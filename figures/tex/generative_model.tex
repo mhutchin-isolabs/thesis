@@ -1,0 +1,24 @@
+\documentclass[tikz,10pt]{standalone}
+\usepackage[standalone,commands]{../../MJH}
+
+\graphicspath{/home/mhutchin/GoogleDrive/University - Postgraduate/Theses/Final/figures/diagrams/}
+
+% \usepackage{tikz}
+% \usetikzlibrary{positioning}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+% \usepgfplotslibrary{external}
+% \usepgfplotslibrary{groupplots}
+% \usepgfplotslibrary{fillbetween}
+% \usetikzlibrary{fadings}
+
+\begin{document}
+    % \tikzsetnextfilename{generative_model}
+    \begin{tikzpicture}
+        \node (simple) {\includegraphics{../diagrams/simple_distribution.pdf}};
+        % \node (simple) {\input{figures/diagrams/simple_distribution.tex}};
+        \node (complex) at (3,0) {\includegraphics{../diagrams/simple_distribution.pdf}};
+        \draw[-stealth] (simple) -- node [above] {\(f\)} (complex);
+    \end{tikzpicture}
+\end{document}

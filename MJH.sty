@@ -4,6 +4,9 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{MJH}
 
+\newif\ifMJH@standalone
+\DeclareOption{standalone}{\MJH@standalonetrue}
+
 \newif\ifMJH@commands
 \DeclareOption{commands}{\MJH@commandstrue}
 
@@ -52,9 +55,53 @@
 
 \ProcessOptions\relax
 
+\ifMJH@standalone
+	\usepackage[lining,semibold]{libertinus} % a bit lighter than Times--no osf in math
+	\usepackage[T1]{fontenc} % best for Western European languages
+	\usepackage{textcomp} % required to get special symbols
+	\usepackage[varqu,varl]{inconsolata}% a typewriter font must be defined
+	\usepackage[libertine,vvarbb,amsthm]{newtxmath}
+	\usepackage[scr=rsfso]{mathalfa}
+	\usepackage{bm}% load after all math to give access to bold math
+	\usepackage{bbm}
+\fi
 
+\ifMJH@oxfordcolors
 
+	% \usepackage{xcolor}
 
+	% Oxford branding colors
+	\definecolor{oxprimary}{HTML}{002147}
+	\definecolor{oxsecondry}{HTML}{a79d96}
+	\definecolor{oxtertiary}{HTML}{f3f1ee}
+	\definecolor{oxlightprimary}{HTML}{122f53}
+	\definecolor{oxverylightblue}{HTML}{f0f5f8}
+
+	\definecolor{oxblack}{HTML}{000000}
+	\definecolor{oxveryoffblack}{HTML}{333333}
+	\definecolor{oxmidgrey}{HTML}{7a736e}
+	\definecolor{oxdarkgrey}{HTML}{a6a6a6}
+	\definecolor{oxlightgrey}{HTML}{e0ded9}
+	\definecolor{oxvlightgrey}{HTML}{f9f8f5}
+	\definecolor{oxwhite}{HTML}{ffffff}
+
+	\definecolor{tabblue}{HTML}{1f77b4}
+	\definecolor{taborange}{HTML}{ff7f0e}
+	\definecolor{tabgreen}{HTML}{2ca02c}
+	\definecolor{tabred}{HTML}{d62728}
+	\definecolor{tabpurple}{HTML}{9467bd}
+	\definecolor{tabbrown}{HTML}{8c564b}
+	\definecolor{tabpink}{HTML}{e377c2}
+	% \definecolor{tabgrey}{HTML}{7f7f7f7}
+	% \definecolor{tabolive}{HTML}{bcbd22}
+	% \definecolor{tabcyan}{HTML}{17becf}
+
+	\definecolor{brightgrey}{HTML}{f7f7f7}
+
+	% TODO: rename
+	\definecolor{pearDark}{HTML}{2980B9}
+	\definecolor{algcol}{HTML}{7383ab}
+\fi
 
 % code readability macros
 \ifMJH@commands
@@ -62,36 +109,36 @@
 \RequirePackage{csquotes}
 \MakeOuterQuote{"}
 
-\@ifpackageloaded{unicode-math}{}{\RequirePackage{amssymb}}
-\RequirePackage{amsmath}
-\@ifpackageloaded{unicode-math}{}{\RequirePackage[scr]{rsfso}}
+% \@ifpackageloaded{unicode-math}{}{\RequirePackage{amssymb}}
+% \RequirePackage{amsmath}
+% \@ifpackageloaded{unicode-math}{}{\RequirePackage[scr]{rsfso}}
 \RequirePackage{mathtools}
 \RequirePackage{mathcommand}
-\RequirePackage{stmaryrd}
-\SetSymbolFont{stmry}{bold}{U}{stmry}{m}{n}
-\DeclareMathAlphabet\bc{OMS}{cmsy}{b}{n}
+% \RequirePackage{stmaryrd}
+% \SetSymbolFont{stmry}{bold}{U}{stmry}{m}{n}
+% \DeclareMathAlphabet\bc{OMS}{cmsy}{b}{n}
 
-% requires packages bbold and bbold-type1 to avoid bitmap font
+% % requires packages bbold and bbold-type1 to avoid bitmap font
 \DeclareSymbolFont{bbold}{U}{bbold}{m}{n}
 \DeclareSymbolFontAlphabet{\mathbbold}{bbold}
 
 \newcommand{\RegisterPairedDelimiter}[3][1]{
-\ifnum#1=1 \newcommand{#2}[2][-1]{%
-\ifnum##1=-1 #3*{##2}\relax\fi%
-\ifnum##1=0 #3{##2}\relax\fi%
-\ifnum##1=1 #3[\big]{##2}\relax\fi%
-\ifnum##1=2 #3[\Big]{##2}\relax\fi%
-\ifnum##1=3 #3[\bigg]{##2}\relax\fi%
-\ifnum##1=4 #3[\Bigg]{##2}\relax\fi%
-}\fi%
-\ifnum#1=2 \newcommand{#2}[3][-1]{%
-\ifnum##1=-1 #3*{##2}{##3}\relax\fi%
-\ifnum##1=0 #3{##2}{##3}\relax\fi%
-\ifnum##1=1 #3[\big]{##2}{##3}\relax\fi%
-\ifnum##1=2 #3[\Big]{##2}{##3}\relax\fi%
-\ifnum##1=3 #3[\bigg]{##2}{##3}\relax\fi%
-\ifnum##1=4 #3[\Bigg]{##2}{##3}\relax\fi%
-}\fi%
+	\ifnum#1=1 \newcommand{#2}[2][-1]{%
+			\ifnum##1=-1 #3*{##2}\relax\fi%
+			\ifnum##1=0 #3{##2}\relax\fi%
+			\ifnum##1=1 #3[\big]{##2}\relax\fi%
+			\ifnum##1=2 #3[\Big]{##2}\relax\fi%
+			\ifnum##1=3 #3[\bigg]{##2}\relax\fi%
+			\ifnum##1=4 #3[\Bigg]{##2}\relax\fi%
+		}\fi%
+	\ifnum#1=2 \newcommand{#2}[3][-1]{%
+			\ifnum##1=-1 #3*{##2}{##3}\relax\fi%
+			\ifnum##1=0 #3{##2}{##3}\relax\fi%
+			\ifnum##1=1 #3[\big]{##2}{##3}\relax\fi%
+			\ifnum##1=2 #3[\Big]{##2}{##3}\relax\fi%
+			\ifnum##1=3 #3[\bigg]{##2}{##3}\relax\fi%
+			\ifnum##1=4 #3[\Bigg]{##2}{##3}\relax\fi%
+		}\fi%
 }
 
 \DeclarePairedDelimiter{\deldelim}{(}{)}
@@ -139,6 +186,12 @@
 \DeclarePairedDelimiterX{\delvertdelim}[3]{(}{)}{#1\;\delimsize|\;\mathopen{}#2}
 \RegisterPairedDelimiter[2]{\delvert}{\delvertdelim}
 
+\DeclarePairedDelimiterX{\delcolondelim}[3]{(}{)}{#1\;:\;\mathopen{}#2}
+\RegisterPairedDelimiter[2]{\delcolon}{\delcolondelim}
+
+\DeclarePairedDelimiterX{\cbrcolondelim}[3]{\{}{\}}{#1\;:\;\mathopen{}#2}
+\RegisterPairedDelimiter[2]{\cbrcolon}{\cbrcolondelim}
+
 \newcommand{\eval}[1][-1]{\@ifnextchar\bgroup{\expandafter\evalpaired[#1]}{\ifnum#1=-1 |\fi\ifnum#1=0 |\fi\ifnum#1=1 \big|\fi\ifnum#1=2 \Big|\fi\ifnum#1=3 \bigg|\fi\ifnum#1=4 \Bigg|\fi}}
 
 % \newcommand{\email}[1]{\href{mailto:#1}{\UrlFont#1}} % correct email hyperlinking
@@ -148,6 +201,7 @@
 \DeclareMathOperator{\Var}{Var} % variance
 \DeclareMathOperator{\Cov}{Cov} % covariance
 \renewmathcommand{\ae}[1][]{\ifx-#1\mathpunct{\text{-a.e.}}\else\t{a.e.}\fi} % almost everywhere with dash
+\newmathcommand{\as}[1][]{\ifx-#1\mathpunct{\text{-a.s.}}\else\t{a.s.}\fi} % almost everywhere with dash
 \newcommand{\notindep}{\mathrel{\hspace*{0.3ex}\not\hspace*{-0.9ex}\rotatebox[origin=c]{90}{\ensuremath{\models}}}} % not independent
 \newcommand{\indep}{\mathrel{\rotatebox[origin=c]{90}{\ensuremath{\models}}}} % independent
 \newcommand{\given}{\mid} % conditional probability
@@ -166,6 +220,7 @@
 \declaremathcommand{\U}{\bigcup} % sigma notation union
 \renewmathcommand{\^}{\cap} % intersection
 \newcommand{\Int}{\bigcap} % sigma notation intersection
+\newcommand{\disjointU}{\coprod}
 \newcommand{\takeaway}{\setminus} % take away
 \newcommand{\x}{\times} % Cartesian product
 \let\nothing\emptyset
@@ -187,6 +242,11 @@
 \newcommand{\h}[1]{\widehat{#1}} % hat
 \newcommand{\tl}[1]{\widetilde{#1}} % tilde
 
+% Typeset certain set collections
+\newcommand{\topo}[1]{\c{O}_{#1}}
+\newcommand{\sigalg}[1]{\Sigma_{#1}}
+\newcommand{\atlas}[1]{\c{A}_{#1}}
+
 \let\@dash\-
 \newcommandPIE{\@xrightarrow}{\IfEmptyTF{#2#3}{\rightarrow}{\xrightarrow[\GetIndex{#2}]{\GetExponent{#3}}}#1}
 \renewmathcommand{\-}{\@ifnextchar>{\expandafter\@xrightarrow\@gobble}{\@dash}}
@@ -198,6 +258,7 @@
 \newcommand{\lap}{\Delta} % laplacian
 \renewmathcommand{\d}{\mathop{}\!\mathrm{d}} % differental
 \newcommand{\D}{\mathrm{D}} % Jacobian
+\DeclareMathOperator{\dive}{div}
 \newcommand{\od}[3][]{\left.\frac{\d^{#1}{#2}}{\d{#3}^{#1}}\@ifnextchar_{\right|}{\right.}} % fix commath bad display style
 \newcommand{\@pd}[3][]{\frac{\partial^{#1}{#2}}{\partial{#3}^{#1}}} % fix commath bad display style
 \newcommand{\pd}{\@ifnextchar\bgroup{\expandafter\@pd}{\@ifnextchar[{\expandafter\@pd}{\partial}}} % partial derivative with smart multi-index notation
@@ -228,9 +289,10 @@
 
 \DeclareMathOperator{\id}{id} % identity
 \DeclareMathOperator{\im}{im} % image
+% \DeclareMathOperator{\ker}{ker} % kernel
 \DeclareMathOperator{\tr}{tr} % trace
 \DeclareMathOperator{\diag}{diag} % diagonal
-\DeclareMathOperator{\sgn}{sgn} % sign
+\DeclareMathOperator{\sign}{sgn} % sign
 \DeclareMathOperator{\ad}{ad} % adjoint
 \DeclareMathOperator{\Ad}{Ad} % adjoint
 \DeclareMathOperator{\AD}{AD} % adjoint
@@ -243,7 +305,18 @@
 \DeclareMathOperator{\Ob}{Ob} % objects
 \DeclareMathOperator{\vol}{vol} % volume
 \DeclareMathOperator{\supp}{supp} % support
-\DeclareMathOperator{\prob}{prob} % probability
+
+\DeclareMathOperator{\inte}{Int} % interior
+\DeclareMathOperator{\ext}{Ext} % exterior
+\newcommand{\closure}[1]{\overline{#1}} % closure
+\newcommand{\boundary}{\partial}
+\newcommand{\basis}{\c{B}}
+\newcommand{\inclusion}{\iota}
+
+\DeclareMathOperator{\sym}{Sym} % symmetrisation
+\DeclareMathOperator{\alt}{Alt} % alternation
+\newcommand{\iprod}{\mathbin{\lrcorner}}
+
 
 \newcommand{\isom}{\cong} % isomorphic
 \newcommand{\newisom}[2]{\newcommand{#1}{\mathrel{\mathchoice{\underset{\operatorname{#2}}{\cong}}{\cong_{\operatorname{#2}}}{\cong_{\operatorname{#2}}}{\cong_{\operatorname{#2}}}}}}
@@ -263,134 +336,32 @@
 \neweq{\eqdist}{dist}
 \neweq{\eqdef}{def}
 
+\newcommand{\cball}[2]{\bar{\operatorname{B}}(#1,#2)} % epsilon ball
+
+% norms
+\newcommand{\tvnorm}[1]{\norm{#1}_{\mathrm{TV}}}
+\newcommand{\lnorm}[2]{\norm{#1}_{#2}}
+\newcommand{\lonenorm}[1]{\lnorm{#1}{1}}
+\newcommand{\ltwonorm}[1]{\lnorm{#1}{2}}
+\newcommand{\linfnorm}[1]{\lnorm{#1}{\infty}}
+
+
 \newcommand{\manifold}{\c{M}}
 \newcommand{\group}{G}
 \newcommand{\subgroup}{H}
 
+\newcommand{\groupSE}[1][n]{\mathrm{SE}(#1)}
+\newcommand{\groupSO}[1][n]{\mathrm{SO}(#1)}
+\newcommand{\groupE}[1][n]{\mathrm{E}(#1)}
+\newcommand{\groupO}[1][n]{\mathrm{O}(#1)}
+\newcommand{\groupGL}[1][n]{\mathrm{GL}(#1)}
+\newcommand{\groupSPD}[1][n]{\mathbb{S}^{#1}_+}
+% \newcommand{\groupSPD}{\mathbb{S}^n_+}
+
+
+\newcommand{\ito}{{I}t\^o{}}
 
 \fi
-
-
-\ifMJH@fancytheorems
-
-\usepackage[most]{tcolorbox}
-\tcbuselibrary{theorems}
-\tcbuselibrary{breakable}
-\RequirePackage[capitalise]{cleveref}
-
-\def\thmskip{0.8em}
-\def\thmbackground{brightgrey}
-
-\tcbset{
-    theorembox/.style={
-        enhanced,
-        theorem style=plain,
-        fonttitle=\bfseries\upshape,fontupper=\itshape,
-        lower separated=false,
-        colback=\thmbackground,
-        colframe=\thmbackground,
-        colbacktitle=oxvlightgrey,
-        coltitle=black,
-        arc=0mm,
-        label type=theorem,
-        top=0em,
-        bottom=0em,
-        left=0em,
-        right=0em,
-        before skip=\thmskip,
-        after skip=\thmskip,
-    },
-    proofbox/.style={
-        enhanced,
-        breakable,
-        theorem style=plain,
-        fonttitle=\bfseries\upshape,
-        lower separated=false,
-        colback=white,
-        colframe=white,
-        colbacktitle=oxvlightgrey,
-        coltitle=black,
-        arc=0mm,
-        top=0em,
-        bottom=0em,
-        left=0em,
-        right=0em,
-        before skip=\thmskip,
-        after skip=\thmskip,
-        overlay unbroken={
-            \node at (frame.south east) [anchor=south east] {$\square$};
-        },
-        overlay first={},
-        overlay middle={},
-        overlay last={
-            \node at (frame.south east) [anchor=south east] {$\square$};
-        },
-    },
-}
-
-% define a nice tcolorbox theorem env
-\newtcbtheorem[
-    auto counter,
-    number within=section,
-]{theorem}{Theorem}{theorembox, label type=theorem}{thm}
-\crefname{theorem}{theorem}{theorems}
-\Crefname{theorem}{Theorem}{Theorems}
-% \crefformat{tcb@cnt@theorem}{theorem~#2#1#3}
-% \Crefformat{tcb@cnt@theorem}{Theorem~#2#1#3}
-
-% define a nice tcolorbox proposition env
-\newtcbtheorem[
-    use counter from=theorem,
-    number within=section,
-]{proposition}{Proposition}{theorembox, label type=lemma}{prop}
-\crefname{proposition}{proposition}{Propositions}
-\Crefname{proposition}{proposition}{Propositions}
-
-\newtcbtheorem[
-    use counter from=theorem,
-    number within=section,
-]{lemma}{Lemma}{theorembox, label type=lemma}{lemma}
-\crefname{lemma}{lemma}{lemmas}
-\Crefname{lemma}{Lemma}{Lemmas}
-
-% define a nice tcolorbox theorem env
-\newtcbtheorem[
-    use counter from=theorem,
-    number within=section,
-]{definition}{Definition}{theorembox, label type=definition}{def}
-\crefname{definition}{definition}{definitions}
-\Crefname{definition}{Definition}{Definitions}
-
-\newtcbtheorem[
-    use counter from=theorem,
-    number within=section,
-]{result}{Result}{theorembox, label type=result}{res}
-\crefname{result}{result}{results}
-\Crefname{result}{Result}{Results}
-
-\newtcbtheorem[
-    use counter from=theorem,
-    number within=section,
-]{corollary}{Corollary}{theorembox, label type=corollary}{col}
-\crefname{corollary}{corollary}{corollarys}
-\Crefname{corollary}{Corollary}{Corollarys}
-
-\newtcbtheorem[
-    auto counter
-    % use counter from=theorem,
-    % number within=section,
-]{assumption}{Assumption}{theorembox, label type=assumption}{assum}
-\crefname{assumption}{assumption}{assumptions}
-\Crefname{assumption}{Assumption}{Assumptions}
-\crefformat{assumption}{{\textbf{A}}#2#1#3}
-% \crefformat{tcb@cnt@assumption}{\textbf{A}#2#1#3}
-% \Crefformat{tcb@cnt@assumption}{\textbf{A}#2#1#3}
-
-\newtcbtheorem[no counter]{proof}{Proof}{proofbox}{proof}
-
-\fi
-
-
 
 % easy-to-read enumerate
 \ifMJH@enumerate
@@ -400,73 +371,64 @@
 \newcommand{\@onenonmath}{\@ifstar\@onestarred\@onenonstarred}
 \newcommand{\@onestarred}{\begin{itemize}\item} % itemize shorthand
 \newcommand{\@onenonstarred}[1][]{\ifx\\#1\\\begin{enumerate}\item\else\begin{enumerate}[#1]\item\fi} % enumerate with possible iteration choice
-\providecommand{\2}{} % xymatrix workaround
-\renewcommand{\2}{\@ifstar\item\item} % enumerate/itemize shorthand
-\newcommand{\3}{\@ifstar\item\item} % enumerate/itemize shorthand
-\newcommand{\4}{\@ifstar\item\item} % enumerate/itemize shorthand
-\newcommand{\5}{\@ifstar\item\item} % enumerate/itemize shorthand
-\newcommand{\6}{\@ifstar\item\item} % enumerate/itemize shorthand
-\newcommand{\7}{\@ifstar\item\item} % enumerate/itemize shorthand
-\newcommand{\8}{\@ifstar\item\item} % enumerate/itemize shorthand
-\newcommand{\9}{\@ifstar\item\item} % enumerate/itemize shorthand
-\newcommand{\0}{\@ifstar\@zerostarred\@zerononstarred} % close enumerate/itemize
-\newcommand{\@zerostarred}{\end{itemize}} % close itemize
-\newcommand{\@zerononstarred}{\end{enumerate}} % close enumerate
+		\providecommand{\2}{} % xymatrix workaround
+		\renewcommand{\2}{\@ifstar\item\item} % enumerate/itemize shorthand
+		\newcommand{\3}{\@ifstar\item\item} % enumerate/itemize shorthand
+		\newcommand{\4}{\@ifstar\item\item} % enumerate/itemize shorthand
+		\newcommand{\5}{\@ifstar\item\item} % enumerate/itemize shorthand
+		\newcommand{\6}{\@ifstar\item\item} % enumerate/itemize shorthand
+		\newcommand{\7}{\@ifstar\item\item} % enumerate/itemize shorthand
+		\newcommand{\8}{\@ifstar\item\item} % enumerate/itemize shorthand
+		\newcommand{\9}{\@ifstar\item\item} % enumerate/itemize shorthand
+		\newcommand{\0}{\@ifstar\@zerostarred\@zerononstarred} % close enumerate/itemize
+		\newcommand{\@zerostarred}{\end{itemize}} % close itemize
+		\newcommand{\@zerononstarred}{\end{enumerate}} % close enumerate
 
 \fi
 
-
-
-
-
-% citation macros
 \ifMJH@citations
 
-% select citation style
-\ifMJH@citations@authoryear
-\PassOptionsToPackage{bibstyle=trad-abbrv, citestyle=authoryear}{biblatex}
-\else
-\PassOptionsToPackage{bibstyle=trad-abbrv, citestyle=numeric-comp}{biblatex}
+	% select citation style
+	\ifMJH@citations@authoryear
+		\PassOptionsToPackage{bibstyle=trad-abbrv, citestyle=authoryear}{biblatex}
+	\else
+		\PassOptionsToPackage{bibstyle=trad-abbrv, citestyle=numeric-comp}{biblatex}
+	\fi
+
+	% load BibLaTeX
+	\RequirePackage[backref=true, useprefix, uniquename=false, uniquelist=false, defernumbers=true, maxcitenames=2, maxbibnames=99]{biblatex}
+
+	% never decapitalize paper titles
+	\DeclareFieldFormat{titlecase}{#1}
+
+	% print backreferences without parentheses
+	\renewbibmacro*{pageref}{%
+		\iflistundef{pageref}
+		{}
+		{\addperiod\addspace\printtext{%
+				\ifnumgreater{\value{pageref}}{1}
+				{\bibstring{backrefpages}\ppspace}
+				{\bibstring{backrefpage}\ppspace}%
+				\printlist[pageref][-\value{listtotal}]{pageref}}}}
+
+	% change authoryear format
+	\ifMJH@citations@authoryear
+		\renewcommand{\nameyeardelim}{\addcomma\space}
+		\renewcommand{\multicitedelim}{\addsemicolon\space}
+		\DeclareCiteCommand{\cite}[\mkbibparens]{\usebibmacro{prenote}}{\usebibmacro{citeindex}\usebibmacro{cite}}{\multicitedelim}{\usebibmacro{postnote}}
+		\defbibenvironment{bibliography}
+		{\list
+			{}
+			{\setlength{\leftmargin}{\bibhang}%
+				\setlength{\itemindent}{-\leftmargin}%
+				\setlength{\itemsep}{\bibitemsep}%
+				\setlength{\parsep}{\bibparsep}}}
+		{\endlist}
+		{\item}
+		\setlength{\bibparsep}{0.5\baselineskip}
+	\fi
+
 \fi
-
-% load BibLaTeX
-\RequirePackage[backref=true, useprefix, uniquename=false, maxcitenames=2, maxbibnames=99]{biblatex}
-
-% never decapitalize paper titles
-\DeclareFieldFormat{titlecase}{#1}
-
-% print backreferences without parentheses
-\renewbibmacro*{pageref}{%
-  \iflistundef{pageref}
-    {}
-    {\addperiod\addspace\printtext{%
-       \ifnumgreater{\value{pageref}}{1}
-         {\bibstring{backrefpages}\ppspace}
-         {\bibstring{backrefpage}\ppspace}%
-       \printlist[pageref][-\value{listtotal}]{pageref}}}}
-
-% change authoryear format
-\ifMJH@citations@authoryear
-\renewcommand{\nameyeardelim}{\addcomma\space}
-\renewcommand{\multicitedelim}{\addsemicolon\space}
-\DeclareCiteCommand{\cite}[\mkbibparens]{\usebibmacro{prenote}}{\usebibmacro{citeindex}\usebibmacro{cite}}{\multicitedelim}{\usebibmacro{postnote}}
-\defbibenvironment{bibliography}
-  {\list
-     {}
-     {\setlength{\leftmargin}{\bibhang}%
-      \setlength{\itemindent}{-\leftmargin}%
-      \setlength{\itemsep}{\bibitemsep}%
-      \setlength{\parsep}{\bibparsep}}}
-  {\endlist}
-  {\item}
- \setlength{\bibparsep}{0.5\baselineskip}
-\fi
-
-\fi
-
-
-
-
 
 % environment macros
 \ifMJH@environments
@@ -479,483 +441,420 @@
 \fi
 
 \fi
-
-
-
-
-
 % design macros
 \ifMJH@notes
+	% use the defualt theorem envs if not fancy
 
+	%% Attempt at all the right fonts - no bold math numbers??
+	% \RequirePackage[libertinus,vvarbb,amsthm]{newtx}
+	% \usepackage[T1]{fontenc}
+	% \usepackage{textcomp}
+	% \usepackage[varqu,varl]{inconsolata}
+	% \usepackage[scr=rsfso]{mathalfa}
+	% \RequirePackage{bm}
+	% \RequirePackage{bbm}
 
-% margins
-\newlength{\@MJH@margin@inner}
-\ifMJH@notes@afourpaper
-\PassOptionsToPackage{a4paper,top=5.3cm,bottom=5.3cm,marginparsep=0.5cm}{geometry}
-\ifnum\@ptsize=2
-\setlength{\@MJH@margin@inner}{1.3cm}
-\PassOptionsToPackage{outer=6cm,inner=1.3cm,marginparwidth=4.2cm}{geometry}
-\else\ifnum\@ptsize=1
-\setlength{\@MJH@margin@inner}{2cm}
-\PassOptionsToPackage{outer=6.3cm,inner=2cm,marginparwidth=3.8cm}{geometry}
-\else
-\setlength{\@MJH@margin@inner}{2.3cm}
-\PassOptionsToPackage{outer=6.6cm,inner=2.3cm,marginparwidth=3.8cm}{geometry}
-\fi\fi
-\else
-\PassOptionsToPackage{letterpaper,top=1.75in,bottom=1.75in,marginparsep=0.25in}{geometry}
-\ifnum\@ptsize=2
-\setlength{\@MJH@margin@inner}{0.625in}
-\PassOptionsToPackage{outer=2.5in,inner=0.625in,marginparwidth=1.625in}{geometry}
-\else\ifnum\@ptsize=1
-\setlength{\@MJH@margin@inner}{0.75in}
-\PassOptionsToPackage{outer=2.75in,inner=0.75in,marginparwidth=1.75in}{geometry}
-\else
-\setlength{\@MJH@margin@inner}{0.875in}
-\PassOptionsToPackage{outer=2.875in,inner=0.875in,marginparwidth=1.75in}{geometry}
-\fi\fi
-\fi
-\RequirePackage[inner=\@MJH@margin@inner]{geometry}
+	%% From  https://tex.stackexchange.com/questions/507804/bold-math-with-usepackagelibertinenewtxmath
+	%% Seems to do the right thing for fonts
+	\usepackage[lining,semibold]{libertinus} % a bit lighter than Times--no osf in math
+	\usepackage[T1]{fontenc} % best for Western European languages
+	\usepackage{textcomp} % required to get special symbols
+	\usepackage[varqu,varl]{inconsolata}% a typewriter font must be defined
+	\usepackage[libertine,vvarbb,amsthm]{newtxmath}
+	\usepackage[scr=rsfso]{mathalfa}
+	\usepackage{bm}% load after all math to give access to bold math
+	\usepackage{bbm}
 
-% fonts
-\ifMJH@notes@nofonts\let\@MJHsemibold\bfseries\else
-\RequirePackage{lmodern}
+	%% Was trying to make XeLatex work
+	% \usepackage[lining,semibold]{libertinus} % a bit lighter than Times--no osf in math
+	% \usepackage[T1]{fontenc} % best for Western European languages
+	% \usepackage{fontspec}
+	% \usepackage{textcomp} % required to get special symbols
+	% \usepackage[varqu,varl]{inconsolata}% a typewriter font must be defined
+	% \usepackage[libertine,vvarbb,amsthm]{newtxmath}
+	% \usepackage[scr=rsfso]{mathalfa}
+	% \usepackage{bm}% load after all math to give access to bold math
 
+	\RequirePackage{thmtools}
 
-\IfFileExists{mlmodern.sty}{
-    \newcommand{\@MJHsemibold}{\fontfamily{mlmr}\fontencoding{T1}\selectfont}
-}{
-    \ifdef\XeTeXrevision{
-        \RequirePackage{fontspec}
-        \newfontfamily{\@MJHsemibold}{mlmr10.otf}[SmallCapsFont=mlmcsc10.otf]
-        \DeclareMicrotypeAlias{mlmr10.otf}{cmr10}
-        \DeclareMicrotypeAlias{mlmcsc10.otf}{cmcsc10}
-    }{
-        \pdfmapfile{+mlm.map}\newcommand{\@MJHsemibold}{\fontfamily{mlmr}\fontencoding{T1}\selectfont}
-    }
-}
-\fi
+	% \declaretheoremstyle[spaceabove=\baselineskip,spacebelow=\baselineskip,bodyfont=\slshape\renewcommand{\eminnershape}{\scshape},headfont=\@MJHsemibold,headpunct=.,headformat=\NAME\thmt@space\NUMBER]{marginnotethm}
+	\declaretheoremstyle[spaceabove=\parskip,spacebelow=\parskip,bodyfont=\slshape\renewcommand{\eminnershape}{\scshape},headfont=\scshape,headpunct=.,headformat=\NAME\thmt@space\NUMBER]{marginnotethm}
+	\addtotheorempostheadhook{\marginnote{\normalfont\thmt@optarg}}
+	\renewcommand{\qedsymbol}{\ensuremath{\blacksquare}}
 
-% URLs
-\let\UrlFont\scshape
+	\MJH@theoremstrue
 
-% indentation
-\RequirePackage{parskip}
+	% \RequirePackage[sb]{libertinus}
+	% \RequirePackage[T1]{fontenc}
+	% \RequirePackage[vvarb]{newtxmath}
 
-% title format
-\RequirePackage{titling}
-\pretitle{\begin{center}\huge}
-\posttitle{\par\end{center}\vskip 0.5em}
-\renewcommand{\maketitlehooka}{\list{}{\rightmargin\dimexpr-\marginparwidth-\marginparsep\relax\leftmargin\z@}\item[]\@MJHsemibold\scshape}
-\renewcommand{\maketitlehookc}{\ifx\thedate\empty\predate{\@gobble}\postdate{}\fi}
-\renewcommand{\maketitlehookd}{\endlist}
-\date{}
+	% margins
+	\newlength{\@MJH@margin@inner}
+	\ifMJH@notes@afourpaper
+		% \PassOptionsToPackage{a4paper,top=5.3cm,bottom=5.3cm,marginparsep=0.5cm}{geometry}
+		\PassOptionsToPackage{a4paper,top=3.5cm,bottom=3cm,marginparsep=0.5cm}{geometry}
+		% \PassOptionsToPackage{a4paper,marginparsep=0.5cm}{geometry}
+		\ifnum\@ptsize=2
+			\setlength{\@MJH@margin@inner}{1.3cm}
+			\PassOptionsToPackage{outer=6cm,inner=1.3cm,marginparwidth=4.2cm}{geometry}
+		\else\ifnum\@ptsize=1
+				\setlength{\@MJH@margin@inner}{2cm}
+				\PassOptionsToPackage{outer=6.3cm,inner=2cm,marginparwidth=3.8cm}{geometry}
+			\else
+				\setlength{\@MJH@margin@inner}{2.3cm}
+				\PassOptionsToPackage{outer=6.6cm,inner=2.3cm,marginparwidth=3.8cm}{geometry}
+			\fi\fi
+	\else
+		\PassOptionsToPackage{letterpaper,top=1.75in,bottom=1.75in,marginparsep=0.25in}{geometry}
+		\ifnum\@ptsize=2
+			\setlength{\@MJH@margin@inner}{0.625in}
+			\PassOptionsToPackage{outer=2.5in,inner=0.625in,marginparwidth=1.625in}{geometry}
+		\else\ifnum\@ptsize=1
+				\setlength{\@MJH@margin@inner}{0.75in}
+				\PassOptionsToPackage{outer=2.75in,inner=0.75in,marginparwidth=1.75in}{geometry}
+			\else
+				\setlength{\@MJH@margin@inner}{0.875in}
+				\PassOptionsToPackage{outer=2.875in,inner=0.875in,marginparwidth=1.75in}{geometry}
+			\fi\fi
+	\fi
+	\RequirePackage[inner=\@MJH@margin@inner]{geometry}
 
-% abstract format
-\@ifclassloaded{article}{
-\RequirePackage[runin]{abstract}
-\renewcommand{\abstractnamefont}{\scshape\@MJHsemibold}
-\renewcommand{\abstracttextfont}{\noindent}
-\abslabeldelim{.}
-\setlength{\absparindent}{\z@}
-\setlength{\abstitleskip}{-\parindent}
-\setlength{\absleftindent}{1.5\@MJH@margin@inner}
-\setlength{\absrightindent}{\dimexpr1.5\@MJH@margin@inner-\marginparwidth-\marginparsep\relax}
-\newcommand{\keywords}[1]{\par{\scshape Keywords:} #1.}
-}{}
+	\ifMJH@notes@nofonts\let\@MJHsemibold\bfseries\else
+		\newcommand{\@MJHsemibold}{\fontseries{sb}\selectfont}
+	\fi
 
-% section title format
-\RequirePackage[explicit,noindentafter]{titlesec}
-\titleformat{\part}[display]{\@MJHsemibold\scshape\Huge}{\list{}{\rightmargin-0.75in\leftmargin1in}\item[]\centering\thepart\endlist}{1em}{\list{}{\rightmargin-0.75in\leftmargin1in}\item[]\centering#1}[\endlist]
-\titleformat{\chapter}[display]{\@MJHsemibold\scshape\Huge}{Chapter \thechapter}{1em}{\raggedright#1}
-\@ifclassloaded{book}{
-\titleformat{\section}{\@MJHsemibold\scshape\LARGE}{\thesection.}{1em}{\raggedright#1}
-}{
-\titleformat{\section}{\@MJHsemibold\scshape\LARGE}{\thesection}{1em}{\raggedright#1}
-}
-\titleformat{\subsection}[runin]{\bfseries}{\thesubsection.}{1ex}{#1.}
-\titlespacing{\section}{\z@}{*3.5}{*2}
-\titlespacing{\subsection}{\z@}{*3.5}{*1}
+	% URLs
+	\let\UrlFont\scshape
 
-% heading style for book class
-\RequirePackage{titleps}
-\@ifclassloaded{book}{
-\renewpagestyle{headings}{
-\sethead
-[\thepage][\chaptertitle][\ifnum\c@chapter=0\else{Chapter \thechapter}\fi]
-{\ifnum\c@section=0\else{Section \thesection}\fi}{\sectiontitle}{\thepage}
-}
-\renewpagestyle{plain}{
-\sethead[\thepage][][]
-{}{}{\thepage}
-}
-\pagestyle{headings}
-\widenhead*{\z@}{\dimexpr\marginparwidth+\marginparsep\relax}
-}{
-\renewpagestyle{plain}{\setfoot{}{}{\rlap{\hspace*{\dimexpr\marginparwidth+\marginparsep\relax}\llap{\thepage}}}}
-\pagestyle{plain}
-}
+	% indentation
+	\RequirePackage{parskip}
 
-% table of contents
-\RequirePackage{titletoc}
-\@ifclassloaded{book}{
-\titlecontents{part}[1.5em]{\addvspace{5pc}\Large}{\contentslabel{1.5pc}}{\hspace*{-1.5pc}}{\normalsize\titlerule*[1pc]{.}\Large\contentspage}
-\titlecontents{chapter}[1.5em]{\addvspace{1pc}\large}{\contentslabel{1.5pc}}{\hspace*{-1.5pc}}{\normalsize\titlerule*[1pc]{.}\large\contentspage}
-\dottedcontents{section}[3.8em]{}{2.3em}{1pc}
-\dottedcontents{subsection}[7em]{}{3.2em}{1pc}
-}{
-\titlecontents{section}[1.5em]{\addvspace{1em}\large}{\contentslabel{1.5pc}}{\hspace*{-1.5pc}}{\normalsize\titlerule*[1pc]{.}\large\contentspage}
-\dottedcontents{subsection}[3.8em]{}{2.3em}{1pc}
-}
-\@ifpackageloaded{hyperref}{\hypersetup{linktoc=all}}{}
-\renewcommand{\contentsname}{Table of Contents}
+	% title format
+	\RequirePackage{titling}
+	\pretitle{\begin{center}\huge}
+			\posttitle{\par\end{center}\vskip 0.5em}
+	\renewcommand{\maketitlehooka}{\list{}{\rightmargin\dimexpr-\marginparwidth-\marginparsep\relax\leftmargin\z@}\item[]\@MJHsemibold\scshape}
+	\renewcommand{\maketitlehookc}{\ifx\thedate\empty\predate{\@gobble}\postdate{}\fi}
+	\renewcommand{\maketitlehookd}{\endlist}
+	\date{}
 
-% caption format
-\RequirePackage{setspace}
-\RequirePackage[format=plain,labelsep=period,font={stretch=0.85}]{caption}
-\RequirePackage[font=normalsize]{subcaption}
+	% abstract format
+	\@ifclassloaded{article}{
+		\RequirePackage[runin]{abstract}
+		\renewcommand{\abstractnamefont}{\scshape\@MJHsemibold}
+		\renewcommand{\abstracttextfont}{\noindent}
+		\abslabeldelim{.}
+		\setlength{\absparindent}{\z@}
+		\setlength{\abstitleskip}{-\parindent}
+		\setlength{\absleftindent}{1.5\@MJH@margin@inner}
+		\setlength{\absrightindent}{\dimexpr1.5\@MJH@margin@inner-\marginparwidth-\marginparsep\relax}
+		\newcommand{\keywords}[1]{\par{\scshape Keywords:} #1.}
+	}{}
 
-% theorem styles and margin notes
-\RequirePackage{marginnote}
-\newcommand{\emphmarginnote}[1]{\marginnote{\MakeUppercase#1}\emph{#1}}
-\newcommand{\parmarginnote}[1]{\hspace{\z@}\marginnote{#1}\ignorespaces}
-\renewcommand{\raggedrightmarginnote}{\raggedleft}
-\renewcommand{\raggedleftmarginnote}{\raggedright}
+	% package to change case of text
+	\usepackage{textcase}
 
-% \RequirePackage{ifoddpage}
-% \@ifclassloaded{book}{\newcommand{\@MJH@fullwidthfigure@setlength}{\checkoddpage\@ifoddpage{\@MJH@fullwidthfigure@setlength@odd}{\@MJH@fullwidthfigure@setlength@even}}}{\newcommand{\@MJH@fullwidthfigure@setlength}{\@MJH@fullwidthfigure@setlength@odd}}
-% \newcommand{\@MJH@fullwidthfigure@setlength@odd}{\setlength{\leftmargin}{\z@}\setlength{\rightmargin}{\dimexpr-\marginparwidth-\marginparsep\relax}}
-% \newcommand{\@MJH@fullwidthfigure@setlength@even}{\setlength{\leftmargin}{\dimexpr-\marginparwidth-\marginparsep\relax}\setlength{\rightmargin}{\z@}}
-% \renewenvironment{figure*}[1][]{\if\relax\detokenize{#1}\relax\@float{figure}\else\@float{figure}[#1]\fi\list{}{\topsep\z@\listparindent\parindent\parsep\parskip\@MJH@fullwidthfigure@setlength}\item[]\hsize\linewidth\textwidth\linewidth\centering}{\endlist\end@float}
-% \renewenvironment{table*}[1][]{\if\relax\detokenize{#1}\relax\@float{table}\else\@float{table}[#1]\fi\list{}{\topsep\z@\listparindent\parindent\parsep\parskip\@MJH@fullwidthfigure@setlength}\item[]\hsize\linewidth\textwidth\linewidth\centering}{\endlist\end@float}\relax}\setlength{\rightmargin}{\z@}\fi}\item[]\hsize\linewidth\textwidth\linewidth\centering}{\endlist\end@float}
+	% section title format
+	\RequirePackage[explicit,noindentafter]{titlesec}
+	% \titleformat{\part}[display]{\@MJHsemibold\scshape\Huge}{\list{}{\rightmargin-0.75in\leftmargin1in}\item[]\centering\thepart\endlist}{1em}{\list{}{\rightmargin-0.75in\leftmargin1in}\item[]\centering#1}[\endlist]
+	\titleformat{\part}[display]{\scshape\Huge}{\list{}{\rightmargin-0.75in\leftmargin1in}\item[]\centering\thepart\endlist}{1em}{\list{}{\rightmargin-0.75in\leftmargin1in}\item[]\centering#1}[\endlist]
+	% \titleformat{\chapter}[display]{\@MJHsemibold\scshape\Huge}{Chapter \thechapter}{1em}{\raggedright#1}
+	\titleformat{\chapter}[block]{\scshape\Huge}{\thechapter\hspace{0.5em}|}{0.5em}{\raggedright#1}
+	\@ifclassloaded{book}{
+		% \titleformat{\section}{\@MJHsemibold\scshape\LARGE}{\thesection.}{1em}{\raggedright#1}	
+		\titleformat{\section}{\scshape\LARGE}{\thesection.}{1em}{\raggedright#1}
+	}{
+		% \titleformat{\section}{\@MJHsemibold\scshape\LARGE}{\thesection}{1em}{\raggedright#1}	
+		\titleformat{\section}{\@MJHsemibold\scshape\LARGE}{\thesection}{1em}{\raggedright#1}
+	}
+	% \titleformat{\subsection}[runin]{\bfseries}{\thesubsection.}{1ex}{#1.}
+	\titleformat{\subsection}[runin]{\@MJHsemibold}{\thesubsection.}{1ex}{#1.}
+	\titlespacing{\section}{\z@}{*3.5}{*2}
+	\titlespacing{\subsection}{\z@}{*3.5}{*1}
 
-% place figures at the top by default
-\def\fps@figure{t}
-\def\fps@table{t}
+	% heading style for book class
+	\RequirePackage{titleps}
+	\@ifclassloaded{book}{
+		\renewpagestyle{headings}{
+			\sethead
+			[\thepage][][\ifnum\c@chapter=0\else\scshape \MakeTextLowercase{\thechapter~~\chaptertitle}\fi]
+			{\ifnum\c@section=0\else\scshape \MakeTextLowercase{\thesection~~\sectiontitle}\fi}{}{\thepage}
+		}
+		% \renewpagestyle{headings}{
+		% 	\sethead
+		% 	[\thepage][\chaptertitle][\ifnum\c@thechapter=0\else{Chapter \thechapter}\fi]
+		% 	{\ifnum\c@section=0\else{Section \thesection}\fi}{\sectiontitle}{\thepage}
+		% }
+		\renewpagestyle{plain}{
+			\sethead[\thepage][][]
+			{}{}{\thepage}
+		}
+		\pagestyle{headings}
+		\widenhead*{\z@}{\dimexpr\marginparwidth+\marginparsep\relax}
+	}{
+		\renewpagestyle{plain}{\setfoot{}{}{\rlap{\hspace*{\dimexpr\marginparwidth+\marginparsep\relax}\llap{\thepage}}}}
+		\pagestyle{plain}
+	}
 
-% center tables and figures
-\MJH@centerfigurestrue
+	% table of contents
+	\RequirePackage{titletoc}
+	\@ifclassloaded{book}{
+		% \titlecontents{part}[1.5em]{\addvspace{5pc}\Large}{\contentslabel{1.5pc}}{\hspace*{-1.5pc}}{\normalsize\titlerule*[1pc]{.}\Large\contentspage}
+		% \titlecontents{chapter}[1.5em]{\addvspace{1pc}\large}{\contentslabel{1.5pc}}{\hspace*{-1.5pc}}{\normalsize\titlerule*[1pc]{.}\large\contentspage}
+		% \dottedcontents{section}[3.8em]{}{2.3em}{1pc}
+		% \dottedcontents{subsection}[7em]{}{3.2em}{1pc}
+		\titlecontents{part}[1.5em]{\addvspace{2pc}\Large}{\contentslabel{1.5pc}}{\hspace*{-1.5pc}}{\normalsize\titlerule*[1pc]{.}\Large\contentspage}
+		\titlecontents{chapter}[1.5em]{\addvspace{0pc}\large}{\contentslabel{1.5pc}}{\hspace*{-1.5pc}}{\normalsize\titlerule*[1pc]{.}\large\contentspage}
+		\dottedcontents{section}[3.8em]{}{2.3em}{1pc}
+		\dottedcontents{subsection}[7em]{}{3.2em}{1pc}
+	}{
+		\titlecontents{section}[1.5em]{\addvspace{1em}\large}{\contentslabel{1.5pc}}{\hspace*{-1.5pc}}{\normalsize\titlerule*[1pc]{.}\large\contentspage}
+		\dottedcontents{subsection}[3.8em]{}{2.3em}{1pc}
+	}
+	\@ifpackageloaded{hyperref}{\hypersetup{linktoc=all}}{}
+	\renewcommand{\contentsname}{Table of Contents}
 
-% use the defualt theorem envs if not fancy
-\ifMJH@fancytheorems
-\else
-    \RequirePackage{amsthm}
-    \RequirePackage{thmtools}
-    
-    \declaretheoremstyle[spaceabove=\baselineskip,spacebelow=\baselineskip,bodyfont=\slshape\renewcommand{\eminnershape}{\scshape},headfont=\@MJHsemibold,headpunct=.,headformat=\NAME\thmt@space\NUMBER]{marginnotethm}
-    \addtotheorempostheadhook{\marginnote{\normalfont\thmt@optarg}}
-    \renewcommand{\qedsymbol}{\ensuremath{\blacksquare}}
+	% caption format
+	\RequirePackage{setspace}
+	\RequirePackage[format=plain,labelsep=period,font={stretch=0.85}]{caption}
+	\RequirePackage[font=normalsize]{subcaption}
 
-    \MJH@theoremstrue
-\fi
+	% theorem styles and margin notes
+	\RequirePackage{marginnote}
+	\newcommand{\emphmarginnote}[2][0em]{\marginnote{\MakeUppercase#2}[#1]\emph{#2}}
+	\newcommand{\parmarginnote}[1]{\hspace{\z@}\marginnote{#1}\ignorespaces}
+	\renewcommand{\raggedrightmarginnote}{\raggedleft}
+	\renewcommand{\raggedleftmarginnote}{\raggedright}
 
+	% full width starred figures and tables
+	\RequirePackage{ifoddpage}
+	\@ifclassloaded{book}{\newcommand{\@MJH@fullwidthfigure@setlength}{\checkoddpage\@ifoddpage{\@MJH@fullwidthfigure@setlength@odd}{\@MJH@fullwidthfigure@setlength@even}}}{\newcommand{\@MJH@fullwidthfigure@setlength}{\@MJH@fullwidthfigure@setlength@odd}}
+	\newcommand{\@MJH@fullwidthfigure@setlength@odd}{\setlength{\leftmargin}{\z@}\setlength{\rightmargin}{\dimexpr-\marginparwidth-\marginparsep\relax}}
+	\newcommand{\@MJH@fullwidthfigure@setlength@even}{\setlength{\leftmargin}{\dimexpr-\marginparwidth-\marginparsep\relax}\setlength{\rightmargin}{\z@}}
+	\renewenvironment{figure*}[1][]{\if\relax\detokenize{#1}\relax\@float{figure}\else\@float{figure}[#1]\fi\list{}{\topsep\z@\listparindent\parindent\parsep\parskip\@MJH@fullwidthfigure@setlength}\item[]\hsize\linewidth\textwidth\linewidth\centering}{\endlist\end@float}
+	\renewenvironment{table*}[1][]{\if\relax\detokenize{#1}\relax\@float{table}\else\@float{table}[#1]\fi\list{}{\topsep\z@\listparindent\parindent\parsep\parskip\@MJH@fullwidthfigure@setlength}\item[]\hsize\linewidth\textwidth\linewidth\centering}{\endlist\end@float}
+	\newenvironment{algorithm*}[1][]{\if\relax\detokenize{#1}\relax\@float{algorithm}\else\@float{algorithm}[#1]\fi\list{}{\topsep\z@\listparindent\parindent\parsep\parskip\@MJH@fullwidthfigure@setlength}\item[]\hsize\linewidth\textwidth\linewidth\centering}{\endlist\end@float}
+
+	% place figures at the top by default
+	\def\fps@figure{t}
+	\def\fps@table{t}
+
+	% center tables and figures
+	\MJH@centerfigurestrue
+
+	% cleveref
+	\RequirePackage{cleveref}
 \fi
 
 % center tables and figures
 \ifMJH@centerfigures
 
-\g@addto@macro\@floatboxreset{\centering}
-\providecommand\@subfloatboxreset{}
-\g@addto@macro\@subfloatboxreset{\centering}
+	\g@addto@macro\@floatboxreset{\centering}
+	\providecommand\@subfloatboxreset{}
+	\g@addto@macro\@subfloatboxreset{\centering}
 
 \fi
-
-
-
-
 
 % theorem styles
 \ifMJH@theorems
-\usepackage{cleveref}
-\usepackage{thmtools}
-\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi]{theorem}
-\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{algorithm}
-\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{assumption}
-\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{axiom}
-\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{conjecture}
-\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{corollary}
-\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{counterexample}
-\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{definition}
-\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{example}
-\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{exercise}
-\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{lemma}
-\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{proposition}
-\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{remark}
-\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{result}
+	\RequirePackage{amsthm}
+	\RequirePackage{thmtools}
+
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi, numberwithin=chapter]{theorem}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{algorithm}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{assumption}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{axiom}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{conjecture}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{corollary}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{counterexample}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{definition}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{example}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{exercise}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{lemma}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{proposition}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{remark}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{result}
+
+	\crefname{assumption}{assumption}{assumptions}
+	\Crefname{assumption}{Assumption}{Assumptions}
 
 \fi
-
 
 % poster styles
 \ifMJH@poster
 
-\usepackage[a3paper,portrait]{geometry}
-\usepackage[poster, most]{tcolorbox}
+	\usepackage[a3paper,portrait]{geometry}
+	\usepackage[poster, most]{tcolorbox}
 
-\tcbposterset{coverage=spread}
-\tcbposterset{fontsize=10pt}
-\tcbposterset{boxes = {
-    colbacktitle = oxprimary,
-    colframe = white,
-    colback=cusomtvlightblue,
-    arc=0mm,
-    fonttitle=\large
-}}
+	\tcbposterset{coverage=spread}
+	\tcbposterset{fontsize=10pt}
+	\tcbposterset{boxes = {
+				colbacktitle = oxprimary,
+				colframe = white,
+				colback=cusomtvlightblue,
+				arc=0mm,
+				fonttitle=\large
+			}}
 
-\pagestyle{empty}
+	\pagestyle{empty}
 
-% Non-ox color for panel background
-\definecolor{cusomtvlightblue}{HTML}{f7fafb}
+	% Non-ox color for panel background
+	\definecolor{cusomtvlightblue}{HTML}{f7fafb}
 
-\tcbuselibrary{theorems}
-% define a nice tcolorbox proposition env
-\newtcbtheorem[auto counter]{proposition}{Proposition}{
-    lower separated=false,
-    colback=oxverylightblue,
-    colframe=oxlightgrey,
-    colbacktitle=oxvlightgrey,
-    coltitle=black,
-    arc=0mm,
-    enhanced,
-    boxed title style={colframe=oxlightgrey},
-    attach boxed title to top left={xshift=0.3cm,yshift=-2mm},
-}{def}
+	\tcbuselibrary{theorems}
+	% define a nice tcolorbox proposition env
+	\newtcbtheorem[auto counter]{proposition}{Proposition}{
+		lower separated=false,
+		colback=oxverylightblue,
+		colframe=oxlightgrey,
+		colbacktitle=oxvlightgrey,
+		coltitle=black,
+		arc=0mm,
+		enhanced,
+		boxed title style={colframe=oxlightgrey},
+		attach boxed title to top left={xshift=0.3cm,yshift=-2mm},
+	}{def}
 
-% define a nice tcolorbox theorem env
-\newtcbtheorem[auto counter]{theorem}{Theorem}{
-    lower separated=false,
-    colback=oxverylightblue,
-    colframe=oxlightgrey,
-    colbacktitle=oxvlightgrey,
-    coltitle=black,
-    arc=0mm,
-    enhanced,
-    boxed title style={colframe=oxlightgrey},
-    attach boxed title to top left={xshift=0.3cm,yshift=-2mm},
-}{def}
+	% define a nice tcolorbox theorem env
+	\newtcbtheorem[auto counter]{theorem}{Theorem}{
+		lower separated=false,
+		colback=oxverylightblue,
+		colframe=oxlightgrey,
+		colbacktitle=oxvlightgrey,
+		coltitle=black,
+		arc=0mm,
+		enhanced,
+		boxed title style={colframe=oxlightgrey},
+		attach boxed title to top left={xshift=0.3cm,yshift=-2mm},
+	}{def}
 
-% Set the title, authors and affiliations. see line 96 for how use.
-\renewcommand{\title}[1]{\newcommand{\thetitle}{#1}}
-\renewcommand{\author}[1]{\newcommand{\theauthor}{#1}}
-% \newcommand{\subtitle}[1]{\newcommand{\thesubtitle}{#1}}
-\newcommand{\affiliations}[1]{\newcommand{\theaffiliations}{#1}}
-\newcommand{\lefttitlegraphic}[1]{\newcommand{\thelefttitlegraphic}{#1}}
-\newcommand{\righttitlegraphic}[1]{\newcommand{\therighttitlegraphic}{#1}}
-\def\therowspan {1}
-\newcommand{\rowspan}[1]{\def\therowspan{#1}}
+	% Set the title, authors and affiliations. see line 96 for how use.
+	\renewcommand{\title}[1]{\newcommand{\thetitle}{#1}}
+	\renewcommand{\author}[1]{\newcommand{\theauthor}{#1}}
+	% \newcommand{\subtitle}[1]{\newcommand{\thesubtitle}{#1}}
+	\newcommand{\affiliations}[1]{\newcommand{\theaffiliations}{#1}}
+	\newcommand{\lefttitlegraphic}[1]{\newcommand{\thelefttitlegraphic}{#1}}
+	\newcommand{\righttitlegraphic}[1]{\newcommand{\therighttitlegraphic}{#1}}
+	\def\therowspan {1}
+	\newcommand{\rowspan}[1]{\def\therowspan{#1}}
 
-\makeatletter
-\def\maketitle{
-\posterbox[blankest, interior engine=path, height=3cm, halign=center, valign=center, fontupper=\large, colback=oxprimary,  colupper=white, underlay={
-\@ifundefined{thelefttitlegraphic}{}{\node[right,inner sep=0pt,outer sep=0pt] at (frame.west) {\thelefttitlegraphic};}
-\@ifundefined{thelefttitlegraphic}{}{\node[left,inner sep=0pt,outer sep=0pt] at (frame.east) {\therighttitlegraphic};}
-}]{name=title,column=1,span=12,rowspan=\therowspan,below=top}{
-\resizebox{18cm}{!}{\textsf\huge\thetitle}\\[3mm]
-\theauthor \\ [1mm] \small \theaffiliations
-}}
-\makeatother
-
-%\MJH@oxfordcolorstrue
-
+	\makeatletter
+	\def\maketitle{
+	\posterbox[blankest, interior engine=path, height=3cm, halign=center, valign=center, fontupper=\large, colback=oxprimary,  colupper=white, underlay={
+			\@ifundefined{thelefttitlegraphic}{}{\node[right,inner sep=0pt,outer sep=0pt] at (frame.west) {\thelefttitlegraphic};}
+			\@ifundefined{thelefttitlegraphic}{}{\node[left,inner sep=0pt,outer sep=0pt] at (frame.east) {\therighttitlegraphic};}
+		}]{name=title,column=1,span=12,rowspan=\therowspan,below=top}{
+	\resizebox{18cm}{!}{\textsf\huge\thetitle}\\[3mm]
+	\theauthor \\ [1mm] \small \theaffiliations
+	}}
+	\makeatother
 \fi
-
-\ifMJH@oxfordcolors
-
-\usepackage{xcolor}
-
-% Oxford branding colors
-\definecolor{oxprimary}{HTML}{002147}
-\definecolor{oxsecondry}{HTML}{a79d96}
-\definecolor{oxtertiary}{HTML}{f3f1ee}
-\definecolor{oxlightprimary}{HTML}{122f53}
-\definecolor{oxverylightblue}{HTML}{f0f5f8}
-
-\definecolor{oxblack}{HTML}{000000}
-\definecolor{oxveryoffblack}{HTML}{333333}
-\definecolor{oxmidgrey}{HTML}{7a736e}
-\definecolor{oxdarkgrey}{HTML}{a6a6a6}
-\definecolor{oxlightgrey}{HTML}{e0ded9}
-\definecolor{oxvlightgrey}{HTML}{f9f8f5}
-\definecolor{oxwhite}{HTML}{ffffff}
-
-\definecolor{tabblue}{HTML}{1f77b4}
-\definecolor{taborange}{HTML}{ff7f0e}
-\definecolor{tabgreen}{HTML}{2ca02c}
-\definecolor{tabred}{HTML}{d62728}
-\definecolor{tabpurple}{HTML}{9467bd}
-\definecolor{tabbrown}{HTML}{8c564b}
-\definecolor{tabpink}{HTML}{e377c2}
-% \definecolor{tabgrey}{HTML}{7f7f7f7}
-% \definecolor{tabolive}{HTML}{bcbd22}
-% \definecolor{tabcyan}{HTML}{17becf}
-
-\definecolor{brightgrey}{HTML}{f7f7f7}
-
-
-\fi
-
 
 \ifMJH@presentation
+	\RequirePackage[sb]{libertinus}
+	\RequirePackage[libertinus, vvarb]{newtxmath}
 
-% \usefonttheme{professionalfonts} % using non standard fonts for beamer
-% \usefonttheme{serif} % default family is serif
-% \setmainfont{mlmr}
-\RequirePackage{lmodern}
+	\definecolor{darkred}{rgb}{0.8,0,0}
 
+	\setbeamercolor{section in toc}{fg=black,bg=oxprimary}
+	\setbeamercolor{alerted text}{fg=darkred!80!gray}
+	\setbeamercolor*{palette primary}{fg=black,bg=oxprimary}
+	\setbeamercolor*{palette secondary}{fg=black,bg=oxsecondry}
+	\setbeamercolor*{palette tertiary}{fg=black,bg=oxtertiary}
+	\setbeamercolor*{palette quaternary}{fg=black,bg=oxprimary}
 
-\definecolor{darkred}{rgb}{0.8,0,0}
+	\setbeamercolor*{sidebar}{fg=oxprimary,bg=oxprimary}
 
-\setbeamercolor{section in toc}{fg=black,bg=oxprimary}
-\setbeamercolor{alerted text}{fg=darkred!80!gray}
-\setbeamercolor*{palette primary}{fg=black,bg=oxprimary}
-\setbeamercolor*{palette secondary}{fg=black,bg=oxsecondry}
-\setbeamercolor*{palette tertiary}{fg=black,bg=oxtertiary}
-\setbeamercolor*{palette quaternary}{fg=black,bg=oxprimary}
+	\setbeamercolor*{palette sidebar primary}{fg=doxprimary}
+	\setbeamercolor*{palette sidebar secondary}{fg=oxsecondry}
+	\setbeamercolor*{palette sidebar tertiary}{fg=oxtertiary}
+	\setbeamercolor*{palette sidebar quaternary}{fg=oxprimary}
 
-\setbeamercolor*{sidebar}{fg=oxprimary,bg=oxprimary}
+	%\setbeamercolor*{titlelike}{parent=palette primary}
+	\setbeamercolor{titlelike}{parent=palette primary,fg=oxprimary}
+	\setbeamercolor{frametitle}{bg=oxprimary}
+	\setbeamercolor{frametitle right}{bg=oxprimary}
 
-\setbeamercolor*{palette sidebar primary}{fg=doxprimary}
-\setbeamercolor*{palette sidebar secondary}{fg=oxsecondry}
-\setbeamercolor*{palette sidebar tertiary}{fg=oxtertiary}
-\setbeamercolor*{palette sidebar quaternary}{fg=oxprimary}
+	\setbeamercolor{background canvas}{bg=white}
 
-%\setbeamercolor*{titlelike}{parent=palette primary}
-\setbeamercolor{titlelike}{parent=palette primary,fg=oxprimary}
-\setbeamercolor{frametitle}{bg=oxprimary}
-\setbeamercolor{frametitle right}{bg=oxprimary}
+	\setbeamercolor*{separation line}{}
+	\setbeamercolor*{fine separation line}{}
 
-\setbeamercolor{background canvas}{bg=white}
+	\usepackage[most]{tcolorbox}
+	\tcbuselibrary{theorems}
+	% define a nice tcolorbox proposition env
+	\newtcbtheorem[auto counter]{proposition}{Proposition}{
+		lower separated=false,
+		colback=oxverylightblue,
+		colframe=oxlightgrey,
+		colbacktitle=oxvlightgrey,
+		coltitle=black,
+		arc=0mm,
+		enhanced,
+		boxed title style={colframe=oxlightgrey},
+		attach boxed title to top left={xshift=0.3cm,yshift=-2mm},
+	}{def}
 
-\setbeamercolor*{separation line}{}
-\setbeamercolor*{fine separation line}{}
+	% define a nice tcolorbox theorem env
+	\newtcbtheorem[auto counter]{theorem}{Theorem}{
+		lower separated=false,
+		colback=oxverylightblue,
+		colframe=oxlightgrey,
+		colbacktitle=oxvlightgrey,
+		coltitle=black,
+		arc=0mm,
+		enhanced,
+		boxed title style={colframe=oxlightgrey},
+		attach boxed title to top left={xshift=0.3cm,yshift=-2mm},
+	}{def}
 
-\usepackage[most]{tcolorbox}
-\tcbuselibrary{theorems}
-% define a nice tcolorbox proposition env
-\newtcbtheorem[auto counter]{proposition}{Proposition}{
-    lower separated=false,
-    colback=oxverylightblue,
-    colframe=oxlightgrey,
-    colbacktitle=oxvlightgrey,
-    coltitle=black,
-    arc=0mm,
-    enhanced,
-    boxed title style={colframe=oxlightgrey},
-    attach boxed title to top left={xshift=0.3cm,yshift=-2mm},
-}{def}
+	\newtcbtheorem[auto counter]{lemma}{Lemma}{
+		lower separated=false,
+		colback=oxverylightblue,
+		colframe=oxlightgrey,
+		colbacktitle=oxvlightgrey,
+		coltitle=black,
+		arc=0mm,
+		enhanced,
+		boxed title style={colframe=oxlightgrey},
+		attach boxed title to top left={xshift=0.3cm,yshift=-2mm},
+	}{def}
 
-% define a nice tcolorbox theorem env
-\newtcbtheorem[auto counter]{theorem}{Theorem}{
-    lower separated=false,
-    colback=oxverylightblue,
-    colframe=oxlightgrey,
-    colbacktitle=oxvlightgrey,
-    coltitle=black,
-    arc=0mm,
-    enhanced,
-    boxed title style={colframe=oxlightgrey},
-    attach boxed title to top left={xshift=0.3cm,yshift=-2mm},
-}{def}
+	% define a nice tcolorbox theorem env
+	\newtcbtheorem[auto counter]{definition}{Definition}{
+		lower separated=false,
+		colback=oxverylightblue,
+		colframe=oxlightgrey,
+		colbacktitle=oxvlightgrey,
+		coltitle=black,
+		arc=0mm,
+		enhanced,
+		boxed title style={colframe=oxlightgrey},
+		attach boxed title to top left={xshift=0.3cm,yshift=-2mm},
+	}{def}
 
-\newtcbtheorem[auto counter]{lemma}{Lemma}{
-    lower separated=false,
-    colback=oxverylightblue,
-    colframe=oxlightgrey,
-    colbacktitle=oxvlightgrey,
-    coltitle=black,
-    arc=0mm,
-    enhanced,
-    boxed title style={colframe=oxlightgrey},
-    attach boxed title to top left={xshift=0.3cm,yshift=-2mm},
-}{def}
+	\newtcbtheorem[auto counter]{result}{Result}{
+		lower separated=false,
+		colback=oxverylightblue,
+		colframe=oxlightgrey,
+		colbacktitle=oxvlightgrey,
+		coltitle=black,
+		arc=0mm,
+		enhanced,
+		boxed title style={colframe=oxlightgrey},
+		attach boxed title to top left={xshift=0.3cm,yshift=-2mm},
+	}{def}
 
-% define a nice tcolorbox theorem env
-\newtcbtheorem[auto counter]{definition}{Definition}{
-    lower separated=false,
-    colback=oxverylightblue,
-    colframe=oxlightgrey,
-    colbacktitle=oxvlightgrey,
-    coltitle=black,
-    arc=0mm,
-    enhanced,
-    boxed title style={colframe=oxlightgrey},
-    attach boxed title to top left={xshift=0.3cm,yshift=-2mm},
-}{def}
-
-\newtcbtheorem[auto counter]{result}{Result}{
-    lower separated=false,
-    colback=oxverylightblue,
-    colframe=oxlightgrey,
-    colbacktitle=oxvlightgrey,
-    coltitle=black,
-    arc=0mm,
-    enhanced,
-    boxed title style={colframe=oxlightgrey},
-    attach boxed title to top left={xshift=0.3cm,yshift=-2mm},
-}{def}
-
-\newtcbtheorem[auto counter]{corollary}{Corollary}{
-    lower separated=false,
-    colback=oxverylightblue,
-    colframe=oxlightgrey,
-    colbacktitle=oxvlightgrey,
-    coltitle=black,
-    arc=0mm,
-    enhanced,
-    boxed title style={colframe=oxlightgrey},
-    attach boxed title to top left={xshift=0.3cm,yshift=-2mm},
-}{def}
-
-% \MJH@Oxfordcolorstrue
+	\newtcbtheorem[auto counter]{corollary}{Corollary}{
+		lower separated=false,
+		colback=oxverylightblue,
+		colframe=oxlightgrey,
+		colbacktitle=oxvlightgrey,
+		coltitle=black,
+		arc=0mm,
+		enhanced,
+		boxed title style={colframe=oxlightgrey},
+		attach boxed title to top left={xshift=0.3cm,yshift=-2mm},
+	}{def}
 
 \fi
-
-% \ifMJH@backreflabels
-
-% \usepackage{etoolbox,xstring,xspace}
-
-% \makeatletter
-% \AtBeginDocument{%
-% \let\origref\ref
-% \renewcommand*\ref[1]{%
-%   \origref{#1}\xlabel{#1}}
-% }
-% \newrobustcmd*\xlabel[1]{%
-%    \ifcsdef{siteref@doc@#1}{}{\csgdef{siteref@doc@#1}{,}}%
-%     \@bsphack%
-%     \begingroup
-%        \csxdef{siteref@doc@#1}{\csuse{siteref@doc@#1},\thepage}%
-%          \protected@write\@auxout{}%
-%         {\string\SiteRef{siteref@#1}{\csuse{siteref@doc@#1}}}%
-%      \endgroup
-%      \@esphack%
-% }
-
-% \newrobustcmd*\SiteRef[2]{\csgdef{#1}{#2}}
-
-% \newrobustcmd*\xref[1]{%
-% \ifcsundef{siteref@#1}{%
-%      \@latex@warning@no@line{Label `#1' not defined}
-%      }{%
-%     \begingroup
-%       \StrGobbleLeft{\csuse{siteref@#1}}{2}[\@tempa]\relax%
-%       \def\@tempb{}%
-%       \@tempcnta=0\relax%
-%       \@tempcntb=\@ne\relax%
-%       \def\do##1{\advance\@tempcnta\@ne}%
-%       \expandafter\docsvlist\expandafter{\@tempa}%
-%        \def\do##1{%
-%          \ifnum\@tempcntb=\@tempcnta\relax%
-%             \hyperpage{##1}%
-%          \else
-%             \hyperpage{##1},%
-%           \fi%
-%           \advance\@tempcntb\@ne
-%        }%
-%        [\expandafter\docsvlist\expandafter{\@tempa}]\xspace%
-%     \endgroup
-%    }%
-% }
-% \makeatother
-
-% \fi

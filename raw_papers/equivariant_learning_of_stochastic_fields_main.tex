@@ -1,0 +1,484 @@
+
+The work in this section has been published as
+
+\fullcite{holderith2021equivariant}
+
+and is presented here with minor modification for clarity.
+The work was done collaboratively, and my personal contributions are as follows \1 Initiation of the project, and definition of the scope.
+\2 Formulation of the EquivDeepSets model and proof of its properties .
+\3 Initial formulation of the space of equivariant Gaussian processes.
+The precise proof of \cref{prop:inv_dist_leads_to_equiv} is due to Peter.
+\4 Development of the initial codebase for the project, and code for the MNIST experiments.
+\5 Running and tuning of the MNIST experiments.
+\6 Writing of the paper, in collaboration with Peter.
+\0
+\section{Introduction}
+\label{sec:introduction-steercnp}
+\begin{figure}
+	\centering
+	\includegraphics{images/steer_cnps/Equiv_illustration_small.pdf}
+	\caption{A schematic of equivariant learning of vector fields.
+		The model $f$ predicts a vector field from a set of vectors (red arrows).
+		It is equivariant to the action of rotations, here a 90$^\circ$ rotation.
+	}
+	\label{fig:eqv_demo}
+\end{figure}
+In physics and engineering, fields are objects which assign a physical quantity to every point in space.
+They serve as a unifying concept for objects such as electro-magnetic fields, gravity fields, electric potentials or fluid dynamics and are therefore omnipresent in the natural sciences and their applications \parencite{landau2013classical}.
+Our goal in this work is to be able to predict the value of a field everywhere given some finite set of observations (see $f$ in \cref{fig:eqv_demo}).
+We will be interested in cases where these fields are not fixed but are drawn from a random distribution, which we term \emph{stochastic fields}.
+
+Viewing fields as usual mathematical functions, we can consider stochastic fields as stochastic processes.
+A well-known example of these are Gaussian processes (GPs) \parencite{GP_book} which have been widely used in machine learning.
+More recently, Neural Processes (NPs) and their related models were introduced as an alternative to GPs which enable to learn a stochastic process from data leveraging the flexibility of neural networks \parencite{CNPs,NPs,attNP}.
+
+When applying models to data from the natural sciences, it is a logical step to integrate scientific knowledge about the problem into these models.
+The physical principle of homogeneity of space states that all positions and orientations in space are equivalent, i.e. there is no canonical orientation or absolute position.
+A natural modelling assumption stemming from this is that the prior we place over a random field should be invariant, i.e. it should look the same from all positions and orientations.
+We will show that this implies that the posterior as a function of the observed points is \textit{equivariant}.
+
+\Cref{fig:eqv_demo} illustrates this equivariance.
+The input is a discrete set of vectors at certain points in space, the red arrows, and the predictions a continuous vector field.
+If the space is homogenous, we would expect the predictions of a model to rotate in the same way as we rotate the data, i.e. we expect the model to be equivariant.
+
+Translation equivariance in Gaussian processes has long been studied via stationary kernels.
+We extend this notion to derive Gaussian processes that are equivariant to more general transformations such as rotations and reflections.
+Recent work has also shown how to build translation equivariance into NP models \parencite{ConvCNP,GaussNPs}.
+We will build on this work to introduce a new member of the Neural Process family that has more general equivariance properties.
+We do this utilising recent developments in equivariant deep learning \parencite{E2Steerable}.
+Imposing equivariance on deep learning models reduces the number of model parameters and has been shown to allow models to learn from data more efficiently \parencite{G_CNNs,CyclicSymmetry,KondTrivGen}.
+We will show that the same rational applies to NP models.
+
+More specifically, our main contributions are as follows: \begin{enumerate} \item We show that stochastic process models are equivariant if and only if the underlying prior is spatially invariant - giving a natural criteria when such models are useful.
+	\item We find sufficient and necessary constraints for a vector-valued Gaussian process over $\R^n$ to be equivariant allowing the simple construction of equivariant GPs.
+	\item As a new, equivariant member of the Neural Process family, we present Steerable Conditional Neural Processes (SteerCNPs) and show that they outperform previous models on synthetic and real data.
+\end{enumerate}
+
+\section{Transforming Fields}
+\label{sec:feature_maps}
+We aim to build to a model which learns functions $F$ of the form $F:\R^n\to\R^d$.
+We call $F$ a \emph{(steerable) feature map} since we interpret $F$ geometrically as mapping $n$-dimensional coordinates $\mathbf{x}\in\R^n$ to some $d$-dimensional feature $F(\mathbf{x})$.
+As intuitively clear from \cref{fig:eqv_demo}, we should be able to rotate such a feature map as we do with an ordinary geographical map or an image.
+In this section, we make this rigorous using group theory (see \cref{sec:intro_to_groups} for a brief introduction).
+
+In the following, let $E(n)$ be the group of isometries on $\R^n$.
+Let $T(n)$ be the group of translations of $\R^n$ which can be identified with $\R^n$.
+$T(n)$ acts from the left on $\R^n$ via $t_{\mathbf{x}}(\mathbf{x}')=\mathbf{x}'+\mathbf{x}$ for all $\mathbf{x},\mathbf{x}'\in\R^n$.
+Let $O(n)$ be the group of $n \times n$ orthogonal matrices, acting from the left on $\R^n$ by matrix multiplication.
+We write $SO(n)$ for the subgroup of rotations, i.e. elements $A\in O(n)$ with $\det A=1$.
+
+We describe all possible transformations of a feature map $F$ by a subgroup $G \subset E(n)$.
+We assume that $G$ is the semidirect product of $T(n)$ and a subgroup $H$ of $O(n)$, i.e. every $g\in G$ is a unique composition of a translation $t_{\mathbf{x}}$ and an orthogonal map $h\in H$: \begin{align} g=t_{\mathbf{x}}h \end{align} As common, we call $H$ the \emph{fiber group}.
+Depending on the inference problem, one would often pick $H=SO(n)$ or $H=O(n)$ (equivalently $G=SE(n),E(n)$).
+However, using finite subgroups $H$ can be more computationally efficient, and give better empirical results \parencite{E2Steerable}.
+In particular, in dimension $n=2$ we use the Cyclic groups $C_m$, comprised of the rotations by $\frac{k2 \pi}{m}$ ($k=0,1,\dots,m-1$) and the dihedral group $D_m$ containing $C_m$ combined with reflections.
+
+To describe transformations of a feature map $F$ via a group $G$, we need a linear representation $\rho:H\to\text{GL}(\R^d)$ of $H$ which we call \emph{fiber representation}.
+The action of $G$ on a steerable feature map $F$ is then defined as \begin{equation} \label{eq:transforming_feature_map} g.F(\mathbf{x}) = \rho(h) F(g^{-1}\mathbf{x}) \end{equation} where $g = t_{\mathbf{x}'} h\in G$.
+Figure \ref{fig:feature_field_transformation} demonstrates for vector fields why the transformation defined here is a sensible notion to consider.
+In group theory, this is called the induced representation of $H$ on $G$ denoted by $\text{Ind}_{H}^{G}\rho$.
+
+In allusion to physics, we use the term \emph{(steerable) feature field} referring to the feature map $F:\R^n\to\R^d$ together with its corresponding law of transformation given by $\rho$ \parencite{E2Steerable}.
+We write $\mathcal{F}_{\rho}$ for the space of these fields.
+Typical examples are: \begin{enumerate} \item \textbf{Scalar fields} $F:\R^n\to\R$ have trivial fiber representation $\rho=\rho_{triv}$, i.e. $\rho(h) = \mathbf{1}$ for $h\in H$, such that \begin{align} g.F(\mathbf{x})=F(g^{-1}\mathbf{x}) \end{align} Examples are greyscale images or temperature maps.
+	\item \textbf{Vector fields} $F:\R^n\to\R^n$  have $\rho=\rho_{\text{Id}}$, i.e. $\rho(h) = h$  for $h\in H$, such that
+	      \begin{align}
+		      \label{eq:vf_transformation}
+		      g.
+		      F(\mathbf{x})=hF(g^{-1}\mathbf{x})\end{align} Examples include electric fields or wind maps.
+	\item \textbf{Stacked fields}: given fields $F_1,\dots,F_n$ with fiber representations $\rho_1,\dots,\rho_n$ we can stack them to $F=(F_1,\dots, F_n)$ with fiber representation as the direct sum $\rho=\rho_1\oplus\cdots\oplus\rho_n$.
+	      Examples include a combined wind and temperature map or RGB-images.
+\end{enumerate}
+Finally, for simplicity we assume that $\rho$ is an orthogonal representation, i.e. $\rho(h)\in O(d)$ for all $h\in H$.
+Since all fiber groups $H$ of interest are compact, this is not a restriction \parencite{serreFiniteGroups}.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.75\textwidth]{images/steer_cnps/feature_field_demo.pdf}
+	\caption{Demonstration of the transformation of vector fields on $\R^2$ under the action of $g = t_{\v{x}'}h \in G=SE(2)=\R^2\rtimes SO(2)$.
+		Color represents the norm of a vector at each point.
+	}
+	\label{fig:feature_field_transformation}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\begin{subfigure}[b]{\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{images/steer_cnps/GP_VF_Examples_5.pdf}
+		\caption{}
+		\label{fig:gp_datasets}
+	\end{subfigure}
+	\\
+	\begin{subfigure}[b]{0.66\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{images/steer_cnps/GP_Inference_examples_cyan.pdf}
+		\caption{}
+		\label{fig:gp_inference}
+	\end{subfigure}
+	\caption{(a) GP-samples of $2d$-vector fields from different $E(2)$-equivariant kernels.
+		Left: RBF-kernel.
+		Middle: divergence-free kernel.
+		Right: curl-free kernel.
+		(b) Illustration of \cref{thm:equivgp}.
+		Left: posterior GP means (black) and confidence ellipses (blue) from data (red).
+		Right: posterior given rotated data.
+		One can see that means and confidence ellipses rotate with the data.
+	}
+\end{figure}
+
+\section{Equivariant Stochastic Process Models}
+\label{sec:equivariant_stochastic_process_model}
+In this work, we are interested in learning not only a single feature field $F$ but a probability distribution $P$ over $\mathcal{F}_\rho$, i.e. a stochastic process over feature fields $F$.
+For example, $P$ could describe the distribution of all wind maps over a specific region.
+If $F\sim P$ is a random feature field and $g\in G$, we can define the transformed stochastic process $g.P$ as the distribution of $g.F$.
+We say that $P$ is \emph{$G$-invariant} if \begin{align} P=g.P \forall g\in G \end{align} From a sample $F\sim P$, our model observes only a finite set of input-output pairs $Z=\{(\mathbf{x}_i,\mathbf{y}_i)\}_{i=1}^{n}$ where $\mathbf{y}_i$ equals $F(\mathbf{x}_i)$ plus potentially some noise.
+The induced representation naturally translates to a transformation of $Z$ under $G$ via \begin{align} \label{eq:trans_data_sets} g.Z :=\{(g\mathbf{x}_i,\rho(h)\mathbf{y}_i)\}_{i=1}^{n} \end{align}
+
+In a Bayesian approach, we can consider $P$ as a prior and given an observed data set $Z$ we can consider the posterior, i.e. the conditional distribution $P_{Z}$ of $F$ given $Z$.
+As the next proposition shows, equivariance of the posterior is the other side of the coin to invariance of the prior.
+\begin{proposition}[Invariant priors imply equivariant posterior maps]
+	\label{prop:inv_dist_leads_to_equiv}
+	Let $P$ be a stochastic process over $\mathcal{F}_\rho$.
+	Then $P$ is $G$-invariant if and only if the posterior map $Z\mapsto P_Z$ is $G$-equivariant, i.e. \begin{align} P_{g.Z}=g.P_{Z} \quad\text{for all } g\in G \end{align} \end{proposition} The proof of this can be found in \cref{proof:invprior}.
+
+In most real-world scenarios, it may not be possible to exactly compute the posterior and our goal is to build a model $Q$ which returns an approximation $Q_Z$ of $P_Z$.
+However, often it is our prior belief that the distribution $P$ is $G$-invariant.
+Given \cref{prop:inv_dist_leads_to_equiv}, it is then natural to construct an approximate inference model $Q$ which is itself equivariant.
+
+We will see applications of these ideas to GPs and CNPs in \cref{sec:equiv_GPs,sec:equiv_CNPs}.
+
+\section{Equivariant Gaussian Processes}
+\label{sec:equiv_GPs}
+A widely-studied example of stochastic processes are Gaussian processes (GPs).
+Here we will look at Gaussian processes under the lens of equivariance.
+Since we are interested in vector-valued functions $F:\R^n\to\R^d$, we use matrix-valued positive definite kernels $K:\R^n\times\R^n\to\R^{d\times d}$ \parencite{Review_matrix_kernels}.
+
+In the case of GPs, we assume that for every $\mathbf{x},\mathbf{x}'\in\R^n$, it holds that $F(\mathbf{x})$ is normally distributed with mean $\mathbf{m}(\mathbf{x})$ and covariances $\text{Cov}(F(\mathbf{x}),F(\mathbf{x}'))=K(\mathbf{x},\mathbf{x}')$.
+We write $\mathcal{GP}(\mathbf{m},K)$ for the stochastic process defined by this.
+
+We can fully characterise all mean functions and kernels leading to equivariant GPs: \begin{theorem}[Equivariant Gaussian process characterisation] \label{thm:equivgp} A Gaussian process $\mathcal{GP}(\mathbf{m},K)$ is $G$-invariant, equivalently the posterior $G$-equivariant, if and only if \begin{enumerate} \item $\mathbf{m}(\mathbf{x})=\mathbf{m}\in\R^d$ is constant with $\mathbf{m}$ such that \begin{align} \label{eq:m_invariant_under_rho} \rho(h)\mathbf{m}=\mathbf{m}\quad\text{for all } h\in H \end{align} \item $K$ fulfils the following two conditions: \begin{enumerate} \item $K$ is \textbf{stationary}, i.e. for all $\mathbf{x},\mathbf{x}'\in\R^n$ \begin{align} \label{eq:GP_stationary} K(\mathbf{x},\mathbf{x}')=K(\mathbf{x}-\mathbf{x}', \mathbf{0}) =: \hat{K}(\v{x} - \v{x}') \end{align} \item $K$ satisfies the \textbf{angular constraint}, i.e. for all $\mathbf{x},\mathbf{x}'\in\R^n,h\in H$ it holds that \begin{align} \label{eq:GP_kernel_constraint} K(h \v{x}, h \v{x}') &= \rho(h) K(\v{x}, \v{x}')\rho(h)^T \end{align} or equivalently, for all $\mathbf{x}\in\R^n,h\in H$ \begin{align} \hat{K}(h\mathbf{x})&=\rho(h)\hat{K}(\mathbf{x})\rho(h)^T \end{align} \end{enumerate} If this is the case, we call $K$ $\rho$-equivariant.
+	\end{enumerate}
+\end{theorem}
+The proof of this can be found in \cref{proof:equivgp}.
+
+We note the distinct similarity between the kernel conditions in \cref{eq:GP_stationary,eq:GP_kernel_constraint}, and the ones found in the equivariant convolutional neural network literature (see for example eq.
+(2) in \textcite{E2Steerable}).
+In contrast to convolutional kernels, we have the additional constraint that the kernel $K$ must be positive definite.
+
+A popular example to model vector-valued functions is to simply use $d$ independent GPs with a stationary scalar kernel $k:\R^n\to\R$.
+This leads to a kernel $K(\mathbf{x})=k(\mathbf{x})I$ which can easily be seen to be $E(n)$-equivariant.
+
+As a non-trivial example of equivariant kernels, we will also consider the divergence-free and curl-free kernels (see \cref{sec:divcurl}) used in physics introduced by \textcite{macedo2010learning} which allow us to model divergence-free and curl-free fields such as electric or magnetic fields (see \cref{fig:gp_datasets} for examples).
+
+We note that the kernels considered in this work represent a small set of possible kernels permitted by \cref{thm:equivgp}.
+Much of the standard Gaussian Process and kernel machinery, e.g. Bochner's theorem, random Fourier features \parencite{brault_random_2016}, and sparse methods, extend naturally to the vector-valued and equivariant case.
+
+\section{Steerable Conditional Neural Processes}
+\label{sec:equiv_CNPs}
+
+Conditional Neural Processes were introduced as an alternative model to Gaussian processes.
+While GPs require us to explicitly model the prior $P$ and can perform exact posterior inference, CNPs aim to learn an approximation to the posterior map ($Z\mapsto P_Z$) directly, only implicitly learning a prior from data.
+Generally speaking, the underlying architecture is a model which returns a mean function $\mathbf{m}_{Z}:\R^n\to\R^d$ and a covariance function $\mathbf{\Sigma}_{Z}:\R^n\to\R^{d\times d}$ given a context set $Z$.
+For simplicity, it makes the assumption that given $Z$ the functions values $F(\mathbf{x})$ are conditionally independent and normally distributed \begin{align} \label{eq:CNP_model} F(\mathbf{x})\sim\mathcal{N}(\mathbf{m}_{Z}(\mathbf{x}),\mathbf{\Sigma}_{Z}(\mathbf{x})),\quad F(\mathbf{x})\indep F(\mathbf{x}') \; | \; Z \end{align}
+
+Let us call a model as in \cref{eq:CNP_model} a \emph{conditional process model}.
+As we did with $F\in\mathcal{F}_\rho$, we can specify a law of transformation by considering $\mathbf{m}_Z$ as a \emph{mean feature field} in $\mathcal{F}_{\rho_m}$ and $\mathbf{\Sigma}_Z$ as a \emph{covariance feature field} in $\mathcal{F}_{\rho_{\Sigma}}$ for appropriate fiber representations $\rho_m,\rho_\Sigma$.
+With this, we can easily characterise equivariance in conditional process models: \begin{proposition}[Equivariant conditional process models] \label{prop:SteerCNP} A conditional process model is $G$-equivariant if and only if the mean and covariance feature maps are $G$-equivariant, i.e. it holds for all $g\in G$ and context sets $Z$ \begin{align} \label{eq:mean_equiv_constraint} \mathbf{m}_{g.Z} & =g.
+              \mathbf{m}_{Z}                                          \\
+              \label{eq:sigma_equiv_constraint}
+              \mathbf{\Sigma}_{g.
+              Z}                                                & =g.
+              \mathbf{\Sigma}_{Z}
+	\end{align}
+	with $\rho_{m}=\rho$ and $\rho_\Sigma=\rho\otimes\rho$ the tensor product with action given by
+	\begin{align}
+		\label{eq:tensor_product_representation_sigma}
+		\rho_{\Sigma}(h)A=\rho(h)A\rho(h)^T, \quad A \in \R^{d\times d}
+	\end{align}
+\end{proposition}
+
+The proof can be found in \cref{proof:SteerCNP}.
+
+In the following, we will restrict ourselves to perform inference from data sets of multiplicity $1$, i.e., data sets $Z=\{(\mathbf{x}_i,\mathbf{y}_i)\}_{i=1}^{m}$ where $\mathbf{x}_i \neq \mathbf{x}_j$ for all $i\neq j$.
+We denote the collection of all such data sets with $\mathcal{Z}_{\rho}$ meaning that they transform under $\rho$ (see \cref{eq:trans_data_sets}).
+
+Moreover, we assume that there is no order in a data set $Z$, i.e. we aim to build models which are not only $G$-equivariant but also invariant to permutations of $Z$.
+
+\begin{figure*}[t]
+	\centering
+	\includegraphics[width=\textwidth]{images/steer_cnps/Equiv_CNP_flow.pdf}
+	\caption{SteerCNP model illustration. (a) Embed the context set into a function. (b) Discretise this embedding on a regular grid. (c) Predict the mean and covariance of the conditional stochastic process on the grid of points. (d) Use kernel smoothing to predict the mean and covariance at target locations.}
+	\label{fig:feature_flow_SteerCNP}
+\end{figure*}
+The following generalisation of the ConvDeepSets theorem of \textcite{ConvCNP} gives us a universal form of all such conditional process models.
+We simple need to pick $\rho_{\text{in}} = \rho$ and $\rho_{\text{out}} = \rho_{m} \oplus \rho_{\Sigma}=\rho\oplus \rho_{\Sigma}$ in the following theorem.
+\begin{theorem}[Equivariant Deep Sets]
+	\label{thm:equivdeepsets}
+	Let $\rho_\text{in},\rho_\text{out}$ be the two fiber representations.
+	Define the embedding representation as the direct sum $\rho_E = \rho_{triv} \oplus \rho_{\text{in}}$.
+	\\
+	A function ${\Phi}: \Z_{\rho_{\text{in}}} \to\mathcal{F}_{\rho_{\text{out}}}$ is $G$-equivariant and permutation invariant if and only if it can be expressed as
+	\begin{align}
+		{\Phi}(Z) = \Psi(E(Z))
+	\end{align}
+	for all $Z=\{(\mathbf{x}_i,\mathbf{y}_i)\}_{i=1}^{m}\in\mathcal{Z}_{\rho_{\text{in}}}$ with
+	\begin{enumerate}
+		\item     $E(Z) = \sum_{i=1}^m  K(\cdot, \v{x}_i)\phi(\v{y}_i)$
+		\item $\phi(\mathbf{y})=(1,\mathbf{y})^T\in\R^{d+1}$.
+		\item $K: \R^n \times \R^n \to \R^{(d+1) \times(d+1)}$ is a $\rho_E$-equivariant strictly positive definite kernel (see \cref{thm:equivgp}).
+		\item $\Psi:  \mathcal{F}_{\rho_E} \to \mathcal{F}_{\rho_{\text{out}}}$ is a $G$-equivariant function.
+	\end{enumerate}
+	Additionally, by imposing extra constraints (see \cref{proof:equivdeepsets}), we can also ensure that $\Phi$ is continuous.
+\end{theorem}
+
+The proof of this can be found in appendix \ref{proof:equivdeepsets}.
+Using this, we can start to build SteerCNPs by building an encoder $E$ and a decoder ${\Psi}$ as specified in the theorem.
+
+The form of the encoder only depends on the choice of a kernel $K$ which is equivariant under $\rho_E$.
+An easy but effective way of doing this is to pick a kernel $K_0$ which is equivariant under $\rho$ (see \cref{sec:equiv_GPs}) and a scalar kernel $k:\R^n\to\R$ and then use the block-version $K=k\oplus K_0$.
+
+\subsection{Decoder}
+\label{sec:decoder}
+By \cref{thm:equivdeepsets}, it remains to construct a $G$-equivariant decoder $\Psi$.
+To construct such maps, we will use steerable CNNs \parencite{SteerCNNs,E2Steerable,3DSteerable}.
+In theory, a layer of such a network is an equivariant function $\Psi:\mathcal{F}_{\rho_\text{in}}\to\mathcal{F}_{\rho_\text{out}}$ where we are free to choose fiber representations $\rho_\text{in},\rho_\text{out}$.
+
+Steerable convolutional layers are defined by a kernel $\kappa:\R^n\to\R^{c_\text{out}\times c_\text{in}}$ such that the map \begin{align} \label{eq:equiv_convolution} [\kappa\star F](\mathbf{x})=\int\kappa(\mathbf{x}, \mathbf{x}')F(\mathbf{x}')d\mathbf{x} \end{align} is $G$-equivariant.
+These layers serve as the learnable, parameterisable functions.
+
+Steerable activation functions are applied pointwise to $F$.
+These are functions $\sigma:\R^{c_\text{in}}\to\R^{c_\text{out}}$ such that \begin{align} \label{eq:equiv_activation_function} \sigma(\rho_{\text{in}}(h)\mathbf{x})=\rho_{\text{out}}(h)\sigma(\mathbf{x}) \end{align} As a decoder of our model, we use a stack of equivariant convolutional layers composed with equivariant activation functions.
+The convolutions in \cref{eq:equiv_convolution} are computed in a discretised manner after sampling $E(Z)$ on a grid $\mathcal{G}\subset\R^n$.
+Therefore, the output of the neural network will be a discretised version of a function and we use kernel smoothing to extend the output of the network to the whole space.
+
+\subsection{Covariance Activation Functions}
+The output of a steerable neural network has general vectors in $\R^c$ for some $c$ as outputs.
+Therefore, we need an additional component to obtain (positive definite) covariance matrices in an equivariant way.
+
+We introduce the following concept: \begin{definition} An \textbf{equivariant covariance activation function} is a map $\eta:\R^{c}\to\R^{d\times d}$ together with a fiber representation $\rho_{\eta}:H\to\text{GL}(\R^{c})$ such that for all $\mathbf{y}\in\R^c$ and $h\in H$ \begin{enumerate} \item $\eta(\mathbf{y})$ is a symmetric, positive semi-definite matrix.
+		\item $\eta(\rho_\eta(h)\mathbf{y})=\rho_{\Sigma}(h)\eta(\mathbf{y})$
+	\end{enumerate}
+\end{definition}
+In our case, we use a \emph{quadratic covariance activation function} which we define by \begin{align*} \eta:\R^{d\times d}\to\R^{d\times d},\quad \eta(A)=AA^T \end{align*} Considering $A=(a_1,\dots,a_D)\in\R^{d^2}$ as a vector by stacking the columns, the input representation is then $\rho_{\eta}=\rho\oplus\dots\oplus\rho$ as the $d$-times sum of $\rho$.
+It is straight forward to see that $\eta$ is equivariant and outputs positive semi-definite matrices.
+\subsection{Full model}
+Finally, we summarise the architecture of the SteerCNP (see \cref{fig:feature_flow_SteerCNP}): \begin{enumerate} \item The \textbf{encoder} produces an embedding of a data set $Z$ as a function $E(Z)$.
+	\item A discretisation of $E(Z)$ serves as input for the \textbf{decoder}, a steerable CNN with input fiber representation $\rho_{E}$ and output fiber representation $\rho\oplus\rho_{\eta}$.
+	\item On the covariance part, we apply the covariance activation function $\eta$.
+	\item The grid values of the mean and the covariances are extended to the whole space $\R^n$ via kernel smoothing.
+\end{enumerate}
+We train the model similar to the CNP by iteratively sampling a data set $Z$ and splitting it randomly in a context set $Z_C$ and a target set $Z_T$.
+The context set $Z_C$ is then passed forward through the SteerCNP model and the mean log-likelihood of the target $Z_T=\{(\mathbf{x}'_i,\mathbf{y}'_i)\}_{i=1}^{m}$ is computed.
+In brief, we minimise the loss \begin{align*} -\mathbb{E}_{Z_C,Z_T\sim P}\left[\frac{1}{m} \sum\limits_{i=1}^{m}\log\mathcal{N}(\mathbf{y}_i';\mathbf{m}_{Z_C}(\mathbf{x}'_i),\mathbf{\Sigma}_{Z_C}(\mathbf{x}'_i)) \right] \end{align*} by gradient descent methods.
+
+In sum, this gives a CNP model, which up to discretisation errors is equivariant with respect to arbitrary transformations from the group $G$ and invariant to permutations.
+
+\section{Related Work}
+\textbf{Equivariance and symmetries in deep learning.}
+Motivated by the success of the translation-equivariant CNNs \parencite{Classical_CNNs}, there has been a great interest in building neural networks which are equivariant also to more general transformations.
+Approaches use a wide range of techniques such as convolutions on groups \parencite{SphericalCNNs,KondTrivGen,G_CNNs,HexaConv,CubeNet}, cylic permutations \parencite{CyclicSymmetry}, Lie groups \parencite{LieGroup} or phase changes \parencite{HarmonicNetworks}.
+It was in the context of Steerable CNNs and its various generalisations where ideas from physics about fields started to play a more prominent role.
+\parencite{SteerCNNs,3DSteerable,E2Steerable,Homogenous_spaces}.
+We use this framework since it allows for modelling of non-trivial transformations of features $F(\mathbf{x})$ via fiber representations $\rho$, as for example necessary to model transformations of vector fields (see \cref{eq:vf_transformation}).
+
+\textbf{Gaussian Processes and Kernels.}
+Classical GPs using kernels such as the RBF or Mat\'ern kernels have been widely used in machine learning to model scalar fields \parencite{GP_book}.
+Vector-valued GPs, which allow for dependencies across dimensions via matrix-valued kernels, were common models in geostatistics \parencite{geostatistics} and also played a role in kernel methods \parencite{Review_matrix_kernels}.
+With this work, we showed that many of these GPs are equivariant (see \cref{thm:equivgp}) giving a further theoretical foundation for their applicability.
+In contrast to equivariant GPs, \textcite{Reissert} consider the construction of equivariant functions from kernels, arriving at similar equivariance constraints as we do in \cref{thm:equivgp}.
+
+\textbf{Neural Processes.} \textcite{CNPs} introduced Conditional Neural Processes (CNPs) as an architecture constructed out of neural networks which learns an approximation of stochastic processes from data.
+They share the motivation of meta-learning methods \parencite{MAML,GradDescentbyGradDescent} to learn a distribution of tasks instead of only a single task.
+Neural Processes (NPs) are the latent variable counterpart of CNPs allowing for correlations across the marginals of the posterior.
+Both CNPs and NPs have been combined with other machine learning concepts, for example attention mechanisms \parencite{attNP}.
+
+\textcite{ConvCNP} were the first to consider symmetries in NPs.
+Inspired by the prevalence of stationary kernels in the GP literature, they introduced a translation-equivariant NP model, along with a universal characterisation of such models.
+Our work can be seen as a generalisation of their method.
+By picking a trivial fiber group $H=\{e\}$ and $K$ as a diagonal RBF-kernel in SteerCNPs (see \cref{thm:equivdeepsets}), we get the ConvCNP as a special case of SteerCNPs.
+
+During the development of this work, \textcite{EquivCNPs} also studied more general equivariance in CNPs, restricting themselves to scalar fields and focusing on Lie Groups.
+They only compared their approach with previous models on $1d$ synthetic regression tasks where their approach did not seem to outperform ConvCNPs, and in this case the added symmetry is redundant.
+In contrast, we focus on general scalar and vector-valued fields with non-trivial transformations $\rho$.
+As we show in the next section, this "steerable" approach leads to significant performance gains compared to previous models.
+The decomposition theorem presented in \textcite{EquivCNPs} can be seen as a special case of \cref{thm:equivdeepsets} in this work by setting $\rho = \rho_{tri}$.
+
+\section{Experiments}
+
+\label{sec:experiments-steercnp}
+Finally, we provide empirical evidence that equivariance is a helpful bias in stochastic process models.
+We focus on evaluating SteerCNPs since inference with the variety of GPs, which this work shows to be equivariant, has been studied exhaustively.
+
+\subsection{Gaussian Process Vector Fields}
+
+A common baseline task for CNPs is regression on samples from a Gaussian process \parencite{CNPs,ConvCNP}, partially because one can directly compare the output of the model with the true posterior.
+Here, we consider the task of learning $2$D vector fields $F:\R^2\to\R^2$ which are samples of a Gaussian process $\mathcal{GP}(0,K)$ with 3 different $E(2)$-equivariant kernels $K$: the diagonal RBF-kernel, the divergence-free kernel and the curl-free kernel (see \cref{fig:gp_datasets,sec:divcurl}).
+
+We run extensive experiments comparing the SteerCNP with the CNP and the translation-equivariant ConvCNP.
+On the SteerCNP, we impose various levels of rotation and reflection equivariance by picking different fiber groups $H$.
+As usual for CNPs, we use the mean log-likelihood as a measure of performance.
+The maximum possible log-likelihood is obtained by Monte Carlo sampling using the true GP posterior.
+
+In \cref{table:GP_results}, the results are presented.
+Overall, one can see that the SteerCNP clearly outperforms previous models by reducing the difference to the GP baseline by more than a half.
+In addition, we observe that small fiber groups ($H=C_4$) lead to the best results.
+Although theoretically models with the largest fiber groups ($H=C_{16},SO(2)$) should perform better, it is possible that practical limitations such as discretisation of the model favors smaller fiber groups since they still allow for compensation of marginal asymmetries and numerical errors.
+For the case of $H=SO(2)$, the worse results are consistent with results from \textcite{E2Steerable} in supervised learning and practical reasons for this are discussed in more depth there.
+Hence, we leave out $SO(2)$ in further experiments.
+
+\begin{table}[t]
+	\small
+	\centering
+	\caption{Results for experiments on GP vector fields.
+		Mean log-likelihood $\pm$ 1 standard deviation over 5 random seeds reported.
+		Last row shows GP-baseline (optimum).
+	}
+	\begin{tabular}[b]{lrrr}
+		\toprule
+		\textbf{Model}      & RBF                     & Curl-free                 & Div-free                  \\
+		\midrule
+		CNP                 & -4.24$\pm$0.00          & -0.750$\pm$0.004          & -0.752$\pm$0.006          \\
+		ConvCNP             & -3.88$\pm$0.01          & -0.541$\pm$0.004          & -0.533$\pm$0.001          \\
+		\midrule
+		SteerCNP ($SO(2)$)  & -3.93$\pm$0.05          & -0.550$\pm$0.005          & -0.552$\pm$0.008          \\
+		SteerCNP ($C_4$)    & \textbf{-3.66}$\pm$0.00 & \textbf{-0.461}$\pm$0.003 & \textbf{-0.464}$\pm$0.007 \\
+		SteerCNP ($C_8$)    & -3.70$\pm$0.01          & -0.479$\pm$0.004          & -0.478$\pm$0.004          \\
+		SteerCNP ($C_{16}$) & -3.71$\pm$0.02          & -0.476$\pm$0.005          & -0.480$\pm$0.008          \\
+		SteerCNP ($D_4$)    & -3.72$\pm$0.03          & -0.471$\pm$0.002          & -0.477$\pm$0.005          \\
+		SteerCNP ($D_8$)    & \textbf{-3.68}$\pm$0.03 & \textbf{-0.462}$\pm$0.005 & -0.467$\pm$0.008          \\
+		\midrule
+		GP                  & -3.50                   & -0.410                    & -0.411                    \\
+		\bottomrule
+	\end{tabular}
+	\label{table:GP_results}
+\end{table}
+
+\subsection{Image in-painting}
+To test the SteerCNP on purely scalar data we evaluate our model on an image completion task.
+In image completion tasks the context set is made up of pairs of 2D pixel locations and pixel intensities and the objective is to predict the intensity at new locations.
+For further details see \cref{sec:image_details}, along with qualitative results from the experiments.
+
+\textbf{MNIST and rotMNIST.}
+We first train models on completion tasks from the MNIST data set \parencite{lecun2010mnist}.
+The results in \cref{tab:mnist} show that the equivariance built into the SteerCNP is useful, with the various SterableCNPs outperforming previous models.
+To test whether this performance gain could be replicated by data augmentation, we trained the models on a variant, called rotMNIST, produced by randomly rotating each digit in the dataset.
+We find that this does not improve results in the non equivariant models, in fact causing a decrease in performance as they try to learn a more complex distribution from too little data.
+It therefore seems to be the gain in parameter and data efficiency due the imposed equivariance constraints what leads to better performance of SteerCNPs.
+
+\textbf{Generalising to larger images.}
+One key advantage of equivariant models is that they should be able to extrapolate to data at locations and orientations previously unseen.
+To test this, we create a new data set by sampling 2 rotMNIST images and randomly translating them in a 56*56 image, calling this dataset extMNIST (for extrapolate).
+We evaluate the models trained on MNIST on this data set.
+The results in \cref{tab:mnist} show the significant benefit of the additional rotation equivariance.
+\footnote{We also conducted experiments with other train-test combinations of rotMNIST (resp. extMNIST).
+	The results confirm our observations and can be found in \cref{sec:image_details}.
+}
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.75\linewidth]{images/steer_cnps/mnist/mnist_examples.pdf}
+	\caption{Examples of the three datasets}
+\end{figure}
+\begin{table}[t]
+	\small
+	\centering
+	\caption{Results for the MNIST experiments.
+		Mean log-likelihood $\pm$ 1 standard deviation over 3 random model and dataset seeds reported.
+	}
+	\begin{tabular}{lrrr}
+		\toprule
+		\textbf{Train dataset} & \multicolumn{1}{l}{MNIST} & \multicolumn{1}{l}{rotMNIST} & \multicolumn{1}{r}{MNIST} \\
+		\textbf{Test dataset}  & \multicolumn{1}{l}{MNIST} & \multicolumn{1}{l}{MNIST}    & {extMNIST}                \\
+		\textbf{Model}         &                           &                              &                           \\
+		\midrule
+		GP                     & {0.39$\pm$0.30}           & {0.39$\pm$0.30}              & {0.72$\pm$0.17}           \\
+		CNP                    & {0.76$\pm$0.05}           & {0.66$\pm$0.06}              & {-1.11$\pm$0.06}          \\
+		ConvCNP                & {1.01$\pm$0.01}           & {0.95$\pm$0.01}              & {1.08$\pm$0.02}           \\
+		\midrule
+		SteerCNP($C_4$)        & {1.05$\pm$0.02}           & \textbf{1.02$\pm$0.03}       & {1.14$\pm$0.02}           \\
+		SteerCNP($C_{8}$)      & \textbf{1.07$\pm$0.03}    & \textbf{1.05$\pm$0.04}       & \textbf{1.16$\pm$0.03}    \\
+		SteerCNP($C_{16}$)     & \textbf{1.08$\pm$0.03}    & \textbf{1.04$\pm$0.03}       & \textbf{1.17$\pm$0.05}    \\
+		SteerCNP($D_4$)        & \textbf{1.08$\pm$0.03}    & \textbf{1.05$\pm$0.03}       & {1.14$\pm$0.03}           \\
+		SteerCNP($D_8$)        & \textbf{1.08$\pm$0.03}    & \textbf{1.04$\pm$0.04}       & \textbf{1.17$\pm$0.02}    \\
+		\bottomrule
+	\end{tabular}
+	\label{tab:mnist}
+\end{table}
+
+\subsection{ERA5 Weather Data}
+
+\begin{figure*}[ht]
+	\centering
+	\includegraphics[width=0.9\textwidth]{images/steer_cnps/ERA5_US_Illustration_3.pdf}
+	\caption{Illustration of ERA5 weather data from the US.}
+	\label{fig:ERA5_US_Illustration}
+\end{figure*}
+
+To evaluate the performance of the SteerCNP model on vector-valued fields, we retrieved weather data from the global ERA5 data set.
+\footnote{We obtained this data using Copernicus Climate Change Service Information [2020].}
+We extracted data from a circular region surrounding Memphis, Tennessee, and from a region of the same size in Hubei province, Southern China (see \cref{fig:ERA5_US_Illustration} for illustration and \cref{sec:Experimental details} for details).
+While the specific choice of these areas was arbitrary, we tried to pick two topologically different regions far away from each other.
+
+Every sample $F$ from these data sets corresponds to a weather map consisting of temperature, pressure and wind in the region at one single point in time.
+We give the models the task to infer a wind vector field from a data $Z$ of pairs $(\mathbf{x},\mathbf{y})$ where $\mathbf{y}=(y^t,y^p,y^w_1,y^w_2)\in\R^4$ gives the temperature, pressure and wind at point $\mathbf{x}$.
+In particular, the output features are only a subset of the input features.
+To deal with such a task, we can simply pick different input and output fiber representations for the SteerCNP: \begin{align*} \rho_\text{in}=\rho_{triv}\oplus\rho_{triv}\oplus\rho_{\m{I}},\quad \rho_\text{out}=\rho_{\m{I}} \end{align*}
+
+\textbf{Performance on US data.
+}
+As a first experiment, we split the US data set in a train, validation and test data set.
+Then we train and test the models accordingly.
+We observe that the SteerCNP outperforms previous models like a GP with RBF-kernel, the CNP and the ConvCNP with a significant margin for all considered fiber groups (see \cref{table:ERA5_results}).
+Again, we observe that a relatively small fiber group $C_4$ leads to the best results.
+Inference from weather data is clearly not exactly equivariant due to local differences such as altitude and distance to the sea.
+Therefore, it seems that a SteerCNP model with small fiber groups like $C_4$ enables us to exploit the equivariant patterns much better than the ConvCNP and CNP but leaves flexibility to account for asymmetric patterns.
+
+\textbf{Generalising to a different region.}
+As a second experiment, we take these models and test their performance on data from China.
+This can be seen as a transfer learning task.
+Intuitively, posing a higher equivariance restriction on the model makes it less adapting to special local circumstances and more robust when transferring to a new environment.
+Indeed, we observe that the CNP, the ConvCNP and the model with fiber group $C_4$ have a larger loss in performance than SteerCNP models with larger fiber groups such as $C_{16},D_{8},D_4$.
+Similarly, while GPs had a significantly worse performance than ConvCNPs on the US data, it outperforms it on the transfer to China data.
+In applications like robotics where environments constantly change this robustness due to equivariance might be advantageous.
+\begin{table}[t]
+	\centering
+	\small
+	\caption{Results on ERA5 weather experiment trained on US data.
+		Mean log-likelihood $\pm$ 1 standard deviation over 5 random seeds reported.
+		Left: tested on US data.
+		Right: tested on China data.
+	}
+	\begin{tabular}[b]{lrr}
+		\toprule
+		\textbf{Model}   & US                       & China            \\
+		\midrule
+		GP               & 0.386$\pm$0.005          & -0.755$\pm$0.001 \\
+		CNP              & 0.001$\pm$0.017          & -2.456$\pm$0.365 \\
+		ConvCNP          & 0.898$\pm$0.045          & -0.890$\pm$0.059 \\
+		\midrule
+		SteerCNP ($C_4$) & \textbf{1.255}$\pm$0.019 & -0.578$\pm$0.173 \\ SteerCNP ($C_{8}$) & 1.038$\pm$0.026& -0.582$\pm$0.104\\ SteerCNP ($C_{16}$) & 1.094$\pm$0.015& -0.550$\pm$0.073\\ SteerCNP ($D_4$) & 1.037$\pm$0.037& \textbf{-0.429}$\pm$0.067 \\ SteerCNP ($D_8$) & 1.032$\pm$0.011& -0.539$\pm$0.129\\ \bottomrule\end{tabular} \label{table:ERA5_results} \end{table}
+
+\section{Limitations and Future Work}
+Similar to CNPs, our model cannot capture dependencies between the marginals of the posterior.
+Recently, \textcite{ConvNP} introduced a translation-equivariant NP model which allows to do this and future work could combine their approach with general symmetries considered in this work.
+
+As stated earlier, our model works for Euclidean spaces of any dimension.
+The limiting factor is the development of Steerable CNNs used in the decoder.
+In our experiments, we focused on $\R^2$ as the code is well developed by \textcite{E2Steerable}.
+Recent developments in the design of equivariant neural networks also explore non-Euclidean spaces such as spheres and encourage exploration in this direction in the context of NPs \parencite{Homogenous_spaces,SphericalCNNs,SphericalVFs}.
+Additionally, in Euclidean space we can incorporate other symmetries such as scaling via Lie group approaches, similar to \parencite{EquivCNPs}, or symmetry to uniform motion for fluid flow \parencite{wang2020incorporating} by choosing suitable equivariant CNNs.
+
+One practical limitation of this method is the necessity to discretise the continuous RKHS embedding, which can be costly and breaks the theoretical guarentees found in this work in \cref{thm:equivdeepsets}.
+An alternative approach would be to move away entirely from the structure of \cref{thm:equivdeepsets}, and build an architecture more similar to the original CNP, utilising equivariant point cloud methods \parencite{finzi2020generalizing, hutchinson2020lietransformer, satorras2021n} to produce the embedding of the context set.
+This would avoid the discretisation of the embedding grid and may provide speedups, but looses the flexibility promised by \cref{thm:equivdeepsets}.
+
+\section{Conclusion}
+\label{sec:conclusion}
+In this work, we considered the problem of learning stochastic fields and focused on using their geometric structure.
+We motivated the design of equivariant stochastic process models by showing the equivalence of equivariance in the posterior map to invariance in the prior data distribution.
+We fully characterised equivariant Gaussian processes and introduced Steerable Conditional Neural Processes, a model that combines recent developments in the design of equivariant neural networks with the family of Neural Processes.
+We showed that it improves results of previous models, even for data which shows inhomogeneities in space such as weather, and is more robust to perturbations in the underlying distribution.
+
+Our work shows that implementing general symmetries in stochastic process or meta-learning models could be a substantial step towards more data-efficient and adaptable machine learning models.
+Inference models which respect the structure of fields, in particular vector fields, could further improve the application of machine learning in natural sciences, engineering and beyond.

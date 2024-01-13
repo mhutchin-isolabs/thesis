@@ -1,0 +1,444 @@
+\section{Theory}
+\label{apdx:theory}
+
+\subsection*{Preliminaries on Gaussian measures}
+
+Since we are working in a setting beyond $\R^d$, we need a suitable notion of a multivariate Gaussian that can be employed in a coordinate-free manner.
+We employ the notion of a Gaussian in the sense of duality, given below.
+These notions are standard and classical, but since they are not well-known in machine learning we prove the necessary properties for completeness.
+
+\begin{definition}[Generalised Gaussianity]
+	\label{def:gauss-dual}
+	Let $(\Omega,\c{F},\P)$ be a probability space.
+	Let $V$ by a finite-dimensional real topological vector space, equipped with the standard topology, Borel $\sigma$-algebra, and the canonical pairing $\dualprod{\.
+		}{\.} : V^* \x V \-> \R$ with its topological dual $V^*$.
+	A random vector $v : \Omega \-> V$ is called \emph{Gaussian} if, for all $\phi \in V^*$, the random variable $\dualprod{\phi}{v} : \Omega \-> \R$ is univariate Gaussian.
+\end{definition}
+
+\paragraph{Remark.}
+It is not hard to show that in the setting of the definition above, the random variables~$\dualprod{\phi_1}{v}, \ldots, \dualprod{\phi_k}{v}$ are jointly Gaussian for any finite collection $\phi_1, \ldots, \phi_k \in V^*$.
+Indeed, this is equivalent to the Gaussianity of every linear combination $\alpha_1 \dualprod{\phi_1}{v} + \ldots + \alpha_k \dualprod{\phi_k}{v} = \dualprod{\alpha_1 \phi_1 + \ldots + \alpha_k \phi_k}{v}$, which is also ensured by the definition since $\alpha_1 \phi_1 + \ldots + \alpha_k \phi_k \in V^*$.
+
+We begin by showing that a Gaussian random vector in the sense of duality is characterized by a mean and a covariance, just like Gaussians in the standard, coordinate-dependent sense, starting with defining appropriate analogs of both notions in this setting.
+
+\begin{lemma}[Generlised Guassian momnets]
+	\label{thm:generalized_moments1}
+	For every Gaussian random vector $v$, there is a unique vector $\mu \in V$ and unique symmetric positive semi-definite bilinear form $k : V^* \x V^* \-> \R$ such that for all $\phi \in V^*$, we have $\E \dualprod{\phi}{v} = \dualprod{\phi}{\mu}$ and $k(\phi, \psi) = \Cov(\dualprod{\phi}{v},\dualprod{\psi}{v})$.
+	We say that $\mu$ is its \emph{mean} and $k$ is its \emph{covariance form}, and write $v \~[N](\mu, k)$.
+\end{lemma}
+
+\begin{proof}
+	Consider the map $\E\dualprod{\.
+		}{v} : V^* \-> \R$.
+	This map is a linear functional on the space $V^*$.
+	Since $V$ is finite-dimensional, $V$ is reflexive, so there is exactly one vector $\mu \in V$ such that \[ \dualprod{\phi}{\mu} = \E\dualprod{\phi}{v} \] for all $\phi\in V^*$.
+	Next, define $k$ as \[ k(\phi,\psi) = \Cov(\dualprod{\phi}{v},\dualprod{\psi}{v}) \] for all $\phi,\psi\in V^*$.
+	Clearly, $k$ is bilinear and positive semi-definite, that is $k(\phi, \phi) \geq 0$ for all $\phi \in V^*$.
+	Thus the claim follows.
+\end{proof}
+
+This tells us that every Gaussian random vector admits a mean and covariance; we now show that such Gaussians exist and are uniquely determined by this pair.
+Recall that for a measure $\pi$, and a measurable function $\phi$, the \emph{pushfoward measure} $\phi_* \pi$ is defined as $(\phi_*\pi)(A) = \pi(\phi^{-1}(A))$ for all measurable sets $A$.
+
+\begin{lemma}[Generalised Gaussian moments, reverse]
+	\label{thm:generalized_moments2}
+	For any vector $\mu \in V$ and any positive semi-definite bilinear form $k: V^* \x V^* \-> \R$, there exists a random vector $v \~[N](\mu, k)$.
+	Moreover, if $w: \Omega \-> V$ is another Gaussian random vector in the sense of Definition~\ref{def:gauss-dual} with $w \~[N](\mu, k)$, then $v$ and $w$ are identically distributed.
+\end{lemma}
+
+\begin{proof}
+	Choose a basis $(e_i)$ on $V$, and let $(e^i)$ be the dual basis.
+	Define the vector $\v\mu \in \R^d$ and matrix $\m{K} \in \R^{d\x d}$ by \[ \v\mu &= \begin{bmatrix} \dualprod{e^1}{\mu} \\ \vdots \\ \dualprod{e^d}{\mu} \end{bmatrix} & \m{K} &= \begin{bmatrix} k(e^1, e^1) & \hdots & k(e^1, e^d) \\ \vdots & \ddots & \vdots \\ k(e^d, e^1) & \hdots & k(e^d, e^d) \end{bmatrix} .
+	\]
+	By positive semi-definiteness of $k$, the matrix $\m{K}$ is a positive semi-definite matrix, so there exists a random vector $\v{v}\~[N](\v\mu,\m{K})$ in the classical Euclidean sense.
+	Let $\c{E} : V \-> \R^n$ be the continuous linear isomorphism induced by the basis and define \[ v = \c{E}^{-1}\v{v}.
+	\]
+
+	We claim that \begin{itemize} \item[(a)] $v$ is Gaussian, that is, if we test it against any covector, we obtain a univariate Gaussian.
+		\item[(b)] The mean vector of $v$ is $\mu$.
+		\item[(c)] The covariance form of $v$ is $k$.
+	\end{itemize}
+	To show (a), let $v^i$ denote the components of $\v{v}$ (scalar Gaussian random variables) so that $v = \sum_{i=1}^d v^i e_i$ and for any $\phi \in V^*$, write $\phi = \sum_{i=1}^d \phi_i e^i$, where $\phi_i = \dualprod[1]{\phi}{e_i}$.
+	Then we have \[ \dualprod[1]{\phi}{v} = \dualprod{\sum_{i=1}^d \phi_i e^i}{\sum_{j=1}^d v^j e_j} = \sum_{i=1}^d \sum_{j=1}^d \phi_i v^j \ubr{\dualprod[1]{e^i}{e_j}}_{\delta_{ij}} = \sum_{i=1}^d \phi_i v^i.
+	\]
+	Since each $v^i$ is a univariate Gaussian, the linear combination on the right hand side is also a univariate Gaussian, which proves (a).
+	To prove (b) and (c), we see that for any $\phi \in V^*$, \[ \E \dualprod[1]{\phi}{v} &= \E \dualprod[1]{\phi}{\sum_{i=1}^d v^i e_i} = \E \sum_{i=1}^d v^i \dualprod{\phi}{e_i} \\ &= \sum_{i=1}^d \ubr{\del{\E v^i}}_{\dualprod{e^i}{\mu}} \dualprod{\phi}{e_i} = \dualprod[1]{\phi}{\sum_{i=1}^d \dualprod[0]{e^i}{\mu} e_i} = \dualprod{\phi}{\mu}.
+	\]
+	Thus $v$ has the right mean.
+	Now take an additional $\psi \in V^*$ and write \[ \Cov\del[2]{\dualprod[1]{\phi}{v}, \dualprod[1]{\psi}{v}} &= \E \del{ \del{ \dualprod[1]{\phi}{v} - \dualprod[1]{\phi}{\mu} } \del{ \dualprod[1]{\psi}{v} - \dualprod[1]{\psi}{\mu} } } \\ &= \E \del[4]{ \sum_{i=1}^d \del{v^i - \dualprod{e^i}{\mu}} \dualprod{\phi}{e_i} } \del[4]{ \sum_{j=1}^d \del{v^j - \dualprod{e^j}{\mu}} \dualprod{\psi}{e_j} } \\ &= \sum_{i=1}^d \sum_{j=1}^d \dualprod{\phi}{e_i} \ubr{\E \del{\del{v^i - \dualprod[0]{e^i}{\mu}} \del{v^j - \dualprod[0]{e^j}{\mu}}}}_{k(e^i, e^j)} \dualprod{\psi}{e_j} \\ &= k\del[4]{\sum_{i=1}^d \dualprod{\phi}{e_i} e^i, \sum_{j=1}^d \dualprod{\psi}{e_j} e^j} = k(\phi, \psi), \] hence $v$ has the right covariance form.
+
+	Now let $w : \Omega \-> V$ be another Gaussian random vector with $w \~[N](\mu,k)$, and let $\pi_w$ be its pushforward measure.
+	Similarly, let $\pi_v$ be the pushforward measure of $v$.
+	Reversing the above argument, we see that pushforwards of measures $\pi_v$ and $\pi_w$ through $\c{E}$, which we denote by $\pi_{\v{v}}$ and $\pi_{\v{w}}$, are both Gaussian distributions (in the classical sense) in $\R^d$ with the same mean vectors $\v{\mu}$ and covariance matrices $\m{K}$.
+	Hence $\pi_{\v{v}} = \pi_{\v{w}}$ in distribution, but since $\c{E}$ is a measurable space isomorphism,\footnote{A measurable space isomorphism is a measurable bijection with a measurable inverse.
+	} we have $\pi_v = \pi_w$, which proves the claim.
+\end{proof}
+
+Lemmas~\ref{thm:generalized_moments1}~and~\ref{thm:generalized_moments2} show that a pair $\mu, k$ defines a unique probability distribution on $V$ which we call the Gaussian distribution with mean vector $\mu$ and covariance form $k$ on the vector space $V$ and denote by $\operatorname{N}(\mu, k)$.
+This establishes a notion of Gaussianity that is suitable and natural for describing finite-dimensional marginals in a coordinate-free manner.
+
+\subsection*{Existence and uniqueness (Proof of Theorem \ref{prop:riem-kern})}
+
+Having suitably defined a notion of Gaussianity, here we go on to prove that \emph{Gaussian vector fields} exist and are uniquely determined by their mean vector field and cross-covariance kernel.
+Our goal now is, from a cross-covariance kernel, to construct a projective family of finite-dimensional marginals.
+
+\begin{definition}[Tangent bundle sections]
+	Let $X$ be a smooth manifold.
+	Let \[ \Gamma_{\f{nns}}(TX) = \{f : X \-> TX : \proj_X \after f = \id_X\} \] where $\proj_X TX \to X$ maps $(\v{x},\v{v}) \mapsto \v{x}$, be the vector space of not necessarily smooth sections.
+\end{definition}
+
+\begin{definition}[Fibrewise bilinear]
+	We call a function $k : T^*X \x T^*X \-> \R$ \emph{fiberwise bilinear} if for all pairs of points $x, x' \in X$
+	\begin{align}
+		k(\kappa \alpha_x + \lambda \beta_x, \gamma_{x'}) & = \kappa k(\alpha_x, \gamma_{x'}) + \lambda k(\beta_x, \gamma_{x'}) \\
+		k( \alpha_x, \mu \gamma_{x'} + \nu \delta_{x'})   & = \nu k(\alpha_x, \gamma_{x'}) + \mu k(\alpha, \delta{x'})
+	\end{align}
+	holds for any $\alpha_x, \beta_x \in T^*_x X$, $\gamma_{x'}, \delta_{x'} \in T^*_{x'}
+		X$ and $\kappa, \lambda, \mu, \nu \in \R$ \end{definition}
+
+\begin{definition}[Positive semi-definite kernel] A symmetric fibrewise bilinear function $k: T^*X \times T^*X \to \R$ is called a \emph{positive semi-definite kernel} if for any set of covectors $\alpha_{x_1}, \ldots, \alpha_{x_n} \in T^*X$, we have \begin{align} \label{eqn:fiber_pd} \sum_{i=1}^n\sum_{j=1}^n k(\alpha_{x_i}, \alpha_{x_j}) \geq 0 \end{align}.
+	We call a symmetric fiberwise bilinear positive semi-definite function a \emph{cross-covariance kernel}.
+\end{definition}
+
+\begin{definition}[Cross-covariance kernel]
+	The \emph{cross-covariance kernel} of a Gaussian vector field is defined by the map
+	\begin{align}
+		\alpha_x, \beta_x \to \Cov \del{ \innerprod{\alpha_x}{f(\cdot, x)}, \innerprod{\beta}{f(\cdot, x)} }
+	\end{align}
+\end{definition}
+
+We show in the following example that this definition of the cross-covariance kernel is compatible with the notion of matrix-valued kernels used in classical vector-valued GPs and extends it naturally.
+
+\begin{example}[Euclidean case]
+	Consider $X = \R^d$ with a fixed inner product and an orthonormal basis, under which $\R^d$ is identified with $\del{\R^d}^*$.
+	Consider a matrix-valued kernel $\kappa: \R^d \x \R^d \-> \R^{d \x d}$ in the standard sense.
+	Let $k((x, v), (x', v')) = v^T \kappa(x, x') v'$.
+	Then $k: T^* \R^d \x T^* \R^d \-> \R$ is a cross-covariance kernel in the above sense.
+
+	Indeed, $k$ is symmetric and fiberwise bilinear.
+	Moreover, since $\kappa$ is positive semi-definite in the regular sense, we have that for arbitrary $x_1, \dots, x_n \in \R^d$, the $n d \x n d$ matrix \[ \Gamma(x_1, \dots, x_n) = \begin{bmatrix} \kappa(x_1, x_1) & \dots & \kappa(x_1, x_n) \\ \vdots & \ddots & \vdots \\ \kappa(x_n, x_1) & \dots & \kappa(x_n, x_n) \end{bmatrix} \] is positive semi-definite, meaning that for an arbitrary collection $v_1, \dots, v_n \in \R^d$, we have \[ 0 \leq \begin{bmatrix} v_1^T & \dots & v_n^T \end{bmatrix} \begin{bmatrix} \kappa(x_1, x_1) & \dots & \kappa(x_1, x_n) \\ \vdots & \ddots & \vdots \\ \kappa(x_n, x_1) & \dots & \kappa(x_n, x_n) \end{bmatrix} \begin{bmatrix} v_1 \\ \vdots \\ v_n \end{bmatrix} = \sum_{i=1}^n \sum_{j=1}^n \ubr{v_i^T \kappa(x_i, x_j) v_j}_{k((x_i, v_i), (x_j, v_j))}.
+	\]
+	Condition \ref{eqn:fiber_pd} thus follows, proving that this is a valid cross-covariance kernel.
+\end{example}
+
+We proceed to introduce the system of coordinate-free finite-dimensional marginals that will be used to construct the vector-valued GP.
+
+\begin{definition}[Guassian vector field finite-dimensional marginals]
+	Let $\mu \in \Gamma_{\f{nns}}(TX)$ and $k : T^*X \x T^*X \-> \R$ be a cross-covariance kernel.
+	For any $x_1,\ldots,x_n \in X$, let $V_{x_1,\ldots,x_n} = T_{x_1} X \oplus \ldots \oplus T_{x_n} X$ and $V^*_{x_1,\ldots,x_n} = T^*_{x_1} X \oplus \ldots \oplus T^*_{x_n} X$.
+	Define $\mu_{x_1,\ldots,x_n} \in V_{x_1,\ldots,x_n}$ and $k_{x_1,\ldots,x_n} : V_{x_1,\ldots,x_n}^* \x V_{x_1,\ldots,x_n}^* \-> \R$ by \[ \mu_{x_1,\ldots,x_n} &= (\mu(x_1),\ldots,\mu(x_n)) & k_{x_1,\ldots,x_n}(\alpha,\beta) &= \sum_{i=1}^n\sum_{j=1}^n k(\alpha_{x_i}, \beta_{x_j}) \] for any $\alpha = (\alpha_{x_1}, \ldots, \alpha_{x_n})$, $\beta = (\beta_{x_1}, \ldots, \beta_{x_n}) \in V^*_{x_1, \ldots, x_n}$.
+	We denote $\pi_{x_1,\ldots,x_n} = \operatorname{N}(\mu_{x_1,\ldots,x_n}, k_{x_1,\ldots,x_n})$ the system of marginals induced by $k$.
+\end{definition}
+
+We now prove existence and uniqueness of a measure on $\Gamma_{\f{nns}}(TX)$ from the Gaussian measures defined on $V_{x_1,\ldots,x_n}$ for any $\{x_1, \ldots, x_n\} \subseteq X$.
+We do this by means of the general form of the Kolmogorov extension theorem formulated below.
+Recall again that for a measure $\pi$, and a measurable function $\phi$, the \emph{pushfoward measure} $\phi_* \pi$ is defined as $(\phi_*\pi)(A) = \pi(\phi^{-1}(A))$ for all measurable sets $A$.
+
+\begin{result}[Kolmogorov Extension Theorem] \label{result:tao-appendix}
+	Let $(X_\alpha,\c{B}_\alpha,\c{O}_\alpha)_{\alpha\in A}$ be a family of measurable spaces, each equipped with a topology.
+	For each finite $B \subseteq A$, let $\mu_B$ be an inner regular probability measure on $X_B = \prod_{\alpha\in B} X_\alpha$ with $\sigma$-algebra $\c{B}_B$ and with the product topology $\c{O}_B$ obeying \[\label{project-measure-appendix} \del{\proj_C}_* \mu_B = \mu_C \] whenever $C \subseteq B \subseteq A$ are two nested finite subsets of $A$.
+	Here projections $\proj_C: X_B \-> X_C$ are defined by $\proj_C(\cbr{x_\alpha}_{\alpha \in B}) = \cbr{x_\alpha}_{\alpha \in C}$ and $\del{\proj_C}_*$ denotes the pushforward by $\proj_{C}$.
+	Then there exists a unique probability measure $\mu_A$ on $\c{B}_A$ with the property that $\del{\proj_B}_* \mu_A = \mu_B$ for all finite $B \subseteq A$.
+\end{result}
+
+\begin{proof}
+	\textcite[Theorem 2.4.3]{tao11}.
+\end{proof}
+
+By showing the existence of a probability measure on the space $\Gamma_{\f{nns}}(TX)$, one can start speaking about random variables $f : \Omega \-> \Gamma_{\f{nns}}(TX)$ with said measure as their distribution: these are the Gaussian vector fields we seek.
+However, in order to apply the above result, we first need to verify condition \eqref{project-measure-appendix}.
+This is done in the following.
+
+\begin{proposition}[Gaussian finite-dimensional marginals are projective] \label{prop:projective}
+	The family of measures $(\pi_{x_1,\ldots,x_n})_{\{x_1,\ldots,x_n\}\subseteq X}$ is a projective family in the sense that for any $\{x_1,\ldots,x_m\} \subseteq \{x_1,\ldots,x_n\} \subseteq X$, we have \[ (\proj_{x_1,\ldots,x_m})_* \pi_{x_1,\ldots,x_n} = \pi_{x_1,\ldots,x_m} \] where $\proj_{x_1,\ldots,x_m} : V_{x_1,\ldots,x_n} \-> V_{x_1,\ldots,x_m}$ is the canonical projection induced by the direct sum.
+\end{proposition}
+
+\begin{proof}
+	Take two random variables $v_{x_1,\ldots,x_n} : \Omega \-> V_{x_1, \ldots, x_n}$ and $v_{x_1,\ldots,x_m} : \Omega \-> V_{x_1, \ldots, x_m}$ with $v_{x_1,\ldots,x_n} \sim \pi_{x_1,\ldots,x_n}$ and $v_{x_1,\ldots,x_m} \sim \pi_{x_1,\ldots,x_m}$.
+	It suffices to show that for the random variable $v_{x_1,\ldots,x_n} : \Omega \-> V_{x_1, \ldots, x_m}$ we have \[ v_{x_1,\ldots,x_m} \stackrel{\d}{=} \proj_{x_1,\ldots,x_m} v_{x_1,\ldots,x_n} \] where $\stackrel{\d}{=}$ denotes the equality of distributions.
+	We first show that $\proj_{x_1,\ldots,x_m} v_{x_1,\ldots,x_n}$ is Gaussian.
+	Let $\phi\in V^*_{x_1,\ldots,x_m}$ and write \[ \dualprod{\phi}{\proj_{x_1,\ldots,x_m} v_{x_1,\ldots,x_n}} = \dualprod{(\phi, 0)}{v_{x_1,\ldots,x_n}} \] where $(\phi, 0) \in V^*_{x_1,\ldots,x_n}$ is the natural inclusion of $\phi \in V^*_{x_1,\ldots,x_m}$ in the space $V^*_{x_1,\ldots,x_n}$ by padding with the zero vector over all components of the direct sum whose indices are not $x_1,\ldots,x_m$.
+	This identity holds for all vectors, hence it holds for random vectors, and $\proj_{x_1,\ldots,x_m} v_{x_1,\ldots,x_n}$ is Gaussian.
+	Now, we compute its moments: write \[ \E\dualprod{\phi}{\proj_{x_1,\ldots,x_m} v_{x_1,\ldots,x_n}} &= \E\dualprod{(\phi, 0)}{v_{x_1,\ldots,x_n}} & \\ &= \dualprod{(\phi, 0)}{\mu_{x_1,\ldots,x_n}} \\ &= \dualprod{\phi}{\proj_{x_1,\ldots,x_m} \mu_{x_1,\ldots,x_n}} \\ &= \dualprod{\phi}{\mu_{x_1,\ldots,x_m}} \] where the last line follows by definition of $\mu_{x_1,\ldots,x_m}$, and \[ \Cov (\dualprod{\phi}{\proj_{x_1,\ldots,x_m} v_{x_1,\ldots,x_n}},\,&\dualprod{\psi}{\proj_{x_1,\ldots,x_m} v_{x_1,\ldots,x_n}}) \\ &= \Cov \left(\dualprod{(\phi, 0)}{v_{x_1,\ldots,x_n}},\dualprod{(\psi, 0)}{v_{x_1,\ldots,x_n}}\right) \\ &= k_{x_1,\ldots,x_n}((\phi, 0), (\psi, 0)) \\ &= k_{x_1,\ldots,x_m}(\phi, \psi) \] where the last line follows by bilinearity and the definition of $k_{x_1,\ldots,x_m}$.
+
+	So far we have shown that $\proj_{x_1,\ldots,x_m} v_{x_1,\ldots,x_n}$ is Gaussian over $V_{x_1,\ldots,x_m}$ and its mean vector and covariance form coincide with those of $v_{x_1,\ldots,x_m}$.
+	Hence, by the uniqueness part of Lemma~\ref{thm:generalized_moments2} we have $v_{x_1,\ldots,x_m} \stackrel{d}{=} \proj_{x_1,\ldots,x_m} v_{x_1,\ldots,x_n}$.
+	This finishes the proof.
+\end{proof}
+
+We are now ready to apply the Kolmogorov extension theorem to show existence of the desired distribution.
+
+\begin{proposition}[Existance of a unique measure on $\prod_{x\in X}
+			T_x X$] There exists a unique measure $\pi_\infty$ on the infinite product space $\prod_{x\in X} T_x X$.
+	\footnote{Note that this is the Tychonoff product of topological spaces rather than a direct product of linear spaces.}
+\end{proposition}
+
+\begin{proof}
+	We apply the prior result \cref{result:tao-appendix}.
+	Let $X$ be the index set, and take $(T_x X)_{x\in X}$, equipped with the standard topology and Borel $\sigma$-algebra as our measurable spaces.
+	For each finite $\{x_1,\ldots,x_n\}\subseteq X$, take $\pi_{x_1,\ldots,x_n}$ as our probability measure, and note that since each $\pi_{x_1,\ldots,x_n}$ is a finite measure on a finite-dimensional real vector space $V_{x_1,\ldots,x_n}$, it is automatically inner regular.
+	Moreover, the family of measures $(\pi_{x_1,\ldots,x_n})_{\{x_1,\ldots,x_n\}\subseteq X}$ is projective by Proposition \ref{prop:projective}.
+	The claim follows.
+\end{proof}
+
+This gives our GP as a measure on an infinite Cartesian space: we now map this measure into the space of sections.
+
+\begin{corollary}[Existance of a unique measure on $\Gamma_{\f{nns}}(TX)$] \label{thm:exists_unique}
+	There exists a unique measure $\pi_{\Gamma_{\f{nns}}(TX)}$ on $\Gamma_{\f{nns}}(TX)$ equipped with the pushforward $\sigma$-algebra.
+\end{corollary}
+
+\begin{proof}
+	Define the operator $\c{I} : \prod_{x\in X} T_x X \-> \Gamma_{\f{nns}}(TX)$ by \[ (\c{I}s)(x) = (x,\proj_xs) \] for all $x \in X$ and $s \in \prod_{x\in X} T_x X$.
+	Take $\pi_{\Gamma_{\f{nns}}(TX)} = \c{I}_* \pi_\infty$.
+\end{proof}
+
+This is the probability distribution of our Gaussian process.
+We are now ready to define Gaussian vector fields, and show that each Gaussian vector field in turn possesses a mean vector field and cross-covariance kernel.
+
+\begin{definition}[Gaussian vector field]
+	\label{def:vect-gp2}
+	Let $X$ be a manifold.
+	We say that a random vector field $f : \Omega \-> \Gamma_{\f{nns}}(TX)$ is \emph{Gaussian} if for any finite set of locations $(x_1,\ldots,x_n) \in X^n$, the random vector $f(x_1),\ldots,f(x_n) \in T_{x_1}X \oplus \ldots \oplus T_{x_n}X$ is Gaussian in the sense of Definition \ref{def:gauss-dual}.
+\end{definition}
+
+\begin{definition}[Momnet of a Gaussian vector field]
+	\label{def:mean-and-kernel}
+	Let $f : \Omega \-> \Gamma_{\f{nns}}(TX)$ be a Gaussian vector field.
+	Define $\mu$ to be the unique vector field for which, for any $x \in X$ and any $\phi \in T^*_{x}$, we have that \[ \dualprod{\phi}{\mu(x)} = \E \dualprod{\phi}{f(x)} .
+	\]
+	Next taking an additional $x' \in X$ and $\psi \in T^*_{x'}$, define the cross-covariance kernel $k$ by
+	\[
+		k(\phi,\psi) = \Cov(\dualprod{\phi}{f(x)},\dualprod{\psi}{f(x')})
+		.
+	\]
+\end{definition}
+
+Summarizing, we obtain the following claim.
+
+\begin{theorem}[Gaussian vector field unique characterisation]
+	Every pair consisting of a mean vector field and symmetric fiberwise bilinear positive definite function $k : T^*X \x T^*X \-> \R$, which we call a \emph{cross-covariance kernel}, defines a unique (distribution-wise) Gaussian vector field in the sense of Definition \ref{def:vect-gp2}.
+	Conversely, every Gaussian vector field admits and is characterized uniquely by this pair.
+\end{theorem}
+
+\begin{proof}
+	Corollary~\ref{thm:exists_unique}, Definition~\ref{def:vect-gp2}, and Definition~\ref{def:mean-and-kernel}.
+\end{proof}
+
+\subsection*{Embeddings (Proof of Proposition \ref{prop:embedding})}
+
+\begin{proposition}[Embedded Gaussian vector fields are vector-valued Gaussian processes]
+	Let $\f{emb} : X \-> \R^p$ be an embedding, let $f$ be a Gaussian vector field on $X$, and denote by $\v{f}_{\f{emb}} : \f{emb}(X) \-> \R^p$ its pushforward along the embedding, that is, for any $x \in X$,
+	\[
+		\v{f}_{\f{emb}}(\f{emb}(x)) = \d_x\!\f{emb}(f(x)),
+	\]
+	where $\d_x\!\f{emb} : T_x X \-> T_{\f{emb}(x)} \R^p$ is the differential of $\f{emb}$.
+	Then $\v{f}_{\f{emb}}$ is a vector-valued Gaussian process in the standard sense.
+\end{proposition}
+
+\begin{proof}
+	Let $x_1,\ldots,x_n \in X^n$ be a finite set of arbitrary locations.
+	In what follows, we use a slight abuse of notation by letting $x_i$ denote both $x_i$ and $\f{emb}(x_i)$ for simplicity.
+	We claim that the random vector $(\v{f}_{\f{emb}}(x_1), \ldots, \v{f}_{\f{emb}}(x_n)) \in \R^{np}$ is multivariate Gaussian, which is sufficient to prove our result.
+	Since $f$ is a Gaussian vector field, we have that \[ (f(x_1),\ldots,f(x_n)) \~[N](\mu_{x_1,\ldots,x_n},k_{x_1,\ldots,x_n}) \] is a Gaussian random vector on $T_{x_1} X \oplus \ldots \oplus T_{x_n} X$.
+	Now consider the map $\phi_{x_1,\ldots,x_n} : T_{x_1} X \oplus \ldots \oplus T_{x_n} X \-> T_{\f{emb}(x_1)} \R^p \oplus \ldots \oplus T_{\f{emb}(x_n)} \R^p \cong \R^{np}$ defined as \[ \phi_{x_1,\ldots,x_n}(f_{x_1}, \ldots, f_{x_n}) = (\d_{x_1}\!
+		\!\f{emb}(f_{x_1}), \ldots, \d_{x_n}\!\!\f{emb}(f_{x_n})),
+	\]
+	for all $(f_{x_1}, \ldots, f_{x_n}) \in T_{x_1}
+		X \oplus \ldots \oplus T_{x_n} X$, which is linear, owing to the linearity of $\d_x\!
+		\f{emb}$.
+	Since linear maps preserve Gaussianity, it follows that the vector $\phi_{x_1, \ldots, x_n} (f(x_1),\ldots,f(x_n)) = (\v{f}_{\f{emb}}(x_1), \ldots, \v{f}_{\f{emb}}(x_n)) \in \R^{np}$ is multivariate Gaussian and the claim follows.
+\end{proof}
+
+\subsection*{Coordinate Expressions (Proof of Proposition \ref{prop:matrix-representation})}
+
+We recall the definition of a \emph{frame} on $X$ and its dual object, namely, the \emph{coframe}.
+\begin{definition}
+	A \emphmarginnote{frame} $F$ on $X$ is defined as a collection $(e_i)_{i=1}^d$ of not necessarily smooth sections of $TX$ such that at each point $x \in X$, the vectors $(e_i(x))_{i=1}^d$ form a basis of $T_xX$.
+	The corresponding \emphmarginnote{coframe} $F^*$ is defined as a collection $(e^i)_{i=1}^d$ of not necessarily smooth sections of $T^*X$ such that $\left<e^i(x) | e_j(x)\right> = \delta_{ij}$ for all $x \in X$.
+\end{definition}
+
+\begin{proposition}[Coordinatised Gaussian vector fields are vector-valued Gaussian processes]
+	\label{prop:matrix-representation-appendix}
+	Let $f : \Omega \-> \Gamma_{\f{nns}}(TX)$ be a Gaussian vector field on $X$ with cross-covariance kernel ${k : T^*X \x T^*X \-> \R}$.
+	Given a frame $F = (e_1, \ldots, e_d)$ on $X$ and $F^* = (e^1, \ldots, e^d)$ be its coframe, define $f^i = \dualprod[1]{e^i}{f}$ for all $i = 1, \ldots, d$.
+	Then $\v{f} = (f^1, \ldots, f^d) : \Omega \x X \-> \R^d$ is a vector-valued GP in the usual sense with matrix-valued kernel ${\m{K}_F : X \x X \-> \R^{d \x d}}$ given by \[ \m{K}_F(x, x') = \begin{bmatrix} k(e^1(x), e^1(x')) & \dots & k(e^1(x), e^d(x')) \\ \vdots & \ddots & \vdots \\ k(e^d(x), e^1(x')) & \dots & k(e^d(x), e^d(x')) \end{bmatrix}.
+	\]
+	Conversely, given a vector-valued GP $\v{f} = (f^1, \ldots, f^d): \Omega \x X \-> \R^d$ and a frame $F = (e_1, \ldots, e_d)$ on $X$, $f(\cdot) := \sum_{i=1}^d f^i(\cdot) e_i(\cdot)$ defines a Gaussian vector field on $X$.
+\end{proposition}
+
+\begin{proof}
+	First, we note that $f^i(x) = \dualprod[1]{e^i(x)}{f(x)}$ are jointly Gaussian for all $i=1, \ldots, d$ and all $x \in X$.
+	Thus for any $x_1, \ldots, x_n \in X$, the vector $(\v{f}(x_1), \ldots, \v{f}(x_n)) \in \R^{n \x d}$ is multivariate Gaussian and therefore $\v{f}$ is a vector-valued GP in the usual sense.
+	Now for any $x, x' \in X$, the kernel of $\v{f}$ evaluated at these points reads \[ \m{K}_F(x, x') &= \begin{bmatrix} \Cov(f^1(x), f^1(x')) & \dots & \Cov(f^1(x), f^d(x')) \\ \vdots & \ddots & \vdots \\ \Cov(f^d(x), f^1(x')) & \dots & \Cov(f^d(x), f^d(x')) \end{bmatrix} \\ &= \begin{bmatrix} k(e^1(x), e^1(x')) & \dots & k(e^1(x), e^d(x')) \\ \vdots & \ddots & \vdots \\ k(e^d(x), e^1(x')) & \dots & k(e^d(x), e^d(x')) \end{bmatrix}, \] which follows from Definition \ref{def:mean-and-kernel}.
+	This concludes the first part of the proof.
+
+	To prove the converse direction, for any collection of points $x_1, \ldots, x_n \in X$, define the random vector $v_{x_1, \ldots, x_n} = (f(x_1), \ldots, f(x_n))$, where $f$ is given by $f(x) = \sum_{i=1}^d f^i(x) e_i(x)$.
+	Now for any $\phi_{x_1, \ldots, x_n} = (\phi_{x_1}, \ldots, \phi_{x_n}) \in V_{x_1, \ldots, x_n}^*$, we have \[ \dualprod[1]{\phi_{x_1, \ldots, x_n}}{v_{x_1, \ldots, x_n}} &= \sum_{i=1}^n \dualprod[1]{\phi_{x_i}}{f(x_i)} \\ &= \sum_{i=1}^n \dualprod[1]{\phi_{x_i}}{\sum_{j=1}^d f^j(x_i) e_j(x_i)} \\ &= \sum_{i=1}^n \sum_{j=1}^d f^j(x_i) \dualprod[1]{\phi_{x_i}}{e_j(x_i)}.
+	\]
+	Since $f^j(x_i)$ is univariate Gaussian for all $i = 1, \ldots, n$ and $j = 1, \ldots, d$, the above linear combination is univariate Gaussian and therefore $v_{x_1, \ldots, x_n}$ is Gaussian in the sense of Definition \ref{def:gauss-dual}.
+	Since $x_1, \ldots, x_n$ were chosen arbitrarily, $f$ is a Gaussian vector field.
+\end{proof}
+
+\subsection*{Gauge Independence (Proof of Corollary \ref{cor:equivariance})}
+
+Given two frames $F, F'$ on $X$, an abstract vector $f_x \in T_xX$ has two vector representations $\v{f}_x, \v{f}'_x$ in the respective frames.
+Recall that $F'$ is said to be obtained from $F$ by a \emphmarginnote{gauge transformation} with respect to a matrix field $\m{A}: X \-> \f{GL}(d, \R)$, if \[ \v{f}'_x = \m{A}(x) \v{f}_x \] holds for all $x \in X$, and we write $F' = \m{A}F$.
+In the following, we compute an explicit expression for the gauge-transformed frame $\m{A}F$ and its coframe.
+
+\begin{lemma}[Gauge transformation of basis vector fields]
+	Let $F = (e_1, \ldots, e_d)$ be a frame on $X$, $\m{A}: X \-> \f{GL}(d, \R)$ be a matrix field of gauge transformations, $\m{A}
+		F = (\eps_1, \ldots, \eps_d)$ be the gauge transformed frame as above and let $(\m{A}F)^* = (\eps^{1}, \ldots, \eps^{d})$ be the corresponding coframe.
+	Then we have the following explicit expressions \[ \eps_i(x) &= \sum_{j=1}^d e_j(x) [\m{A}^{-1}(x)]_{ji}, & \eps^i(x) &= \sum_{j=1}^d [\m{A}(x)]_{ij} e^j(x).
+	\]
+\end{lemma}
+\begin{proof}
+	For any $x \in X$, let $f_x \in T_xX$ be an abstract vector, which has the vector representations $\v{f}_x$ and $\m{A}(x)\v{f}_x$ in the frames $F$ and $\m{A}F$ respectively.
+	Letting $\v{f}_x = (f_x^1, \ldots, f_x^d)$, we have \[ f_x = \sum_{i=1}^d f_x^i e_i(x) = \sum_{i=1}^d \sum_{j=1}^d ([\m{A}(x)]_{ji}f_x^i) \eps_j(x) &= \sum_{i=1}^d f_x^i \del{\sum_{j=1}^d \eps_j(x) [\m{A}(x)]_{ji}}.
+	\]
+	Thus, $e_i(x) = \sum_{j=1}^d \eps_j(x) [\m{A}(x)]_{ji}$, or identically, $\eps_i(x) = \sum_{j=1}^d e_j(x) [\m{A}^{-1}(x)]_{ji}$.
+	We now claim that $\eps^i(x) = \sum_{j=1}^d [\m{A}(x)]_{ij} e^j(x)$, which we prove by showing that it satisfies the relation $\dualprod{\eps^i(x)}{\eps_j(x)} = \delta_{ij}$ as follows: \[ \dualprod{\eps^i(x)}{\eps_j(x)} &= \dualprod{\sum_{k=1}^d [\m{A}(x)]_{ik} e^k(x)}{\sum_{l=1}^d e_l(x) [\m{A}^{-1}(x)]_{lj}} \\ &= \sum_{k=1}^d \sum_{l=1}^d [\m{A}(x)]_{ik} \ubr{\dualprod{e^k(x)}{e_l(x)}}_{\delta_{kl}} [\m{A}^{-1}(x)]_{lj} \\ &= \sum_{k=1}^d [\m{A}(x)]_{ik} [\m{A}^{-1}(x)]_{kj} \\ &= \ubr{[\m{A}(x) \m{A}^{-1}(x)]_{ij}}_{\delta_{ij}}.
+	\]
+	This concludes the proof.
+\end{proof}
+
+The following is, then, straightforward to show.
+\begin{corollary}[Coordinatised cross-covariance kernels are gauge independent]
+	\label{cor:matrix-equivariance-appendix}
+	Let $F$ be a frame on $X$ and $\m{K}_F : X \x X \-> \R^{d\x d}$ be the corresponding matrix representation of a cross-covariance kernel $k: T^*X \x T^*X \-> \R$.
+	This satisfies the \emph{equivariance condition} \[\label{eq:matrix-equivariance} \m{K}_{\m{A} F}(x, x') = \m{A}(x) \m{K}_{F}(x,x') \m{A}(x')^T, \] where $\m{A} : X \-> \f{GL}(d, \R)$ is a gauge transformation applied to each point on $X$.
+	All cross-covariance kernels in the sense of Proposition~\ref{prop:riem-kern} arise this way.
+\end{corollary}
+\begin{proof}
+	Let $F = (e_1, \ldots, e_d)$ and $\m{A}F = (\eps_1, \ldots, \eps_d)$.
+	Then by the previous lemma, we have \[ [\m{K}_{\m{A}F}(x,x')]_{ij} &= k(\eps^i(x), \eps^j(x')) \\ &= \sum_{k=1}^d \sum_{l=1}^d k\left([\m{A}(x)]_{ik} \,e^k(x), [\m{A}(x')]_{jl} \,e^l(x')\right) \\ &= \sum_{k=1}^d \sum_{l=1}^d [\m{A}(x)]_{ik} \,[\m{K}_{F}(x,x')]_{kl} \,[\m{A}(x')]_{jl}, \] which proves the identity \eqref{eq:matrix-equivariance}.
+
+	The second claim is obvious: take some cross-covariance kernel in the sense of Proposition~\ref{prop:riem-kern} and some frame---this induces a gauge independent matrix-valued kernel that correspond to the cross-covariance kernel in the sense of Proposition~\ref{prop:riem-kern} from which it was constructed in the first place.
+\end{proof}
+
+\subsection*{Projected Kernels (Proof of Proposition \ref{prop:projected-kernel})}
+
+Here we formally describe the projected kernel construction.
+We start by noting some properties of the projection matrices associated with differentials of isometric embeddings.
+
+\begin{lemma}
+	\label{lemma:PTP=Gamma}
+	Let $(X, g)$ be a Riemannian manifold and $\f{emb} : X \-> \R^{d'}$ be an isometric embedding.
+	Given a frame $F = (e_1, \ldots, e_d)$ on $X$, denote by $\m{P}_{(\.)
+		} : X \-> \R^{d \x d'}$ its associated projection matrix, defined for every $x$ as the matrix representation of $\d_x\!\f{emb}$ within $F$,  and $\m{\Gamma} : X \-> \R^{d \x d}$, the matrix field representation of the Riemannian metric $g$, that is, $[\m{\Gamma}(x)]_{ij} = g_x(e_i(x), e_j(x))$ for all $i, j = 1, \ldots, d$ and $x \in X$.
+	Then we have \[ \m{P}_x\m{P}_x^T = \m{\Gamma}(x).
+	\]
+\end{lemma}
+\begin{proof}
+	Since the embedding is isometric, for any $v, v' \in T_x X$, we have \[ g_x(u,v) = \innerprod{\d_x\!
+			\f{emb}(v)}{\d_x\!\f{emb}(v')},
+	\]
+	which, in the corresponding vector representation with respect to a frame $F$, reads
+	\[
+		\v{v}^T \m{\Gamma}(x) \v{v}' = \innerprod{\m{P}_x^T \v{v}}{\m{P}_x^T \v{v}'} = \v{v}^T (\m{P}_x\m{P}_x^T) \v{v}'.
+	\]
+	for any $\v{v},\v{v}'$.
+	This implies that $\m{\Gamma}(x) = \m{P}_x\m{P}_x^T$ for all $x$ and proves the claim.
+\end{proof}
+
+We proceed to describe the projected kernel construction, which lets us transform a matrix-valued kernel on an ambient space into a cross-covariance kernel on the manifold.
+
+\begin{proposition}[Universality of projected kernels]
+	\label{prop:projected-kernel-appendix}
+	Let $(X, g)$ be a Riemannian manifold, $\f{emb} : X \-> \R^{d'}$ be an isometric embedding and $F$ be a frame on $X$.
+	We denote by $\m{P}_{(\.)
+		} : X \-> \R^{d \x d'}$ the associated projection matrix under $F$, and let $\v{f}' : X \-> \R^{d'}$ be any vector-valued Gaussian process with matrix-valued kernel $\v\kappa : X \x X \-> \R^{d' \x d'}$.
+	Then, the vector-valued function $\v{f} = \m{P}\v{f}' : X \-> \R^d$ defines a Gaussian vector field $f$ on $X$ using the construction in Proposition \ref{prop:matrix-representation-appendix}, whose kernel under the frame $F$ has matrix representation \[\label{eq:projection-relation-appendix} \m{K}_F(x, x') = \m{P}_x \v\kappa(x,x') \m{P}_{x'}^T.
+	\]
+	Moreover, all cross-covariance kernels $k : T^*X \x T^*X \-> \R$ arise this way.
+\end{proposition}
+
+\begin{proof}
+	We demonstrate the first part by computing the covariance of $\v{f}$.
+	For any $x, x' \in X$, we have \[ \m{K}_F(x, x')_{ij} &= \Cov(f^i(x), f^j(x'))\\ &= \Cov([\m{P}_x\v{f}'(x)]_i, [\m{P}_{x'} \v{f}'(x')]_j) \\ &= \sum_{k=1}^d \sum_{l=1}^d \Cov([\m{P}_x]_{ik} \,f'_k(x), [\m{P}_{x'}]_{jl} \,f'_l(x')) \\ &= \sum_{k=1}^d \sum_{l=1}^d \,[\m{P}_x]_{ik} \Cov(f_k'(x), f_l'(x')) \,[\m{P}_{x'}]_{jl} \\ &= \sum_{k=1}^d \sum_{l=1}^d \,[\m{P}_x]_{ik} \,\v\kappa(x, x')_{kl} \,[\m{P}_{x'}]_{jl}, \] which proves the identity \eqref{eq:projection-relation-appendix}.
+
+	Conversely, let $k : T^*X \x T^*X \-> \R$ be a cross-covariance kernel.
+	We first construct a matrix-valued kernel $\m{K}_F$ as in Proposition \ref{prop:matrix-representation-appendix}.
+	Define \[ \v\kappa(x, x') = \m{P}_x^T \m{K}_{\m{\Gamma}^{-1}F}(x,x') \m{P}_{x'}, \] where $\m{\Gamma} : X \-> \R^{d \x d}$ is the matrix field representation of the metric $g$ as given in the statement of Lemma \ref{lemma:PTP=Gamma}.
+	Then by the same lemma, we have \[ \m{P}_x \v\kappa(x,x') \m{P}_{x'}^T &= (\m{P}_x \m{P}_x^T) \m{K}_{\m{\Gamma}^{-1}F}(x,x') (\m{P}_{x'} \m{P}_{x'}^T) \\ &= \m{\Gamma}(x) \m{K}_{\m{\Gamma}^{-1}F}(x,x') \m{\Gamma}(x') \\ &= \m{K}_{F}(x,x'), \] where we used that $\m{\Gamma}(x)^T = \m{\Gamma}(x)$ and Corollary \ref{cor:matrix-equivariance-appendix} to deduce the last equality.
+	Thus, any cross-covariance kernel $k$ can be obtained from a matrix-valued kernel $\v\kappa$ on the ambient space and therefore we do not lose any generality by working with the latter.
+\end{proof}
+
+\section{Experimental details}
+\label{apdx:experiments}
+
+Here, we include further details about the experiments conducted in Section \ref{sec:examples}.
+All experiments were conducted on a single workstation with 64GB RAM, using CPU-based computation.
+
+\subsection*{Fourier features for product kernels}
+
+Throughout this work we use the sparse GP formulation of \textcite{wilson2020pathwise,wilson2021pathwise} to work with GPs.
+In order to apply this method we need to be able to sample a Fourier feature approximation of the kernel.
+For stationary kernels supported on Euclidean space one typically uses a random Fourier feature (RFF) approximation \cite{rahimi_random_2008} \[ \tl{f}(\cdot) &= \frac{1}{\sqrt{l}}\sum_{i=1}^l w_i \phi_i(x), & w_i &\~[N](0,1), \] where the $\phi_i$ are Fourier basis functions sampled from the spectral density of the kernel---see \textcite{sutherland15} for details.
+The resulting random function $\tl{f}(\cdot)$ is then a Gaussian process with zero mean and kernel $l^{-1} \m{\Phi}(\cdot)^T \m{\Phi}(\cdot)$, where $\m{\Phi}$ is a vector of the $l$ basis functions.
+This approximates the true GP with a dimension-free error of the order $l^{-1/2}$.
+
+For kernels supported on compact spaces we use a Karhunen–Lo\'eve (KL) expansion.
+If we have a Gaussian process $f(\cdot)$ on a compact space, then we can optimally approximate this function (in terms of $L^2$-norm) by truncating its KL expansion \[ f(\cdot) &= \sum_{i=1}^\infty w_i \psi_i(x) & w_i &\~[N](0,\lambda_i) \] where $\phi_i, \lambda_i$ are the $i$\textsuperscript{th} eigenfunctions and values of the kernel, $\int_X \psi(x) k(x, \cdot) \d x = \lambda_i \psi_i (\cdot)$, sorted in descending order of the eingenvalues.
+For the squared exponential and Mat\'ern kernels on compact manifolds, these eigenfunctions are the eigenfunctions of the Laplacian of the manifold, and the eigenvalues are given by a transformation of the Laplacian eigenvalues \cite{Borovitskiy2020}.
+
+The question then arises of what to do in the case of a product of kernels, each taking as input some different space, where some are suited to RFF approximation, and some to a KL approximation.
+We propose the following approach.
+\1 All the RFF-appropriate kernels can be combined into one approximation by sampling the basis functions from the product measure of their Fourier transforms.
+\2 All of the KL-appropriate kernels can be combined into one approximation by computing the $k$ largest eigenvalues of the product manifold the kernels are defined on.
+If we have two compact manifolds with eigenvalue-function pairs $(\alpha_i, f_i(\cdot))_{i=1}^\infty$ and $(\beta_j, g_j(\cdot))_{j=1}^\infty$, then the eigenvalue-function pairs on the product manifold are $(\alpha_i + \beta_j, f_i(\cdot) g_j(\cdot))_{i,j=1}^{\infty,\infty}$ \cite{canzani_analysis_nodate}.
+We can repeatedly apply this to find the approximation for the kernel on arbitrary products of compact manifolds.
+\3 Define the Fourier feature approximation of the combination of this RFF and KL approximations as
+\[ f(e, m) = \frac{1}{\sqrt{l}}\sum_{i=1}^l \sum_{j=1}^k w_{i,j} \phi_i(e) \psi_j(m) \quad \quad w_{i,j} \sim \mathcal{N}(0, \lambda_j) \]
+where $e, m$ are the inputs to the RFF and KL appropriate kernels respectively, $\phi_i$ are the basis functions of the Euclidean kernels sampled from the product measure, and $\lambda_j, \psi_j,$ are the product eigenpairs on the product manifold.
+In the limit of infinite basis functions in both $l$ and $k$ this will give the correct kernel, and therefore the true prior.
+\0
+
+\subsection*{Dynamics experiment}
+
+In this experiment, the base manifold is the state space of the single pendulum system.
+The position of the pendulum is represented by a single angle in $[0, 2\pi)$, which corresponds to the circle $\bb{S}^1$.
+The momentum lies then in its respective cotangent space.
+The phase space is the product of these, $\bb{S}^1 \x \R^1$.
+
+This product manifold naturally embeds into $\R^3$ by embedding the circle into $\R^2$ in the canonical way, and leaving $\R^1$ unchanged.
+The embedding is then \[ \f{emb}(q,p) = (\cos{q}, \sin{q}, p), \] where $q$ is the position and $p$ is the angular momentum.
+The global projection matrix given by \[ \m{P}_{q, p} = \begin{bmatrix} -\sin{q} & \cos{q} & 0 \\ 0 & 0 & 1 \end{bmatrix}.
+\]
+The Euclidean vector kernel we use is a separable kernel, produced by taking the product of an intrinsic squared exponential manifold kernel with the identity matrix to give a matrix valued kernel, \( \v\kappa = k_{\bb{S}^1 \x \R^1} \m{I}_{3 \x 3} \).
+The intrinsic manifold kernel is produced by the product of a typical Euclidean squared exponential kernel with a squared exponential kernel defined on $\bb{S}^1$ by \textcite{Borovitskiy2020}, so that \(k_{\bb{S}^1 \x \R^1} = k_{\bb{S}^1} k_{\R^1}\).
+The length scales of these kernels are set to 0.3 and 1.2 respectively, and the amplitude set to give $k(x,x) = 1$.
+
+To learn the dynamics, we initialise the system at two start points, and evolve the system using leapfrog integration.
+From these observations of position, we backward Euler integrate the momentum of the system, $p_i = \frac{1}{2} ml( q_{i+1} - q_i)$, and from these position-momentum trajectories we estimate observations of the dynamics field \[ \nabla_t ({q, p})_i = \del{\frac{q_{i+1} - q_i}{h} , \frac{p_{i+1} - p_i}{h}} \] where $h = 0.01$ is the step size.
+Using these observations, we condition a sparse GP using all the data using the analytic expression for the sparse posterior kernel matrix.
+The result is an estimate of the system dynamics with suitable uncertainty estimates.
+In order to compute rollouts of these dynamics, we follow \textcite{wilson2020pathwise,wilson2021pathwise} and employ linear-time pathwise sampling of this sparse GP together with leapfrog integration \cite{hairer06}.
+
+\subsection*{Wind interpolation experiment}
+In this experiment, the base manifold is the sphere $\bb{S}^2$, which we embed naturally in $\R^3$ as \[ \f{emb}(\phi, \theta) = (\cos{\theta} \sin{\phi}, \,\sin{\theta} \sin{\phi}, \,\cos{\phi}), \] where we used spherical coordinates $\phi \in (0, \pi), \theta \in [0, 2 \pi)$ to parametrise the sphere \[ (\phi, \theta) \in \{(0,0)\} \cup \{(\pi, 0)\} \cup (0, \pi) \x [0, 2 \pi) \] We choose a frame $F = (e_1, e_2)$, where $e_1(\phi, \theta) = \hat{\phi}$ and $e_2(\phi, \theta) = \hat{\theta}$ are the unit vectors in the $\phi, \theta$ directions respectively for all $\phi \in (0, \pi), \theta \in (0, 2 \pi)$.
+The choice of points on the North and South poles determines the choice of gauge at these points.
+The corresponding orthonormal projection matrix reads \[\label{sphere-projection} \m{P}_{\phi, \theta} = \begin{bmatrix} \cos{\theta} \cos{\phi} & \sin{\theta}\cos{\phi} & -\sin{\phi} \\ -\sin{\theta} & \cos{\theta} & 0 \end{bmatrix}, \] for all points, with the choice of $\theta=0$ giving the choice of frame at the poles.
+
+For the data, we used the following publicly available data sets.
+\1* The ERA5 atmospheric reanalysis data.
+In particular, the variables \textsc{10m-u-component-of-wind} and \textsc{10m-v-component-of-wind} from the \textsc{reanalysis-era5-single-levels} dataset for the date 01/01/2019 09:00-10:00, regridded from 0.25$^\circ$ to 5.625$^\circ$ resolution using python's \textsc{xESMF} package.
+\2* The WeatherBench dataset \cite{rasp2020weatherbench}, which can be found at \url{https://github.com/pangeo-data/WeatherBench}.
+In particular the variables \textsc{10m-u-component-of-wind} and \textsc{10m-v-component-of-wind} at 5.625$^\circ$ resolution for the entire available period 1979/01/01 - 2018/12/31.
+\3* The Aeolus trajectory data, which can be read using Python's \textsc{skyfield}
+API from Aeolus' two-line element set given below.
+\\
+\textsc{1 43600U 18066A   21153.73585495  .00031128  00000-0  12124-3 0  9990} \\
+\textsc{2 43600  96.7150 160.8035 0006915  90.4181 269.7884 15.87015039160910}
+\0*
+Instead of using actual observations from the Aeolus satellite, we generated our own by interpolating the ERA5 data along the satellite track, whose locations are available minutely.
+This is so that we can compare the predictions against the ground truth to assess the performance.
+We use one hour of data, and hence 60 data points, to perform a spatial interpolation instead of a space-time interpolation, which is reasonable as the atmosphere hardly moves during that time period at the spatial scale of interest.
+Moreover, we include the weekly climatology as prior information (computed by taking the temporal average of historical global wind patterns for each of the 52 calendar weeks during the period 1979-2018 in WeatherBench), which captures general circulation patterns such as trade winds in the poles and the equator.
+This is equivalent to training the GP on the difference of the wind velocity from the weekly climatology.
+
+For the kernel, we used Mat\'ern-3/2 on the sphere and the Euclidean space (see \textcite{Borovitskiy2020} for the construction of Mat\'ern kernels on the sphere), where the prior amplitude parameter was set to a fixed value (11.5 in the spherical case and 2.2 in the Euclidean case) and the length scale parameter was learnt from data.
+We have tried to learn the length scale initially by fitting the GP on the satellite observations and maximizing the marginal likelihood.
+However, this gave an unrealistically small value, likely due to the observations being too sparse: so, instead, we first trained a sparse GP on 150 randomly chosen time slices of the weatherbench historical wind reanalysis data and minimizing the Kullback--Leibler divergence of the variational distribution from the posterior (using the Adam optimizer with learning rate \texttt{1e-2}).
+The mean of the learnt length scales of the 150 samples was then used as the final length scale.
+Denoting by $k_{\bb{S}^2}$ the scalar Mat\'ern-3/2 kernel on the sphere, we construct a matrix-valued kernel on the ambient space $\R^3$ by taking $\v\kappa = k_{\bb{S}^2} \m{I}_{3 \x 3}$ as in the dynamics experiment, which is then used to construct the projected kernel with the projection given by \eqref{sphere-projection}.
+Finally, we note that when fitting the GP on the satellite observations, we use an observation error of 1.7m/s, which reflects the sum of the random and systematic error in the Aeolus satellite, as detailed by its technical specifications \cite{aeolus-info}.

@@ -1,0 +1,8 @@
+modifyLineBreaks:
+    oneSentencePerLine:
+        manipulateSentences: 1
+
+# replacements:
+#     -
+#     this: \M
+#     that: \c{M}

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="6cm"
+   height="3cm"
+   viewBox="0 0 60 30"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3 (1:1.3+202307231459+0e150ed6c4)"
+   sodipodi:docname="boundary_charts2.svg"
+   inkscape:export-filename="boundary_charts2.pdf"
+   inkscape:export-xdpi="600"
+   inkscape:export-ydpi="600"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="2.8284271"
+     inkscape:cx="83.438601"
+     inkscape:cy="29.875262"
+     inkscape:window-width="1920"
+     inkscape:window-height="1043"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <marker
+       style="overflow:visible"
+       id="marker10"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Rounded arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="m -0.21114562,-4.1055728 6.42229122,3.21114561 a 1,1 90 0 1 0,1.78885438 L -0.21114562,4.1055728 A 1.236068,1.236068 31.717474 0 1 -2,3 v -6 a 1.236068,1.236068 148.28253 0 1 1.78885438,-1.1055728 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path10" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="RoundedArrow"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Rounded arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="m -0.21114562,-4.1055728 6.42229122,3.21114561 a 1,1 90 0 1 0,1.78885438 L -0.21114562,4.1055728 A 1.236068,1.236068 31.717474 0 1 -2,3 v -6 a 1.236068,1.236068 148.28253 0 1 1.78885438,-1.1055728 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path8" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="RoundedArrow-2"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Rounded arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="m -0.21114562,-4.1055728 6.42229122,3.21114561 a 1,1 90 0 1 0,1.78885438 L -0.21114562,4.1055728 A 1.236068,1.236068 31.717474 0 1 -2,3 v -6 a 1.236068,1.236068 148.28253 0 1 1.78885438,-1.1055728 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path8-6" />
+    </marker>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <circle
+       style="fill:none;fill-opacity:0.3;stroke:#1f77b4;stroke-width:0.3;stroke-linecap:round;stroke-dasharray:none"
+       id="path1"
+       cx="12.6"
+       cy="15.1"
+       r="12.5" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.307836;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#RoundedArrow)"
+       d="M 33.27404,25.216043 H 58.542507"
+       id="path4" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.266127;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#RoundedArrow-2)"
+       d="M 45.780087,25.075156 V 6.1898933"
+       id="path4-8" />
+    <path
+       id="path5"
+       style="fill:#ff7f0e;fill-opacity:0.3;stroke:#ff7f0e;stroke-width:0.300003;stroke-linecap:round;stroke-dasharray:1.80002, 1.80002"
+       d="m 40.802196,25.074089 c 0,-1.786361 0.952999,-3.437025 2.500011,-4.330206 1.547011,-0.89318 3.453009,-0.89318 5.000021,0 1.547011,0.893181 2.50001,2.543845 2.50001,4.330206"
+       sodipodi:nodetypes="cssc" />
+    <path
+       id="path5-4"
+       style="fill:#ff7f0e;fill-opacity:0.3;stroke:none;stroke-width:0.300003;stroke-linecap:round;stroke-dasharray:1.80002, 1.80002"
+       d="M 45.802372 20.074227 C 44.939121 20.074227 44.075771 20.297364 43.302266 20.743953 C 42.899346 20.976583 42.537701 21.261351 42.221712 21.585763 A 5.000021 5.0000906 0 0 0 45.802372 23.113318 A 5.000021 5.0000906 0 0 0 49.382515 21.585763 C 49.066527 21.261351 48.705399 20.976583 48.302478 20.743953 C 47.528973 20.297364 46.665624 20.074227 45.802372 20.074227 z " />
+    <path
+       id="path5-4-1"
+       style="fill:none;fill-opacity:0.3;stroke:#ff7f0e;stroke-width:0.300003;stroke-linecap:round;stroke-dasharray:1.80002, 1.80002"
+       d="m 42.221712,21.585763 c 0.93819,0.971996 2.22976,1.522996 3.58066,1.527555 1.35072,-0.0047 2.642078,-0.555687 3.580143,-1.527555"
+       sodipodi:nodetypes="ccc" />
+    <ellipse
+       style="fill:#ff7f0e;fill-opacity:0.3;stroke:#ff7f0e;stroke-width:0.3;stroke-linecap:round;stroke-dasharray:1.80000201,1.80000201;stroke-dashoffset:0"
+       id="path6"
+       cx="38.991776"
+       cy="12.964537"
+       rx="5.000021"
+       ry="5.0000906" />
+    <path
+       id="path6-2"
+       style="fill:#ff7f0e;fill-opacity:0.3;stroke:none;stroke-width:0.3;stroke-linecap:round;stroke-dasharray:1.8, 1.8;stroke-dashoffset:0"
+       d="M 42.251685 13.112895 A 5.000021 5.0000906 0 0 0 37.284546 17.650602 A 5.000021 5.0000906 0 0 0 38.991935 17.964795 A 5.000021 5.0000906 0 0 0 43.959591 13.414685 A 5.000021 5.0000906 0 0 0 42.251685 13.112895 z " />
+    <path
+       id="path6-2-1"
+       style="fill:none;fill-opacity:0.3;stroke:#ff7f0e;stroke-width:0.3;stroke-linecap:round;stroke-dasharray:1.8, 1.8;stroke-dashoffset:0"
+       d="m 43.959591,13.414685 c -0.547375,-0.199321 -1.125371,-0.301454 -1.707906,-0.30179 -2.5779,0.0059 -4.728754,1.97081 -4.967139,4.537707"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#RoundedArrow-2)"
+       d="m 22.054095,23.360897 c 8.169012,4.91286 12.08278,-4.765336 18.480212,-1.011347"
+       id="path11"
+       sodipodi:nodetypes="cc" />
+    <circle
+       style="font-variation-settings:normal;fill:#1f77b4;fill-opacity:0.3;stroke:#1f77b4;stroke-width:0.3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:1.79999337,1.79999337;stroke-dashoffset:0;stroke-opacity:1;marker-start:url(#RoundedArrow-7);stop-color:#000000"
+       id="path7-4"
+       cx="11.950949"
+       cy="13.279141"
+       r="8.9851875" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.179058;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker10)"
+       d="m 19.22778,7.9130567 c 7.647064,-1.9220432 9.432596,-1.270493 14.690371,1.894219"
+       id="path9"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#RoundedArrow-2)"
+       d="m 42.071711,15.002502 c 4.750345,0.167998 6.056346,2.881549 5.932952,5.511146"
+       id="path12"
+       sodipodi:nodetypes="cc" />
+    <path
+       id="path7-4-7"
+       style="fill:#1f77b4;fill-opacity:0.3;stroke:#1f77b4;stroke-width:0.3;stroke-linecap:round;stroke-dasharray:1.79999, 1.79999;marker-start:url(#RoundedArrow-7);stop-color:#000000"
+       d="M 18.290873 10.263456 A 12.142865 12.142935 0 0 0 6.1484619 22.406384 A 12.142865 12.142935 0 0 0 6.7448079 26.108484 A 12.5 12.5 0 0 0 12.599748 27.599866 A 12.5 12.5 0 0 0 25.09976 15.099854 A 12.5 12.5 0 0 0 24.738542 12.120707 A 12.142865 12.142935 0 0 0 18.290873 10.263456 z " />
+  </g>
+</svg>

@@ -1,0 +1,41 @@
+\documentclass[tikz,border=1pt]{standalone}
+\usepackage{pgfplots, tikz}
+\pgfplotsset{yticklabel style={text width=3em,align=right}}
+\tikzstyle{arrow} = [thick,->,>=stealth]
+\begin{filecontents}{vector_field.dat}
+x y u v
+0 -1  0.5 1 
+0.5 1 0.25 1
+-0.5 0 0.5 0.15
+\end{filecontents}
+\begin{filecontents}{rot_vector_field.dat} 
+x y u v
+0. 2.5 0.5 1 
+-2 3 0.25 1
+-1 2  0.5 0.15
+\end{filecontents}
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[title=\Large
+ $\mathbf{x}\mapsto h\mathbf{x}+\mathbf{x}'$\\$\Rightarrow F(\mathbf{x})\mapsto hF(\mathbf{x})$]
+\addplot[blue,quiver={u=\thisrow{u},v=\thisrow{v}},-stealth] table {vector_field.dat};
+\addplot[red,quiver={u=-\thisrow{v},v=\thisrow{u}},-stealth] table {rot_vector_field.dat};
+\end{axis}
+\begin{scope}
+	    \node (A) at (3.5, 2) {};
+	    \node (B) at (2.3, 4.2) {};
+ \draw[arrow] (A) --node [left=0em] {
+ \begin{tabular}{c}\Large
+ $g=t_{\mathbf{x}}h$ 
+ \end{tabular}}
+ (B);
+ \end{scope}
+\end{tikzpicture}
+\end{document}
+
+%\begin{filecontents}{rot_vector_field.dat}
+%x y u v
+%1 0 0.5 1 
+%-1 0.5 0.25 1
+%0 -0.5  0.5 0.15
+%\end{filecontents}

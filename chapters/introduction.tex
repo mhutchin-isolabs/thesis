@@ -1,0 +1,44 @@
+\lettrine{T}{he} last decade has seen an explosion in the research and application of machine learning algorithms to both academic and real-world problems. The majority of this progress has been driven by the rise of \emphmarginnote[0.5\baselineskip]{deep learning} as an effective tool to learn to approximate very complex functions from data via gradient based optimisation. Although the roots of deep learning are much older, the beginning of the modern rise can be seen in the period 2010-2012 as algorithms were revisited and made significantly cheaper to run by reducing hardware costs, and engineering efforts to have them run on GPUs. GPUs are more appropriate devices for large liner algebra computations than CPUs, and these are the core computations used in deep learning. These early efforts in deep learning focused on for the most part \emphmarginnote{classification} and \emphmarginnote[2.5\baselineskip]{regression} problems, where we attempt to associate with some input \(\v{x}\) some output \(y\). Examples include sorting images into categories, or predicting the .... From the probabilistic perspective, we are aiming to learn the distribution \(p(y | X=x)\) from some 
+
+Since then, a number of notable instances of deep learning approaches to problems have arisen with results significantly beyond previous "classical" approaches in the respective settings, or solving probelms previously thought out of reach.
+In particular, deep learning algorithms have seen significant success in very high dimension problems for which we have access to a wealth of data.
+This success is built on the backbone of good \emph{feature-learning} and iterative gradient based optimisation of over-parametrised models using \emph{backpropagation} techniques.
+
+Like all attempts to solve high-dimension problems, deep learning encounters the \emphmarginnote{curse of dimensionality} - as the dimension of the problem scales, even with large amounts of data available to the practitioner, the volume of space grows faster, and so even large datasets end up being sparse in the observation space of the problem.
+Similar to many classical approaches, one key way to surpass this curse is the exploitation of the \emph{structure} of the problem at hand.
+Typically the space of possible solutions to a problem can be reduced significantly by placing conditions on our solutions through the structure of the problem.
+Examples include spatial invariance of image recognition, resulting in CNNs, temporal invariance of time series problems, leading to RNNs, and invariance to the order of inputs, leading to GNNs and transformers.
+
+Beyond the supervised tasks of classification and regression, \emphmarginnote{generative modelling} has become a mainstay of deep learning approaches. The fundamental challenge of generative modelling is similar to that of \emphmarginnote{density estimation}. From a probabilistic perspective, these two settings are identical. Both focus on fitting model \(p(\v{x})\) to samples we have obtained from \(p\), and both aim to generate new samples \(\v{x} \sim p(\v{x})\).
+
+The field of \emphmarginnote{geometric deep learning} \cite{bronstein2017geometric,bronstein2021geometric} has two main goals.
+Firstly to unify these seemingly disparate architectures into a single framework, understanding the invariances in terms of group theory, and providing tools for building new architectures with the desired invariances.
+The second is to consider problems where the data does not live in Euclidean space.
+Many deep learning algorithms inherently assume the data they process live in typical Euclidean space.
+In many applications however, particularly in physical and social science domains, data lives on non-flat manifolds, or discrete structures such as a graphs.
+Extending algorithms to data that live in these non-standard spaces is key to learning well on these problems.
+While these two goals might seem initially disparate, they have significant overlap on many common spaces, particularly homogenous spaces of Lie groups, such as the sphere, torus, projective spaces and hyperbolic spaces.
+
+
+% In this dissertation I present 4 projects working in this intersection.
+
+% In \textcite{hutchinson2021lietransformer} we explore the construction of transformer models that are equivariant to the actions of Lie groups on homogenous spaces of the group.
+% This includes a very wide class of manifolds of common interest.
+% Euclidean space is a homogenous space of the special Euclidean group (\(\R^n \cong SE(3) / SO(3) \)), and the sphere is a homogenous space of \(SO(3)\), \(\c{S}^2 \cong SO(3) / SO(2)\).
+% Prior to this work many papers had focused on producing convolution models equivariant to this class of group action, but this was one fo the first to consider transformer architectures, concurrent to \textcite{fuchs2020se} which focused on \(\R^3\) only.
+
+% In \textcite{holderith2021equivariant} we investigate modelling random fields over Euclidean space.
+% We first characterise the notion of invariant and equivariant stochastic processes in this setting, and prove the correspondence between an invariant prior and an equivariant posterior map when performing conditioning of these stochastic processes.
+% We then characterise the space of mean functions and covariance kernels for Gaussian processes over random fields in Euclidean space and show some examples.
+% Finally we develop a conditional neural process model for modelling stochastic fields over Euclidean space that is equivariant to special euclidean transformations.
+
+% In \textcite{hutchinson2021vector} we look at constructing Gaussian processes on tensor bundles on manifolds.
+% The most immediate application of this is to constructing Gaussian processes on vector fields on manifolds, suitable for modelling for example wind data or the gradient fields of Hamiltonians defining the dynamics of dynamical systems.
+% The construction however extends to higher order tensor bundles.
+% While the existence of such kernels is known in the mathematics literature \cite{berline_heat_2003}, the known kernels are computationally intractable.
+% We provide simple and computationally easy to use kernels based on a combination of intrinsic manifold scalar kernels and a projection of the manifolds into Euclidean space.
+
+% Finally in \textcite{de2022riemannian} we study diffusion based generative models in the setting of Riemannian manifolds.
+% Diffusion generative models represent the state of the art in generative modelling, but had previously been limited to modelling distributions on Euclidean space.
+% Many types of data, in particular data in the natural sciences, however live on Riemannian manifolds and as such extending diffusion models to this setting is natural.
+% We define a class of noising SDEs suitable for doing diffusion models on manifolds, prove a novel time-reversal result for SDEs on manifolds, introduce a scheme for sampling discretisation of SDEs on manifolds and provide new score matching losses for the manifolds context.

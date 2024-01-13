@@ -1,0 +1,187 @@
+\documentclass[11pt]{book}
+
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{lettrine}
+\usepackage{libertine}
+
+
+\PassOptionsToPackage{table,dvipsnames,x11names,svgnames}{xcolor}
+\usepackage[commands,environments,enumerate,theorems,citations,authoryear,notes,a4paper,oxfordcolors]{MJH}
+\newcommand{\selfnote}[1]{\marginnote{\textcolor{red}{#1}}}
+\bibliography{bibliography}
+
+
+% \usepackage[commands,environments,enumerate,citations,authoryear,a4paper,oxfordcolors]{MJH}
+% \newcommand{\emphmarginnote}[1]{\emph{#1}}
+
+\usepackage{booktabs} % nice tables
+\usepackage{multirow} % multirow cells
+
+% TODO: Maybe remove?
+\usepackage{bm}
+\usepackage{bbm} % blackboard bold numbers
+\usepackage{pifont} % http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}} % check mark
+\newcommand{\xmark}{\ding{55}} % cross mark
+
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+
+\usepackage{subcaption}
+\usepackage{cleveref} % auto type refs
+\usepackage[inline]{enumitem} % for inline lists
+
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{etoolbox}
+
+% SI Units
+\usepackage{siunitx}
+
+
+% TO REMOVE
+\usepackage{wrapfig}
+\usepackage{scalefnt}
+\usepackage{adjustbox}
+\usepackage{makecell}
+\renewcommand\theadalign{lc}
+\usepackage{upgreek}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=oxprimary,
+    filecolor=oxprimary,      
+    urlcolor=oxprimary,
+    citecolor=oxprimary,
+}
+
+
+\renewcommand*{\mkbibnamegiven}[1]{
+	\ifitemannotation{highlight}
+	{\textbf{#1}}{#1}
+}
+\renewcommand*{\mkbibnamefamily}[1]{
+	\ifitemannotation{highlight}
+	{\textbf{#1}}{#1}
+}
+
+% Group commands
+\def\grp{G}
+\def\hrp{H}
+
+% Manifold based typeset commnds
+\newcommand{\XM}{\XM}
+\newcommand{\TM}{\mathrm{T}\mathcal{M}}
+\newcommand{\FM}{\mathrm{F}\mathcal{M}}
+\newcommand{\OM}{\mathrm{O}\mathcal{M}}
+
+
+
+% SDE terms
+\def\carrechamp{\Upsilon}
+
+
+\DeclareMathOperator{\intersect}{intersect}
+\DeclareMathOperator{\reflect}{reflect}
+\DeclareMathOperator{\paralleltransport}{parallel transport}
+
+% Suppress font info warnings after 1st occurrence
+\makeatletter
+\let\old@font@info\@font@info
+\def\@font@info#1{%
+\expandafter\ifx\csname\detokenize{#1}\endcsname\relax
+  \old@font@info{#1}%
+\fi
+\expandafter\xdef\csname\detokenize{#1}\endcsname{}%
+}
+\makeatother
+
+
+\title{Deep and Probabilistic Geometric Machine Learning}
+\author{Michael Hutchinson}
+\date{November 2022}
+
+
+\begin{document}
+
+\begin{titlepage}
+	\maketitlehooka
+	\centering
+	\huge
+	\null
+	\vfill
+	\thetitle
+	\par
+	\vfill
+	\includegraphics[width=0.3\textwidth]{images/branding/oxford-logo.pdf}
+	\par
+	\vfill
+	\LARGE
+	\theauthor
+	\par
+	\large
+	Department of Statistics
+	\par
+	University of Oxford \par \vfill \null \vfill a dissertation submitted for \par Doctor of Philosophy \par \strut \par \thedate \par \vfill \null \maketitlehookd \end{titlepage}
+
+\setcounter{tocdepth}{0} \tableofcontents
+
+\listoffigures
+
+\chapter{Introduction}
+\input{chapters/introduction.tex}
+
+\chapter{Background}
+\input{chapters/background.tex}
+
+\part{Generative modelling on finite-dimension manifolds}
+
+\chapter{Generative modelling on Riemannian manifolds}
+\input{raw_papers/riemannian_score_based_generative_modelling_main.tex}
+
+\chapter{Generative modelling on constrained domains}
+\input{raw_papers/score_based_modelling_for_constrained_domains_main.tex}
+
+\chapter{Metropolis sampling for generative modelling on constrained domains}
+\input{raw_papers/metropolis_sampling_for_constrained_diffusion_main.tex}
+
+\part{Generative modelling on infinite-dimension Manifolds}
+
+\chapter{Gaussian Vector Fields on Riemannian Manifolds}
+\input{raw_papers/gaussian_random_vector_fields_on_riemannian_manifolds_main.tex}
+
+\chapter{SteerableCNPs - Neural Process models for stochastic fields}
+\input{raw_papers/equivariant_learning_of_stochastic_fields_main.tex}
+
+\chapter{Geometric Neural Diffusion Processes}
+\input{raw_papers/geometric_neural_diffusion_processes_main.tex}
+
+\chapter{Conclusion}
+
+\newpage
+
+\printbibliography
+
+\appendix
+
+\chapter{Riemannian Score-Based Generative Modelling}
+\input{raw_papers/riemannian_score_based_generative_modelling_appendix.tex}
+
+\chapter{Generative modelling on constrained domains}
+\input{raw_papers/score_based_modelling_for_constrained_domains_appendix.tex}
+
+\chapter{Metropolis sampling for generative modelling on constrained domains}
+\input{raw_papers/metropolis_sampling_for_constrained_diffusion_appendix.tex}
+
+\chapter{Gaussian Vector Fields on Riemannian Manifolds}
+\input{raw_papers/gaussian_random_vector_fields_on_riemannian_manifolds_appendix.tex}
+
+\chapter{SteerableCNPs - Neural Process models for stochastic fields}
+\input{raw_papers/equivariant_learning_of_stochastic_fields_appendix.tex}
+
+\chapter{Diffusion processes on feature fields and (some name tbd)}
+\input{raw_papers/geometric_neural_diffusion_processes_appendix.tex}
+
+\end{document}

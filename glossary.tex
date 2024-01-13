@@ -1,0 +1,7 @@
+\newcommand*{\newnotation}[3][]{%
+  \newglossaryentry{#2}{type=notation,%
+    name={$#3$},text={#3},description={#1}}%
+}
+
+\newnotation[A space]{X}{X}
+\newnotation[The topology on \(X\).]{topoX}{\topo{X}}
