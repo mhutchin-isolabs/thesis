@@ -80,7 +80,7 @@ We find that in practice consistency can be well learned from data see \Cref{sec
 
 \textbf{Noising process.}
 We assume we are given a data process $(\v{Y}_0(x))_{x \in \c{X}}$.
-Given any $x=(x^1, \dots, x^n) \in \c{X}^n$, we consider the following forward \emph{noising} process $(\v{Y}_t(x))_{t \geq 0} \triangleq (\v{Y}_t(x^1),\dots,\v{Y}_t(x^n))_{t \geq 0} = (\v{Y}_t^1,\dots,\v{Y}_t^n)_{t \geq 0} \in \c{Y}^n$ defined by the following multivariate SDE \begin{equation}\label{eq:forward_SDE_sp} \end{equation} where $\mathrm{K}(x,x)_{i,j} = k(x^i, x^j)$ with $k:\c{X} \times \c{X} \rightarrow \R$ a kernel
+Given any $x=(x^1, \dots, x^n) \in \c{X}^n$, we consider the following forward \emph{noising} process $(\v{Y}_t(x))_{t \geq 0} \triangleq (\v{Y}_t(x^1),\dots,\v{Y}_t(x^n))_{t \geq 0} = (\v{Y}_t^1,\dots,\v{Y}_t^n)_{t \geq 0} \in \c{Y}^n$ defined by the following multivariate SDE \begin{equation}\label{eq:forward_SDE_sp} \end{equation} where $\mathrm{K}(x,x)_{i,j} = k(x^i, x^j)$ with $k:\c{X} \times \c{X} \rightarrow \R$ a kernel 
 
 In the specific instance where $k(x,x') = \delta_{x}(x')$, then the limiting process $\v{Y}_\infty$ is simply \emph{white noise}, whilst other choices such as the squared-exponential or Mat\'ern kernel would lead to the associated Gaussian limiting process $\v{Y}_\infty$.
 Note that the \emph{white noise} setting is not covered by the existing theory of functional diffusion models, as a Hilbert space and a square integral kernel are required, see ~\textcite{kerrigan2022Diffusion} for instance.
@@ -119,7 +119,7 @@ First, we recall such a necessary and sufficient condition for Gaussian processe
 	\end{align}
 \end{proposition}
 Trivial examples of $\mathrm{E}(n)$-equivariant kernels include diagonal kernels $k = k_0 \m{I}$ with $k_0$ invariant~\parencite{holderrieth2021equivariant}, but see \cref{sec:app_vec_gp} for non trivial instances introduced by \textcite{macedo2010learning}.
-Building on \cref{prop:inv_gp}, we then state that our introduced neural diffusion process
+Building on \cref{prop:inv_gp}, we then state that our introduced neural diffusion process 
 
 \begin{proposition}{Invariant neural diffusion process~\parencite{yim2023se}.
 	}{}
@@ -154,7 +154,8 @@ A stochastic process with distribution $\mu$ given a context $\mathcal{C}$ is sa
 \begin{proposition}{Equivariant conditional process.}{}
 	\label{prop:equiv_posterior}
 \end{proposition}
-Originally stated in \cite{holderrieth2021equivariant} in the case where the process is over functions of the form $f: \R^n\to \R^d$ and marginals with density w.r.t.\ the Lebesgue measure, we prove \cref{prop:equiv_posterior} for SPs over generic fields on manifolds in terms only of the measure of the process (\cref{sec:equiv_posterior}).
+Originally stated in \cite{holderrieth2021equivariant} in the case where the process is over functions of the form $f: \R^n\to \R^d$ and marginals with density w.r.t.
+\ the Lebesgue measure, we prove \cref{prop:equiv_posterior} for SPs over generic fields on manifolds in terms only of the measure of the process (\cref{sec:equiv_posterior}).
 
 \subsection{Conditional sampling}
 \label{sec:conditional_sampling}
@@ -249,7 +250,8 @@ Several approaches have been considered for conditional sampling.
 \cite{pidstrigach2023InfiniteDimensional,bond2023infty} modify the reverse diffusion to introduce a guidance term, while
 \cite{dutordoir2022Neural,kerrigan2022Diffusion} use the replacement
 method.
-Finally \cite{phillips2022spectral} amortise the score function w.r.t.\ the conditioning context.
+Finally \cite{phillips2022spectral} amortise the score function w.r.t.
+\ the conditioning context.
 
 \section{Experimental results} \label{sec:experiments-gndp}
 Our implementation is built on $\texttt{jax}$~\cite{jax2018github}, and is publicly available at \url{https://github.com/cambridge-mlg/neural_diffusion_processes}.

@@ -263,7 +263,7 @@
 \newcommand{\@pd}[3][]{\frac{\partial^{#1}{#2}}{\partial{#3}^{#1}}} % fix commath bad display style
 \newcommand{\pd}{\@ifnextchar\bgroup{\expandafter\@pd}{\@ifnextchar[{\expandafter\@pd}{\partial}}} % partial derivative with smart multi-index notation
 
-\newcommand{\widebar}[1]{\overline{#1}} % wide bar over symbols
+% \newcommand{\widebar}[1]{\overline{#1}} % wide bar over symbols
 \renewmathcommand{\k}{\Bbbk} % blackboard bold k
 \newcommand{\conj}[1]{\overline{#1}} %complex conjugate
 \newcommand{\cl}[1]{\overline{#1}} % closure
@@ -358,8 +358,21 @@
 \newcommand{\groupSPD}[1][n]{\mathbb{S}^{#1}_+}
 % \newcommand{\groupSPD}{\mathbb{S}^n_+}
 
-
 \newcommand{\ito}{{I}t\^o{}}
+
+% short arrows
+\newcommand{\vsra}{{\ensuremath{%
+  \mathchoice{\includegraphics[height=1.1ex]{figures/symbols/veryshortrightarrow.pdf}}
+    {\includegraphics[height=1.1ex]{figures/symbols/veryshortrightarrow.pdf}}
+    {\includegraphics[height=.8ex]{figures/symbols/veryshortrightarrow.pdf}}
+    {\includegraphics[height=.5ex]{figures/symbols/veryshortrightarrow.pdf}}
+}}}
+\newcommand{\vsla}{{\ensuremath{%
+  \mathchoice{\includegraphics[height=1.1ex]{figures/symbols/veryshortleftarrow.pdf}}
+    {\includegraphics[height=1.1ex]{figures/symbols/veryshortleftarrow.pdf}}
+    {\includegraphics[height=.8ex]{figures/symbols/veryshortleftarrow.pdf}}
+    {\includegraphics[height=.5ex]{figures/symbols/veryshortleftarrow.pdf}}
+}}}
 
 \fi
 

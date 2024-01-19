@@ -103,7 +103,8 @@ Note that by letting $f = \det(\mathfrak{g})^{1/2}$ we get that $\mathcal{A}^\st
 We know that the Brownian motion targets $ \det(\mathfrak{g})^{1/2}$.
 Therefore in order to correct and sample from the uniform distribution we consider the Langevin dynamics \begin{equation} \mathrm{d} \v{X}_t = -\mathrm{grad} \log (\det(\mathfrak{g})^{1/2})(\v{X}_t) \mathrm{d} t + \sqrt{2} \mathrm{d} \v{B}_t^\c{M} .
 \end{equation}
-Note that in the previous equation $\mathrm{grad}$ and $\v{B}_t^{\c{M}}$ are defined w.r.t. the metric of the manifold.
+Note that in the previous equation $\mathrm{grad}$ and $\v{B}_t^{\c{M}}$ are defined w.r.t.
+the metric of the manifold.
 In local coordinates we have \begin{equation} \label{eq:forward_process} \mathrm{d} \v{X}_t = \{b -\mathrm{grad} \log (\det(\mathfrak{g})^{1/2})\}(\v{X}_t) \mathrm{d} t + \sqrt{2} \mathfrak{g}(\v{X}_t)^{-1/2} \mathrm{d} \v{B}_t .
 \end{equation}
 where $b = \{b^i\}_{i=1}^d$ is given in \eqref{eq:def_drift}.
@@ -173,11 +174,13 @@ We recall that the total variation of a finite (not necessarily non-negative) me
 
 Note that the convergence result in total variation could be improved.
 In particular, quantitative geometric results could be derived.
-We finish this section, by applying results from the Malliavin calculus to show that for any $t > 0$, $\v{X}_t$ admits a density w.r.t. the Lebesgue measure.
+We finish this section, by applying results from the Malliavin calculus to show that for any $t > 0$, $\v{X}_t$ admits a density w.r.t.
+the Lebesgue measure.
 
 \begin{proposition}
 	Assume \textup{\Cref{assum:log_barrier_method}}.
-	Then, for any $t \geq 0$, $\v{X}_t$ admits a smooth density $p_t$ w.r.t. the Lebesgue measure.
+	Then, for any $t \geq 0$, $\v{X}_t$ admits a smooth density $p_t$ w.r.t.
+	the Lebesgue measure.
 \end{proposition}
 
 \begin{proof}
@@ -312,14 +315,16 @@ In particular, for the Langevin dynamics (\ref{eq:langevin_hessian_manifold}) wh
 
 We conclude this section with a derivation of the equivalent ODE.
 We highlight that the ODE representation for reflected diffusion models was first derived in \cite{lou2023reflected}.
-We recall that if $\c{M} \subset \R^d$ is a bounded open set with smooth boundary then \cite[Theorem 2.2]{burdzy2004heat} ensures that the reflected Brownian motion admits a density w.r.t. the Lebesgue measure.
+We recall that if $\c{M} \subset \R^d$ is a bounded open set with smooth boundary then \cite[Theorem 2.2]{burdzy2004heat} ensures that the reflected Brownian motion admits a density w.r.t.
+the Lebesgue measure.
 We denote $p_t$ this smooth density.
 
 \begin{proposition}
 	Assume that $\c{M} \subset \R^d$ is a bounded open set with smooth boundary.
 	Assume that $(t,x) \mapsto \nabla \log p_t(x)$ is smooth on $\cobr{0,+\infty} \times \partial \c{M}$.
 	Let $(\bar{\v{B}}_t)_{t \geq 0}$ be the reflected Brownian motion with $\bar{\v{B}}_0 \sim p_0$ smooth and supported in $\c{M}$.
-	Let $(\v{X}_t)_{t \geq 0}$ be given for any $t \geq 0$ by $\mathrm{d} \v{X}_t = \tfrac{1}{2} \nabla \log p_t(\v{X}_t) \mathrm{d} t$ and $\v{X}_0 \sim p_0$, where $p_t$ denotes the density of $\bar{\v{B}}_t$ w.r.t. the Lebesgue measure for any $t > 0$.
+	Let $(\v{X}_t)_{t \geq 0}$ be given for any $t \geq 0$ by $\mathrm{d} \v{X}_t = \tfrac{1}{2} \nabla \log p_t(\v{X}_t) \mathrm{d} t$ and $\v{X}_0 \sim p_0$, where $p_t$ denotes the density of $\bar{\v{B}}_t$ w.r.t.
+	the Lebesgue measure for any $t > 0$.
 	Then for any $t \in \cbr{0,T}$, $\bar{\mathbf{B}}_t$ and $\mathbf{Y}_t$ have the same distribution.
 \end{proposition}
 
@@ -487,7 +492,7 @@ While it is conceivable that a diffusion model could derive such constraints fro
 
 For this purpose, we adopt the distance constraint formulation from \textcite{han2006inverse} and interpret the backbone as a spatial chain with $N$ spherical joints and fixed-length links (see~\Cref{fig:cyclic_peptide} for an illustration).
 After selecting a suitable anchor point, the geometry of the polypeptide chain is fully specified by \begin{enumerate*}[label=(\alph*)] \item the set of link lengths $\mathbf{\ell}=\{\ell_j\}_{j=1}^{N}$, \item the set of vectors $\mathbf{r}=\{r(1,j)\}_{j=2}^{N}$ between the anchor point and each atom in the chain, and \item the set of dihedral angles\end{enumerate*} $$ \mathbf{T}=\left\{\arccos\left(\frac{\vert\langle r(1,j)\times r(1,j+1), r(1,j+1)\times r(1,j+2)\rangle\vert}{\vert r(1,j)\times r(1,j+1)\vert\vert r(1,j+1) r(1,j+2)\vert}\right)\right\}_{j=2}^{N-2}\in\mathbb{T}^{N-3} $$ between any three consecutive vectors.
-After specifying the fixed bond lengths $\ell$, including an arbitrary anchor point distance $d_\text{anchor}=\ell_N=r(1,N)$, the set of valid vectors $\mathbf{r}$ is given by the convex polytope $\mathbb{P}\subseteq\mathbb{R}^3$ defined by the following linear constraints (see~\Cref{fig:convex_polytope_loop_illustration} for an illustration):
+After specifying the fixed bond lengths $\ell$, including an arbitrary anchor point distance $d_\text{anchor}=\ell_N=r(1,N)$, the set of valid vectors $\mathbf{r}$ is given by the convex polytope $\mathbb{P}\subseteq\mathbb{R}^3$ defined by the following linear constraints (see~\Cref{fig:convex_polytope_loop_illustration} for an illustration): 
 
 $$ \begin{array}{rcl} r(1,3) & \leq & \ell_1+\ell_2 , \\ -r(1,3) & \leq & -\left|\ell_1-\ell_2\right|, \\ \end{array} $$ $$ \left.
 	\begin{array}{rcl}
@@ -568,7 +573,7 @@ For all experiments we use 100,000 samples to compute the MMD.
 
 \paragraph{Hypercube}
 
-The hypercube is a specific instance of a convex polytope where the affine constraints are given by the following coefficients:
+The hypercube is a specific instance of a convex polytope where the affine constraints are given by the following coefficients: 
 
 \begin{equation} A = \begin{pmatrix} 1 & \dots & 0 \\ -1 & \dots & 0 \\ \vdots & \ddots & \vdots \\ 0 & \dots & 1 \\ 0 & \dots & -1 \\ \end{pmatrix}, \;\; b = \begin{pmatrix} 1 \\1\\\vdots\\1\\1 \end{pmatrix}.
 \end{equation}
@@ -599,7 +604,7 @@ $$
 
 \paragraph{Simplex $\Delta^n$.}
 
-Similarly, to parameterise the simplex as a convex polytope we set the matrix and constraints to be given by
+Similarly, to parameterise the simplex as a convex polytope we set the matrix and constraints to be given by 
 
 \begin{equation} A = \begin{pmatrix} -1 & 0 & \dots & 0 \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \dots & -1 \\ 1 & 1 & 1 & 1 \end{pmatrix}, \;\; b = \begin{pmatrix} 0 \\\vdots\\0\\1 \end{pmatrix}.
 \end{equation}

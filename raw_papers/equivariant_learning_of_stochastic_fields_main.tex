@@ -1,7 +1,7 @@
 
-The work in this section has been published as
+The work in this section has been published as 
 
-\fullcite{holderith2021equivariant}
+\fullcite{holderith2021equivariant} 
 
 and is presented here with minor modification for clarity.
 The work was done collaboratively, and my personal contributions are as follows \1 Initiation of the project, and definition of the scope.
@@ -133,7 +133,7 @@ In this work, we are interested in learning not only a single feature field $F$ 
 For example, $P$ could describe the distribution of all wind maps over a specific region.
 If $F\sim P$ is a random feature field and $g\in G$, we can define the transformed stochastic process $g.P$ as the distribution of $g.F$.
 We say that $P$ is \emph{$G$-invariant} if \begin{align} P=g.P \forall g\in G \end{align} From a sample $F\sim P$, our model observes only a finite set of input-output pairs $Z=\{(\mathbf{x}_i,\mathbf{y}_i)\}_{i=1}^{n}$ where $\mathbf{y}_i$ equals $F(\mathbf{x}_i)$ plus potentially some noise.
-The induced representation naturally translates to a transformation of $Z$ under $G$ via \begin{align} \label{eq:trans_data_sets} g.Z :=\{(g\mathbf{x}_i,\rho(h)\mathbf{y}_i)\}_{i=1}^{n} \end{align}
+The induced representation naturally translates to a transformation of $Z$ under $G$ via \begin{align} \label{eq:trans_data_sets} g.Z :=\{(g\mathbf{x}_i,\rho(h)\mathbf{y}_i)\}_{i=1}^{n} \end{align} 
 
 In a Bayesian approach, we can consider $P$ as a prior and given an observed data set $Z$ we can consider the posterior, i.e. the conditional distribution $P_{Z}$ of $F$ given $Z$.
 As the next proposition shows, equivariance of the posterior is the other side of the coin to invariance of the prior.
@@ -180,7 +180,7 @@ Much of the standard Gaussian Process and kernel machinery, e.g. Bochner's theor
 Conditional Neural Processes were introduced as an alternative model to Gaussian processes.
 While GPs require us to explicitly model the prior $P$ and can perform exact posterior inference, CNPs aim to learn an approximation to the posterior map ($Z\mapsto P_Z$) directly, only implicitly learning a prior from data.
 Generally speaking, the underlying architecture is a model which returns a mean function $\mathbf{m}_{Z}:\R^n\to\R^d$ and a covariance function $\mathbf{\Sigma}_{Z}:\R^n\to\R^{d\times d}$ given a context set $Z$.
-For simplicity, it makes the assumption that given $Z$ the functions values $F(\mathbf{x})$ are conditionally independent and normally distributed \begin{align} \label{eq:CNP_model} F(\mathbf{x})\sim\mathcal{N}(\mathbf{m}_{Z}(\mathbf{x}),\mathbf{\Sigma}_{Z}(\mathbf{x})),\quad F(\mathbf{x})\indep F(\mathbf{x}') \; | \; Z \end{align}
+For simplicity, it makes the assumption that given $Z$ the functions values $F(\mathbf{x})$ are conditionally independent and normally distributed \begin{align} \label{eq:CNP_model} F(\mathbf{x})\sim\mathcal{N}(\mathbf{m}_{Z}(\mathbf{x}),\mathbf{\Sigma}_{Z}(\mathbf{x})),\quad F(\mathbf{x})\indep F(\mathbf{x}') \; | \; Z \end{align} 
 
 Let us call a model as in \cref{eq:CNP_model} a \emph{conditional process model}.
 As we did with $F\in\mathcal{F}_\rho$, we can specify a law of transformation by considering $\mathbf{m}_Z$ as a \emph{mean feature field} in $\mathcal{F}_{\rho_m}$ and $\mathbf{\Sigma}_Z$ as a \emph{covariance feature field} in $\mathcal{F}_{\rho_{\Sigma}}$ for appropriate fiber representations $\rho_m,\rho_\Sigma$.
@@ -423,7 +423,7 @@ While the specific choice of these areas was arbitrary, we tried to pick two top
 Every sample $F$ from these data sets corresponds to a weather map consisting of temperature, pressure and wind in the region at one single point in time.
 We give the models the task to infer a wind vector field from a data $Z$ of pairs $(\mathbf{x},\mathbf{y})$ where $\mathbf{y}=(y^t,y^p,y^w_1,y^w_2)\in\R^4$ gives the temperature, pressure and wind at point $\mathbf{x}$.
 In particular, the output features are only a subset of the input features.
-To deal with such a task, we can simply pick different input and output fiber representations for the SteerCNP: \begin{align*} \rho_\text{in}=\rho_{triv}\oplus\rho_{triv}\oplus\rho_{\m{I}},\quad \rho_\text{out}=\rho_{\m{I}} \end{align*}
+To deal with such a task, we can simply pick different input and output fiber representations for the SteerCNP: \begin{align*} \rho_\text{in}=\rho_{triv}\oplus\rho_{triv}\oplus\rho_{\m{I}},\quad \rho_\text{out}=\rho_{\m{I}} \end{align*} 
 
 \textbf{Performance on US data.
 }

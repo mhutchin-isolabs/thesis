@@ -49,9 +49,9 @@ Group representations are a powerful tool to describe the algebraic properties o
 Then a \textbf{representation} of a group $H$ is a group homomorphism $\rho:\hrp\to \f{GL}(V)$.
 For $V=\R^d$, this is the same as saying a group representation is a map $\rho: \hrp \to \R^{d\times d}$ such that \begin{align*} \rho(h_1\cdot h_2)=\rho(h_1) \rho(h_2) \end{align*} where the right hand side is typical matrix multiplication.
 
-The simplest group representation is the \hypertarget{trivialrep}{\textit{trivial representation}} $\rho_{triv}$ which maps all elements of the group to the identity, \begin{align} \rho_{triv}(h) =\mathbf{1}_{d} \quad\text{for all }h\in H \end{align}
+The simplest group representation is the \hypertarget{trivialrep}{\textit{trivial representation}} $\rho_{triv}$ which maps all elements of the group to the identity, \begin{align} \rho_{triv}(h) =\mathbf{1}_{d} \quad\text{for all }h\in H \end{align} 
 
-\textbf{Orthogonal and unitary groups}
+\textbf{Orthogonal and unitary groups} 
 
 An \hypertarget{def:orthogonal_representation}{\textit{orthogonal representation}} is a representation $\rho:H\to\f{GL}(\R^d)$ such that $\rho(h)\in O(d)$ for all $h\in H$.
 For \textit{compact groups} $H$, every representation is equivalent to an orthogonal representation \parencite[Theorem II.1.7]{GroupRepRef}.
@@ -71,7 +71,7 @@ Given two representations, $\rho_1: \hrp \to \f{GL}(V_1)$ and $\rho_2: \hrp \to 
 To make this concrete for \cref{prop:SteerCNP}, we have $V_1,V_2=\R^d$ and the tensor product becomes $V_1\otimes V_2=\R^{d\times d}$ with $v_1\otimes v_2=v_1v_2^T$ the outer product for all $v_1,v_2\in\R^d$.
 Setting $\rho=\rho_1=\rho_2$, the tensor product representation $\rho\otimes\rho$ becomes \begin{align} [\rho\otimes\rho](h)(v_1\otimes v_2)=(\rho(h)v_1)(\rho(h)v_2)^T =\rho(h)v_1v_2^T\rho(h)^T \end{align} Therefore, $\rho_{\Sigma}$ as defined in \cref{eq:tensor_product_representation_sigma} is the tensor product $\rho\otimes\rho$.
 We can return such representations to the more usual matrix-acting-on-vector format by vectorising these expressions.
-Using the identity $\f{vec}(ABC) = [C^T \otimes_{kron} A] \f{vec}(B)$, with $\otimes_{kron}$ being the usual Kronecker product and $\f{vec}(A)$ being the column-wise vectorisation of $A$ we get \begin{align} \f{vec}(\rho(h) A \rho(h)^T) = [\rho(h) \otimes_{kron} \rho(h)] \f{vec}(A) \end{align}
+Using the identity $\f{vec}(ABC) = [C^T \otimes_{kron} A] \f{vec}(B)$, with $\otimes_{kron}$ being the usual Kronecker product and $\f{vec}(A)$ being the column-wise vectorisation of $A$ we get \begin{align} \f{vec}(\rho(h) A \rho(h)^T) = [\rho(h) \otimes_{kron} \rho(h)] \f{vec}(A) \end{align} 
 
 \section{Proofs} \subsection{Proof of \cref{prop:inv_dist_leads_to_equiv} } \label{proof:invprior} \begin{proof} Let us be given a distribution $P$ over functions $\mathcal{F}_\rho$ and $F\sim P$.
 	Define $g.P$ to be the distribution of $g.F$.
@@ -107,7 +107,7 @@ Using the identity $\f{vec}(ABC) = [C^T \otimes_{kron} A] \f{vec}(B)$, with $\ot
 	\end{enumerate}
 
 	\textbf{Invariance implies equivariance.}
-	Assuming $P$ is $G$-invariant, we can use \cref{eq:invariant_density} to get \begin{align*} \lambda_{\mathbf{x}_{1:k},g\mathbf{x}_{1:l}'}^P(\mathbf{y}_{1:k},\rho(h)\mathbf{y}_{1:l}')=\lambda_{g^{-1}\mathbf{x}_{1:k},\mathbf{x}_{1:l}'}^P(\rho(h)^{-1}\mathbf{y}_{1:k},\mathbf{y}_{1:l}'),\quad \lambda_{g\mathbf{x}_{1:l}'}^{P}(\rho(h)\mathbf{y}_{1:l}') =\lambda_{\mathbf{x}_{1:l}'}^{P}(\mathbf{y}_{1:l}') \end{align*}
+	Assuming $P$ is $G$-invariant, we can use \cref{eq:invariant_density} to get \begin{align*} \lambda_{\mathbf{x}_{1:k},g\mathbf{x}_{1:l}'}^P(\mathbf{y}_{1:k},\rho(h)\mathbf{y}_{1:l}')=\lambda_{g^{-1}\mathbf{x}_{1:k},\mathbf{x}_{1:l}'}^P(\rho(h)^{-1}\mathbf{y}_{1:k},\mathbf{y}_{1:l}'),\quad \lambda_{g\mathbf{x}_{1:l}'}^{P}(\rho(h)\mathbf{y}_{1:l}') =\lambda_{\mathbf{x}_{1:l}'}^{P}(\mathbf{y}_{1:l}') \end{align*} 
 
 	Inserting that into the left-hand side of \cref{eq:equivariance_in_marginals}, we see that the equality in \cref{eq:equivariance_in_marginals} is true, i.e. $Z\mapsto P_Z$ is equivariant.
 
@@ -216,7 +216,7 @@ This ensures that fields constructed by $f(\x) = \sum_{i=1}^N \Phi(\x, \x_i)c_i$
 A similar definition holds for curl-free kernels.
 
 The kernels used in this work were introduced by \textcite{macedo2010learning}.
-In particular we use the curl- and divergence-free kernels with length scale $l>0$ as defined for all $\mathbf{x}_1,\mathbf{x}_2\in\R^n$ by \begin{align} K_{\text{curl}}=k_0(\x_1,\x_2)A(\x_1,\x_2),\quad K_{\text{div}}(\x_1,\x_2)=k_0(\x_1,\x_2)B(\x_1,\x_2) \end{align} where \begin{align} k_0(\mathbf{x}_1,\mathbf{x}_2)&=\frac{1}{l^{2}}\exp\left(-\frac{\|\mathbf{x}_1-\mathbf{x}_2\|^{2}}{2l^{2}}\right )\\ A(\mathbf{x}_1,\mathbf{x}_2)&=\mathbf{I}-\frac{(\mathbf{x}_1-\mathbf{x}_2)(\mathbf{x}_1-\mathbf{x}_2)^T}{l^2} \\ B(\mathbf{x}_1,\mathbf{x}_2)&=\frac{(\mathbf{x}_1-\mathbf{x}_2)(\mathbf{x}_1-\mathbf{x}_2)^T}{l^2}+\left( n-1-\frac{\|\mathbf{x}_1-\mathbf{x}_2\|^{2}}{l^{2}} \right)\mathbf{I} \end{align}
+In particular we use the curl- and divergence-free kernels with length scale $l>0$ as defined for all $\mathbf{x}_1,\mathbf{x}_2\in\R^n$ by \begin{align} K_{\text{curl}}=k_0(\x_1,\x_2)A(\x_1,\x_2),\quad K_{\text{div}}(\x_1,\x_2)=k_0(\x_1,\x_2)B(\x_1,\x_2) \end{align} where \begin{align} k_0(\mathbf{x}_1,\mathbf{x}_2)&=\frac{1}{l^{2}}\exp\left(-\frac{\|\mathbf{x}_1-\mathbf{x}_2\|^{2}}{2l^{2}}\right )\\ A(\mathbf{x}_1,\mathbf{x}_2)&=\mathbf{I}-\frac{(\mathbf{x}_1-\mathbf{x}_2)(\mathbf{x}_1-\mathbf{x}_2)^T}{l^2} \\ B(\mathbf{x}_1,\mathbf{x}_2)&=\frac{(\mathbf{x}_1-\mathbf{x}_2)(\mathbf{x}_1-\mathbf{x}_2)^T}{l^2}+\left( n-1-\frac{\|\mathbf{x}_1-\mathbf{x}_2\|^{2}}{l^{2}} \right)\mathbf{I} \end{align} 
 
 To see that $K_{\text{curl}}$ is $E(n)$-equivariant, we compute for $g=t_{\x'}h\in G$ \begin{align} A(g\x_1,g\x_2)=&\mathbf{I}-\frac{(h\mathbf{x}_1+\x'-h\mathbf{x}_2-\x')(h\mathbf{x}_1+\x'-h\mathbf{x}_2-\x')^T}{l^2}\\ =&hh^{T}-\frac{h(\mathbf{x}_1-\mathbf{x}_2)(\mathbf{x}_1-\mathbf{x}_2)^Th^T}{l^2}\\ =&hA(\x_1,\x_2)h^T \end{align} This shows that $K_{\text{curl}}$ is $E(n)$-equivariant since $k_0$ is a $E(n)$-invariant scalar kernel.
 With a similar computation, one can see that $K_{\text{div}}$ is $E(n)$-equivariant.
@@ -314,7 +314,7 @@ This keeps the model equivariant as the covariance predicted is now an invariant
 	\includegraphics[width=\textwidth]{images/steer_cnps/mnist/train_rotation.pdf}
 	\caption{Qualitative examples of the behaviour of the predicted mean of different models when the context set is rotated.
 		We observe that the ConvCNP, even when trained on rotation augmented data, has trouble predicting good shapes when the context set is rotated.
-		By comparison the equivariant models have very consistent predictions under rotation, with the $C_4$ and $D_4$ models beng exactly equivariant to $90^\circ$ rotations, and the $C_{16}$ models being exactly equivariant to $22.5^\circ$ rotations} \end{figure}
+		By comparison the equivariant models have very consistent predictions under rotation, with the $C_4$ and $D_4$ models beng exactly equivariant to $90^\circ$ rotations, and the $C_{16}$ models being exactly equivariant to $22.5^\circ$ rotations} \end{figure} 
 
 \begin{figure}[ht] \centering \includegraphics[width=\textwidth]{images/steer_cnps/mnist/train_percentage.pdf} \caption{Qualitative examples of the behaviour of the predicted mean of different models when the context set size is changed.
 		Digit not rotated.

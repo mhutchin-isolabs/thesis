@@ -38,7 +38,8 @@ A Riemannian manifold is a tuple $(\c{M}, \mathfrak{g})$ with $\c{M}$ a smooth m
 The metric $\mathfrak{g}$ induces key quantities on the manifold, such as an exponential map $\exp_x: \mathrm{T}_x \c{M} \rightarrow \c{M}$, defining the notion of following straight lines on manifolds, a gradient operator $\nabla$, the (Riemannian) gradient $\nabla$ is defined s.t.
 for any smooth $f\in \mathrm{C}^\infty(\c{M})$, $x \in \c{M}, v \in \mathrm{T}_x\c{M}$, $\mathfrak{g}(x)(f(x), v) = \mathrm{d} f(x) (v)$, and divergence operator $\mathrm{div}$, the Riemannian divergence acts vector fields and can be defined using the volume form of $\c{M}$.
 
-It also induces the Laplace-Beltrami operator $\Delta$ and consequently a Brownian motion with density (w.r.t. the volume form \footnote{We assume that $\c{M}$ is orientable and therefore that a volume form exists })whose density is given by the heat equation ${\partial_t } p_t = \Delta p_t$.
+It also induces the Laplace-Beltrami operator $\Delta$ and consequently a Brownian motion with density (w.r.t.
+the volume form \footnote{We assume that $\c{M}$ is orientable and therefore that a volume form exists })whose density is given by the heat equation ${\partial_t } p_t = \Delta p_t$.
 We refer the reader to \cref{sec:riemannain_intro} for a brief introduction to differential geometry, to \textcite{lee2013smooth} for a thorough treatment and to \textcite{hsu2002stochastic} for details on stochastic analysis on manifolds.
 \begin{figure}
 	\centering
@@ -146,7 +147,7 @@ For a convex polytope $\c{M}$ defined by the constraints $\mathrm{A} x < b$, wit
 	}
 \end{equation}
 Assuming that $\| \mathrm{A}_i \| =1$, we have that for any $x \in \c{M}$, $\phi(x) = - \sum_{i=1}^m \log(d(x, \partial \c{M}_i))$, where $\partial \c{M}_i = \cbr{x \in \R^d \; : \; \langle \mathrm{A}_i, x\rangle =b}$.
-More generally we can define for any $x \in \c{M}$ \begin{equation} \label{eq:log_barrier_manifold} \textstyle{ \phi(x) = - \sum_{i=1}^m \log(d(x, \partial \c{M}_i)) } \end{equation}
+More generally we can define for any $x \in \c{M}$ \begin{equation} \label{eq:log_barrier_manifold} \textstyle{ \phi(x) = - \sum_{i=1}^m \log(d(x, \partial \c{M}_i)) } \end{equation} 
 
 where $d(x, \partial \c{M}_i)$ computes the minimum geodesic distance from $x$ to the boundary $\partial \c{M}$.
 In general this is a highly non-trivial optimization problem, contrary to the polytope case which admits a simple closed form.
@@ -161,7 +162,8 @@ Equipped with this Riemannian metric, we consider the following Langevin dynamic
 Under mild assumptions on $\c{M}$, $\mathrm{div}(\mathfrak{g}^{-1})$ and $\mathfrak{g}^{-1}$ we get that $( \v{X}_t)_{t \geq 0}$ is well-defined and for any $t \geq 0$, $ \v{X}_t \in \c{M}$.
 In particular, for any $t \geq 0$, $ \v{X}_t$ does not reach the boundary.
 This stochastic process was first proposed by \cite{lee2017Geodesic} in the context of efficient sampling from the uniform distribution over a polytope.
-Under similar conditions, $ \v{X}_t$ admits a density $p_t$ w.r.t.\ the Lebesgue measure and we have that $\partial_t p_t = \tfrac{1}{2} \mathrm{Tr}(\mathfrak{g}^{-1} \nabla^2p_t)$.
+Under similar conditions, $ \v{X}_t$ admits a density $p_t$ w.r.t.
+\ the Lebesgue measure and we have that $\partial_t p_t = \tfrac{1}{2} \mathrm{Tr}(\mathfrak{g}^{-1} \nabla^2p_t)$.
 In addition, $( \v{X}_t)_{t \geq 0}$ is irreducible.
 Hence, assuming that $\c{M}$ is compact, the uniform distribution on $\c{M}$ is the unique invariant measure of the process $( \v{X}_t)_{t \geq 0}$ and $( \v{X}_t)_{t \geq 0}$ converges to the uniform distribution in some sense.
 We refer the reader to \Cref{sec:geod-brown-moti} for a proof of these results.
@@ -191,7 +193,7 @@ This discretisation is a generalisation of the Euler-Maruyama discretisation of 
 		\For{$k \in \{0, \dots, N-1\}$}
 		\State $Z_{k+1} \sim \mathrm{N}(0, \m{I})$
 		\State $W_{k+1} = \gamma d(k \gamma, X_k) + \sqrt{\gamma}
-			Z_{k+1}$ \State $X_{k+1}^\gamma = \exp_{X_k}[W_{k+1}] \approx \mathrm{proj}_\c{M}(X_k + W_{k+1})$ \EndFor \State { \bfseries return} $\{ X_k\}_{k=0}^{N}$ \end{algorithmic} \end{algorithm}
+			Z_{k+1}$ \State $X_{k+1}^\gamma = \exp_{X_k}[W_{k+1}] \approx \mathrm{proj}_\c{M}(X_k + W_{k+1})$ \EndFor \State { \bfseries return} $\{ X_k\}_{k=0}^{N}$ \end{algorithmic} \end{algorithm} 
 
 However, contrary to \textcite{debortoli2022riemannian}, we will not have access explicitly to the exponential mapping of the Hessian manifold.
 Instead, we rely on an approximation, using a \emph{retraction} (see \textcite{absil2012projection, boumal2023introduction} for a definition and alternative schemes).
@@ -311,7 +313,7 @@ The form of the ODE and the proof that it remains in $\c{M}$ are postponed to \C
 		\For{$k \in \{0, \dots, N-1\}$}
 		\State $Z_{k+1} \sim \mathrm{N}(0, \m{I})$
 		\State $X_{k+1}^\gamma = \text{ReflectedStep}[X_{k}^\gamma, \sqrt{\gamma}
-			Z_{k+1}, \{f_i\}_{i \in \mathcal{I}}]$ \EndFor \State { \v{s}eries return} $\{ X_k^\gamma\}_{k=0}^{N}$ \end{algorithmic} \end{algorithm}
+			Z_{k+1}, \{f_i\}_{i \in \mathcal{I}}]$ \EndFor \State { \v{s}eries return} $\{ X_k^\gamma\}_{k=0}^{N}$ \end{algorithmic} \end{algorithm} 
 
 \begin{figure}[t] \centering \begin{minipage}[0.25\textwidth]{0.25\textwidth} \includegraphics{images/constrained_diffusion/linear_reflection.pdf} \end{minipage} \hfill \begin{minipage}[0.25\textwidth]{0.7\textwidth} \caption{Reflection against a linear boundary.
 			For a step $s$ with magnitude $|s|$ and direction $\hat{s}$ the distance to the boundary described by the normal $\hat{n}$ and offset $b$ is $d=\frac{\innerprod{\hat{s}}{x_t} - b}{\innerprod{\hat{s}}{\hat{n}}}$.

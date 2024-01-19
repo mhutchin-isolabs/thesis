@@ -17,7 +17,7 @@ Methodological extensions are required as in most cases the transition kernel of
 For example on compact manifolds it is typically only available as an infinite sum through the Sturm--Liouville decomposition \parencite{chavel1984eigenvalues}.
 To this end, we develop non-standard techniques for score estimation and rely on the use of Geodesic Random Walks for sampling \parencite{jorgensen1975central}.
 We provide theoretical convergence bounds for RSGMs on compact manifolds and demonstrate our approach on a range of manifolds and tasks, including modelling a number of natural disaster occurrence datasets collected by \textcite{mathieu2020riemannian}.
-We show that RGSMs achieve better performance than recent baselines \parencite{mathieu2020riemannian,rozen2021moser} and scale better to
+We show that RGSMs achieve better performance than recent baselines \parencite{mathieu2020riemannian,rozen2021moser} and scale better to 
 
 \section{Euclidean Score-Based Generative Modelling} \label{sec:eucl-sgm-riem} We recall here briefly the key concepts behind SGMs on the Euclidean space $\R^d$ and refer the readers to \textcite{song2020score} for a more detailed introduction.
 We consider a forward \emphmarginnote{noising process} $(\v{X}_t)_{t \geq 0}$ defined by the following Stochastic Differential Equation (SDE) \begin{equation}\label{eq:forward_SDE} \mathrm{d} \v{X}_t = -\v{X}_t \mathrm{d} t + \sqrt{2} \mathrm{d} \v{B}_t,\quad \v{X}_0 \sim p_0 , \end{equation} where $(\v{B}_t)_{t \geq 0}$ is a $d$-dimensional Brownian motion and $p_0$ is the data distribution.
@@ -52,7 +52,8 @@ Notation are gathered in \Cref{sec:notation-1}.
 \label{sec:non-compact}
 
 The first necessary component is a suitable generic noising process on manifolds that will converge to a convenient stationary distribution.
-A simple choice is to use \emphmarginnote{Langevin dynamics} described by \begin{equation} \label{eq:langevin} \mathrm{d} \v{X}_t = - \tfrac{1}{2}~\nabla_{\v{X}_t} U(\v{X}_t) \mathrm{d} t + \mathrm{d} \v{B}_t^\c{M}, \end{equation} which admits the invariant density (w.r.t. \ the volume form) given by $\mathrm{d} p_{\textup{inv}}/ \mathrm{d} \textrm{Vol}_\c{M}(x) \propto \mathrm{e}^{-U(x)}$ \parencite[Section 2.4]{durmus2016high}, where $\nabla$ is the Riemannian gradient\footnote{The (Riemannian) gradient $\nabla$ is defined s.t.
+A simple choice is to use \emphmarginnote{Langevin dynamics} described by \begin{equation} \label{eq:langevin} \mathrm{d} \v{X}_t = - \tfrac{1}{2}~\nabla_{\v{X}_t} U(\v{X}_t) \mathrm{d} t + \mathrm{d} \v{B}_t^\c{M}, \end{equation} which admits the invariant density (w.r.t.
+\ the volume form) given by $\mathrm{d} p_{\textup{inv}}/ \mathrm{d} \textrm{Vol}_\c{M}(x) \propto \mathrm{e}^{-U(x)}$ \parencite[Section 2.4]{durmus2016high}, where $\nabla$ is the Riemannian gradient\footnote{The (Riemannian) gradient $\nabla$ is defined s.t.
 	\ for any $f:\c{M} \rightarrow \R$, $x \in \c{M}, v \in \mathrm{T}_x\c{M}$, $\langle \nabla f, v \rangle_g = \mathrm{d} f (v)$.}.
 
 Two simple choices for $U(x)$ present themselves.
@@ -75,7 +76,8 @@ In this case, $\nabla_{\v{X}_t} U(\v{X}_t) = 0$ and the noising process is simpl
 In order to use these noising processes we prove the time-reversal formula for manifolds, a generalisation of the results in the Euclidean case, e.g.\ see \textcite[Theorem 4.9]{cattiaux2021time}.
 Consider an SDE of the form $\mathrm{d} \v{X}_t = b(\v{X}_t) \mathrm{d} t + \mathrm{d} \v{B}_t^\c{M}$ where $\v{B}_t^\c{M}$ is a Brownian motion on $\c{M}$.
 We refer to \Cref{sec:brown-moti-manif} for an introduction to Brownian motions on manifolds.
-This result shows that if $(\v{X}_t)_{t \in \sbr{0,T}}$ is a diffusion process then $(\v{X}_{T-t})_{t \in \sbr{0,T}}$ is also a diffusion process w.r.t. the backward filtration whose coefficients can be computed, and are shown in \cref{eq:time_reversal_manifold}.
+This result shows that if $(\v{X}_t)_{t \in \sbr{0,T}}$ is a diffusion process then $(\v{X}_{T-t})_{t \in \sbr{0,T}}$ is also a diffusion process w.r.t.
+the backward filtration whose coefficients can be computed, and are shown in \cref{eq:time_reversal_manifold}.
 The proof relies on an extension of \textcite[Theorem 4.9]{cattiaux2021time} to the Riemannian manifold case and is postponed to \cref{sec:time-reversal}.
 
 \begin{theorem}[Manifold time-reversed process]
@@ -84,7 +86,8 @@ The proof relies on an extension of \textcite[Theorem 4.9]{cattiaux2021time} to 
 	}.
 	Let $(\v{X}_t)_{t \in \sbr{0,T}}$ be associated with the SDE $\mathrm{d} \v{X}_t = b(\v{X}_t) \mathrm{d} t + \mathrm{d} \v{B}_t^\c{M}$.
 	Let $(\v{Y}_t)_{t \in \sbr{0,T}} = (\v{X}_{T-t})_{t \in \sbr{0,T}}$ and assume that $KL\del{\mathbb{P}\;\mathbb{Q}} < +\infty$, where $\mathbb{Q}$ is the distribution of $(\v{B}_t^\c{M})_{t \in \sbr{0,T}}$ and $\mathbb{P} $ the distribution of $(\v{X}_t)_{t \in \sbr{0,T}}$.
-	In addition, assume that $\mathbb{P}_t=\mathcal{L}(\v{X}_t)$, the distribution of $\v{X}_t$, admits a smooth positive density $p_t$ w.r.t. \ $p_{\textup{inv}}$ for any $t \in \sbr{0,T}$.
+	In addition, assume that $\mathbb{P}_t=\mathcal{L}(\v{X}_t)$, the distribution of $\v{X}_t$, admits a smooth positive density $p_t$ w.r.t.
+	\ $p_{\textup{inv}}$ for any $t \in \sbr{0,T}$.
 	Then, $(\v{Y}_t)_{t \in \sbr{0,T}}$ is associated with the SDE \begin{equation} \label{eq:time_reversal_manifold} \mathrm{d} \v{Y}_t = \{-b(\v{Y}_t) + \nabla \log p_{T-t}(\v{Y}_t)\} \mathrm{d} t + \mathrm{d} \v{B}_t^\c{M}.
 	\end{equation}
 \end{theorem}
@@ -238,7 +241,8 @@ RSGMs on compact manifolds, generic manifolds and Euclidean score-based models.
 \end{table*}
 
 \paragraph{Heat kernel on compact Riemannian manifolds.}
-For any $x_0 \in \c{M}$ and $t \geq s \geq 0$, the heat kernel $p_{t|s}(\cdot|x_s)$ is defined as the density of $\v{B}_t^\c{M}$ w.r.t. the uniform measure on the manifold.
+For any $x_0 \in \c{M}$ and $t \geq s \geq 0$, the heat kernel $p_{t|s}(\cdot|x_s)$ is defined as the density of $\v{B}_t^\c{M}$ w.r.t.
+the uniform measure on the manifold.
 
 Contrary to the Gaussian transition density of the OU process (or the Brownian motion) in the Euclidean setting, it is typically only available as an infinite series.
 In order to circumvent this issue we consider two techniques: \begin{enumerate*}[label=\roman*)] \item a truncation approach, \item a Taylor expansion around $t=0$ called a Varadhan asymptotics.
@@ -249,7 +253,7 @@ When the eigenvalues and eigenvectors are known, we rely on an approximation of 
 \end{equation}
 
 Under regularity conditions on $\c{M}$ it can be shown that for any $x,y \in \c{M}$ and $t \geq 0$, $\lim_{J \to +\infty} S_{J,t}(x_0,x_t) = \nabla_{x_t} \log p_{t|0}(x_t|x_0)$ \cite[Lemma 1]{jones2008Manifold}.
-In the case of the $d$-dimensional torus or sphere the eigenvalues and eigenvectors are computable \cite[Section 2]{saloff1994precise} and we can apply this method to approximate $p_{t|0}$ for any $t > 0$, see \cref{sec:eigenf-eigenv-lapl}
+In the case of the $d$-dimensional torus or sphere the eigenvalues and eigenvectors are computable \cite[Section 2]{saloff1994precise} and we can apply this method to approximate $p_{t|0}$ for any $t > 0$, see \cref{sec:eigenf-eigenv-lapl} 
 
 When the eigenvalues and eigenvectors are unknown or not tractable, we can still derive an approximation of the heat kernel for small times $t$.
 Using \emphmarginnote{Varadhan's asymptotics}---see \textcite[Theorem 3.8]{bismut1984large} or \textcite[Theorem 2.1]{chen2021logarithmic}---for any $x, y \in \c{M}$ with $y \notin \mathrm{Cut}(x)$ (where $\mathrm{Cut}(x)$ is the cut-locus of $x$ in $\c{M}$ \cite[Chapter 10]{lee2018introduction}) we have that \begin{equation} \label{eq:varadhan} \textstyle{\lim_{t \to 0} t \nabla_{x_t} \log p_{t|0}(x_t|x_0) = \exp^{-1}_{x_t}(x_0) .
@@ -378,7 +382,7 @@ The code used to run the experiments can be found at \href{https://github.com/ox
 		Method                    & {Volcano}                               & {Earthquake}                              & {Flood}                                  & {Fire}                                    \\
 		\midrule
 		Mixture of Kent           & $-0.80_{\pm 0.47}$                      & $0.33_{\pm 0.05}$                         & $0.73_{\pm 0.07}$                        & $-1.18_{\pm 0.06}$                        \\
-		Riemannian CNF            & $\bm{-6.05_{\pm 0.61}}$                  & ${0.14_{\pm 0.23}}$                       & ${1.11_{\pm 0.19}}$                      & $\v{-0.80_{\pm 0.54}}$                    \\
+		Riemannian CNF            & $\bm{-6.05_{\pm 0.61}}$                 & ${0.14_{\pm 0.23}}$                       & ${1.11_{\pm 0.19}}$                      & $\v{-0.80_{\pm 0.54}}$                    \\
 		Moser Flow                & ${-4.21_{\pm 0.17}}$                    & $\v{-0.16_{\pm 0.06}}$                    & $\v{0.57_{\pm 0.10}}$                    & $\v{-1.28_{\pm 0.05}}$                    \\
 		Stereographic Score-Based & \cellcolor{blue!20}${-3.80_{\pm 0.27}}$ & \cellcolor{blue!20}$\v{-0.19_{\pm 0.05}}$ & \cellcolor{blue!20}$\v{0.59_{\pm 0.07}}$ & \cellcolor{blue!20}$\v{-1.28_{\pm 0.12}}$ \\
 		Riemannian Score-Based    & \cellcolor{blue!20}${-4.92_{\pm 0.25}}$ & \cellcolor{blue!20}$\v{-0.19_{\pm 0.07}}$ & \cellcolor{blue!20}$\v{0.45_{\pm 0.17}}$ & \cellcolor{blue!20}$\v{-1.33_{\pm 0.06}}$ \\
@@ -400,7 +404,7 @@ These events are: volcanic eruptions \cite{volcanoe_dataset}, earthquakes \cite{
 We compare to previous baseline methods: Riemannian Continuous Normalizing Flows \parencite{mathieu2020riemannian}, Moser Flows \parencite{rozen2021moser} and a mixture of Kent distributions \parencite{peel2001fitting}.
 Additionally, we consider a standard SGM on the 2D plane followed by the inverse stereographic projection which induces a density on the sphere \parencite{gemici2016normalizing}.
 We evaluate the log-likelihood of each model, extending to the manifold setting the likelihood computation techniques of SGMs, see \Cref{sec:likel-comp}.
-We observe from \cref{tab:geoscience},
+We observe from \cref{tab:geoscience}, 
 
 that all benchmarked methods have comparable performance when evaluated on these simple tasks with RSGM performing marginally better on most datasets.
 However, we empirically notice that Moser flows are slow to train and additionally that both Moser flows and stereographic SGMs are computationally expensive to evaluate.

@@ -355,7 +355,7 @@ The following lemma allow us to give a lower bound to the quantity $\E\sbr{\bm{1
 	Now, assume that $x \in \sf{V}$.
 	Using \Cref{lemma:control_outside}, we have that $\E\sbr{\bm{1}_{x + \sqrt{\gamma} Z \in \cl{\c{M}}\cap \sf{C}(x, \gamma)^\mathrm{c}}} \leq \psi(\gamma)$.
 	In addition, using \Cref{thm:tubul-neighb}-\ref{item:c}, we have that for any $\gamma >0$ \begin{align} \E\sbr{\bm{1}_{x + \sqrt{\gamma} Z \in \cl{\c{M}}}} & \geq \E\sbr{\bm{1}_{x + \sqrt{\gamma} Z \in \sf{C}(x, \gamma)}} \\ &\geq \textstyle{\int_{-\bar{\alpha} \gamma^{-1/2}}^{r \gamma^{-1/2}} \int_{\nabla \Phi(\bar{x})^\perp} \bm{1}_{\norm{v}^2\leq (\bar{\alpha}+\gamma^{1/2}\alpha)/(C\gamma)} \varphi(\alpha)\varphi(v) \mathrm{d} \alpha \mathrm{d} v} \\ &\geq \textstyle{\int_{-\bar{\alpha} \gamma^{-1/2}}^{r \gamma^{-1/2}} (1 - \Psi((\bar{\alpha}+\gamma^{1/2}\alpha)/(C\gamma),d-1)) \varphi(\alpha) \mathrm{d} \alpha} \\  & \textstyle{\geq (1/2) - \Psi(r^2/\gamma, 1) - \int_{-\bar{\alpha} \gamma^{-1/2}}^{+\infty} \Psi((\bar{\alpha}+\gamma^{1/2}\alpha)/(C\gamma),d-1) \varphi(\alpha) \mathrm{d} \alpha.
-	                 }
+                 }
 	\end{align}
 	Hence, using \Cref{lemma:tail_chi_square} and \Cref{lemma:tail_chi_square_int}, there exists $\bar{\gamma} >0$ such that for any $\gamma \in \del{0, \bar{\gamma}}$, $\Psi(r^2/\gamma, 1) + \int_0^{+\infty} \Psi(\alpha/(C\gamma^{1/2}),d) \varphi(\alpha-\gamma^{1/2}\bar{\alpha}) \mathrm{d} \alpha \leq 1/4$, which concludes the proof.
 \end{proof}

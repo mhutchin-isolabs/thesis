@@ -63,7 +63,8 @@ In this work, we will use the exponential map $\exp_x: \mathrm{T}_x \c{M} \right
 All of these quantities can be defined in local coordinates in terms of the metric\footnote{if the connection chosen on the Riemannian manifold is the L\'{e}vi-Civita connection}.
 The extension of the Laplace operator to $\c{M}$ is called the Laplace-Beltrami operator, also denoted $\Delta$ when there is no ambiguity.
 
-Using $\Delta$, we can define a Brownian motion on $\c{M}$, denoted $(\v{B}_t)_{t \geq 0}$ and with density w.r.t. the volume form of $\c{M}$ denoted $p_t$ for any $ t > 0$.
+Using $\Delta$, we can define a Brownian motion on $\c{M}$, denoted $(\v{B}_t)_{t \geq 0}$ and with density w.r.t.
+the volume form of $\c{M}$ denoted $p_t$ for any $ t > 0$.
 We refer to \textcite{lee2013smooth} for a thorough treatment of Riemannian manifolds and to \textcite{hsu2002stochastic} for details on stochastic analysis on manifolds.
 
 In the following, we consider a manifold $\c{M}$ defined by \begin{equation} \label{eq:constrained_dupref} \c{M} = \cbrcolon{x \in \c{N}}{f_i(x) < 0 , \ i \in \c{I}}, \end{equation} where $(\c{N}, \mathfrak{g})$ is a Riemannian manifold, $\c{I}$ is an arbitrary finite indexing family and for any $i \in \c{I}$, $f_i\in \c{C}(\c{N}, \R)$.
@@ -299,7 +300,8 @@ While the upper-bound is easy to derive, the lower-bound requires the following 
 
 \Cref{lemma:lower_bound_prob_main} tells us that \emph{locally} the boundary
 looks like a half-space when integrating w.r.t. a Gaussian measure.
-A corollary is that, for $\gamma > 0$ small enough and for any $k \in \N$, the probability that $X_{k+1}^\gamma = X_k^\gamma$ is upper bounded \emph{uniformly} w.r.t. $X_k^\gamma \in \c{M}$.
+A corollary is that, for $\gamma > 0$ small enough and for any $k \in \N$, the probability that $X_{k+1}^\gamma = X_k^\gamma$ is upper bounded \emph{uniformly} w.r.t.
+$X_k^\gamma \in \c{M}$.
 The proof of \Cref{lemma:lower_bound_prob_main} uses \Cref{thm:tubul-neighb} in~\Cref{sec:rejection-convergence}, whose proof relies on the concept of \emph{tubular neighborhoods} \parencite{lee2012smooth}.
 
 Having established the lower and upper bound, we can conclude the proof by noting that the approximate drift and the diffusion matrix in the rejection and Metropolis case coincide as $\gamma \to 0$.

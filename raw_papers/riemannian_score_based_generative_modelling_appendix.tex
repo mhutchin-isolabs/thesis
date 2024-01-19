@@ -242,7 +242,7 @@ Using the Nash embedding theorem \parencite{gunther1991isometric}, there exists 
 For any $x \in \c{M}$, we denote $\mathrm{P}(x): \ \R^p \to \mathrm{T}_x \c{M}$ the projection operator.
 In addition for any $x \in \c{M}$, we denote $\{\mathrm{P}_i(x)\}_{i=1}^p = \{\mathrm{P}(x) e_i\}_{i=1}^p$, where $\{e_i\}_{i=1}^p$ is the canonical basis of $\R^p$.
 For any $i \in \{1, \dots, p\}$, we smoothly extend $\mathrm{P}_i$ to $\R^p$.
-In this case, we have the following proposition \cite[Theorem 3.1.4]{hsu2002stochastic}:
+In this case, we have the following proposition \cite[Theorem 3.1.4]{hsu2002stochastic}: 
 
 \begin{proposition}[Extrinsic view of Brownian motion] \label{prop:extrinsic_brownian} For any $f \in \mathrm{C}^{\infty}(\c{M})$ we have that $\Delta_\c{M}(f) = \sum_{i=1}^p \mathrm{P}_i(\mathrm{P}_i(f))$.
 	Hence, we have that $(\v{b}_t^\c{M})_{t \geq 0}$ solution of $\mathrm{SDE}(\{\mathrm{P}_i\}_{i=1}^{p}, \v{b}^{1:p}, \v{b}_0^\c{M})$ with $\v{b}_0^\c{M}$ a $\c{M}$-valued random variable and $\v{b}^{1:p}$ a $\R^p$-valued Brownian motion.
@@ -322,7 +322,8 @@ We conclude this section by noting that in the non-compact case \parencite{li198
 Similarly to \textcite{song2020score}, once the score is learned we can use it in conjunction with an Ordinary Differential Equation (ODE) solver to compute the likelihood of the model.
 Let $(\Phi_t)_{t \in \sbr{0,T}}$ be a family of vector fields.
 We define $(\v{X}_t)_{t \in \sbr{0,T}}$ such that $\v{X}_0$ has distribution $p_0$ (the data distribution) and satisfying $\mathrm{d} \v{X}_t = \Phi_t(\v{X}_t) \mathrm{d} t$.
-Assuming that $p_0$ admits a density w.r.t. \ $p_{\t{ref}}$ then for any $t \in \sbr{0,T}$, the distribution of $\v{X}_t$ admits a density w.r.t.\ $p_{\t{ref}}$ and we denote $p_t$ this density.
+Assuming that $p_0$ admits a density w.r.t.
+\ $p_{\t{ref}}$ then for any $t \in \sbr{0,T}$, the distribution of $\v{X}_t$ admits a density w.r.t.\ $p_{\t{ref}}$ and we denote $p_t$ this density.
 We recall that $\mathrm{d} \log p_t(\v{X}_t) = -\mathrm{div}(\Phi_t)(\v{X}_t) \mathrm{d} t$, see \textcite[Proposition 2]{mathieu2020riemannian} for instance.
 
 Recall that we consider a Brownian motion on the manifold as a forward process $(\v{b}_t^\c{M})_{t \in \sbr{0,T}}$ with $\{p_t\}_{t \in \sbr{0,T}}$ the associated family of densities.
@@ -334,7 +335,8 @@ Defining $(\hat{\v{X}}_t)_{t \in \sbr{0,T}} = (\v{X}_{T-t})_{t \in \sbr{0,T}}$, 
 Finally, we introduce $(\v{Y}_t)_{t \in \sbr{0,T}}$ satisfying \eqref{eq:backward_flow} but such that $\v{Y}_0 \sim p_{\t{ref}}$.
 Note that if $T \geq 0$ is large then the two processes $(\v{Y}_t)_{t \in \sbr{0,T}}$ and $(\hat{\v{X}}_t)_{t \in \sbr{0,T}}$ are close since $\mathcal{L}(\v{X}_T)$ is close to $p_{\t{ref}}$.
 
-Therefore, using the score network and a manifold ODE solver \parencite[as in][]{mathieu2020riemannian}, we are able to approximately solve the following ODE \begin{equation} \mathrm{d}\log q_t(\hat{\v{X}}_t^\theta) = -\tfrac{1}{2}\mathrm{div}(\mathbf{s}_\theta(T-t,\cdot))(\hat{\v{X}}_t^\theta) \mathrm{d} t , \end{equation} with $q_t$ the density of $\v{Y}_t^\theta$ w.r.t. \ $p_{\t{ref}}$ and $\log q_0(\v{Y}_0) = 0$ with $\mathrm{d} \v{Y}_t^\theta = \tfrac{1}{2}\mathrm{div}(\mathbf{s}_\theta(T-t,\v{Y}_t^\theta)) \mathrm{d} t$ and $\v{Y}_0^\theta \sim p_{\t{ref}}$.
+Therefore, using the score network and a manifold ODE solver \parencite[as in][]{mathieu2020riemannian}, we are able to approximately solve the following ODE \begin{equation} \mathrm{d}\log q_t(\hat{\v{X}}_t^\theta) = -\tfrac{1}{2}\mathrm{div}(\mathbf{s}_\theta(T-t,\cdot))(\hat{\v{X}}_t^\theta) \mathrm{d} t , \end{equation} with $q_t$ the density of $\v{Y}_t^\theta$ w.r.t.
+\ $p_{\t{ref}}$ and $\log q_0(\v{Y}_0) = 0$ with $\mathrm{d} \v{Y}_t^\theta = \tfrac{1}{2}\mathrm{div}(\mathbf{s}_\theta(T-t,\v{Y}_t^\theta)) \mathrm{d} t$ and $\v{Y}_0^\theta \sim p_{\t{ref}}$.
 The likelihood approximation of the model is then given by $\E\sbr{\log q_T(\hat{\v{X}}_T^\theta)} = \int_{\c{M}} \log q_T(x) \mathrm{d} p_{\t{data}}(x)$, where $(\hat{\v{X}}_t^\theta)_{t \in \sbr{0,T}} = (\v{X}_{T-t}^\theta)_{t \in \sbr{0,T}}$ with $\mathrm{d} \v{X}_t^\theta = -\tfrac{1}{2}\mathrm{div}(\mathbf{s}_\theta(t,\v{X}_t^\theta)) \mathrm{d} t$ and $\v{X}_0 \sim p_{\t{data}}$.
 In \cref{sec:diff-betw-ode}, we highlight that this is \emph{not} the likelihood of the SDE model.
 
@@ -353,7 +355,8 @@ The family of densities $(q_t)_{t \in \sbr{0,T}}$ associated with $(\v{X}_t)_{t 
 Now consider $(\hat{\v{X}}_t)_{t \in \sbr{0,T}} = (\v{X}_{T-t})_{t \in \sbr{0,T}}$, this satisfies $\hat{\v{X}}_0 \sim p_T$ with \begin{equation} \label{eq:backward_flow_appendix} \mathrm{d} \hat{\v{X}}_t = \tfrac{1}{2} \nabla \log p_{T-t}(\hat{\v{X}}_t) \mathrm{d} t .
 \end{equation}
 Finally, we consider $(\v{Y}_t^{\mathrm{ODE}})_{t \in \sbr{0,T}}$ which also satisfies \cref{eq:backward_flow_appendix} and such that $\v{Y}_0^{\mathrm{ODE}}\sim p_{\t{ref}}$.
-Denoting $(q_t^{\mathrm{ODE}})_{t \in \sbr{0,T}}$ the densities of $(\v{Y}_t^{\mathrm{ODE}})_{t \in \sbr{0,T}}$ w.r.t. $p_{\t{ref}}$ we have for any $t \in \sbr{0,T}$ and $x \in \c{M}$ \begin{equation} \label{eq:proba_flow_ode} \partial_t q_t^{\mathrm{ODE}}(x) = -\mathrm{div}( \tfrac{1}{2} q_t^{\mathrm{ODE}} \nabla\log p_{T-t} )(x) .
+Denoting $(q_t^{\mathrm{ODE}})_{t \in \sbr{0,T}}$ the densities of $(\v{Y}_t^{\mathrm{ODE}})_{t \in \sbr{0,T}}$ w.r.t.
+$p_{\t{ref}}$ we have for any $t \in \sbr{0,T}$ and $x \in \c{M}$ \begin{equation} \label{eq:proba_flow_ode} \partial_t q_t^{\mathrm{ODE}}(x) = -\mathrm{div}( \tfrac{1}{2} q_t^{\mathrm{ODE}} \nabla\log p_{T-t} )(x) .
 \end{equation}
 
 \paragraph{SDE model.}
@@ -564,9 +567,10 @@ Let $(\v{Y}_t)_{t \in \sbr{0,T}} = (\v{X}_{T-t})_{t \in \sbr{0,T}}$.
 Our goal is to show that for any $f \in \mathrm{C}^2(\c{M})$, $(\v{M}_t^{\v{Y}, f})_{t \in \sbr{0,T}}$ is a $\v{Y}$-martingale where for any $t \in \sbr{0,T}$ \begin{equation} \textstyle{ \v{M}_t^{\v{Y}, f} = f(\v{Y}_t) - \int_0^t \{ \langle - b(\v{Y}_s) + \nabla \log p_{T-s}(\v{Y}_s), \nabla f(\v{Y}_s) \rangle + \tfrac{1}{2} \Delta_\c{M} f(\v{Y}_s) \} \mathrm{d} s .
 	}
 \end{equation}
-Note that here we implicitly assume that for any $t \in \sbr{0,T}$, $\v{X}_t$ admits a smooth positive density w.r.t. $p_{\t{ref}}$ denoted $p_t$.
+Note that here we implicitly assume that for any $t \in \sbr{0,T}$, $\v{X}_t$ admits a smooth positive density w.r.t.
+$p_{\t{ref}}$ denoted $p_t$.
 In other words, we want to show that for any $g \in \mathrm{C}^2(\c{M})$ and $s, t \in \sbr{0,T}$ with $t \geq s$ we have \begin{align} \label{eq:time_reversal_manifold_haussman} & \textstyle{\E\sbr{g(\v{Y}_s)(f(\v{Y}_t) - f(\v{Y}_s))}} \\  & \qquad \textstyle{= \E\sbr{g(\v{Y}_s)\int_s^t \{ \langle - b(\v{Y}_u) + \nabla \log p_{T-u}(\v{Y}_u), \nabla f(\v{Y}_u) \rangle + \tfrac{1}{2} \Delta_\c{M} f(\v{Y}_u) \} \mathrm{d} u} .
-	                 }
+                 }
 \end{align}
 We introduce the infinitesimal generator $\c{A}: \ \mathrm{C}^2(\c{M}) \to \mathrm{C}(\c{M})$ given for any $f \in \mathrm{C}^2(\c{M})$ and $x \in \c{M}$ by \begin{equation} \c{A} (f)(x) = \langle b(x) , \nabla f(x) \rangle + \tfrac{1}{2} \Delta_\c{M} f(x) .
 \end{equation}
@@ -620,8 +624,10 @@ We say that $\bb{P}$ is a path measure if $\bb{P} \in \c{P}(\mathrm{C}(\sbr{0,T}
 Let $(\v{X}_t)_{t \in \sbr{0,T}}$ with distribution $\bb{P}$.
 We denote $(\c{F}_t)_{t \in \sbr{0,T}}$ the filtration such that for any $t \in \sbr{0,T}$, $\c{F}_t = \sigma(\v{X}_s, \ s \in \sbr{0,t})$.
 Let $(\v{M}_t)_{t \in \sbr{0,T}}$ be a Polish-valued stochastic process.
-We say that $(\v{M}_t)_{t \in \sbr{0,T}}$ is a $\bb{P}$-local martingale if it is a local martingale w.r.t. the filtration $(\c{F}_t)_{t \in \sbr{0,T}}$.
-A function $u: \sbr{0,T} \times \sf{X} \to \R$ is said to be in the domain of the extended generator of $\bb{P}$ if there exists a process $(\c{A} b_{\bb{P}} u(t, \v{X}_{\sbr{0,t}}))_{t \in \sbr{0,T}}$ such that: \begin{enumerate}[label= (\alph*), wide, labelindent=0pt] \item $(\c{A}b_{\bb{P}} u(t, \v{X}_{\sbr{0,t}}))_{t \in \sbr{0,T}}$ is adapted w.r.t. $(\c{F}_t)_{t \in \sbr{0,T}}$.
+We say that $(\v{M}_t)_{t \in \sbr{0,T}}$ is a $\bb{P}$-local martingale if it is a local martingale w.r.t.
+the filtration $(\c{F}_t)_{t \in \sbr{0,T}}$.
+A function $u: \sbr{0,T} \times \sf{X} \to \R$ is said to be in the domain of the extended generator of $\bb{P}$ if there exists a process $(\c{A} b_{\bb{P}} u(t, \v{X}_{\sbr{0,t}}))_{t \in \sbr{0,T}}$ such that: \begin{enumerate}[label= (\alph*), wide, labelindent=0pt] \item $(\c{A}b_{\bb{P}} u(t, \v{X}_{\sbr{0,t}}))_{t \in \sbr{0,T}}$ is adapted w.r.t.
+	      $(\c{F}_t)_{t \in \sbr{0,T}}$.
 	\item $\int_0^T \abs{\c{A}b_{\bb{P}} u(t, \v{X}_{\sbr{0,t}})} \mathrm{d} t < +\infty$, $\bb{P}$-a.s.
 	\item The process $(\v{M}_t)_{t \in \sbr{0,T}}$ is a $\bb{P}$-local martingale,
 	      where for any $t \in \sbr{0,T}$
@@ -710,7 +716,7 @@ We now prove the following theorem.
 	We refer to \Cref{sec:metr-conn-tens} for more details on the projection operator and its extension to $\R^p$.
 	Using the link between Stratanovitch and It\^o integral, there exists $\bar{b} \in \mathrm{C}^\infty(\R^p, \R^p)$ such that $(\v{b}_t^\c{M})_{t \in \sbr{0,T}}$ can be seen as a process on $\R^p$ which satisfies in a weak sense \begin{equation} \textstyle{ \mathrm{d} \v{b}_t^\c{M} = \bar{b}(\v{b}_t^\c{M}) \mathrm{d} t + \mathrm{P}(\v{b}_t^\c{M}) \mathrm{d} \v{b}_t , } \end{equation} where $\bar{b}$ is given in \eqref{eq:strata_ito_transfo_sde} and satisfies $\mathrm{P}\bar{b}(x) = 0$ for any $x \in \c{M}$, see the remark following \eqref{eq:strata_ito_transfo_sde}.
 	For any $u, v \in \mathrm{C}^2_c(\c{M})$, we consider $\bar{u}, \bar{v}$ extensions to $\mathrm{C}^2_c(\R^p)$ and we have for any $s, t \in \sbr{0,T}$ \begin{align}  & \textstyle{\E\sbr{\bar{v}(\v{b}_s^\c{M}) \int_s^t \tfrac{1}{2} \Delta_\c{M} u(\v{b}_u^\c{M}) \mathrm{d} u}} \\  & \qquad = \textstyle{\E\sbr{\bar{v}(\v{b}_s^\c{M}) \int_s^t \{ \langle \nabla \bar{u}(\v{b}_w^\c{M}), \bar{b}(\v{b}_w^\c{M}) \rangle + \tfrac{1}{2} \langle \mathrm{P}(\v{b}_w^\c{M}), \nabla^2 \bar{u}(\v{b}_w^\c{M}) \rangle \} \mathrm{d} w} .
-	                 }
+                 }
 	\end{align}
 	In particular, we get that for any $x \in \c{M}$, $\Delta_\c{M} u(x) = 2 \langle \nabla \bar{u}(x), \bar{b}(x) \rangle + \langle \mathrm{P}(x), \nabla^2 \bar{u}(x) \rangle$.
 	Note that $(\v{b}_t^\c{M})_{t \in \sbr{0,T}}$ (seen as a process on $\R^p$) satisfies the condition $\mathrm{(U)}$ in \textcite{leonard2012girsanov}, i.e. uniqueness of the trajectories given an initial condition.
@@ -810,7 +816,8 @@ Using \cref{prop:cattiaux_spec} we can now conclude the proof of \Cref{thm:time_
 First, remark that we can identify $\beta_{\bb{P}} = b$.
 Let $u, v \in \mathrm{C}^\infty(\c{M})$, we have that \begin{equation} \label{eq:equality_fin} \E\sbr{v(\v{X}_t) \langle b(\v{X}_t) + \beta_{R(\bb{P})}(T-t, \v{X}_t), \nabla u(\v{X}_t) \rangle + \Delta_\c{M} u(\v{X}_t) v(\v{X}_t)+ \langle \nabla u(\v{X}_t) , \nabla v(\v{X}_t) \rangle } = 0 .
 \end{equation}
-Using that for any $t \in \sbr{0,T}$, $\bb{P}_t$ admits a smooth positive density w.r.t. $p_{\t{ref}}$ denoted $p_t$ and the divergence theorem, see \parencite[p.51]{lee2018introduction}, we have that for any $t \in \sbr{0,T}$, \begin{align}  & \textstyle{\int_{\c{M}} \{ \langle \beta_{R(\bb{P})}(T-t, x), \nabla u(x) \rangle + \langle b(x), \nabla u(x) \rangle \} v(x) p_t(x) \mathrm{d} p_{\t{ref}}(x)} \\ & \qquad \qquad \qquad \qquad = - \textstyle{\int_\c{M} \langle \nabla u(x) p_t(x), \nabla v(x) \rangle \mathrm{d} p_{\t{ref}}(x) - \int_\c{M} \Delta_\c{M} u (x) v(x) p_t(x) \mathrm{d} p_{\t{ref}}(x) } \\ & \qquad \qquad \qquad \qquad = \textstyle{\int_\c{M} \langle \nabla \log p_t(x), \nabla u(x) v(x) p_t(x)\mathrm{d} p_{\t{ref}}(x) } .
+Using that for any $t \in \sbr{0,T}$, $\bb{P}_t$ admits a smooth positive density w.r.t.
+$p_{\t{ref}}$ denoted $p_t$ and the divergence theorem, see \parencite[p.51]{lee2018introduction}, we have that for any $t \in \sbr{0,T}$, \begin{align}   & \textstyle{\int_{\c{M}} \{ \langle \beta_{R(\bb{P})}(T-t, x), \nabla u(x) \rangle + \langle b(x), \nabla u(x) \rangle \} v(x) p_t(x) \mathrm{d} p_{\t{ref}}(x)} \\ & \qquad \qquad \qquad \qquad = - \textstyle{\int_\c{M} \langle \nabla u(x) p_t(x), \nabla v(x) \rangle \mathrm{d} p_{\t{ref}}(x) - \int_\c{M} \Delta_\c{M} u (x) v(x) p_t(x) \mathrm{d} p_{\t{ref}}(x) } \\ & \qquad \qquad \qquad \qquad = \textstyle{\int_\c{M} \langle \nabla \log p_t(x), \nabla u(x) v(x) p_t(x)\mathrm{d} p_{\t{ref}}(x) } .
 \end{align}
 Therefore, we get that for any $t \in \sbr{0,T}$ and $x \in \c{M}$, $\langle \beta_{R(\bb{P})}(T-t, x), \nabla u(x) \rangle = \langle -b(x) + \nabla\log p_t(x), \nabla u(x) \rangle$, which concludes the proof.
 
@@ -840,8 +847,10 @@ For ease of reading, we restate \Cref{thm:weak_qualitative}.
 	\end{equation}
 	Define for any $k_0, k_1 \in \{1, \dots, N\}$ with $k_1 \geq k_0$ $Q_{k_0, k_1} = \prod_{\ell = k_0}^{k_1} \mathrm{R}_{k_1 + k_0 - \ell}$.
 	Finally, for ease of notation, we also define for any $k \in \{1, \dots, N\}$, $Q_k = Q_{k+1,N}$.
-	Note that for any $k \in \{1, \dots, N\}$, $Y_k$ has distribution $\pi_{\infty} Q_k$, where $\pi_{\infty}\in \c{P}(\c{M})$ with density w.r.t. the Hausdorff measure $p_{\mathrm{ref}}$.
-	Let $\bb{P} \in \c{P}(\c{C})$ be the probability measure associated with $(\v{b}_t)_{t \in \sbr{0,T}}$ with $\v{b}_0 \sim \pi_0$, where $\pi_0 \in \c{P}(\c{M})$ admits a density w.r.t. the Hausdorff measure given by $p_0$.
+	Note that for any $k \in \{1, \dots, N\}$, $Y_k$ has distribution $\pi_{\infty} Q_k$, where $\pi_{\infty}\in \c{P}(\c{M})$ with density w.r.t.
+	the Hausdorff measure $p_{\mathrm{ref}}$.
+	Let $\bb{P} \in \c{P}(\c{C})$ be the probability measure associated with $(\v{b}_t)_{t \in \sbr{0,T}}$ with $\v{b}_0 \sim \pi_0$, where $\pi_0 \in \c{P}(\c{M})$ admits a density w.r.t.
+	the Hausdorff measure given by $p_0$.
 	We denote $(\hat{\v{Y}}_t)_{t \in \sbr{0,T}}$ the process defined by the diffusion $\mathrm{d} \hat{\v{Y}}_t = \mathbf{s}_{\theta^\star}(T-t, \hat{\v{Y}}_t) \mathrm{d} t + \mathrm{d} \v{b}_t$ and $\hat{\v{Y}}_0 \sim \pi_\infty$.
 	We also denote $\hat{\bb{P}}^R \in \c{P}(\c{C})$ the probability measure associated with $(\hat{\v{Y}}_t)_{t \in \sbr{0,T}}$.
 	First note that using that $\bb{P}_0 = \pi_0$ we have for any $\mathsf{A} \in \c{b}\del{\c{M}}$ \begin{equation} \pi_0 \bb{P}_{T|0} (\bb{P}^R)_{T|0} (\mathsf{A}) = \bb{P}_T (\bb{P}^R)_{T|0} (\mathsf{A}) = (\bb{P}^R)_0 (\bb{P}^R)_{T|0} (\mathsf{A}) = (\bb{P}^R)_T(\mathsf{A}) = \pi_0(\mathsf{A}) .
@@ -885,7 +894,7 @@ For ease of reading, we restate \Cref{thm:weak_qualitative}.
 		      \end{align}
 		      In addition, using \Cref{prop:borne_one_step} and \Cref{prop:explosion}, we have that there exists $C \geq 0$ such that for any $k \in \{0, \dots, N-1\}$ \begin{equation} \E\sbr{d(\bar{\v{Y}}_{k,T}, \bar{\v{Y}}_{k+1, T})} \leq C \exp[(N-k) \gamma] \gamma^{3/2} .
 		      \end{equation}
-		      Therefore, we get that there exists $C \geq 0$ such that \begin{equation} \abs{\E\sbr{\varphi(\hat{\v{Y}}_T)} - \E\sbr{\varphi(Y_N)}} \leq C \exp[T] \gamma^{1/2} , \end{equation} \end{enumerate}
+		      Therefore, we get that there exists $C \geq 0$ such that \begin{equation} \abs{\E\sbr{\varphi(\hat{\v{Y}}_T)} - \E\sbr{\varphi(Y_N)}} \leq C \exp[T] \gamma^{1/2} , \end{equation} \end{enumerate} 
 
 	Therefore, we get that there exists $C \geq 0$ such that for any $\varphi \in \mathrm{C}(\c{M})$ which is $1$-Lipschitz, we have \begin{equation} \label{eq:inter} \textstyle{ \E\sbr{\varphi(Y_N)} - \int_{\c{M}} \varphi(x) p_{0}(x) \mathrm{d} p_{\t{ref}}(x) \leq C (\mathrm{e}^{\lambda_1/2}\norm{\varphi}_\infty \mathrm{e}^{-\lambda_1 T} + \sqrt{T/2} \norm{\varphi}_\infty \mathtt{M} + \mathrm{e}^T \gamma^{1/2}) .
 		}
@@ -1267,13 +1276,15 @@ Practically, this requires for the score network takes an additional input, i.e\
 
 In what follows, we propose an extension for modelling probability distributions which known invariance.
 That is, we assume that $p_0\left(\rho(g) x\right) = p_0(x)$ for all $g \in G$, with $G$ a group and $\rho: G \rightarrow \text{GL}_n(\R)$ a representation.
-Following \textcite{kohler2020equivariant}, we have that if $p_{\t{ref}}$ is invariant w.r.t. \ $G$ and $\phi: \c{M} \rightarrow \c{M}$ is equivariant w.r.t.\ to $G$, then the pushforward probability density $p=p_{\t{ref}}\circ\phi^{-1}$ is invariant w.r.t.\ $G$.
+Following \textcite{kohler2020equivariant}, we have that if $p_{\t{ref}}$ is invariant w.r.t.
+\ $G$ and $\phi: \c{M} \rightarrow \c{M}$ is equivariant w.r.t.\ to $G$, then the pushforward probability density $p=p_{\t{ref}}\circ\phi^{-1}$ is invariant w.r.t.\ $G$.
 
 Let's consider the probability flow $\phi$ associated with the reverse diffusion \eqref{eq:time_reversal_manifold}---given by $\mathrm{d} \v{Y}_t = \{-b(\v{Y}_t) + \nabla \log p_{T-t}(\v{Y}_t)\} \mathrm{d} t + \mathrm{d} \v{b}_t^\c{M}$--- i.e.\ the solution of the following ODE (see \cref{sec:likel-comp}) \begin{equation} \mathrm{d} \v{Y}_t = \{-b(\v{Y}_t) +\tfrac{1}{2}~ \nabla \log p_{T-t}(\v{Y}_t)\} \mathrm{d} t.
 \end{equation}
 
 In practice, the Stein score $\nabla \log p_{t}$ is approximated with the score network $\v{s}_\theta(t, \cdot)$.
-It is sufficient to parametrize the score network so that it is equivariant w.r.t. its second argument ---assuming that $\rho(g)$ and the drift $b$ commute (e.g.\ which is true for a linear drift)---since we then have \begin{align} \left[- b + \tfrac{1}{2}~ \v{s}_\theta\left(T - t, \cdot \right) \right] \left(\rho(g) \v{Y}_t \right) = \rho(g) \left[- b + \tfrac{1}{2}~ \v{s}_\theta\left(T - t, \cdot\right)\right] (\v{Y}_t).
+It is sufficient to parametrize the score network so that it is equivariant w.r.t.
+its second argument ---assuming that $\rho(g)$ and the drift $b$ commute (e.g.\ which is true for a linear drift)---since we then have \begin{align} \left[- b + \tfrac{1}{2}~ \v{s}_\theta\left(T - t, \cdot \right) \right] \left(\rho(g) \v{Y}_t \right) = \rho(g) \left[- b + \tfrac{1}{2}~ \v{s}_\theta\left(T - t, \cdot\right)\right] (\v{Y}_t).
 \end{align}
 
 \section{Stereographic baseline details}

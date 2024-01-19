@@ -14,7 +14,7 @@ Eventually in \cref{app:experimental_details}, we give a thorough description of
 \label{sec:multivariate_ou}
 
 First, we aim to show that we can define a stochastic process on an infinite dimensional function space, by defining the joint finite marginals $\v{Y}(x)$ as the solution of a multidimensional Ornstein-Uhlenbeck process.
-In particular, for any set of input $x = (x_1, \cdots, x_k) \in \c{X}^k$, we define the joint marginal as the solution of the following SDE \begin{equation}\label{eq:app_forward_SDE_sp} \end{equation}
+In particular, for any set of input $x = (x_1, \cdots, x_k) \in \c{X}^k$, we define the joint marginal as the solution of the following SDE \begin{equation}\label{eq:app_forward_SDE_sp} \end{equation} 
 
 \begin{proposition}{\parencite{phillips2022spectral}}{} \label{prop:mOU} We assume we are given a data process $(\v{Y_}0(x))_{x \in \c{X}}$ and we denote by $\mathbf{G} \sim \mathrm{GP}(0, k)$ a Gaussian process with zero mean and covariance.
 	Then let's define $$\v{Y_t} \triangleq e^{-\frac{1}{2}\cdot \int_{s=0}^t \beta_s ds} ~\v{Y_}0 + \left(1 - e^{-\frac{1}{2}\cdot \int_{s=0}^t \beta_s ds} \right) m + \left(1 - e^{-\int_{s=0}^t \beta_s ds} \right)^{1/2} \mathbf{G}.
@@ -54,9 +54,9 @@ Hence, condition on ${\v{Y}}_0$ the score is the gradient of the log Gaussian ch
 \end{align}
 where $\mathrm{L}_{t|0}$ denotes the Cholesky decomposition of $\Sigma_{t|0}=\mathrm{L}_{t|0} \mathrm{L}_{t|0}^\top$, and $\v{Y_t} = m_{t|0} + \mathrm{L}_{t|0} \epsilon$.
 
-Then we can plugin our learnt (preconditioned) score into the backward SDE \ref{eq:backward_SDE_dupref2} which gives \begin{align}\label{eq:backward_SDE_sp_approx} \mathrm{d} \bar{\v{Y}}_t|x &= \left[-(m(x) - \bar{\v{Y}}_t)/2 + \mathrm{K}(x,x) \nabla_{\bar{\v{Y}}_t} \log p_{T-t}(t, x, \bar{\v{Y}}_t) \right] \mathrm{d} t + \sqrt{\beta_t \mathrm{K}(x,x)} \beta_t \mathrm{d} \v{B_t} \end{align}
+Then we can plugin our learnt (preconditioned) score into the backward SDE \ref{eq:backward_SDE_dupref2} which gives \begin{align}\label{eq:backward_SDE_sp_approx} \mathrm{d} \bar{\v{Y}}_t|x &= \left[-(m(x) - \bar{\v{Y}}_t)/2 + \mathrm{K}(x,x) \nabla_{\bar{\v{Y}}_t} \log p_{T-t}(t, x, \bar{\v{Y}}_t) \right] \mathrm{d} t + \sqrt{\beta_t \mathrm{K}(x,x)} \beta_t \mathrm{d} \v{B_t} \end{align} 
 
-\subsection{Several score parametrisations} \label{sec:app_parameterisation}
+\subsection{Several score parametrisations} \label{sec:app_parameterisation} 
 
 In this section, we discuss several parametrisations of the neural network and the objective.
 
@@ -67,7 +67,7 @@ We recall that the input to the network is time $t$, and the noised vector $\v{Y
 The gram matrix $K$ corresponds to $k(X, X)$ with $k$ the limiting kernel.
 We denote by $\mathrm{L}_{t|0}$ and $\mathrm{S}$ respectively the Cholesky decomposition of $\Sigma_{t|0}=\mathrm{L}_{t|0} \mathrm{L}_{t|0}^\top$ and $\mathrm{K} = \mathrm{S} \mathrm{S}^\top$.
 
-The denoising score matching loss weighted by $\Lambda(t)$ is given by \begin{align} \label{eq:app:loss} \c{L}(\theta) = \mathbb{E} \left[\| {D}_\theta(t, \v{Y}_t) - \nabla_{{\v{Y}}_t} \log p_{t}(\v{Y}_t| \v{Y}_0)\|_{\Lambda(t)}^2 \right] \end{align}
+The denoising score matching loss weighted by $\Lambda(t)$ is given by \begin{align} \label{eq:app:loss} \c{L}(\theta) = \mathbb{E} \left[\| {D}_\theta(t, \v{Y}_t) - \nabla_{{\v{Y}}_t} \log p_{t}(\v{Y}_t| \v{Y}_0)\|_{\Lambda(t)}^2 \right] \end{align} 
 
 \begin{table}[] \centering \small \begin{tabular}{lllll} \toprule                 & No precond.
                                                 & Precond. $K$                                & Precond. $S^\top$                         & Predict $\v{Y}_0$                   \\
@@ -75,7 +75,7 @@ The denoising score matching loss weighted by $\Lambda(t)$ is given by \begin{al
                $c_\text{skip}$                  & 0                                           & 0                                         & 0                               & 1 \\
                $c_\text{out}$                   & $(\sigma_{t|0} + 10^{-3})^{-1}$             & $(\sigma_{t|0} + 10^{-3})^{-1}$           & $(\sigma_{t|0} + 10^{-3})^{-1}$ & 1 \\
                Loss                             & $\|\sigma_{t|0}
-               S^\top D_{\theta} + \v{z}\|_2^2$ & $\|\sigma_{t|0} D_{\theta} + S \v{z}\|_2^2$ & $\|\sigma_{t|0} D_{\theta} + \v{z}\|_2^2$ & $\|D_{\theta} - \v{Y}_0\|^2_2$      \\ $K \nabla \log p_t$ & $K D_\theta$ & $D_\theta$ & $ S D_\theta $ & $-\Sigma_{t|0}^{-1}(\v{Y}_t - \textrm{e}^{{-}\frac{B(t)}{2}} D_\theta)$ \\ \bottomrule\end{tabular} \caption{Summary of different score parametrisations as well as the values for $c_{\text{skip}}$ and $c_{\text{out}}$ that we found to be optimal, based on the recommendation from \textcite[Appendix B.6]{karras2022Elucidatinga}.
+               S^\top D_{\theta} + \v{z}\|_2^2$ & $\|\sigma_{t|0} D_{\theta} + S \v{z}\|_2^2$ & $\|\sigma_{t|0} D_{\theta} + \v{z}\|_2^2$ & $\|D_{\theta} - \v{Y}_0\|^2_2$      \\ $K \nabla \log p_t$ & $K D_\theta$ & $D_\theta$ & $ S D_\theta $ & $-\Sigma_{t|0}^{-1}(\v{Y}_t - \textrm{e}^{{-}\frac{B(t)}{2}} D_\theta)$ \\ \bottomrule\end{tabular} \caption{Summary of different score parametrisations as well as the values for $c_{\text{skip}}$ and $c_{\text{out}}$ that we found to be optimal, based on the recommendation from \textcite[Appendix B.6]{karras2022Elucidating}.
 	}\label{tab:app:score-param}
 \end{table}
 
@@ -106,9 +106,9 @@ The score can be computed from the network's prediction following
 	\nabla \log p_t(\v{Y}_t | \v{Y}_0) & = -\Sigma_{t|0}^{-1}(\v{Y}_t - \v{\mu}_{t|0})                  \\
 	                                   & = -\Sigma_{t|0}^{-1}(\v{Y}_t - \textrm{e}^{-B(t)/2} \v{Y}_0)   \\
 	                                   & \approx -\Sigma_{t|0}^{-1}\left(\v{Y}_t - \textrm{e}^{-B(t)/2}
-	D_\theta(t, \v{Y}_t)\right)                                                                         \\\end{align}
+	D_\theta(t, \v{Y}_t)\right)                                                                         \\\end{align} 
 
-\Cref{tab:app:score-param} summarises the different options for parametrising the score as well as the values for $c_{\text{skip}}$ and $c_{\text{out}}$ that we found to be optimal, based on the recommendation from \textcite[Appendix B.6]{karras2022Elucidatinga}.
+\Cref{tab:app:score-param} summarises the different options for parametrising the score as well as the values for $c_{\text{skip}}$ and $c_{\text{out}}$ that we found to be optimal, based on the recommendation from \textcite[Appendix B.6]{karras2022Elucidating}.
 In practice, we found the precondition by $K$ parametrisation to produce the best results, but we refer to \cref{fig:app:score-parametrization-ablation} for a more in-depth ablation study.
 
 \subsection{Exact (marginal) score in Gaussian setting}
@@ -131,7 +131,8 @@ These finite marginals were to arise from a stochastic process if, as per the Ko
 Exchangeability can be satisfied by parametrising the score network such that the score network is equivariant w.r.t\ permutation, i.e.\ $\mathbf{s}_\theta(t, \sigma \circ x, \sigma \circ {y}) = \sigma \circ \mathbf{s}_\theta(t, x, {y})$ for any $\sigma \in \Sigma_n$.
 Additionally, we have that the noising process $({\v{Y}}_t(x))_{x \in \c{X}}$ is trivially consistent for any $t \in \R_+$ since it is a stochastic process as per \cref{prop:mOU}, and consequently so is the (true) time-reversal $(\bar{\v{Y}}_t(x))_{x \in \c{X}}$.
 Yet, when approximating the score $\mathbf{s}_\theta \approx \nabla \log p_{t}$, we lose the consistency over the generative process $\bar{\v{Y}}^\theta_t(x)$ as the constraint on the score network is non trivial to satisfy.
-This is actually a really strong constraint on the model class, and as soon as one goes beyond linearity (of the posterior w.r.t.\ the context set), it is non trivial to enforce without directly parameterising a stochastic process, e.g.\ as extcite{phillips2022spectral}.
+This is actually a really strong constraint on the model class, and as soon as one goes beyond linearity (of the posterior w.r.t.
+\ the context set), it is non trivial to enforce without directly parameterising a stochastic process, e.g.\ as extcite{phillips2022spectral}.
 There thus seems to be a strong trade-off between satisfying consistency, and the model's ability to fit complex process and scale to large datasets.
 
 \section{Manifold-valued diffusion process}
@@ -190,7 +191,7 @@ The reverse time process will have correlation between different marginals, and 
 \subsection{$\mathrm{E}(n)$-equivariant kernels}
 \label{sec:en_equiv_kernels}
 
-A kernel $k: \R^d \times \R^d \rightarrow \R^{d\times d}$ is equivariant if it satisfies the following constraints: (a) $k$ is \emph{stationnary}, that is if for all $x, x' \in \R^n$
+A kernel $k: \R^d \times \R^d \rightarrow \R^{d\times d}$ is equivariant if it satisfies the following constraints: (a) $k$ is \emph{stationnary}, that is if for all $x, x' \in \R^n$ 
 
 \begin{align} k(x, x') = k(x - x') \triangleq \tilde{k}(x - x') \end{align} and if (b) it satisfies the \emph{angular constraint} for any $h \in H$ \begin{align} k(h x, h x') = \rho(h) k(x, x') \rho(h)^\top.
 \end{align}
@@ -209,7 +210,7 @@ See \textcite[Appendix C, ][]{holderrieth2021equivariant} for a proof.
 Below we give two proofs for the group invariance of the generative process, one via the probability flow ODE and one directly via Fokker-Planck.
 
 \begin{proof}
-	The reverse probability flow associated with the forward SDE \eqref{eq:forward_SDE_sp} with approximate score $\mathbf{s}_\theta(t, \cdot) \approx \nabla \log p_t$ is given by
+	The reverse probability flow associated with the forward SDE \eqref{eq:forward_SDE_sp} with approximate score $\mathbf{s}_\theta(t, \cdot) \approx \nabla \log p_t$ is given by 
 
 	\begin{align} \label{eq:backward_ODE_sp} \mathrm{d} \bar{\v{Y}}_t|x &= \tfrac{1}{2} \left[-m(x) + \bar{\v{Y}}_t + \mathrm{K}(x,x) \mathbf{s}_\theta(T - t, x, \bar{\v{Y}}_t) \right] \mathrm{d} t \\ & \triangleq b_{\text{ODE}}(t, x, \bar{\v{Y}}_t) \mathrm{d} t \end{align} This ODE induces a flow $\phi^b_t: X^n \times Y^n \rightarrow \mathrm{T}Y^n$ for a given integration time $t$, which is said to be $G$-equivariant if the vector field is $G-$equivariant itself, i.e.\ $b(t, g\cdot x, \rho(g) \bar{\v{Y}}_t) = \rho(g) b(t, x, \bar{\v{Y}}_t)$.
 	We have that for any $g \in G$ \begin{align} b_{\text{ODE}}(t, g\cdot x, \rho(g) \bar{\v{Y}}_t) &= \tfrac{1}{2} \left[ -m(g \cdot x) + \rho(g) \v{Y}_t + \mathrm{K}(g \cdot x,g \cdot x) ~\mathbf{s}_\theta(t, g \cdot x, \rho(g) \bar{\v{Y}}_t) \right] \\ &\overset{(1)}{=} \tfrac{1}{2} \left[-\rho(g)m(x) + \rho(g) \v{Y}_t + \rho(g) \mathrm{K}(x,x)\rho(g)^\top ~\mathbf{s}_\theta(t, g \cdot x, \rho(g) \bar{\v{Y}}_t) \right] \\ &\overset{(2)}{=} \tfrac{1}{2} \left[-\rho(g)m(x) + \rho(g) \v{Y}_t + \rho(g) \mathrm{K}(x,x)\rho(g)^\top \rho(g) ~\mathbf{s}_\theta(t, x, \bar{\v{Y}}_t) \right] \\ &\overset{(3)}{=} \tfrac{1}{2} \rho(g) \left[-m(x) + \v{Y}_t + \mathrm{K}(x,x) ~\mathbf{s}_\theta(t, x, \bar{\v{Y}}_t) \right] \\ &\overset{}{=} \rho(g) b_{\text{ODE}}(t, x, \bar{\v{Y}}_t) \end{align} with (1) from the $G$-invariant prior GP conditions on $m$ and $k$, (2) assuming that the score network is $G$-equivariant and (3) assuming that $\rho(g) \in O(n)$.
@@ -245,11 +246,11 @@ Below we give two proofs for the group invariance of the generative process, one
 	Let $\mu_x = \c{L}(f(x)) = {\pi_x}_\# P$, the law of $f$ evaluated at a point, where $\pi_x$ is the canonical projection operator onto the marginal at $x$, $\#$ the pushforward operator in the measure theory sense, $x\in M$ and $y$ is in the fibre of the associated bundle.
 	Let $\mu_x^{x', y} = \c{L}(f(x) | f(x') = y') = {\pi_x} \mu^{x', y'} = {\pi_x}_{\#} \c{L}(f | f(x') = y')$, the conditional law of the process when given $f(x') = y'$.
 
-	Assume that the prior is invariant under the action of $\iso_{GM}$, i.e. that \[\phi \triangleright \mu_x = \del{\phiA}_\# \mu_{\phi^{-1}(x)} = \mu_x\]
+	Assume that the prior is invariant under the action of $\iso_{GM}$, i.e. that \[\phi \triangleright \mu_x = \del{\phiA}_\# \mu_{\phi^{-1}(x)} = \mu_x\] 
 
-	Then the conditional measures are equivariant, in the sense that \[\phi \triangleright \mu_x^{x', y'} = \del{\phiA}_\#\mu_{\phi^{-1}(x)}^{x',y'} = \mu_x^{\phi^{-1}(x), \phiA(y)} = \mu_x^{\phi \triangleright (x', y')}\]
+	Then the conditional measures are equivariant, in the sense that \[\phi \triangleright \mu_x^{x', y'} = \del{\phiA}_\#\mu_{\phi^{-1}(x)}^{x',y'} = \mu_x^{\phi^{-1}(x), \phiA(y)} = \mu_x^{\phi \triangleright (x', y')}\] 
 
-\end{theorem}
+\end{theorem} 
 
 \begin{proof} \(\forall A, B\) test functions, $\phi \in \iso_{GM}$, \begin{align*} \E\sbr{B\del{f(x')}A\del{(\phi \triangleright f)(x)} } & = \E\sbr{ B\del{f(x')} A\del{{\phiA \circ f \circ \phi^{-1}}(x)}} \\ & = \E\sbr{ B\del{f(x')} \E\sbrvert{A\del{\phiA\del{F(\phi^{-1}(x))}}}{F(x')}} \\ & = \E\sbr{ B\del{f(x')} \int{ A(y) \del{\phiA}_\# \mu_{\phi^{-1}(x)}^{x', f(x')}}(\mathrm{d}y)} \\ & = \int{ B\del{y'} \int{ A(y) \del{\phiA}_\# \mu_{\phi^{-1}(x)}^{x', f(x')}}(\mathrm{d}y) \mu_{x'}(\mathrm{d}y')} \\ & = \int{ B\del{y'} \int{ A(y) \del{\phi \triangleright \mu_{x}^{x', f(x')}}}(\mathrm{d}y) \mu_{x'}(\mathrm{d}y')} \\ \end{align*} By invariance this quantity is also equal to \begin{align*} \E\sbr{B\del{(\phi^{-1}\triangleright f)(x')} A((\phi^{-1}\triangleright \phi \triangleright f)(x))} & = \E\sbr{B\del{(\phi^{-1}\triangleright f)(x')} \E\sbrvert{ A(f(x))}{B\del{(\phi^{-1}\triangleright f)(x')}}} \\ & = \E\sbr{B\del{\phiA (f(\phi^{-1}(x')))} \sbrvert{ A(F(x))}{\phiA (f(\phi^{-1}(x')))}} \\ & = \E\sbr{B\del{\tau_{x', g}^{-1} F(gx')} \int{ A(y) \mu_x^{\phi(x'), \phiA^{-1}(y)}}}(\mathrm{d}y) \\ & = \int{B(y')\int{ A(y) \mu_x^{\phi\triangleright (x', y)}}}(\mathrm{d}y) \del{\phiA^{-1}}_\# \mu_{\phi(x')}(\mathrm{d}y') \\ & = \int{B(y')\int{ A(y) \mu_x^{\phi\triangleright (x', y)}}}(\mathrm{d}y) \del{\phi^{-1} \triangleright \mu_{x'}}(\mathrm{d}y') \\ \end{align*} Hence \begin{align*} \del{\phi \triangleright \mu_{x}^{x', f(x')}}(\mathrm{d}y) \mu_{x'}(\mathrm{d}y') = \mu_x^{\phi\triangleright (x', y)}(\mathrm{d}y) \del{\phi^{-1} \triangleright \mu_{x'}}(\mathrm{d}y') \end{align*} By the stated invariance \( \phi^{-1} \triangleright \mu_{x'} = \mu_{x'}\), hence \begin{align*} \del{\phi \triangleright \mu_{x}^{x', f(x')}}(\mathrm{d}y) = \mu_x^{\phi\triangleright (x', y)}(\mathrm{d}y) \;\text{a.e.
 		}\;y'
@@ -341,9 +342,9 @@ Note the conditional sampling scheme other than the noise sampling is $\c{O}(NI)
 					.., \epsilon}$}
 		\State $Z \sim \c{N}(0, \m{I})$ \Comment{Sample tangent noise}
 		\State \( \sbr{\textunderscore, \tilde{\v{y}}_{t-\gamma}^*} = \sbr{\textcolor{algcol}{\v{y}^c_t}, {\v{y}}_t^*} + \gamma \left\{ -\frac{1}{2} \left( m(\bar{\v{x}}) - \sbr{\textcolor{algcol}{\v{y}^c_t}, {\v{y}}_t^*} \right) + \mathrm{K}(\bar{\v{x}}, \bar{\v{x}}) \mathbf{s}_\theta(t, \bar{\v{x}}, \sbr{\textcolor{algcol}{\v{y}^c_t}, \tilde{\v{y}}_t^*}) \right\} + \sqrt{\gamma} \mathrm{K}(\bar{\v{x}}, \bar{\v{x}})^{1/2}
-		Z \) \Comment{Euler-Maruyama step} \For{$l \in \{1, \dots, L \}$} \State $\textcolor{algcol}{\v{y}^c_{t-\gamma} \sim p_{t-\gamma, \v{x}^c}(\v{y}^c_{t-\gamma} | \v{y}^c_0)}$ \Comment{Noise context outputs} \State $Z \sim \c{N}(0, \m{I})$ \Comment{Sample tangent noise} \State \( \sbr{\textunderscore, \tilde{\v{y}}_{t-\gamma}^*} = \sbr{\textunderscore, \tilde{\v{y}}_{t-\gamma}^*} + \frac{\gamma}{2} \mathrm{K}(\bar{\v{x}}, \bar{\v{x}}) \mathbf{s}_\theta(t-\gamma, \bar{\v{x}}, \sbr{\textcolor{algcol}{\v{y}^c_{t-\gamma}}, \tilde{\v{y}}_{t-\gamma}^*}) + \sqrt{\gamma} \mathrm{K}(\bar{\v{x}}, \bar{\v{x}})^{1/2} Z \) \Comment{Langevin step} \EndFor \State \( \v{y}_{t-\gamma}^* = \tilde{\v{y}}_{t-\gamma}^*\) \EndFor \State {\v{s}eries return} \({\v{y}}_\epsilon^*\) \end{algorithmic} \end{algorithm}
+		Z \) \Comment{Euler-Maruyama step} \For{$l \in \{1, \dots, L \}$} \State $\textcolor{algcol}{\v{y}^c_{t-\gamma} \sim p_{t-\gamma, \v{x}^c}(\v{y}^c_{t-\gamma} | \v{y}^c_0)}$ \Comment{Noise context outputs} \State $Z \sim \c{N}(0, \m{I})$ \Comment{Sample tangent noise} \State \( \sbr{\textunderscore, \tilde{\v{y}}_{t-\gamma}^*} = \sbr{\textunderscore, \tilde{\v{y}}_{t-\gamma}^*} + \frac{\gamma}{2} \mathrm{K}(\bar{\v{x}}, \bar{\v{x}}) \mathbf{s}_\theta(t-\gamma, \bar{\v{x}}, \sbr{\textcolor{algcol}{\v{y}^c_{t-\gamma}}, \tilde{\v{y}}_{t-\gamma}^*}) + \sqrt{\gamma} \mathrm{K}(\bar{\v{x}}, \bar{\v{x}})^{1/2} Z \) \Comment{Langevin step} \EndFor \State \( \v{y}_{t-\gamma}^* = \tilde{\v{y}}_{t-\gamma}^*\) \EndFor \State {\v{s}eries return} \({\v{y}}_\epsilon^*\) \end{algorithmic} \end{algorithm} 
 
-\subsection{\textsc{RePaint}~\parencite{lugmayr2022RePaint} correspondance}
+\subsection{\textsc{RePaint}~\parencite{lugmayr2022RePaint} correspondance} 
 
 In this section, we show that: \begin{enumerate}[label=(\alph*)] \item \Cref{alg:conditioning_langevin} and \cref{alg:conditioning_renoising} \texttt{Repaint} from \cite{lugmayr2022RePaint} are equivalent in a specific setting.
 	\item There exists a continuous limit (SDE) for both procedures.
@@ -368,7 +369,7 @@ We begin by recalling the conditional sampling algorithm we study in \Cref{alg:c
 		\State $\textcolor{algcol}{\v{y}^c_t \sim \mathrm{N}(m_t(\v{x}^c; \v{y}^c), k_t(\v{x}^c,\v{x}^c; \v{y}^c))}$ \Comment{Noise context outputs}
 		\State $Z \sim \mathrm{N}(0, \m{I})$ \Comment{Sample tangent noise}
 		\State \( \sbr{\textunderscore, \tilde{\v{y}}_{t-\gamma}^*} = \sbr{\textcolor{algcol}{\v{y}^c_t}, \tilde{\v{y}}_t^*} + \gamma \left\{ -\frac{1}{2} \left( m(\bar{\v{x}}) - \sbr{\textcolor{algcol}{\v{y}^c_t}, \tilde{\v{y}}_t^*} \right) + \mathrm{K}(\bar{\v{x}}, \bar{\v{x}}) \mathbf{s}_\theta(t, \bar{\v{x}}, \sbr{\textcolor{algcol}{\v{y}^c_t}, \tilde{\v{y}}_t^*}) \right\} + \sqrt{\gamma} \mathrm{K}(\bar{\v{x}}, \bar{\v{x}})^{1/2}
-		Z \) \Comment{Reverse step} \State $Z \sim \mathrm{N}(0, \m{I})$ \Comment{Sample tangent noise} \State \( \tilde{\v{y}}_{t}^* = {\tilde{\v{y}}}_{t-\gamma}^* + \gamma \left\{ \frac{1}{2} \left( m({\v{x}^*}) - {\tilde{\v{y}}}_{t-\gamma}^* \right) \right\} + \sqrt{\gamma} \mathrm{K}({\v{x}^*}, {\v{x}^*})^{1/2} Z \) \Comment{Forward step} \EndFor \State \( \v{y}_{t-\gamma}^* = \tilde{\v{y}}_{t-\gamma}^*\) \EndFor \State {\v{s}eries return} \({\v{y}}_\epsilon^*\) \ \end{algorithmic} \end{algorithm}
+		Z \) \Comment{Reverse step} \State $Z \sim \mathrm{N}(0, \m{I})$ \Comment{Sample tangent noise} \State \( \tilde{\v{y}}_{t}^* = {\tilde{\v{y}}}_{t-\gamma}^* + \gamma \left\{ \frac{1}{2} \left( m({\v{x}^*}) - {\tilde{\v{y}}}_{t-\gamma}^* \right) \right\} + \sqrt{\gamma} \mathrm{K}({\v{x}^*}, {\v{x}^*})^{1/2} Z \) \Comment{Forward step} \EndFor \State \( \v{y}_{t-\gamma}^* = \tilde{\v{y}}_{t-\gamma}^*\) \EndFor \State {\v{s}eries return} \({\v{y}}_\epsilon^*\) \ \end{algorithmic} \end{algorithm} 
 
 First, we start by describing the RePaint algorithm \parencite{lugmayr2022RePaint}.
 We consider $(Z_k^0, Z_k^1, Z_k^2)_{k \in \N}$ a sequence of independent Gaussian random variable such that for any $k \in \N$, $Z_k^1$ and $Z_k^2$ are $d$-dimensional Gaussian random variables with zero mean and identity covariance matrix and $Z_k^0$ is a $p$-dimensional Gaussian random variable with zero mean and identity covariance matrix.
@@ -408,7 +409,7 @@ We introduce the following assumption.
 \Cref{assum:sde} ensures that there exists a unique strong
 are studied in
 \textcite{de2022convergence}.
-In the theoretical literature on diffusion models the Lipschitzness assumption is classical, see
+In the theoretical literature on diffusion models the Lipschitzness assumption is classical, see 
 
 We denote $((\v{X}_t^\gamma)_{t \geq 0})_{\gamma > 0}$ the family of processes such that for any $k \in \N$ and $\gamma >0$, we have for any $t \in \cobr{k \gamma, (k+1)\gamma}$, $\v{X}_t^\gamma = (1 - (t - k\gamma)/\gamma) \v{X}_{k\gamma}^\gamma + (t - k\gamma)/\gamma \v{X}_{(k+1)\gamma}^\gamma$ and \begin{equation} \v{X}_{(k+1)\gamma}^\gamma = \v{X}_{k\gamma}^\gamma + 2(1-\mathrm{e}^{-\gamma}) \nabla_{\v{X}_{k\gamma}^\gamma} \log p_{t_0}([\v{X}_{k\gamma}^\gamma, \v{X}_{k\gamma}^{c,n}]) + \sqrt{2}(1-\mathrm{e}^{-2\gamma})^{1/2} \v{Z}_{k\gamma}^\gamma , \end{equation} where $(\v{Z}_{k\gamma}^\gamma)_{k \in \N, \gamma > 0}$ is a family of independent $d$-dimensional Gaussian random variables with zero mean and identity covariance matrix and for any $k\in \N$, $\gamma > 0$, $\v{X}_{k\gamma}^{c,\gamma} = \mathrm{e}^{-t_0} x_0^c + (1 - \mathrm{e}^{-2t_0})^{1/2} \v{Z}_{k\gamma}^{0,\gamma}$, where $(\v{Z}_{k\gamma}^{0,\gamma})_{k \in \N, \gamma > 0}$ is a family of independent $p$-dimensional Gaussian random variables with zero mean and identity covariance matrix.
 This is a \emph{linear interpolation} of the \texttt{Repaint} algorithm in the form of \eqref{eq:iterates}.
@@ -431,7 +432,7 @@ It explicits what is the \emph{continuous} limit of the \texttt{Repaint} algorit
 In what follows, we verify that the assumptions of this result hold in our setting.
 For any $\gamma > 0$ and $x \in \R^d$, we define \begin{align}  & \textstyle b_\gamma(x) = (2/\gamma)[ (1- \mathrm{e}^{-\gamma}) \int_{\R^d} \nabla_{x_{t_0}} \log p_{t_0}([x_{t_0}, x_{t_0}^c]) p_{t_0|0}(x_{t_0}^c|x_0^c) \mathrm{d} x_{t_0}^c \\ &\qquad \qquad \qquad \textstyle - (1/\gamma) \E\sbr{(\v{X}_{(k+1)\gamma}^\gamma - \v{X}_{k \gamma}^\gamma)\mathbf{1}_{\norm{\v{X}_{(k+1)\gamma}^\gamma - \v{X}_{k \gamma}^\gamma} \geq 1} \vert \v{X}_{k \gamma} = x} , \\ &\textstyle \Sigma_\gamma(x) = (4/\gamma)(1- \mathrm{e}^{-\gamma})^2 \int_{\R^d} \nabla_{x_{t_0}} \log p_{t_0}([x_{t_0}, x_{t_0}^c])^{\otimes 2} p_{t_0|0}(x_{t_0}^c|x_0^c) \mathrm{d} x_{t_0}^c + (2/\gamma)(1- \mathrm{e}^{-2\gamma}) \m{I} \\ &\qquad \qquad \qquad \textstyle - (1/\gamma) \E\sbr{(\v{X}_{(k+1)\gamma}^\gamma - \v{X}_{k \gamma}^\gamma)^{\otimes 2}\mathbf{1}_{\norm{\v{X}_{(k+1)\gamma}^\gamma - \v{X}_{k \gamma}^\gamma} \geq 1} \vert \v{X}_{k \gamma} = x} .
 \end{align}
-Note that for any $\gamma > 0$ and $x \in \R^d$, we have \begin{align} &b_\gamma(x) = \E\sbr{\mathbf{1}_{\norm{\v{X}_{(k+1)\gamma}^\gamma - \v{X}_{k \gamma}^\gamma}\leq 1} (\v{X}_{(k+1)\gamma}^\gamma - \v{X}_{k \gamma}^\gamma) \vert \v{X}_{k \gamma}^\gamma = x} \\ &\Sigma_\gamma(x) =\E\sbr{\mathbf{1}_{\norm{\v{X}_{(k+1)\gamma}^\gamma - \v{X}_{k \gamma}^\gamma}\leq 1} (\v{X}_{(k+1)\gamma}^\gamma - \v{X}_{k \gamma}^\gamma)^{\otimes 2} \vert \v{X}_{k \gamma}^\gamma = x} \\ \end{align}
+Note that for any $\gamma > 0$ and $x \in \R^d$, we have \begin{align} &b_\gamma(x) = \E\sbr{\mathbf{1}_{\norm{\v{X}_{(k+1)\gamma}^\gamma - \v{X}_{k \gamma}^\gamma}\leq 1} (\v{X}_{(k+1)\gamma}^\gamma - \v{X}_{k \gamma}^\gamma) \vert \v{X}_{k \gamma}^\gamma = x} \\ &\Sigma_\gamma(x) =\E\sbr{\mathbf{1}_{\norm{\v{X}_{(k+1)\gamma}^\gamma - \v{X}_{k \gamma}^\gamma}\leq 1} (\v{X}_{(k+1)\gamma}^\gamma - \v{X}_{k \gamma}^\gamma)^{\otimes 2} \vert \v{X}_{k \gamma}^\gamma = x} \\ \end{align} 
 
 \begin{lemma} \label{lemma:limit_coeff} Assume \textup{\Cref{assum:sde}}.
 	Then, we have that for any $R, \varepsilon > 0$ and $\gamma \in \del{0,1}$ \begin{align} \label{eq:zero_limit} & \lim_{\gamma \to 0} \sup \cbr{\norm{\Sigma_\gamma(x) - \Sigma(x)} \; : \; x \in \R^d, \ \norm{x} \leq R} = 0 , \\ &\lim_{\gamma \to 0} \sup \cbr{\norm{b_\gamma(x) - b(x)} \; : \; x \in \R^d, \ \norm{x} \leq R} = 0 , \\ &\lim_{\gamma \to 0} (1/\gamma) \sup \cbr{\mathbb{P} \del{\norm{\v{X}_{(k+1)\gamma}^\gamma - \v{X}_{k \gamma}^\gamma}\geq \varepsilon \ | \v{X}_{k \gamma} = x} \; : \; x \in \R^d, \ \norm{x} \leq R} = 0 .
@@ -500,7 +501,8 @@ We show that the family of measures $(\pi_{t_0})_{t_0 > 0}$ approximates the pos
 
 \begin{proposition}
 	Assume \textup{\Cref{assum:sde}}.
-	We have that $\lim_{t_0 \to 0} \pi_{t_0} = \pi_0$ where $\pi_0$ admits a density w.r.t. the Lebesgue measure given by $x_0 \mapsto p(x_0|x_0^c)$.
+	We have that $\lim_{t_0 \to 0} \pi_{t_0} = \pi_0$ where $\pi_0$ admits a density w.r.t.
+	the Lebesgue measure given by $x_0 \mapsto p(x_0|x_0^c)$.
 \end{proposition}
 
 \begin{proof}

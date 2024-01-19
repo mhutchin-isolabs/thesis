@@ -1,4 +1,11 @@
-\lettrine{T}{he} last decade has seen an explosion in the research and application of machine learning algorithms to both academic and real-world problems. The majority of this progress has been driven by the rise of \emphmarginnote[0.5\baselineskip]{deep learning} as an effective tool to learn to approximate very complex functions from data via gradient based optimisation. Although the roots of deep learning are much older, the beginning of the modern rise can be seen in the period 2010-2012 as algorithms were revisited and made significantly cheaper to run by reducing hardware costs, and engineering efforts to have them run on GPUs. GPUs are more appropriate devices for large liner algebra computations than CPUs, and these are the core computations used in deep learning. These early efforts in deep learning focused on for the most part \emphmarginnote{classification} and \emphmarginnote[2.5\baselineskip]{regression} problems, where we attempt to associate with some input \(\v{x}\) some output \(y\). Examples include sorting images into categories, or predicting the .... From the probabilistic perspective, we are aiming to learn the distribution \(p(y | X=x)\) from some 
+\lettrine{T}{he} last decade has seen an explosion in the research and application of machine learning algorithms to both academic and real-world problems.
+The majority of this progress has been driven by the rise of \emphmarginnote[0.5\baselineskip]{deep learning} as an effective tool to learn to approximate very complex functions from data via gradient based optimisation.
+Although the roots of deep learning are much older, the beginning of the modern rise can be seen in the period 2010-2012 as algorithms were revisited and made significantly cheaper to run by reducing hardware costs, and engineering efforts to have them run on GPUs.
+GPUs are more appropriate devices for large liner algebra computations than CPUs, and these are the core computations used in deep learning.
+These early efforts in deep learning focused on for the most part \emphmarginnote{classification} and \emphmarginnote[2.5\baselineskip]{regression} problems, where we attempt to associate with some input \(\v{x}\) some output \(y\).
+Examples include sorting images into categories, or predicting the .
+...
+From the probabilistic perspective, we are aiming to learn the distribution \(p(y | X=x)\) from some 
 
 Since then, a number of notable instances of deep learning approaches to problems have arisen with results significantly beyond previous "classical" approaches in the respective settings, or solving probelms previously thought out of reach.
 In particular, deep learning algorithms have seen significant success in very high dimension problems for which we have access to a wealth of data.
@@ -9,7 +16,10 @@ Similar to many classical approaches, one key way to surpass this curse is the e
 Typically the space of possible solutions to a problem can be reduced significantly by placing conditions on our solutions through the structure of the problem.
 Examples include spatial invariance of image recognition, resulting in CNNs, temporal invariance of time series problems, leading to RNNs, and invariance to the order of inputs, leading to GNNs and transformers.
 
-Beyond the supervised tasks of classification and regression, \emphmarginnote{generative modelling} has become a mainstay of deep learning approaches. The fundamental challenge of generative modelling is similar to that of \emphmarginnote{density estimation}. From a probabilistic perspective, these two settings are identical. Both focus on fitting model \(p(\v{x})\) to samples we have obtained from \(p\), and both aim to generate new samples \(\v{x} \sim p(\v{x})\).
+Beyond the supervised tasks of classification and regression, \emphmarginnote{generative modelling} has become a mainstay of deep learning approaches.
+The fundamental challenge of generative modelling is similar to that of \emphmarginnote{density estimation}.
+From a probabilistic perspective, these two settings are identical.
+Both focus on fitting model \(p(\v{x})\) to samples we have obtained from \(p\), and both aim to generate new samples \(\v{x} \sim p(\v{x})\).
 
 The field of \emphmarginnote{geometric deep learning} \cite{bronstein2017geometric,bronstein2021geometric} has two main goals.
 Firstly to unify these seemingly disparate architectures into a single framework, understanding the invariances in terms of group theory, and providing tools for building new architectures with the desired invariances.
@@ -18,7 +28,6 @@ Many deep learning algorithms inherently assume the data they process live in ty
 In many applications however, particularly in physical and social science domains, data lives on non-flat manifolds, or discrete structures such as a graphs.
 Extending algorithms to data that live in these non-standard spaces is key to learning well on these problems.
 While these two goals might seem initially disparate, they have significant overlap on many common spaces, particularly homogenous spaces of Lie groups, such as the sphere, torus, projective spaces and hyperbolic spaces.
-
 
 % In this dissertation I present 4 projects working in this intersection.
 
