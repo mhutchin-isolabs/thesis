@@ -1,5 +1,5 @@
-One view to take on this is to give enough material such that the rest of the thesis is understandable, at least in concept from here.
-I am thinking to write in such a way that the questions answered by the papers become obvious ones to ask.
+% One view to take on this is to give enough material such that the rest of the thesis is understandable, at least in concept from here.
+% I am thinking to write in such a way that the questions answered by the papers become obvious ones to ask.
 
 \subsection{Einstein summation convention}
 
@@ -26,17 +26,17 @@ Some illustrative examples can be given by: \begin{itemize} \item A vector in a 
 	SOrt out the different intepretations of the convention.
 }
 
-\section{Set theory}
+% \section{Set theory}
 
-The construction of all math lies upon set theory.
-Starting from a set of simple axioms, we can build all the beauty of modern mathematics.
-Caution though, these are not the only axioms we could choose, and indeed there is great debate over one in particular, the axiom of choice.
-There exist a number of set theories, but the most common is Zermelo–Fraenkel, with or without the axiom of choice (ZF or ZFC).
-We can also start mathematics with type-theory - but this can be shown to be identical to choices of set theory.
-The following is an informal introduction.
+% The construction of all math lies upon set theory.
+% Starting from a set of simple axioms, we can build all the beauty of modern mathematics.
+% Caution though, these are not the only axioms we could choose, and indeed there is great debate over one in particular, the axiom of choice.
+% There exist a number of set theories, but the most common is Zermelo–Fraenkel, with or without the axiom of choice (ZF or ZFC).
+% We can also start mathematics with type-theory - but this can be shown to be identical to choices of set theory.
+% The following is an informal introduction.
 
-A \emphmarginnote{set} is a collection of mathematical objects, typically denoted with curly brackets \(\cbr{}\).
-For example if there exist such objects as \(\cbr{}\) 
+% A \emphmarginnote{set} is a collection of mathematical objects, typically denoted with curly brackets \(\cbr{}\).
+% For example if there exist such objects as \(\cbr{}\) 
 
 \section{Basic Algebra} 
 
@@ -135,6 +135,7 @@ This makes a \(T^{(k,l)}(V)\) of a \(n\)-dimension vector space a \(n^{k+l}\)-di
 \todo{write about tensors corresponding to linear operators}
 
 \subsubsection{Symmetric and alternating tensors}
+\label{sec:sym_alt}
 For the space of tensors of one type only (\(T^k(V^*) = T^{(0,k)}(V)\) or \(T^k(V) = T^{(k, 0)}(V)\)) we can define two special types fo tensor.
 We will focus here on \(T^k(V^*)\) tensors, but the same applies identically to \(T^k(V)\) tensors.
 
@@ -164,13 +165,45 @@ We denote this \emph{linear} subspace of \(T^k(V^*)\) as \(\Lambda^k(V^*)\).
 The tensor product does \emph{not} preserve alternation.
 We can define the \emphmarginnote{alternation of a tensor}, denoted \(\alt F\) by \[(\alt F) (v_1, .
 	.., v_k)  =\frac{1}{k!}\sum_{\sigma \in S^k} \sign(\sigma) F\del{v_{\sigma(1)}, ..., v_{\sigma(k)}}\].
-We can then define the \emphmarginnote{wedge product} of \(F\in \Lambda^k(V^*), G\in \Lambda^l(V^*)\) as \[ F\wedge G = \frac{(k+l)!
+For any tensor, this returns us an alternating tensor.
+
+Let \(I = \del{i_1, ..., i_k}\) define a \emphmarginnote{mutli-index}.
+Let \(I_\sigma = \del{i_{\sigma(1)}, ..., i_{\sigma(n)}}\).
+Assume we have a basis for \(V^*\), \(\epsilon^1, ..., \epsilon^n\).
+We can define an \emphmarginnote{elementary alternating tensor} by its action on \(k\) vectors, \(v_1, ..., v_k\) 
+\[\epsilon^I (v_1, ..., v_k) = \det \begin{bmatrix}
+	\epsilon^{i_1}(v_1) & \dots & \epsilon^{i_1}(v_1)\\
+	\vdots & \ddots & \vdots \\
+	\epsilon^{i_k}(v_1) & \dots & \epsilon^{i_k}(v_k)
+\end{bmatrix} 
+\] where \(\det\) is the usual determinant. 
+If we express the vectors \(v_1, ..., v_k\) in the dual basis to \(\epsilon^1, ..., \epsilon^n\), \(e_1, ..., e_n\), then this is 
+\[\epsilon^I (v_1, ..., v_k) = \det \begin{bmatrix}
+	v_1^{i^1} & \dots & v_k^{i^1}\\
+	\vdots & \ddots & \vdots \\
+	v_1^{i^k} & \dots & v_k^{i^k}
+\end{bmatrix} 
+\].
+Clearly this is an alternating tensor, as swapping any two columns in the determinant results in the change in a sign, and it is zero if any two vectors are colinear.
+
+Evaluating an elementary alternating tensor on basis elements \(e_{j_1}, ... e_{j_k}\) gives 
+\[\epsilon^I(e_1, ..., e_k) = \begin{bmatrix}
+	\delta_{j_1}^{i^1} & \dots &\delta_{j_k}^{i^1}\\
+	\vdots & \ddots & \vdots \\
+	\delta_{j_1}^{i^k} & \dots & \delta_{j_k}^{i^k}
+\end{bmatrix} = \delta_J^I\], where \(J=(j_1, ..., j_k)\).
+
+By picking a subset of the elementary alternating tensors we can produce a basis on the space of alternating tensors.
+We need to exclude any that are zero (\(I\) with repeated indicies) and any \(I\) that is a permutation of another element of the basis set. 
+For the space alternating tensors \(\Lambda^k(V^*)\) over an \(n\)-dimension vector space \(V^*\), we can therefore pick the basis
+\[  \cbrcolon{\epsilon^I}{ I \text{ is a strictly increasing multiindex of size } k} \].
+
+
+The \emphmarginnote{wedge product} of two alternating tensors, enoted by \(\wedge\), maps two alternating tensors to an alternating tensor of higher dimension, \[\wedge: \Lambda^k(V^*) \times \Lambda^l(V^*) \to \Lambda^{k+l}(V^*) \].
+For \(F\in \Lambda^k(V^*), G\in \Lambda^l(V^*)\), is is defined as \[ F\wedge G = \frac{(k+l)!
 	}{k!l!} \alt (F\otimes G) \], \(F\wedge G \in  \Lambda^{k+l}(V^*)\).
 This is a \emph{bilinear, associative, anti-commutative} (\(F\wedge G = \del{-1}^{kl}G\wedge F\)) operation.
 All 0- and 1-tensors are alternating trivially.
-
-For covectors \(\omega^1, .
-.. \omega^k\), and vectors \(V-1, ..., v_k\), \[\omega^1 \wedge ... \wedge \omega^k(v_1, ..., v_k) = \det \del{\omega^i(v_j)}\] where \(\det\) is the usual matrix determinant.
 
 The \emphmarginnote{interior product} is an operation \(\iprod: \Lambda^k(V^*) \x V \to \Lambda^{k-1}(V^*)\) defined by \[(v\iprod \omega)(w_1, .
 	.., w_{k-1}) = \omega(v, w_1, ..., w_{k-1})\].
@@ -184,7 +217,22 @@ It makes sense therefore to present this separately, to make clear the delineati
 \subsection{Topological spaces}
 Intuitively, the study of topology is the study of spaces that we identify as the same if we can "continuously" deform one into another - as if the space is made of rubber that can be stretched and deformed.
 Another way to think about it is the weakening of the structure of a \emphmarginnote{metric space} that allows us to extend certain tools to new spaces.
-It allows us to discuss the proximity of points without needing to being able to say how far apart exactly they are.
+It allows us to discuss whether points are "near" each other without needing to being able to say how far apart exactly they are.
+
+\begin{definition}[Metric space]
+	A metric space \((X, d)\) is a space \(X\) with a two argument function \(d: X\times X \to \R_{\geq 0}\) such that \(d\) satisfies:
+	\1 \(d(x, x) = 0\) for \(x\in X\).
+	\2 If \(x \neq y\) for \(x, y\in X\) then \(d(x, y) > 0\) (Positivity)
+	\3 \(d(x, y) = d(y, x)\) for \(x, y \in X\) (Symmetry)
+	\4 \(d(x, z) \leq d(x, y) + d(y, z)\) for \(x, y, z \in X\) (Triangle inequality)
+	\0
+\end{definition}
+This encodes in its structure our intuitive notion of a \emphmarginnote{distance function} in \(d\) between points in the space \(X\).
+On top of this we can create two notions.
+
+First is that of \emphmarginnote{open sets}. 
+
+\todo[inline]{Consider this intro via metric spaces - I think it is more intuitive but we shall wsee. Discuss w valentin}
 
 One motivation behind the modern definition of a topology comes from the "open set criterion", the observation that continuous functions between metric spaces (defined in the \(\del{\epsilon, \delta}\) sense \todo{cite?
 }) can be defined by knowing only the open sets of the metric spaces and throwing out the metrics that generated the open sets in the first place.
@@ -252,7 +300,11 @@ Continuous functions between two topological spaces preserve in one direction on
 % \begin{definition}[Continuous functions]
 %     A function \(f: X\to Y\) between two topological spaces \(\del{X, \topo{X}}\) and \(\del{Y, \topo{Y}}\) is said to be continuous if for every open set \( V \in \topo{Y}\), its preimage is open in \(X\), \(f^{-1}(V) \in \topo{X}\).
 % \end{definition}
-A function \(f: X\to Y\) between two topological spaces \(\del{X, \topo{X}}\) and \(\del{Y, \topo{Y}}\) is said to be \emphmarginnote{continuous} if for every open set \( V \in \topo{Y}\), its preimage is open in \(X\), \(f^{-1}(V) \in \topo{X}\).
+\todo[inline]{consider the more formal defnition based style vs the text based style}
+% A function \(f: X\to Y\) between two topological spaces \(\del{X, \topo{X}}\) and \(\del{Y, \topo{Y}}\) is said to be \emphmarginnote{continuous} if for every open set \( V \in \topo{Y}\), its preimage is open in \(X\), \(f^{-1}(V) \in \topo{X}\).
+\begin{definition}[Topological continuity]
+	A function \(f: X\to Y\) between two topological spaces \(\del{X, \topo{X}}\) and \(\del{Y, \topo{Y}}\) is \emph{continuous} if for every open set \( V \in \topo{Y}\), its preimage is open in \(X\), \(f^{-1}(V) \in \topo{X}\).
+\end{definition}
 \begin{figure}[h]
 	\includegraphics{figures/tex/continuous.tex}
 \end{figure}
@@ -527,14 +579,15 @@ Using these definitions we can thenprove the following: If \(f: X \to Y\) is an 
 %     \caption{The space on the left is path connected, the space on the right is not.}
 % \end{figure}
 
-\section{Manifolds}
-\subsection{Topological Manifolds}
+\section{Topological Manifolds and Smooth Manifolds}
+% \subsection{Topological Manifolds}
 With all this in place, we are ready to define a manifold.
 The manifolds we will discuss now are still topological spaces only, they still do not have a notion of distance, only proximity, but do gain the additional structutre of locally looking like Euclidean space.
 This makes them typically better behaved that a generic topological space, and more useful models for real objects.
 
+\subsection{Topological manifolds}
 \begin{definition}[Topological manifold]
-	An n-dimension topological manifold is a \emph{Hausdorff} and \emph{second-countable} topological space for which \emph{every point has a neighbourhood homeomorphic to an open subset of \(\R^n\)}.
+	An n-dimension \emph{topological manifold} is a \emph{Hausdorff} and \emph{second-countable} topological space for which \emph{every point has a neighbourhood homeomorphic to an open subset of \(\R^n\)}.
 \end{definition}
 This last condition is also stated as being \emph{locally Euclidean of dimension \(n\)}.
 Note that the requirement of second countability is sometimes replaced with \emphmarginnote{paracompactness}.
@@ -549,8 +602,8 @@ For any two charts \(\del{U, \phi_U}, \del{V, \phi_V}\) in an atlas where \(U\^ 
 An atlas is called a \emphmarginnote{maximal atlas} if it is not a subset of some larger atlas.
 
 We may also be interested in manifolds that have \emph{edges}, aptly names manifolds with boundary.
-\begin{definition}[Manifold with boundary]
-	An n-dimension topological manifold with boundary is a \emph{Hausdorff} and \emph{second-countable} topological space for which every point has a neighbourhood homeomorphic to an open subset of the n-dimension \(\mathbb{H}^n\).
+\begin{definition}[Topological manifold with boundary]
+	An n-dimension \emph{topological manifold with boundary} is a \emph{Hausdorff} and \emph{second-countable} topological space for which every point has a neighbourhood homeomorphic to an open subset of the n-dimension \(\mathbb{H}^n\).
 \end{definition}
 where \(\mathbb{H}^n\) is the \emphmarginnote{upper half-space}, \(\mathbb{H}^n = \cbrcolon{\del{x_1, ..., x_n}\in\R^n}{x_n \geq 0}\).
 We call any point that has a neighbourhood homeomorphic to the upper half-space a \emphmarginnote{boundary point}, and denote the collection of these the \emphmarginnote{boundary}, denoted \(\partial X\).
@@ -578,12 +631,17 @@ In addition, from a computational perspective they are incredibly useful as they
 
 \subsubsection{Examples}
 
+\todo[inline]{Some examples of manifolds, and the various production operations.}
+
 \subsection{Smooth manifolds}
 
-A smooth manifold is a topological manifold with additional structure.
-In this case, we want to ensure that the charts and transition maps of the atlas of the manifold as \emph{smooth}.
-For a chart \((U, \phi)\) to be smooth we require that \(\phi: U \to \R^k\) be smooth (\(\phi\in C^\infty\)), if all its component functions have continuous differentials of all orders.
-An atlas is said to be \emphmarginnote{smoothly compatible} is for every pair of charts \((U, \phi), (V, \psi)\) the transition maps \(\phi \circ \psi^{-1}\) and \(\psi \circ \phi^{-1}\) restricted to \(\phi(U\^V)\) and \(\psi(U\^V)\) are smooth.
+To add additional structure to our manifolds, we might require that the atlas we specify has some additional properties.
+For any property, \ding{110}, we say that an atlas is \ding{110}-compatible if for all pairs of charts in the atlas the transition map between charts has the particular property. We call a manifold equipped with an atlas that is \ding{110}-compatible a \ding{100}-manifold.
+
+By definition, all atlases are \(C^0\), and so all manifolds are \(C^0\)-manifolds.
+In addition, we could require our manifold to be a \emphmarginnote{(\(C^k\))-differentiable manifolds}, where all the transition maps are \(C^k\), i.e. they have up to \(k\) differentials.
+Of most interest to us will be \emphmarginnote{smooth manifolds}, manifolds for which the transition maps are infinity differentiable, i.e. they are in \(C^\infty\).
+
 A \emphmarginnote{smooth structure} on \(X\) is a \emph{maximal smooth atlas}, and so a \emphmarginnote{smooth manifold (with boundary)} is a triple \((X, \topo{X}, \atlas{X})\) with the right properties.
 Every coordinate chart of a smooth manifold is itself smooth.
 
@@ -648,7 +706,7 @@ So for \(v_p \in \R^n_p\) expressed as \(v = \sum_{i=1}^n v_i \eval{e_i}_p\), we
 	}
 \end{figure}
 
-Bearing this in mind, we define a \emphmarginnote{derivation at \(p\)} as a linear function \(w: C^\infty(\R^n)\to \R\) that follows the product rule \[\sbr{w(fg)}(p) = f(p) w(g) + g(p) w(f)\].
+Bearing this in mind, we now define a \emphmarginnote{derivation at \(p\)} as a linear function \(w: C^\infty(\R^n)\to \R\) that follows the product rule \[\sbr{w(fg)}(p) = f(p) w(g) + g(p) w(f)\].
 We denote \(T_p\R^n\) as the space of all derivations of \(C^\infty(\R^n)\) at \(p\).
 This is a vector space, with the operations \[(w_1 + w_2)f = w_1 f + w_2f \quad \quad (cw) f = c(wf)\].
 We can then prove that our geometric tangent vector direction derivative and the derivatives at \(p\) are isomorphic.
@@ -660,17 +718,19 @@ We can then prove that our geometric tangent vector direction derivative and the
 \begin{proof}
 	\cite[proposition 3.2]{lee2013smooth}
 \end{proof}
+This proposition therefore connects the idea of directional derivatives that we are used to when working with Euclidean space with the more abstract definition of the space of derivations on \(\R^n\).
+This then give us a natural way to define the \emphmarginnote{tangent space at a point on a manifold}, \(T_pX\), as simply the vector space of derivations of \(C^\infty(X)\) at \(p\).
 
-This then give us a natural way to define the \emphmarginnote{tangent space at a point on a manifold}, \(T_pX\), as the vector space of derivations of \(C^\infty(X)\) at \(p\).
-For a \(n\)-dimension manifold is \(n\)-dimension vector space, isomorphic (in the vector space sense) to \(\R^n\).
+For an \(n\)-dimension manifold, the tangent space is \(n\)-dimension vector space, isomorphic (in the vector space sense) to \(\R^n\).
 Intuitively, this is the space of all possible directions one could move in from \(p\).
 \begin{figure}[h]
 	\includegraphics{figures/diagrams/tangent_space_sphere.pdf}
 	\caption{The tangent space of the point \(\icon{figures/diagrams/dot_red.pdf}\in \c{S}_2\) with example tangent vectors.}
 \end{figure}
 
-If we have a smooth function between manifolds \(F: X\to Y\), we can also define a natural map between their tangent spaces at a point \(p\in X\) and \(F(p)\in Y\), \(\d F: T_pX\to T_{F(p)}Y\), called the \emphmarginnote{differential} of \(F\) at \(p\) by its action on a tangent vector \(v \in T_pX\) and a smooth function on \(Y\), \(f\in C^\infty (Y)\).
-\[\sbr{\d F_p (v)}\del{f} = v \del{f \circ F}, \quad v\in T_pM, \; f\in C^\infty(Y) \].
+If we have a smooth function between manifolds \(F: X\to Y\), we can also define a natural map between their tangent spaces at a point \(p\in X\) and \(F(p)\in Y\).
+We call this the \emphmarginnote{differential} of \(F\) at \(p\), denoted \(\d F: T_pX\to T_{F(p)}Y\), and it is defined by its action on a tangent vector \(v \in T_pX\) and a smooth function on \(Y\), \(f\in C^\infty (Y)\).
+\[\sbr{\d F_p (v)}\del{f} = v \del{f \circ F}(p), \quad v\in T_pM, \; f\in C^\infty(Y) \].
 This is a \emph{linear} map that distributes over compositions of maps between manifolds, \(\d_p\del{F\circ G} = \d F_{G(p)} \circ \d G_p\), and preserves the identity map, \(\d(\id_X)_p = \id_{T_pX}\).
 Importantly if \(F\) is a \emph{diffeomorphism}, then \(\d F\) is an \emph{isomorphism} between tangent spaces and \(\del{\d F}^{-1} = \d \del{F^{-1}}\).
 \begin{figure}[h]
@@ -709,10 +769,10 @@ We can then express any tangent vector \(v \in T_pX\) as \[v = \sum_{i=1}^n v_i 
 	}
 \end{figure}
 
-We can also study how the differential behaves in local coordinates.
+We can also study how the \emphmarginnote{differential in local coordinates}.
 First again let us consider the special case of \(F: U\subseteq\R^n \to V\subseteq\R^m\), with the standard basis for the tangent spaces \(\eval{\pd{}{x_1}}_p, .
 .., \eval{\pd{}{x_n}}_p\) and \(\eval{\pd{}{y_1}}_q, ..., \eval{\pd{}{y_m}}_q\).
-Applying the definition of the differential and the chain rule to a function \(f\in C^\infty (\R^m)\), we get \[\d F_p\del{\eval{\pd{}{x_i}}_p}f = \eval{\pd{}{x_i}}_p \del{f \circ F} = \sum_{j=1}^m \pd{f}{y_j}\del{F(p)} \pd{F_j}{x_i}(p) = \del{\sum_{j=1}^m \pd{F_j}{x_i}(p) \eval{\pd{}{y_j}}_{F(p)}} f\].
+Applying the definition of the differential and the chain rule to a function \(f\in C^\infty (\R^m)\), we get \[\d F_p\del{\eval{\pd{}{x_i}}_p}f &= \eval{\pd{}{x_i}}_p \del{f \circ F}\nonumber \\ &= \sum_{j=1}^m \pd{f}{y_j}\del{F(p)} \pd{F_j}{x_i}(p) \nonumber \\ &= \del{\sum_{j=1}^m \pd{F_j}{x_i}(p) \eval{\pd{}{y_j}}_{F(p)}} f\].
 Therefore, \[\d F_p\del{\eval{\pd{}{x_i}}_p} = \sum_{j=1}^m \pd{F_j}{x_i}(p) \eval{\pd{}{y_j}}_{F(p)} \].
 If we have \(v = \sum_{i=1}^n v_i \eval{\pd{}{x_i}}_p\), then its image under the differential, \(w = \d F(v)\) in basis coefficients is \[\begin{bmatrix} w_1 \\ \vdots \\ w_m \end{bmatrix} = \begin{bmatrix} \pd{F_1}{x_1}(p) & \dots & \pd{F_1}{x_n}(p) \\ \vdots & \ddots & \vdots \\ \pd{F_m}{x_1}(p) & \dots & \pd{F_m}{x_n}(p) \end{bmatrix}\begin{bmatrix} v_1 \\ \vdots \\ v_n \end{bmatrix}\].
 So we see in local coordinates the differential is associated with a matrix with entries \(\pd{F_j}{x_i}\).
@@ -721,13 +781,14 @@ The differential is therefore the coordinate-free definition of the Jacobian.
 
 In order to apply this to the differential of \(F: X \to Y\), we again look at the behaviour with respect to charts.
 Pick two charts \((U, \phi)\in \atlas{X}\), \(p\in U\), and \((V, \psi)\in \atlas{Y}\), \(F(p)\in V\), and write that \(\tilde{F} = \psi \circ F \circ \phi^{-1}\), so \( F = \psi^{-1} \circ \tilde F \circ \phi\).
-We know that \(\d \tilde F _{\phi(p)}\) in coordinates is the matrix described above, \(\pd{\tilde F_j}{\x_i}\).
+We know that \(\d \tilde F _{\phi(p)}\) in coordinates is the matrix described above, \(\pd{\tilde F_j}{x_i}\).
 We can then write \[\d F_p \del{\eval{\pd{}{\phi_i}}_p} = \d \del{\psi^{-1} \circ \tilde F \circ \phi}_p \del{\eval{\pd{}{\phi_i}}_p} &= \d {\psi^{-1}}_{F(p)} \circ \d {\tilde F}_{\phi(p)} \circ \d {\phi}_p \del{\eval{\pd{}{\phi_i}}_p} \\&= \d {\psi^{-1}}_{F(p)} \circ \d {\tilde F}_{\phi(p)} \del{\eval{\pd{}{x_i}}_{\phi(p)}} \\ &= \d {\psi^{-1}}_{F(p)} \del{\sum_{j=1}^m \pd{\tilde F_j}{x_i}\eval{\pd{}{y_j}}_{\psi(p)}} \\ &= \sum_{j=1}^m \pd{\tilde F_j}{x_i}\eval{\pd{}{\psi_j}}_{p}\].
 So again we see that the differential is associated in local coordinates with the Jacobian matrix \(\pd{\tilde F_j}{x_i}\).
 
 One particular example of the differential in coordinates is in the effect on tangent vectors under a change in chart, called a \emphmarginnote{change in coordinate}.
-If we have \(p\) in two charts \((U, \phi)\), \((V, \psi)\) and a vector at \(p\), \(v = \sum_{i=1}^n a_i \eval{\pd{}{\phi_i}}_p = \sum_{i=1}^n b_i \eval{\pd{}{\psi_i}}_p\), then the basis coefficients are related by \(b_j = \sum_{i=1}^n \pd{\psi \circ \phi^{-1}_j}{x_i} a_i\).
+If we have \(p\) in two charts \((U, \phi)\), \((V, \psi)\) and a vector \(v\) at \(p\), in the two different chart bases, \(v = \sum_{i=1}^n a_i \eval{\pd{}{\phi_i}}_p = \sum_{i=1}^n b_i \eval{\pd{}{\psi_i}}_p\), then the basis coefficients are related by \(b_j = \sum_{i=1}^n \pd{\psi \circ \phi^{-1}_j}{x_i} a_i\).
 As a small abuse of notation I will write \(\pd{\psi \circ \phi^{-1}_j}{x_i} = \pd{\psi_j}{\phi_i}\).
+
 Since we know this differential is an isomorphism, so must its Jacobian, i.e. is it full rank, so \(\pd{\psi_j}{\phi_i}\in \groupGL\).
 This group that related the basis coefficients of different bases of the tangent space is called the \emphmarginnote{structure group} of the manifold.
 If we have additional structure on our manifold, we can get a \emphmarginnote{reduced structure group} \(G\subset \groupGL\) by preferring a subset of specific bases on each tangent space.
@@ -759,7 +820,8 @@ Instead, we give it a \emphmarginnote{natural topology} that renders the tangent
 
 \begin{proposition}[The tangent bundle is a smooth manifold]
 	For any smooth \(n\)-dimension manifold \(X\), the tangent bundle is a \(2n\)-dimension smooth manifold with a natural topology and smooth structure.
-	With respect to this structure, the projection \(\pi: TX \to X\) is smooth.z \end{proposition} 
+	With respect to this structure, the projection \(\pi: TX \to X\) is smooth.
+\end{proposition} 
 
 \begin{proof} To do this, we construct charts that satisfy the smooth chart lemma (\cref{lem:smooth_chart}).
 
@@ -818,34 +880,35 @@ Vector fields interact with smooth functions in two ways.
 We can multiply them on the left, \[(f V)_p = f(p) V_p\].
 This structure makes \(\Gamma(TX)\) a \emph{module} over the ring \(C^\infty(M)\).
 Alternatively, we can have vector fields act on functions \(f\in C^\infty(X)\) by \[[Vf](p) = V_p (f)\].
-This makes a vector field a function \(V: C^\infty(X) \to C^\infty(X)\), and is a \emphmarginnote{derivation of \(C^\infty(X)\)} (they satisfy the product rule).
-All derivations of \(C^\infty(X)\) are vector fields.
+This makes vector fields functions \(V: C^\infty(X) \to C^\infty(X)\), and \emphmarginnote{derivations of \(C^\infty(X)\)} (they satisfy the product rule).
+All derivations of \(C^\infty(X)\) are vector fields\todo{cite}.
 
 An important operation we can perform on vector fields is the \emphmarginnote{Lie bracket}.
 For \(V, W \in \Gamma(TX)\), we define the operation \(\sbr{V, W}: \C^\infty(X)\to C^\infty(X)\) as \[ \sbr{V, W}f = V(Wf) - W(Vf)\].
 This has a number of properties.
-For \(U,V,W \in \Gamma{TX}\) we have \begin{enumerate}[noitemsep] \item \(\sbr{V,W}\) is bilinear.
+For \(U,V,W \in \Gamma\del{TX}\) we have \begin{enumerate}[noitemsep] \item \(\sbr{V,W}\) is bilinear.
 	\item \(\sbr{V, W} = -\sbr{W,V}\), it is antisymmetric.
 	\item \(\sbr{U,\sbr{V, W}} + \sbr{W,\sbr{U, V}} + \sbr{V,\sbr{W, U}} = 0\), the Jacobi identity.
 	\item For \(f, g\in C^\infty(X)\), \(\sbr{fV, gW} = fg\sbr{V,W} + f(Vg)W - (gWf)V\), relating the two ways of actioning smooth functions and vector fields.
 \end{enumerate}
+\todo{why is this important?}
 
 \subsection{Fibre bundles}
 The construction of the tangent bundle above is one example of a very generic structure call a \emph{fibre bundle}.
-A \emphmarginnote{fibre bundle} is a quadruple \(E, B, \pi, F\) where \(E, B, F\) are topological spaces and \(pi: E\to B\) is a surjective continuous map, such that for all \(p\in B\), there is a neighbourhood of \(p\) such that there is a homeomorphism \(\Phi: \pi^{-1}U \to U\x F\).
+A \emphmarginnote{fibre bundle} is a quadruple \(E, B, \pi, F\) where \(E, B, F\) are topological spaces and \(\pi: E\to B\) is a surjective continuous map, such that for all \(p\in B\), there is a neighbourhood of \(p\) such that there is a homeomorphism \(\Phi: \pi^{-1}(U) \to U\x F\).
 This is called a \emphmarginnote{local trivialisation of E over U}.
 \(E\) is called the \emphmarginnote{total space}, \(B\) the \emphmarginnote{base space}, \(\pi\) the \emphmarginnote{projection} and \(F\) the \emphmarginnote{typical fibre}.
 
 \emphmarginnote{Sections} of bundles are continuous maps from the base space to the total space, \(\sigma:B \to E\), that when composed with the projection form the identity, \(\pi \circ \sigma = \id_B\).
-In essence these assign a to each point in the base space a point in its fibre, its preimage under the projection, \(\pi^{-1}(p) = F_p\).
-The space of sections are denoted \(\Gamma(E)\).
+In essence these assign to each point in the base space a point in its fibre, its preimage under the projection, \(\pi^{-1}(p) = F_p\).
+The space of sections are denoted \(\Gamma(E)\).\todo{say something about smooth sections}
 
 The study of fibre bundles, and more specifically vector bundles, is a key concept in the study of smooth and Riemannian manifolds.
 \begin{figure}[h]
 	\includegraphics{figures/diagrams/cylinder.pdf}\hspace{1cm}\includegraphics{figures/diagrams/mobius_strip.pdf}\caption{The Möbius strip and te cylinder are both fibre bundles with the same base space (\(\c{S}_1\)) and typical fibre (\([0,1]\)), but different total space and projection.}
 \end{figure}
 
-\emphmarginnote{Vector bundles} are fibre bundles where the typical fibre is isomorphic to \(\R^n\).
+\emphmarginnote{Vector bundles} are fibre bundles where the typical fibre is isomorphic to \(\R^n\) equipped with th eusual vector space structure.
 The tangent bundle we have just constructed is the most important example of a vector bundle over a manifold, with total space the tangent bundle, base space the manifold, the natural projection, and typical fibre \(\R^n\).
 There are other important ones we can construct too.
 In constructing these, it will be useful to have a version of the \cref{lem:smooth_chart} that is a bit more specialised.
@@ -858,30 +921,13 @@ In constructing these, it will be useful to have a version of the \cref{lem:smoo
 		      U_a\^ U_b \to \groupGL[k, \R]\) such that the map \(\Phi_a\circ \Phi_b^{-1}: (U_a\^ U_b) \times \R^k \to (U_a\^ U_b) \times \R^k\) is of the form \[ \Phi_a\circ \Phi_b^{-1}(p, v) = (p, \tau_{ab}(p)v)\] \end{enumerate} Then E has a unique topology and smooth structure making it into a smooth manifold with or without boundary and a smooth rank-k vector bundle over M; with \(\pi\) as projection and \(\cbr{(U_a, \Phi_a)}\) as smooth local trivializations.
 \end{lemma}
 
-Say something about frames?
-
-\subsection{Principle bundles}
-Another type of bundle that is important in the study of Riemannian manifolds are \emphmarginnote{principle \(G\)-bundles}, where \(G\) is a Lie group.
-This type of bundle associates the action of the Lie group \(G\) to the fibres of a bundle in a specific way.
-If \((E, B, \pi, F)\) is a fibre bundle, and we have a right group action \(\rho: P\times G\to P\) such that \begin{enumerate}[noitemsep] \item \(\rho\) \emph{preserves the fibres} of the bundle, i.e for \(p\in P\), \(g \in G\), then \(\pi(p) = \pi(\rho(p, g))\).
-	\item \(\rho\) acts \emph{freely}, that is for \(g\in G\) and \(p\in P\), \(p\cdot g\neq p\) unless \(g\) is the identity element of \(G\).
-	\item \(\rho\) acts \emph{transitively} on the fibres, i.e. if \(b \in B\), and \(p \in \pi^{-1}(b)\), then the map \(g \mapsto p\cdot g\) is a homeomorphism from the group \(G\) onto the fibre \(\pi^{-1}(b)\).
-\end{enumerate}
-Then the combination of the fibre bundle and \(\rho\) is a principle \(G\)-bundle.
-This definition is quite abstract, but important concrete examples of this exist.
-
-\subsection{Frame bundles}
-The \emphmarginnote{frame bundle} is one such example.
-For a given \(n\)-dimension vector bundle, \((E, X, \pi, V)\), we can construct a new fibre bundle containing all the possible \emphmarginnote{frames} (an ordered choice of basis) of this vector bundle.
-At a point \(p\in M\) we can think of a frame as a linear isomorphism between \(\R^n\) and the fibre at \(p\), \(V_p = \pi^{-1}(p)\).
-From our previous discussion of bases with respect to the change in chart, we saw that all choices of basis are related by an element of the general linear group \(\groupGL\).
-If we denote the set of all frames at \(p\) as \(F_p\), then we see that the action \(\groupGL\) on this is free and transitive.
-We then define the frame bundle as the disjoint union of the set of frames at each point, \[F(E) = \disjointU_{p\in X} F_p\].
-The \emphmarginnote{topology on the frame bundle} is inherited from the topology on the vector bundle it is associated with, which itself \todo{Discuss the frame bundle, make a picutre.
-	Circle + sphere perhaps?
-}
+\todo{Say something about frames?}
 
 \subsection{Cotangent bundles and covector fields}
+
+\todo{pullbacks}
+
+The first new vector bundle we investigate is the \emphmarginnote{cotangent bundle}.
 
 On a manifold, we denote the \emphmarginnote{cotangent space} at \(p\), \(T^*_pX\) to be the dual of the tangent space \[T^*_pX = \del{T_pX}^*\].
 Elements of this are called \emphmarginnote{cotangent vectors}.
@@ -903,6 +949,31 @@ We can also break a covector field into component functions.
 The action of a covector field \(\omega \in \Gamma{T^*X}\) on a vector field \(V \in \Gamma(TX)\) is defined by \[\omega(V): X \to \R, \quad\quad \omega(V)(p) = \omega_p(V_p)\].
 
 \todo{discuss coframes?}
+
+\subsection{Tensor fields}
+
+What they are, pullbacks, differentials
+
+\subsection{Principle bundles}
+Another type of bundle that is important in the study of Riemannian manifolds are \emphmarginnote{principle \(G\)-bundles}, where \(G\) is a Lie group.
+This type of bundle associates the action of the Lie group \(G\) to the fibres of a bundle in a specific way.
+If \((E, B, \pi, F)\) is a fibre bundle, and we have a right group action \(\rho: P\times G\to P\) such that \begin{enumerate}[noitemsep] \item \(\rho\) \emph{preserves the fibres} of the bundle, i.e for \(p\in P\), \(g \in G\), then \(\pi(p) = \pi(\rho(p, g))\).
+	\item \(\rho\) acts \emph{freely}, that is for \(g\in G\) and \(p\in P\), \(p\cdot g\neq p\) unless \(g\) is the identity element of \(G\).
+	\item \(\rho\) acts \emph{transitively} on the fibres, i.e. if \(b \in B\), and \(p \in \pi^{-1}(b)\), then the map \(g \mapsto p\cdot g\) is a homeomorphism from the group \(G\) onto the fibre \(\pi^{-1}(b)\).
+\end{enumerate}
+Then the combination of the fibre bundle and \(\rho\) is a principle \(G\)-bundle.
+This definition is quite abstract, but important concrete examples of this exist.
+
+\subsection{Frame bundles}
+The \emphmarginnote{frame bundle} is one such example.
+For a given \(n\)-dimension vector bundle, \((E, X, \pi, V)\), we can construct a new fibre bundle containing all the possible \emphmarginnote{frames} (an ordered choice of basis) of this vector bundle.
+At a point \(p\in M\) we can think of a frame as a linear isomorphism between \(\R^n\) and the fibre at \(p\), \(V_p = \pi^{-1}(p)\).
+From our previous discussion of bases with respect to the change in chart, we saw that all choices of basis are related by an element of the general linear group \(\groupGL\).
+If we denote the set of all frames at \(p\) as \(F_p\), then we see that the action \(\groupGL\) on this is free and transitive.
+We then define the frame bundle as the disjoint union of the set of frames at each point, \[F(E) = \disjointU_{p\in X} F_p\].
+The \emphmarginnote{topology on the frame bundle} is inherited from the topology on the vector bundle it is associated with, which itself \todo{Discuss the frame bundle, make a picutre.
+	Circle + sphere perhaps?
+}
 
 \subsection{The differential of smooth functions}
 
@@ -931,12 +1002,43 @@ For \(a,b \in \R \; f,g \in \C^\infty(X)\): \begin{itemize}[noitemsep] \item \(\
 	\item If \(f\) is constant, then \(\d f = 0\).
 \end{itemize}
 
+\todo{will need to talk about integration, integral curves, possibly orientations}
+
+\section{Integration on Smooth Manifolds}
+
+A key theory we will need in dealing with probability on manifolds is the notion of integration on manifolds.
+In order to define integration we will need to discuss two other concepts on manifolds.
+\1 Differential forms. These can be seen as a generalisation of covector fields that we discussed previously.
+\2 Orientations. These are a tool for describing the "handidness" of a basis.
+\0
+
+\subsection{Differential forms}
+
+In the previous section we saw \emph{covector fields}, intuitivly an asignment of a dual element of the tangent space at each point on a manifold.
+We also saw higher dimension tensor fields, which could contain a mixture of vector and covectors.
+In \cref{sec:sym_alt} for vector spacesand higher order tensors built from these vector fields, when they are built from soely vectors or covectors, we saw how the space of tensors could be decomposed into symmetric and alternating tensors.
+\emphmarginnote{Differential forms} is the combination of these concepts.
+These are \emph{alternating tensor fields on manifolds}.
+
+On their own, it is hard to see the usefulness of differetial forms. However, in \cref{sec:integration_on_manifolds} we will see how these objects become sensible objects on which we can define integration on manifolds in a coordinate-free manner. They additionally turn out to be the right tool for extending other notions from Euclidean space to manifolds, such as the cross product, curl, divergence, and the determinant of the Jacobian.
+
+The most important tool introduced is that of the \emph{exterior derivative}.
+
+
+
+\subsection{Orientations}
+
+\subsection{Integration}
+\ref{sec:integration_on_manifolds}
+
 
 \section{Riemannian Manifolds}
 We are now in a place to introduce Riemannian manifolds.
 In simple terms these are smooth manifolds to which we add a metric structure, bringing back a precise notion of distance, removing the "rubber sheet" flexibility of topological manifolds.
 This is the point at which we enter the realm of geometry, as opposed to the realm of topology, that we have been in so far.
-While it may seem strange at first to have gone full circle by first throwing away the metric structure and then return to metric structure, but as shall be seen the way we arrive at the metric on Riemannian manifolds is not quite as simple as the the normal definition of a metric (although we will get one of these as well), and will make use of the large amount of machinery we have been able to develop without a metric.
+While it may seem strange at first to have gone full circle by first throwing away the metric structure and then return to metric structure, but as shall be seen the way we arrive at the metric on Riemannian manifolds is not quite as simple as the normal definition of a metric (although we will get one of these as well), and will make use of the large amount of machinery we have been able to develop without a metric.
+
+\todo{theres probably a bunch to say more? Lifting and horzontal bundles?}
 
 \subsection{Riemannian metrics}
 The object of central study in Riemannian geometry is the \emphmarginnote{Riemannian metric}.
@@ -962,13 +1064,69 @@ Note that this definition of a metric does not correspond to the metric space de
 From now on, we will refer to these as "distance functions", and reserve "metric" to refer to Riemannian metrics.
 We shall see later that we can create a distance function on a manifold from a Riemannian metric.
 
-\subsubsection{Geodesics}
-- unit speed curves following the metric
+Since the metric is a 2-tensor locally, if we have two vectors \(v, w \in T_pX\) we can write \(\innerprod{v}{x}_g := g_p(v, w)\), and this behaves as a usual inner product on \(T_pX\).
 
-\subsubsection{Exponential and Log maps}
+If we have a set of local coordinates induced by a chart \(\phi\) we can locally express a Riemannian metric as a tensor.
+In the covector basis \(\del{\d \phi_i}\), we have that \[g = g_{ij} \d \phi^i \otimes \d \phi^j = g_{ij} \d \phi^i \d \phi^j\], where \(g_{ij}\) is a symmetric matrix of coefficients, and the second equality follows from this symmetry.
+
+The simplest example of a Riemannian metric is the Euclidean metric on \(\R^n\).
+If we take the canonical coordinate system \(x_1, ..., x_n\) we can express the metric as \[\delta_{ij}\d x^i \d x^j\].
+Locally then it is just the identity and we recover the usual dot product on Euclidean space.
+
+\todo{some examples, the torus, the sphere, euclidean in raidal coords}
+
+From this definition of the Riemannian metric we can also recover the \emphmarginnote{Riemannian norm} of a vector, \(\norm{v}_g^2 = g_p(v, v)\) for \(v \in T_p X\), and the \emphmarginnote{angle between vectors}, \(\cos \theta = \frac{\innerprod{v}{w}_g}{\norm{v}_g \norm{x}_g}\).
+
+WE can always define a metric
+
+There are many metrics we can choose
+
+isomorphic maifolds - same metric uder pullback 
+
+\todo{discuss pull backs in co vectors}
+
+flat if locally iso to euclidean metric everywhere - e.g. the circle
+
+Orthonormal frames, existance of orthonormal frames -> reduced structure group.
+
+\subsubsection{Products of Riemannian manifolds}
+
+\subsubsection{Submanifolds}
+
+We can deinfe direct prodts -> stack the g matricies
+
+
+
+\subsection{Levi-Civita connection}
+
+\subsection{Geodesics}
+
+integral curves of vectors with unit speed -> all minmisers fo path distances are geodesics
+
+\subsection{Exponential and Log maps}
+with some resrtictions on the domain, the exp lets us go from t space to maniofls. log the other way
+along the speed curves
 - maps between the tangent space and the manifold
 
-\subsection{Manifolds with boundary}
+\subsection{The Riemannian distance function}
+
+Length of a curve defined by the metric \todo{discuss integral curves}
+
+This independant of the chart chosen
+
+Riamannian distsnce function is defined byt the minimum length cruve between two points. Manifold must be connected for this.
+
+Using this we can define the manifold as a metric space.
+
+As a metric sapce, manifolds can be complete.
+
+Every connectd manifold admits a complete metric
+
+Every smooth manifold is meritizable, it can be given a metric that induces th etopology it has.
+you need a series of distance funtions to deal with components.
+
+\subsection{Riemannian gradients}
+\label{sec:riemannian_gradient}
 
 \subsection{Useful examples}
 - spheres, toruses, hyperbolic space, polytopes, spd matrices
@@ -992,7 +1150,7 @@ Recc sme books?
 
 \subsection{A review of measure theory based probability}
 
-Something about the need for measure theory 
+One motivation for the need for measure theory comes from a close look at the following problem: Is it possible to define a function that measures the 
 
 A \emph{\(\sigma\)-algebra}, much like a topology, is a collection of sets obeying a set of rules.
 The definition even looks very similar.
@@ -1050,13 +1208,12 @@ The stochastic process can even take values in more abstract spaces, such as the
 In the simple case, the index set could be a finite collection of indices, \(1, .
 .., n\), or a countable number of points \(1, 2, ...\) with the discrete \(\sigma\)-algebra.
 Random variable over \(\R\), and multivariate distributions fall into these camps.
-These are not the interesting cases for stochastic process however.
 More interesting is when the index set is uncountable, and comes with some additional structural information, such as a topology or a metric.
 The index set \(I\) is often chose to be time and can be \(\cobr{0, \infty}\) or \(\sbr{0,T}\), but can also be other spaces such as Riemannian manifolds or other metric spaces.
 For now, we will use time, \(t \in \cobr{0, \infty}\) or \(t \in \sbr{0,T}\) as our index set.
-This index set is both a metric space, and so has a topology, and is also \emph{totally ordered}.
+This index set is both a metric space, and so has a topology, and is also \emphmarginnote{totally ordered}, such that for any two elements in the set we have access to boolean comparisons \(<,>,\leq,\geq\).
 
-By fixing the index argument this can be thought of as an indexed collection of random variables \(\cbrcolon{X_i: \Omega \to S = X(\cdot, i)}{i\in I}\).
+By fixing the index argument to a specific value a stochastic process can be thought of as an indexed collection of random variables \(\cbrcolon{X_i: \Omega \to S = X(\cdot, i)}{i\in I}\).
 By fixing the \(\omega\) argument, we can can think of the \emphmarginnote{sample paths} of \(X\) as the functions \(X(\omega, \cdot): I \to S\).
 From this point of view we can see a stochastic process as a \emph{function-valued} random variable.
 
@@ -1250,7 +1407,12 @@ Condition \ref{eq:exist_unique_cond_2}, effectively a joint Lipschitz condition,
 
 \subsection{\ito{} diffusions} 
 
+\subsubsection{Generators}
+\subsubsection{Fokker-plank}
+
 \subsection{Langevin Dynamics} 
+
+To get from Valentins book - definition  convergence results
 
 state some clear Langevin dynamics as I have found them difficult to find, and discuss implications of these (sgld, langevin sampling etc) 
 
@@ -1258,11 +1420,114 @@ state some clear Langevin dynamics as I have found them difficult to find, and d
 
 Give a brief account of what this type of tho does and why its important.
 
+Vargas paper - change of variabel in the kl
+We need it for a simplified case only
+
 \subsection{Time-reversal results}
 
-Give a brief account of existing results - probably Anderson, Cattieux 
+A series of very remarkable results exist, given how particular stochastic differential equations are, that show that for a given stochastic differential equation, under certain conditions, there exists a process that runs in the oppositse time direction, but can be considered in some way to be the same as the original stochastic differential equation, simply running the other way.
+
+We begin with a very simple case. 
+We have a forward stochastic differential equation
+\[ \d\Xf_t = \v{b}^\vsra{}(\Xf_t, t)\d t + \v{\Sigma}^\vsra{}(\Xf, t)\d \Bf_t, \quad \Xf_0 \sim p_0\], where \(\Bf\) is a Brownian motion in the forward time direction (something about the filtration), initialised with \(\Bf_0 = \v{0}\).
+Let the densities of the time-marginals of this SDE be denoted \(p_t\).
+The initial distribution of this SDE is given by \(\Xf_0 \sim p_0\), and we let it run from \(t=0\) up to \(t=T\).
+
+Let us also define a reverse time SDE, given by 
+\[\d\Xb_t = \v{b}^\vsla{}(\Xb_t, t)\d t + \v{\Sigma^\vsla{}}(\Xf, t)\d \Bb_t\],
+where \(\Bb\) is a Brownian motion in the reverse time direction (something about the filtration), initialised with \(\Bb_T = \v{0}\).
+Let the densities of the time-marginals of this SDE be denoted \(q_t\).
+The initial distribution of this SDE is given by \(\Xb_T \sim q_T\), and we let it run from \(t=T\) down to \(t=0\).
+
+\todo{talk about earlier?}
+Defining and SDE in the reverse time direction is not too difficult, we simply switch the direction of the integral in the definition.
+In many works authors will reindex the time for the backward process so that it also runs from \(t'=0\) up to \(t'=T\), with \(t'=T-t\).
+Here I chose to have the process run backwards, so that all times referred to refer to the same point, rather than tracking whether we are talking about the forward or backwards SDE.
+
+With this in place, we can state a very simple time reversal result. We will consider first the case where \(\m{\Sigma}(\v{X}, t) = \sigma(t)\m{I}\).
+
+\begin{theorem}[Fokker-plank time reversal]
+% 	For a forward-time stochastic differential equation 
+% 	\[ \d\Xf_t = \v{b}(\Xf_t, t)\d t + \sigma(t)\d \Bf_t, \quad \Xf_0 \sim p_0\]
+% 	with time-marginal distributions \(p_t(\Xf_t)\), the reverse-time stochastic differential equation
+% 	\[\d\Xb_t = \sbr{\v{b}(\Xb_t, t) - \sigma(t)^2\nabla_{\Xb_t}\log p_t(\Xb_t)}\d t + \sigma(t)\d \Bb_t, \quad \Xb_T \sim p_T\].
+% 	has the same time marginal distributions \(p_t(\v{X})\) as the forward-time stochastic differential equation.
+% \end{theorem}
+% \begin{proof}
+% 	The Fokker-Plank equation for the forward stochastic differetial equation is given by 
+% 	\[\pd{p_t(\v{X})}{t} = -\dive\del{{\v{b}(\v{X}, t)} p_t(\v{X})} + \tfrac{1}{2}\sigma^2(t)\Delta_{\v{X}} p_t(\v{X})\]
+% 	Therefore
+% 	\[-\pd{p_t(\v{X})}{t} = \dive\del{{\v{b}(\v{X}, t)} p_t(\v{X})} - \tfrac{1}{2}\sigma^2(t)\Delta_{\v{X}} p_t(\v{X})\]
+% 	Looking at \(\Delta p_t(\v{X})\) we see that
+% 	\begin{align}
+% 		\Delta p_t(\v{X}) &= \nabla_{\v{X}} \cdot \nabla_{\v{X}} p_t(\v{X}) \\
+% 		&= \nabla_{\v{X}} \cdot \sbr{\frac{p_t(\v{X})}{q_t(\v{X})} \nabla_{\v{X}} p_t(\v{X})} \\
+% 		&= \nabla_{\v{X}} \cdot \sbr{ p_t(\v{X})\nabla_{\v{X}} \log p_t(\v{X})} \\
+% 		&= \dive\del{\nabla_{\v{X}} \sbr{\log p_t(\v{X})} p_t(\v{X})}
+% 	\end{align}
+% 	Adding and subtracting this identity  we get
+% 	\begin{align}
+% 		&-\pd{p_t(\v{X})}{t}\\ &= \dive\del{{\v{b}(\v{X}, t)} p_t(\v{X})} + \tfrac{1}{2}\sigma^2(t)\Delta_{\v{X}} p_t(\v{X}) - \sigma(t)^2\dive\del{\nabla_{\v{X}} \sbr{\log p_t(\v{X})} p_t(\v{X})} \\
+% 		&= \dive\del{\sbr{\v{b}(\v{X}, t) - \sigma(t)^2\nabla_{\v{X}} \sbr{\log p_t(\v{X})}} p_t(\v{X})} + \tfrac{1}{2}\sigma^2(t)\Delta_{\v{X}} p_t(\v{X})
+% 	\end{align}
+% 	This is exactly the form of Fokker-Plank equation for a reverse-time stochastic differential equation of the form
+% 	\[\d\Xb_t = \sbr{ \v{b}(\v{X}, t) - \sigma(t)^2\nabla_{\v{X}} \sbr{\log p_t(\v{X})}}\d t + \sigma(t)\d \Bb_t\].
+% 	Since by assumption the time-marginal of this stochastic differential equation at time \(T\) is exactly \(p_T(\v{X})\), and the reverse evolution of the time-marginals of this stochastic differnetial equation match those of the forward time stochastic differential equation, it follows that at all times the time-marginals of the two stochastic differnetial equations match.
+For a forward-time stochastic differential equation 
+\[ \d\Xf_t = \v{b}(\Xf_t, t)\d t + \sigma(t)\d \Bf_t, \quad \Xf_0 \sim p_0\]
+with time-marginal distributions \(p_t(\v{X})\), the reverse-time stochastic differential equation
+\[\d\Xb_t = \sbr{\v{b}(\Xb_t, t) - \sigma(t)^2\nabla\log p_t(\Xb_t)}\d t + \sigma(t)\d \Bb_t, \quad \Xb_T \sim p_T\].
+has the same time-marginal distributions \(p_t(\v{X})\) as the forward-time stochastic differential equation.
+\end{theorem}
+\begin{proof}
+The Fokker-Plank equation for the forward stochastic differetial equation is given by 
+\[\pd{p_t(\v{X})}{t} = -\dive\del{{\v{b}(\v{X}, t)} p_t(\v{X})} + \tfrac{1}{2}\sigma^2(t)\Delta p_t(\v{X})\]
+Therefore
+\[-\pd{p_t(\v{X})}{t} = \dive\del{{\v{b}(\v{X}, t)} p_t(\v{X})} - \tfrac{1}{2}\sigma^2(t)\Delta p_t(\v{X})\]
+Looking at \(\Delta p_t(\v{X})\) we see that
+\begin{align}
+	\Delta p_t(\v{X}) &= \nabla \cdot \nabla p_t(\v{X}) \\
+	&= \nabla \cdot \sbr{\frac{p_t(\v{X})}{p_t(\v{X})} \nabla p_t(\v{X})} \\
+	&= \nabla \cdot \sbr{ p_t(\v{X})\nabla \log p_t(\v{X})} \\
+	&= \dive\del{p_t(\v{X})\nabla \log p_t(\v{X})}
+\end{align}
+Adding and subtracting this identity  we get
+\begin{align}
+	&-\pd{p_t(\v{X})}{t}\\ &= \dive\del{{\v{b}(\v{X}, t)} p_t(\v{X})} + \tfrac{1}{2}\sigma^2(t)\Delta p_t(\v{X}) - \sigma(t)^2\dive\del{p_t(\v{X})\nabla \log p_t(\v{X})} \\
+	&= \dive\del{\sbr{\v{b}(\v{X}, t) - \sigma(t)^2\nabla {\log p_t(\v{X})}} p_t(\v{X})} + \tfrac{1}{2}\sigma^2(t)\Delta p_t(\v{X})
+\end{align}
+This is exactly the form of the Fokker-Plank equation for a reverse-time stochastic differential equation of the form
+\[\d\Xb_t = \sbr{ \v{b}(\Xb_t, t) - \sigma(t)^2\nabla {\log p_t(\Xb_t)}}\d t + \sigma(t)\d \Bb_t\].
+Since by assumption the time-marginal of this stochastic differential equation at time \(T\) is exactly \(p_T(\v{X})\), and the reverse evolution of the time-marginals of this stochastic differnetial equation match those of the forward time stochastic differential equation, it follows that at all times the time-marginals of the two stochastic differnetial equations match.
+\end{proof}
+This proof is not the same as, but is very related to, one found in \textcite[chapter 13]{nelson1967bm}.
+\todo{add regulatiry conditions?}
+
+For the purposes of this thesis, and diffusion modelling generlly, this is infact the only result we need in the family of time reversal results.
+There do exist however a series of stronger results that are commonly cited in the literature.
+The main difference between the result presented and these stronger results is that the stronger result show that nt only do the time-marginals of the reverse-time stochastic differential equation match those of the forward-time stochastic differential equation, the \emph{paths} of the forward- and backward-time also match.
+
+\textcite{anderson1982reverse}
+
+\textcite{haussmann1986time}
+
+\textcite{millet1989integration}
+
+\textcite{follmer1985entropy}
+
+\textcite{cattiaux2021time}
+
+then Give a brief account of existing results - probably Anderson, Cattieux 
 
 \subsection{Stochastic calculus on manifolds} Worth doing?
+
+Watnabe chapter on local diffusions that we stich together
+
+mention the global view maybe, but that this is very hard and needs lots more techical machinery
+
+extrinsice definition of the BM
+
+Relationship between the brownian motion and the laplace beltrami operator.
 
 \section{Score-matching}
 Worth a section to introduce it as an independent concept?
@@ -1367,7 +1632,25 @@ This will not converge to a stable distribution.
 However, the transition density of this SDE is given by \[\textstyle p_{s|t}\delvert{\Xf_s}{\Xf_t} = \c{N}\delvert{\Xf_s}{\Xf_t, \sqrt{{\int_t^s} \beta(\tau)\d\tau}\v{I}}\].
 The variance of this will continue to grow with time and eventually the variance of this transition density will dominate the variance of \(\pi\), and so the distribution \[\pi_T(\Xf_t) = \int p_{T|0}\delvert{\Xf_T}{\Xf_0} \pi(\Xf_0) \d \Xf_0\] will be well approximated by \(\c{N}\delvert{\Xf_T}{\v{0}, \sqrt{{\int_t^s} \beta(\tau)\d\tau}\v{I}}\), and therefore we can use this as the reference distribution.
 
-The choice of forward noising SDE can have a significant impact on performance of a diffusion model. Interesting empircal studies can be seen for example in \textcite{karras2022Elucidating} \todo{more cites?}.
+The choice of forward noising SDE can have a significant impact on performance of a diffusion model. Interesting empirical studies can be seen for example in \textcite{karras2022Elucidating} \todo{more cites?}.
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{lcccr}
+		\toprule
+		{\scshape SDE}                              &  & & {\scshape Complexity} & {\scshape Variance} \\
+		& \makecell{Samples from \(p_{t|s}\)} & \makecell{Analytic \(\nabla \log p_{t|s}\)} & & \\
+		\midrule
+		{\(\ssmlosst{}\)}  & \cmark & \xmark & \(\c{O}(d)\) & Highest\\
+		{\(\ismlosst{}\)}  & \cmark & \xmark & \(\c{O}(d^2)\) & Middle\\
+		{\(\dsmlosst{}\)}  & \cmark & \(t-s\) small & \(\c{O}(d)\) & Lowest \\
+		{\(\gdsmlosst{}\)} & \cmark & \cmark & \(\c{O}(d)\) & Lowest \\
+		\bottomrule
+	\end{tabular}
+	\caption{A comparison of score-matching objectives for diffusion models}
+	\label{tab:loass_comparison}
+\end{table}
+
 % Typically in generate models such as VAEs and normalising flows the transformation we ask the model a model to turn random noise in to interesting data through a series of intermediate steps. The intermediate steps, and the path on should take between each of these however remain unspecified, and the model must learn to pick one possible solution from a typically infinite set of choices. By contrast \emphmarginnote{diffusion models} specify the whole generative process process from the simple noise distribution to the data distribution. This specification of the mapping is a key element in their success. It significantly reduces the task we ask the model to learn from that of exploring the infinite space of possible mappings between data and noise, to a simple regression problem of matching the pre-specific path. The innovation in these models is being able to specify this mapping, and train the resulting model in an efficient way.
 
 % In the following I consider the continuous time formulation of diffusion models introduced in \textcite{song2020score}, which defines the corruption of noise into data via an SDE. There also exists the discrete view of diffusion modelling \textcite{sohl2015deep,ho2020denoising} where the corruption of data is done in a series of discrete step. Since the links between the two are very clear, and the discrete view can be seen as a discretisation of the continuous time version, I will not develop this.
@@ -1386,38 +1669,179 @@ The crucial step to be able to follow backwards the path defined by our forward 
 We have discussed these theoretically earlier in ..., but to briefly recap;
 If we have an SDE \(\del{\Xf_t}_{t\in \sbr{0, T}}\) of the form \[\d \Xf_t= \v{b}(\Xf_t, t) \d t + \v{\sigma}(\Xf_t, t) \d \v{B}_t\] with initial condition \(\Xf_0 \sim \pi\), then
 
-\todo{need to dicsuss with Valentin}.
+\todo{need to dicsuss with Valentin}
+
+\newpage
 
 \subsubsection{Learning the score}
 
-The next step in producing a diffusion model is learning the score term that appears in the reverse SDE, \(\nabla_{\v{X}_t} \log \pi_t(\v{X}_t)\).
-At first glance this may seem difficult, but a strong literature exists on learning this term, known as the score matching.
+The next step in producing a diffusion model is learning the score term that appears in the reverse SDE, \(\nabla_{\v{X}_t} \log p_t(\v{X}_t)\).
+At first glance this may seem difficult, but a strong literature exists on learning this term, known as \emphmarginnote{score matching}.
 In order to approximate this score function, we will use an approximation taking inputs \(\v{X}_t\) and \(t\).
 We will denote this \(\scorenet{}: \R^d \times \sbr{0, T} \to \R^d\).
 We will also use the notion \(\scorenett{} : \R^d \to \R^d\) to refer to this function partially evaluated at time \(t\), \(\scorenett{}(\cdot) = \scorenet(\cdot, t)\).
 Typically, we will make this a neural network of some kind, and look to optimise this via gradient-based learning.
 
-\emphmarginnote{Implicit score matching (ISM)} \parencite{hyvarinen05a} says that the following is true for a density \(\pi\) supported on \(\R^d\) relative to the Lebesgue measure;
-\[\nabla_{\v{X}} \log \pi(\v{X}) = \argmin_{\phi} \int_{\R^d} \cbr{ \frac{1}{2} \norm{\phi}^2 + \dive(\phi)(\v{X})} \pi(\v{X}) \d \v{X} \].
-We can apply this to our SDE setting to say that the score at a given time is given by \[\nabla_{\v{X}} \log \pi_t(\v{X}) = \argmin_{\scorenett{}} \int_{\R^d} \cbr{ \frac{1}{2} \norm{\scorenett{}}^2 + \dive(\scorenett{})(\v{X})} \pi_t(\v{X}) \d \v{X}\].
-We denote then this loss function as \(\ismlosst{}: \scorenett \mapsto \R\) such that \(\nabla_{\v{X}} \log \pi_t(\v{X}) = \argmin_{\scorenett{}} \ismlosst{}\).
+% \emphmarginnote{Implicit score matching (ISM)} \parencite{hyvarinen05a} says that the following is true for a density \(\pi\) supported on \(\R^d\) relative to the Lebesgue measure;
+% \[\nabla_{\v{X}} \log \pi(\v{X}) = \argmin_{\phi} \int_{\R^d} \cbr{ \frac{1}{2} \norm{\phi\del{\v{X}}}^2 + \dive(\phi)(\v{X})} \pi(\v{X}) \d \v{X} \].
+% We can apply this to our SDE setting to say that the score at a given time is given by \[\nabla_{\v{X}} \log \pi_t(\v{X}) = \argmin_{\scorenett{}} \int_{\R^d} \cbr{ \frac{1}{2} \norm{\scorenett{}(\v{X})}^2 + \dive(\scorenett{})(\v{X})} \pi_t(\v{X}) \d \v{X}\].
+% We denote then this loss function as \(\ismlosst{}: \scorenett \mapsto \R\) such that \(\nabla_{\v{X}} \log \pi_t(\v{X}) = \argmin_{\scorenett{}} \ismlosst{}\).
+\textcite{hyvarinen05a} proves the following result
+\begin{theorem}[Implicit score matching (ISM)]
+	Consider a density \(p_a(A)\) supported on \(\R^d\) relative to the Lebesgue measure.
+	Then,
+	\[\nabla_{A} \log p_a(A) = \argmin_{g\text{ measurable in }L^2} \E_{A}\sbr{ { \tfrac{1}{2} \norm{g\del{A}}^2 + \dive(g)(A)}}.\]
+\end{theorem}
+Using this we can learn the score of a distribution \(p_a\) if we just have access to good samples from \(p_a\) as we can approximate this expectation with Monte Carlo estimation.
 
-In practise this integral is not solvable, so we must approximate it.
-Typically, we use standard Monte Carlo approximation, approximating the integral as a sum over samples from \(\pi_t\).
-To do this we can utilise the fact that \[\pi_t(\v{X}_t) = \int p_{t|0}(\v{X}_t) \pi_0(\v{X}_0) \d \v{X}_0\].
-We can sample from this as we have as our dataset samples from \(\pi_0 = \pi\), and we have access to the transition density \( p_{t|0}\) from the SDEs we used as our forward noising SDE.
+We can apply this to our SDE setting to say that the score at a given time is given by \[\nabla_{\v{X}_t} \log p_t(\v{X}_t) = \argmin_{\scorenett{}} \E_{\v{X}_t} \sbr{ \tfrac{1}{2} \norm{\scorenett{}(\v{X}_t)}^2 + \dive(\scorenett{})(\v{X}_t)}\].
+We denote then this loss function as \(\ismlosst{}\).
 
-One other feature of note in this objective is the computation of the divergence of the score.
-While this is achievable automatically using automatic differentiation packages, it is expensive in high dimension, scaling in cost with \(\c{O}(d^2)\).
-It is possible to apply to this the Hutchinson trace trick estimator \parencite{hutchinson1989stochastic} to return to get a loss function that scales with \(\c{O}(d)\) at the cost of higher variance, as detailed in \textcite{song2020sliced}.
-In practise this additional variance does not seem to be too important, as the variance of the Monte Carlo estimation of the integral over \(\pi_t\) is larger.
+In order to draw samples from \(p_t(\v{X}_t)\) we can utilise the fact that \[p_t(\v{X}_t) = \int p_{t|0}(\v{X}_t) p_0(\v{X}_0) \d \v{X}_0\].
+We can sample then from this joint density as we have as our dataset samples from \(p_0 = \pi\), and we have access to sampling from the transition density \( p_{t|0}\) from the forward noising SDE.
+We then throw away the samples from \(p_0\) to obtain samples from \(p_t\).
 
-This objective matches the score at time \(t\) only. 
-In order to match the score at all times, we integrate this objective over all times \(t \in \sbr{0, T}\), so that 
-\[\ismloss{}(\scorenet{}) = \int_{\sbr{0, T}} \lambda(t) \ismlosst{}(\scorenett{}) \d t\].
-Notice the weighting function applied over all \(t\).
-While this does not affect the minima of the objective, it does rebalance where a network will prioritise learning the score most.
-Manty choices for \(\lambda(t)\) exist ... \todo{Add some}.
-In particular picking \(\lambda(t) = \sigma(t)^2\) can be shown to be equivalent to optimising a maximum likelihood objection on the dataset \cite{huang2021variational,durkan2021maximum}.
+What is not so nice about this objective is that it requires computation of the divergence of the score.
+While this is achievable using automatic differentiation packages, it is expensive in high dimension, scaling in cost with \(\c{O}(d^2)\).
 
-\emphmarginnote{Denoising score matching} (DSM)
+It is possible to apply to this the Hutchinson trace trick estimator \parencite{hutchinson1989stochastic} to stochastically approximate the divergence to get a loss function that scales with \(\c{O}(d)\) at the cost of higher variance, as detailed in \textcite{song2020sliced}, where it is called \emphmarginnote{sliced score matching (SSM)}.
+We denote this loss function \(\ssmlosst{}\).
+In practise this additional variance does not seem to be too important, as the variance of the Monte Carlo estimation of the integral over \(p_t\) is larger.
+
+\emphmarginnote{Denoising score matching (DSM)} \parencite{vincent2011connection} is an alternative approach to implicit score matching that typically has lower variance.
+We do not get this for free, as we will need to know a little more information to apply this.
+Recall that the definition of the conditional distribution states that for \(L^2\)-integrable random variables \(A\) and \(B\), \[\argmin_{g\text{ measurable in }L^2} \E_{A, B}\sbr{\norm{A - g(B)}^2} = g: b\mapsto\E_{A}\sbrvert{A}{B=b}\], where \(\E_{A}\sbrvert{A}{B=b}\) is the conditional expectation of \(A\) given a value of \(B\).
+We apply this by putting \(A = \nabla \log p_{c|d}\delvert{C}{D}\) and \(B = C\) for new random variables \(C\) and \(D\), assuming they have densities relative to the Lebesgue measure, and so \[g(C) = \E_{D}\sbrvert{ \nabla \log p_{c|d}\delvert{D}{C}}{C}\].
+We can then apply the Tweedie identity.
+\begin{lemma}[The Tweedie identity]\label{lem:tweedie}
+	\[\E_{D}\sbrvert{\nabla_{C} \log p_{c|d}\delvert{C}{D}}{C} = \nabla_{C} \log p_c(C)\]
+\end{lemma}
+\begin{proof}
+	Delayed to \cref{sec:tweedie_proof}
+\end{proof}
+Combing this we see that \[ \argmin_{g\text{ measurable in }L^2} \E_{C,D}\sbr{\norm{\nabla_C \log p_{c|d}\delvert{C}{D} - g(C)}^2} &= \E_{D}\sbrvert{\nabla_{C} \log p_{c|d}\delvert{C}{D}}{C}\nonumber \\ &= \nabla_{C} \log p_c(C)\], and therefore can learn the score for \(\nabla_C \log p_c(C)\) if we have access to \1 samples from the joint distribution \(p_{c,d}(C, D)\) and \2 access to the analytic conditional score \(\nabla_C \log p_{c|d} \delvert{C}{D}\).\0
+
+To apply this to our SDE setting, we pick \(C = \v{X}_t\) and \(D=\v{X}_s\), with \(s < t\). We have access to samples from \(p_{t,s}\del{\v{X}_t, \v{X}_s}\) by using the fact that 
+\[
+	p_{t,s}\del{\v{X}_t, \v{X}_s} &= \int_{\R^d} p_{t|s, 0}\delvert{\v{X}_t}{\v{X}_s, \v{X}_0} p_{s|0} \delvert{\v{X}_s}{\v{X}_0} p_0\del{\v{X}_0} \d \v{X}_0 \\
+	&= \int_{\R^d} p_{t|s}\delvert{\v{X}_t}{\v{X}_s} p_{s|0} \delvert{\v{X}_s}{\v{X}_0} p_0\del{\v{X}_0} \d \v{X}_0
+\] where the second line follows as SDE transitions have the Markov property. We have access to samples from \(p_0\) from our data, and the SDE tells us how to sample from the transitions.
+We also need access to the analytic form of \(\nabla_{\v{X}_t} \log p_{t|s} \delvert{\v{X}_t}{\v{X}_s}\).
+For most SDEs used in the literature, such as the variance exploding and preserving, this is available.
+If it is not available, often good approximations are available over for short time steps between \(s\) and \(t\).
+
+The most common form of this loss in the literature is to set \(s=0\). 
+This simplifies the sampling as then we only need to sample the one transition.
+This is the denoising score matching described in \textcite{song2020score}.
+We describe the more general scheme here as it is useful when we only have access to an approximation of \(p_{t|s}\) over short times.
+
+We shall label this loss \(\gdsmlosst{}\) in the general case and \(\dsmlosst{}\) when using \(s=0\).
+
+To summarise:
+\begin{table}[h]
+	\centering
+	\begin{tabular}{lcccr}
+		\toprule
+		{\scshape Loss}                              & \multicolumn{2}{c}{{\scshape Requires}} & {\scshape Complexity} & {\scshape Variance} \\
+		& \makecell{Samples from \(p_{t|s}\)} & \makecell{Analytic \(\nabla \log p_{t|s}\)} & & \\
+		\midrule
+		{\(\ssmlosst{}\)}  & \cmark & \xmark & \(\c{O}(d)\) & Highest\\
+		{\(\ismlosst{}\)}  & \cmark & \xmark & \(\c{O}(d^2)\) & Middle\\
+		{\(\gdsmlosst{}\)}  & \cmark & \(t-s\) small & \(\c{O}(d)\) & Lowest \\
+		{\(\dsmlosst{}\)} & \cmark & \cmark & \(\c{O}(d)\) & Lowest \\
+		\bottomrule
+	\end{tabular}
+	\caption{A comparison of score-matching objectives for diffusion models}
+	\label{tab:loass_comparison}
+\end{table}
+
+The objectives detailed match the score at given time \(t\) only. 
+In order to match the score at all times, we integrate this objective over all times \(t \in \sbr{0, T}\).
+\[\ell(\scorenet{}) = \int_{\sbr{0, T}} \lambda(t) \ell_t(\scorenett{}) \d t\].
+Notice there is a weighting function applied over all \(t\).
+While this weighting does not affect the minima of the objective, it does rebalance where a network will prioritise learning the score most.
+Many choices for \(\lambda(t)\) exist and can be tuned to optimise different objectives.
+In particular picking \(\lambda(t) = \sigma(t)^2\) can be shown to be equivalent to optimising the maximum likelihood objection on the dataset \cite{huang2021variational,durkan2021maximum}.
+
+A common feature of all of these objectives is that they are
+\1 stable regression objectives and
+\2 require evaluation of the score network at a given time \(t\) only.
+\0
+Compare this to the objectives of normalsing flow models, VAE models, or GANs.
+These objective functions require us to run a full generation of samples from the model in order to evaluate the objective.
+In contrast, the score matching objectives only need us to evaluate the generative model at one point in the generative process.
+Additionally, the score matching objectives at a given time is stable with respect to other times.
+The minima at a given time will not change as we optimise the score function at other times.
+This is in comparison to other objectives where changing the weights at one point in the network significantly changes what the optimum weight at other points in the network is.
+This is exacerbated in GANs, as changing the discriminator function changes the objective the generator function is trying to learn, leading to well known instabilities.
+This cheap evaluation and objective stability is one of the key attractions of diffusion models.
+It is akin to us being able to optimise the weights in each layer of one of these other types of model independently, and this optimisation not affect the optimal weights in other layers.
+
+There is one common draw back to these objectives however, and that is the Monte Carlo sampling required to evaluate these objectives makes them particularly noisy as objectives.
+This can be mitigated however by taking an average of the weights through training.
+Typically, exponential moving averages have been used, and the smoothing rate requires tuning.
+Recently, \textcite{karras2023analyzing} proposed new averaging schemes, and importantly a mehtod to perform hyperparameter optimisation of the smoothing rates post-hoc, requiring only a single training run of the model.
+
+\subsubsection{Approximate sampling from SDEs}
+\label{sec:sde_discretisation}
+
+Much the computational impossiblity of solving genreal ODE problems exactly, it is impossible to sample from general SDEs exactly.
+We can however make good approximations to this.
+
+\subsubsection{Likelihood ODEs}
+The final thing that we are missing now is the ability to compute the likelihood of a sample from a diffusion model.
+In order to do this we will leverage the \emphmarginnote{Fokker-Plank equation} (\cref{sec:fokker_plank}).
+Recall that for an SDE of the form \[\d \v{X}_t = \v{b}(\v{X}_t, t) \d t + \m{\Sigma}(\v{X}_t, t) \d \v{B}_t \], in this case where \(\m{\Sigma}\) is a matrix of noise coefficients, the time-evolution of the density is given by
+\[ \pd{p_t(\v{X})}{t} = -\sum_{i=1}^d \pd{}{\v{X}_i}\sbr{\v{b}(\v{X}, t) p_t{\v{X}}} + \frac{1}{2} \sum_{i=1}^d \sum_{j=1}^d \frac{\partial^2}{\partial \v{X}_i \partial \v{X}_j} \sbr{\m{\Sigma}(\v{X}, t) \m{\Sigma}(\v{X}, t)^T p_t(\v{X})} \].
+Using this, we can obtain the following result
+
+\begin{theorem}[The likelihood flow ODE]
+	\label{thm:likelihood_ode}
+	For an SDE of the form 
+	\[\d \v{X}_t = \v{b}(\v{X}_t, t) \d t + \m{\Sigma}(\v{X}_t, t) \d \v{B}_t \]
+	initialised with \(\v{X}_0 \sim p_0\), the ODE
+	\[\d \v{X}_t = \sbr{\v{b}(\v{X}_t, t) - \frac{1}{2}\sbr{\nabla \cdot \sbr{\m{\Sigma}(\v{X}, t) \m{\Sigma}(\v{X}, t)^T}\nonumber +\m{\Sigma}(\v{X}, t) \m{\Sigma}(\v{X}, t)^T \nabla_{\v{X}_t}\log p_t(\v{X}_t)}} \d t\]
+	initialised with \(\v{X}_0 \sim p_0\) has the same marginal density at all times \(t\in\sbr{0,T}\)
+\end{theorem}
+\begin{proof}
+	Due to \textcite{maoutsa2020interacting} and \textcite[appendix D]{song2020score}, restated in \cref{sec:likelihood_ode_proof}.
+\end{proof}
+In diffusion models we typically use \(\m{\Sigma}(\v{X}, t) = \sigma(\v{X}, t) I\), a simple time-dependant scalar noise.
+With this, the likelihood ODE simplifies to
+\[\d \v{X}_t = \sbr{\v{b}(\v{X}_t, t) - \frac{1}{2}\sigma(\v{X}, t)^2 \log p_t(\v{X}_t)} \d t \label{eq:likelihood_ode_drift} \].
+Fortunately there already exists tools to be able to compute the change in likelihood induced by an ODE trajectory, assuming the ODE describes the flow of a density.
+\begin{theorem}[Instantanious change of likelihood of an ODE]
+	Let \(\del{\v{X}_t}_{t\in\sbr{0,T}}\) be a stochastic process with marginal density at time \(t\) \(p_t(\v{X}_t)\).
+	Let \(\d \v{X}_t = \v{b}(\v{X}_t, t) \d t\) be an ODE describing the evolution of particles.
+	Assume that \(\v{b}\) is uniformly Lipshitz continuous in \(\v{X}_t\) and continuous in \(t\).
+
+	Then, the instantaneous change in log probability is given by 
+	\[\pd{\log p_t(\v{X}_t)}{t} = -\tr\del{\eval{\od{\v{b}}{\v{X}_t}}{\del{\v{X}_t, t}}} = \nabla \cdot \v{b}\del{\v{X}_t, t}\]
+\end{theorem}
+\begin{proof}
+	Proved in \textcite[appendix A]{chen2018neural}. Restated in \cref{sec:ode_likelihood_formula}.
+\end{proof}
+Using this, we can evaluate the likelihood of a point under our diffusion model at \(t=0\).
+For a given point \(v{X}_0\) is equal to the change in likelihood over the course of the ODE, plus the likelihood of the point at the other end, \[\log p_0(\v{X}_0) = \int_0^T \nabla \cdot \v{b}\del{\v{X}_t, t} \d t + \log p_T(\v{X}_T)\]
+where \(\v{X}_t\) is the path the point \(\v{X}_0\) follows under the ODE.
+
+In practise, we solve these as a joint ODE to take advantage of error tolerant solvers on the joint system,
+\[
+	\d 
+	\begin{bmatrix}
+		\v{X}_t \\ \log p(\v{X}_t)
+	\end{bmatrix} = 
+	\begin{bmatrix}
+		\v{b}\del{\v{X}_t, t} \\ \nabla \cdot \v{b} \del{\v{X}_t, t}
+	\end{bmatrix}
+\]
+This is in fact how \emphmarginnote{continuous noramlising flows (CNFs)} \parencite{chen2018neural} work. 
+The model is defined by a parametrised drift function \(\v{b}_\theta\), and is trained by maximum likelihood by backpropogating through the ode solver \parencite{chen2018neural}. 
+There exist a number of stratergies for backpropogating through ODE solvers.
+These are discussed well in \textcite{kidger2021on}, which has accompanying it the python library \verb|diffrax| \marginnote{\url{https://github.com/patrick-kidger/diffrax}} for handling ODEs and other DEs easily.
+
+To apply this scheme for computing the likelihood to diffusion models we simply use our modified drift function in \cref{eq:likelihood_ode_drift} and use the reference distribution from our diffusion model for \(p_T\).
+
+This also gives us an additional method to sample from our diffusion model. 
+Insdead of solving the SDE approximately (\cref{sec:sde_discretisation}) we can sample from \(p_T\) and solve this ODE in reverse to draw samples from the model.
+This can outperform sampling the SDE in certain scenarios \parencite{karras2022Elucidating,song2019generative}.

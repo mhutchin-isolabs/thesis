@@ -289,6 +289,8 @@
 
 \DeclareMathOperator{\id}{id} % identity
 \DeclareMathOperator{\im}{im} % image
+\DeclareMathOperator{\rank}{rank} % image
+\DeclareMathOperator{\Der}{Der} % derivations
 % \DeclareMathOperator{\ker}{ker} % kernel
 \DeclareMathOperator{\tr}{tr} % trace
 \DeclareMathOperator{\diag}{diag} % diagonal
@@ -358,7 +360,7 @@
 \newcommand{\groupSPD}[1][n]{\mathbb{S}^{#1}_+}
 % \newcommand{\groupSPD}{\mathbb{S}^n_+}
 
-\newcommand{\ito}{{I}t\^o{}}
+\def\ito{{I}t\^o{}}
 
 % short arrows
 \newcommand{\vsra}{{\ensuremath{%
@@ -687,6 +689,20 @@
 	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{proposition}
 	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{remark}
 	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{result}
+
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numbered=no,name=theorem]{theorem*}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numbered=no,name=assumption]{assumption*}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numbered=no,name=axiom]{axiom*}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numbered=no,name=conjecture]{conjecture*}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numbered=no,name=corollary]{corollary*}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numbered=no,name=counterexample]{counterexample*}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numbered=no,name=definition]{definition*}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numbered=no,name=example]{example*}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numbered=no,name=exercise]{exercise*}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numbered=no,name=lemma]{lemma*}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numbered=no,name=proposition]{proposition*}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numbered=no,name=remark]{remark*}
+	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numbered=no,name=result]{result*}
 
 	\crefname{assumption}{assumption}{assumptions}
 	\Crefname{assumption}{Assumption}{Assumptions}

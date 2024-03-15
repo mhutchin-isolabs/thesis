@@ -8,7 +8,8 @@
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.17}
 % \usepgfplotslibrary{positioning}
-\usetikzlibrary{positioning}
+% \usetikzlibrary{positioning}
+\usetikzlibrary{fit,calc,trees,positioning,arrows,shapes,calc}
 \usepgfplotslibrary{external}
 % \usepgfplotslibrary{groupplots}
 % \usepgfplotslibrary{fillbetween}
@@ -122,6 +123,17 @@
 	{\textbf{#1}}{#1}
 }
 
+% Cite full paper?
+\DeclareBibliographyCategory{enumpapers}
+\newcommand{\enumcite}[1]{%
+  \addtocategory{enumpapers}{#1}%
+  \defbibcheck{key#1}{
+    \iffieldequalstr{entrykey}{#1}
+      {}
+      {\skipentry}}%
+  \printbibliography[heading=none,check=key#1]%
+}
+
 % Group commands
 \def\grp{G}
 \def\hrp{H}
@@ -140,13 +152,21 @@
 \DeclareMathOperator{\paralleltransport}{parallel transport}
 
 % diffusion model terms
-\newcommand{\Xf}{\v{X}^{\vsra{}}} % temp til I come up with a good sln for these
-\newcommand{\Xb}{\v{X}^{\vsla{}}} % temp til I come up with a good sln for these
+\newcommand{\Xf}{\v{X}^{\vsra{}}}
+\newcommand{\Xb}{\v{X}^{\vsla{}}}
+\newcommand{\Bf}{\v{B}^{\vsra{}}}
+\newcommand{\Bb}{\v{B}^{\vsla{}}}
 \newcommand{\scorenet}{\v{s}}
 \newcommand{\scorenett}{\v{s}_t}
 \newcommand{\scorenetxt}{\scorenet{}(\v{X}_t, t)}
 \newcommand{\ismlosst}{\ell^{\text{ism}}_t}
-\newcommand{\ismloss}{\ell^{\text{ism}}_t}
+\newcommand{\ismloss}{\ell^{\text{ism}}}
+\newcommand{\ssmlosst}{\ell^{\text{ssm}}_t}
+\newcommand{\ssmloss}{\ell^{\text{ssm}}}
+\newcommand{\dsmlosst}{\ell^{t|0}_t}
+\newcommand{\dsmloss}{\ell^{t|0}}
+\newcommand{\gdsmlosst}{\ell^{t|s}_t}
+\newcommand{\gdsmloss}{\ell^{t|s}}
 
 
 % symbol setup
@@ -212,11 +232,23 @@
 	\par
 	University of Oxford \par \vfill \null \vfill a dissertation submitted for \par Doctor of Philosophy \par \strut \par \thedate \par \vfill \null \maketitlehookd \end{titlepage} 
 
-\setcounter{tocdepth}{4} \tableofcontents 
+\setcounter{tocdepth}{2} \tableofcontents 
 
-\chapter{Background} \setcounter{page}{1} \pagenumbering{arabic} \input{chapters/background.tex} 
+\chapter{Introduction} \setcounter{page}{1} \pagenumbering{arabic} 
+\input{chapters/introduction.tex}
 
-\chapter{Generative modelling on Riemannian manifolds} \begin{flushright} Work in this chapter is based on \textcite{de2022riemannian} \end{flushright} \textbf{Personal contributions:} \1 Project conception with Emile \2 Development of practical approach with Emile, Valentin \3 Writing of code and experiments with Emile \4 Some mathematical results - e.g. ISM proof \5 Paper writing with Emile and Valentin \0 \input{edited_papers/riemannian_score_based_generative_modelling_main.tex} 
+
+% \chapter{Background} \input{chapters/background.tex} 
+
+\chapter{Manifolds} \input{chapters/background_riemannian.tex}
+
+\chapter{Stochastic Differential Equations} \input{chapters/background_stochastic.tex}
+
+\chapter{Deep generative modelling} \input{chapters/background_deep_generative.tex}
+
+\chapter{Generative modelling on Riemannian manifolds} \begin{flushright} Work in this chapter is based on \textcite{de2022riemannian} \end{flushright} \textbf{Personal contributions:} \1 Project conception with Emile \2 Development of practical approach with Emile, Valentin \3 Writing of code and experiments with Emile \4 Some mathematical results - e.g. ISM proof \5 Paper writing with Emile and Valentin \0 
+% \input{edited_papers/riemannian_score_based_generative_modelling_main.tex} 
+\input{chapters/diffusion_modelling_on_riemannian_manifolds.tex}
 
 \chapter{Generative modelling on constrained domains} \begin{flushright} Work in this chapter is based on \fullcite{fishman2023diffusion_hl} and \fullcite{fishman2023metropolis_hl} \end{flushright} \textbf{Personal contributions:} (combined on both works) \1 Project conception with Valentin, Nic, Leo \2 Development of practical approach with Nic, Valentin, Leo (mainly reflected, log-barrier) \3 Writing of code with Nic, Leo, ran some of the experiments \4 Paper writing with Emile, Valentin, Nic, Leo.
 % % \listoffigures% % \chapter{Introduction}% % \input{chapters/introduction.tex}% % \chapter{Publications}% % \input{chapters/papers.tex}% % \part{Generative modelling on finite-dimension manifolds}
@@ -244,6 +276,8 @@
 
 \appendix
 % \part*{Appendix}
+\chapter{Proofs}
+\input{chapters/proofs_appendix.tex}
 
 \chapter{Riemannian Score-Based Generative Modelling}
 \input{raw_papers/riemannian_score_based_generative_modelling_appendix.tex}

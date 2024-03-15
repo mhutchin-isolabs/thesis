@@ -1,0 +1,317 @@
+
+The goal of \emphmarginnote{deep generative modelling} is to fit a machine learning model, typically a neural network, to an unknown distribution \(\pi\).
+Typically, we have access to some set of samples from this distribution, but in contrast to a classical distribution fitting task we do not have good coverage of the distribution.
+The goal is instead to be able to generalise from a small set of samples to the whole distribution.
+In reality, we are unlikely to be able to actually match this unknown distribution \(\pi\), but instead aim to produce a model that defines a distribution that to a human could credibly be \(\pi\) given the samples, and that these samples are useful in some way.
+To achieve this, we are relying on the generalisation properties of deep learning.
+By seeing many samples from a distribution, we are asking the model to generate samples similar enough to the ones seen in training that they are realistic, but different enough that they are "interesting".
+Examples of such modelling tasks might include generating images, sounds, or code.
+This task become particularly useful when the generative model can be sampled conditionally in some manner, such as generating an image given a piece of descriptive text, a piece of music given a genre, or a piece of code given the context of the current project and what a developer is typing at the time.
+
+A variant on this task is when we have access to the pointwise evaluation of a known unnormalised distribution, \(q(x) \propto \pi(x)\), and either have no samples, or access only to expensive sampling methods.
+In this case the objective is to produce a model that can sample from the exact distribution \(\pi\) much cheaper than the expensive sampling method.
+Examples of this are common in scientific machine learning, such as shortcutting molecular dynamics simulations, or sampling from quantum physics theories.
+Again these methods aim to exploit the generalisation capabilities of deep learning, often with the same kind of model conditioning as previously discussed.
+
+The methods in this thesis are aimed at tackling the fist of these two types of problem.
+Development of comparable diffusion model based methods to tackle the second class of problem is an ongoing but potentially very fruitful direction of research.
+
+\subsection{An introduction to diffusion based deep generative modelling}
+
+Having introduced many tools, we can now see how these come together to produce the class of models known as "diffusion models" or "score-based generative models".
+Both of these terms capture part of the type of model that they are applied to, but neither is fully descriptive.
+There are two perspectives on diffusion models; discrete-time diffusion models and continuous-time diffusion models.
+These are related, and the discrete-time models can be seen as a discretisation of the continuous-time.
+As such, this presentation will focus only on the continuous-time version, but will highlight where the discrete approximation comes into play.
+This presentation will also focus on the specific case of modelling Euclidean data.
+Throughout we will work with a state space of dimension \(d\), such that a data point is an element \(\v{X}\in \R^d\).
+The remainder of this thesis will discuss how to extend this class of model to certain types of non-Eucldiean data.
+
+From some points of view, diffusion models are strongly related to other classes of deep generative models.
+They follow a common paradigm of taking simple to sample noise, typically a multi-dimension Gaussian random variable, and through a series of transformations try to turn this into the distribution of interest.
+Most similar are normalising flows, which also fit into the described category.
+We shall see later that there are deep connections between diffusion models and continuous normalsing flows.
+
+\todo{add a couple of diagrams}
+
+Let us briefly describe the process for constructing a diffusion model.
+
+We start with a density \(\pi\) that we wish to learn to sample from.
+Let us assume that we either have a set of samples and cannot access more, or that it is expensive to do so, and that we have no access to the likelihood or an unnormalised version of this.
+Our goal is to have a model from which we can sample, and compute the likelihood for samples from for the distribution \(\pi\).
+
+A brief summary of the diffusion modelling strategy can be summarised as:
+\1 First we will evolve this density under a stochastic differential equation, which we shall term the forward or noising SDE.
+We will from now denote this SDE as \(\del{\Xf_t}_{t\in\sbr{0, T}}\), denoting the forward direction.
+These SDEs have an equation of the form \[\d \Xf_t= \v{b}(\Xf_t, t) \d t + \v{\sigma}(\Xf_t, t) \d \v{B}_t\] ref to earlier.
+We shall require that this SDE is that at "large" times converges to a distribution for which we know the density and can sample from.
+We will evolve this SDE up to a chosen time \(T\) which is large enough for such convergence to occur.
+Let us denote the desity of this SDE at time \(t\) as \(\pi_t\).
+\2 Using a time reversal result, we can obtain a stochastic differential equation that has the same sample paths as our forward noising SDE, but with time in the reverse direction.
+We shall term this the reverse or denoising SDE, and we will start it from time \(T\) in the forward SDE from the distribution of \(\Xf_T\) and run it backwards.
+We will denote this reverse SDE as \(\del{\Xb_t}_{t\in\sbr{0, T}}\) to emphasise it is an SDE with the same paths, but with time running in the other direction.
+We will use the convention that time in the reverse SDE is opposite to that of the forward SDE, i.e. that \(\Xf_t = \Xb_{T-t}\).
+While this makes it necessary to track if one is talking about the forward or backward SDE to determine when a given time refers to, it means one does not have to deal with Brownian motions going backward in time, which can be more confusing.
+This reverse SDE then has the equation \[\d \Xb_t = \sbr{-\v{b}(\Xb_t, t) + \nabla_{\Xb_t} \log \pi_{T-t}(\Xb_t) }\d t + + \v{\sigma}(\Xf_t, t) \d \v{B}_t\].
+Note the time reindexing of time in the term \(\pi_{T-t}\) as the density of the reverse SDE at time \(t\) is the same as the density of the forward SDE at time \(T-t\).
+\3 All the terms in the reverse SDE are known, except for the "score" term, \(\nabla_{\Xb_t} \log \pi_{T-t}(\Xb_t)\).
+We therefore need a method to approximate or learn this term.
+Fortunately, with the large score matching toolbox we have available to us there are several options for learning this score.
+\4 Using the standard toolkit of SDE sampling schemes we can sample the reverse SDE in practise.
+\5 Using the connection between an SDE and the associated ODE we can evaluate the likelihood of a sample under the model, using standard ODE solving toolkits.
+\0
+
+Let us in detail look at each of these steps. 
+
+\subsubsection{The forward noising SDE}
+
+The first stage of a diffusion model is to corrupt the data towards a known and tractable noise distribution, often referred to as the "reference distribution".
+The point of this step is to define a path between the distribution of interest and an easy to sample distribution, with the intent later on of following this path in the reverse direction.
+Let us denote the reference distribution as \(\pi_T\), to suggest it is the distribution the forward SDE will arrive at some large time \(T\).
+If we make our choices right, this will be true up to a small error.
+
+Previously we encountered Langevin dynamics.
+Recall that if we have access to a density of the form \(\pi(x) \propto \exp(-U(x))\), then the SDE \[\d \v{X}_t = \nabla_{\v{X}} U(\v{X}) \d t + \sqrt{2} \d \v{B}_t\] will in the limit of infinite time converge to \(\pi\), regardless of the distribution we initialise the SDE with.
+\todo{say something about convergence rate?} We can also rescale this SDE by a time dependant noise factor, \(\beta({t})\), and obtain the same result, giving an SDE of the form \[\d \v{X}_t = \beta(t) \nabla_{\v{X}} U(\v{X}) \d t + \sqrt{2 \beta(t)} \d \v{B}_t\].
+This time rescaling can be very useful in diffusion models in optimising the efficiency of the discretised model rollouts and focusing the majority of the learning power of the score network on important regions of the SDE.
+\todo{decide if to suppress notation or not.}
+
+While using Langevin dynamics to sample from complex distribution can be very slow to mix effectively, sampling a simple unimodel distribution is very fast.
+This gives us an option for our SDE that converges for a known distribution.
+Choosing the unit Gaussian as our reference distribution, \(\pi_T(\v{X}) \propto \exp\del{-\tfrac{1}{2} \v{X}^T \v{X}}\), we arrive at \(U(\v{X}) = -\v{X}\), and thus a forward noising SDE of the form \[\d \Xf_t = -\Xf_t\d t + \sqrt{2} \d \v{B}_t \].
+This is the well known Ornstein–Uhlenbeck process, and this converges exponentially quickly towards the unit Gaussian.
+This is an ideal noising SDE given the exponential convergence and the tractability of the density and of sampling of the Gaussian reference distribution.
+In the literature this is typically known as the "variance preserving SDE" or "VP-SDE".
+A property that will be useful later is that the transition density in the forward direction, \(p_{s|t}\delvert{\Xf_s}{\Xf_t}, \; s > t\) has analytic density and sampling.
+For an SDE with noising schedule \(\beta(t)\) this is given by \[ p_{s|t}\delvert{\v{X}_s}{\v{X}_t} = \c{N}\delvert{\v{X}_s}{e^{-{\int_t^s \beta(\tau)\d\tau}} \v{X}_t, \del{1-e^{-2{\int_t^s \beta(\tau)\d\tau}}}\v{I}}\]
+
+The other common alternative is the "variance exploding SDE" or "VE-SDE".
+In this we simply apply Brownian motion as the noising SDE.
+This will not converge to a stable distribution.
+However, the transition density of this SDE is given by \[\textstyle p_{s|t}\delvert{\Xf_s}{\Xf_t} = \c{N}\delvert{\Xf_s}{\Xf_t, \sqrt{{\int_t^s} \beta(\tau)\d\tau}\v{I}}\].
+The variance of this will continue to grow with time and eventually the variance of this transition density will dominate the variance of \(\pi\), and so the distribution \[\pi_T(\Xf_t) = \int p_{T|0}\delvert{\Xf_T}{\Xf_0} \pi(\Xf_0) \d \Xf_0\] will be well approximated by \(\c{N}\delvert{\Xf_T}{\v{0}, \sqrt{{\int_t^s} \beta(\tau)\d\tau}\v{I}}\), and therefore we can use this as the reference distribution.
+
+An alternative way to choose the forward stochastic differential eqaution is to start with the forward transition density and work backwards to the coeficients. If we restrict ourselves to linear Guassian transition densities, those of the form 
+\[p_{t|0}(x_t | x_0) = \c{N}(x_t; \alpha_t x_0, \sigma^2_t)\]
+for some differentiable mean function \(\alpha_t:\R\to \R\), with the restriction that \(\alpha_0=1\), and differentiable noise function \(\sigma_t:\R\to\R\), with the restriction that \(\sigma_0=0\), then the stochastic differential equation that has this forward transition density is
+\[\d\v{X}_t = \od{\log \alpha_t}{t}\d t +  \sbr{\od{\sigma_t^2}{t} - \od{\log \alpha_t}{t} \sigma_t^2}\d\m{B}_t\]
+If we pick \(\alpha_t\) and \(\sigma_t\) such that as \(t\to T\), \(\alpha_t\to 0\), then the process will converge to the distribution \(\c{N}(x_T; 0, \sigma_T^2)\), giving us a reference distribution to work with.
+
+The VP-SDE and VE-SDE can be fit into this framework, with \[&\alpha_t =  \exp(-\int_0^t \beta(\tau) \d\tau)\quad &\sigma_t &= 1- \exp(-2\int_0^t \beta(\tau) \d\tau)\quad&\text{VP-SDE}\\
+&\alpha_t =  1\quad &\sigma_t = \int_0^t \beta(\tau) \d\tau\quad&\text{VE-SDE}\]
+
+
+
+The choice of forward noising stochastic differential equation can have a significant impact on performance of a diffusion model. Interesting empirical studies can be seen for example in \textcite{karras2022Elucidating} \todo{more cites?}.
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{lcccr}
+		\toprule
+		{\scshape SDE}                              &  & & {\scshape Complexity} & {\scshape Variance} \\
+		& \makecell{Samples from \(p_{t|s}\)} & \makecell{Analytic \(\nabla \log p_{t|s}\)} & & \\
+		\midrule
+		{\(\ssmlosst{}\)}  & \cmark & \xmark & \(\c{O}(d)\) & Highest\\
+		{\(\ismlosst{}\)}  & \cmark & \xmark & \(\c{O}(d^2)\) & Middle\\
+		{\(\dsmlosst{}\)}  & \cmark & \(t-s\) small & \(\c{O}(d)\) & Lowest \\
+		{\(\gdsmlosst{}\)} & \cmark & \cmark & \(\c{O}(d)\) & Lowest \\
+		\bottomrule
+	\end{tabular}
+	\caption{A comparison of score-matching objectives for diffusion models}
+	\label{tab:loass_comparison}
+\end{table}
+
+% Typically in generate models such as VAEs and normalising flows the transformation we ask the model a model to turn random noise in to interesting data through a series of intermediate steps. The intermediate steps, and the path on should take between each of these however remain unspecified, and the model must learn to pick one possible solution from a typically infinite set of choices. By contrast \emphmarginnote{diffusion models} specify the whole generative process process from the simple noise distribution to the data distribution. This specification of the mapping is a key element in their success. It significantly reduces the task we ask the model to learn from that of exploring the infinite space of possible mappings between data and noise, to a simple regression problem of matching the pre-specific path. The innovation in these models is being able to specify this mapping, and train the resulting model in an efficient way.
+
+% In the following I consider the continuous time formulation of diffusion models introduced in \textcite{song2020score}, which defines the corruption of noise into data via an SDE. There also exists the discrete view of diffusion modelling \textcite{sohl2015deep,ho2020denoising} where the corruption of data is done in a series of discrete step. Since the links between the two are very clear, and the discrete view can be seen as a discretisation of the continuous time version, I will not develop this.
+
+% The recipe for producing a diffusion model has two key steps:
+% \1 Specify a way of corrupting data into noise via a diffusion equations.
+% \2 Reverse this process of corruption to be able to turn noise into data, giving us a generative model. 
+% \0
+% This recipe as it turns out can be applied much more general than diffusion models, and this will be discussed later, but for now we will consider the case of modelling distributions supported on \(\R^n\) using diffusions as the corrupting process.
+
+% The main tool for this corruption is a \emphmarginnote{stochastic differential equation} (SDE). Typically we use \emphmarginnote{linear SDEs}. These have the form \[\d \v{X}_t = b(\v{X}_t, t) \d t + \Sigma(\v{X}_t, t) \d \v{B}_t\] where \(b : \R^n \times \R \to \R^n\) and \(\Sigma : \R^n \times \R \to \R^{(n\times n)}\).
+
+\subsubsection{Applying a time reversal result}
+
+The crucial step to be able to follow backwards the path defined by our forward noising SDE is the application of a time reversal result.
+We have discussed these theoretically earlier in ..., but to briefly recap;
+If we have an SDE \(\del{\Xf_t}_{t\in \sbr{0, T}}\) of the form \[\d \Xf_t= \v{b}(\Xf_t, t) \d t + \v{\sigma}(\Xf_t, t) \d \v{B}_t\] with initial condition \(\Xf_0 \sim \pi\), then
+
+\todo{need to dicsuss with Valentin}
+
+\newpage
+
+\subsubsection{Learning the score}
+
+The next step in producing a diffusion model is learning the score term that appears in the reverse SDE, \(\nabla_{\v{X}_t} \log p_t(\v{X}_t)\).
+At first glance this may seem difficult, but a strong literature exists on learning this term, known as \emphmarginnote{score matching}.
+In order to approximate this score function, we will use an approximation taking inputs \(\v{X}_t\) and \(t\).
+We will denote this \(\scorenet{}: \R^d \times \sbr{0, T} \to \R^d\).
+We will also use the notion \(\scorenett{} : \R^d \to \R^d\) to refer to this function partially evaluated at time \(t\), \(\scorenett{}(\cdot) = \scorenet(\cdot, t)\).
+Typically, we will make this a neural network of some kind, and look to optimise this via gradient-based learning.
+
+% \emphmarginnote{Implicit score matching (ISM)} \parencite{hyvarinen05a} says that the following is true for a density \(\pi\) supported on \(\R^d\) relative to the Lebesgue measure;
+% \[\nabla_{\v{X}} \log \pi(\v{X}) = \argmin_{\phi} \int_{\R^d} \cbr{ \frac{1}{2} \norm{\phi\del{\v{X}}}^2 + \dive(\phi)(\v{X})} \pi(\v{X}) \d \v{X} \].
+% We can apply this to our SDE setting to say that the score at a given time is given by \[\nabla_{\v{X}} \log \pi_t(\v{X}) = \argmin_{\scorenett{}} \int_{\R^d} \cbr{ \frac{1}{2} \norm{\scorenett{}(\v{X})}^2 + \dive(\scorenett{})(\v{X})} \pi_t(\v{X}) \d \v{X}\].
+% We denote then this loss function as \(\ismlosst{}: \scorenett \mapsto \R\) such that \(\nabla_{\v{X}} \log \pi_t(\v{X}) = \argmin_{\scorenett{}} \ismlosst{}\).
+\textcite{hyvarinen05a} proves the following result
+\begin{theorem}[Implicit score matching (ISM)]
+	Consider a density \(p_a(A)\) supported on \(\R^d\) relative to the Lebesgue measure.
+	Then,
+	\[\nabla_{A} \log p_a(A) = \argmin_{g\text{ measurable in }L^2} \E_{A}\sbr{ { \tfrac{1}{2} \norm{g\del{A}}^2 + \dive(g)(A)}}.\]
+\end{theorem}
+Using this we can learn the score of a distribution \(p_a\) if we just have access to good samples from \(p_a\) as we can approximate this expectation with Monte Carlo estimation.
+
+We can apply this to our SDE setting to say that the score at a given time is given by \[\nabla_{\v{X}_t} \log p_t(\v{X}_t) = \argmin_{\scorenett{}} \E_{\v{X}_t} \sbr{ \tfrac{1}{2} \norm{\scorenett{}(\v{X}_t)}^2 + \dive(\scorenett{})(\v{X}_t)}\].
+We denote then this loss function as \(\ismlosst{}\).
+
+In order to draw samples from \(p_t(\v{X}_t)\) we can utilise the fact that \[p_t(\v{X}_t) = \int p_{t|0}(\v{X}_t) p_0(\v{X}_0) \d \v{X}_0\].
+We can sample then from this joint density as we have as our dataset samples from \(p_0 = \pi\), and we have access to sampling from the transition density \( p_{t|0}\) from the forward noising SDE.
+We then throw away the samples from \(p_0\) to obtain samples from \(p_t\).
+
+What is not so nice about this objective is that it requires computation of the divergence of the score.
+While this is achievable using automatic differentiation packages, it is expensive in high dimension, scaling in cost with \(\c{O}(d^2)\).
+
+It is possible to apply to this the Hutchinson trace trick estimator \parencite{hutchinson1989stochastic} to stochastically approximate the divergence to get a loss function that scales with \(\c{O}(d)\) at the cost of higher variance, as detailed in \textcite{song2020sliced}, where it is called \emphmarginnote{sliced score matching (SSM)}.
+We denote this loss function \(\ssmlosst{}\).
+In practise this additional variance does not seem to be too important, as the variance of the Monte Carlo estimation of the integral over \(p_t\) is larger.
+
+\emphmarginnote{Denoising score matching (DSM)} \parencite{vincent2011connection} is an alternative approach to implicit score matching that typically has lower variance.
+We do not get this for free, as we will need to know a little more information to apply this.
+Recall that the definition of the conditional distribution states that for \(L^2\)-integrable random variables \(A\) and \(B\), \[\argmin_{g\text{ measurable in }L^2} \E_{A, B}\sbr{\norm{A - g(B)}^2} = g: b\mapsto\E_{A}\sbrvert{A}{B=b}\], where \(\E_{A}\sbrvert{A}{B=b}\) is the conditional expectation of \(A\) given a value of \(B\).
+We apply this by putting \(A = \nabla \log p_{c|d}\delvert{C}{D}\) and \(B = C\) for new random variables \(C\) and \(D\), assuming they have densities relative to the Lebesgue measure, and so \[g(C) = \E_{D}\sbrvert{ \nabla \log p_{c|d}\delvert{D}{C}}{C}\].
+We can then apply the Tweedie identity.
+\begin{lemma}[The Tweedie identity]\label{lem:tweedie}
+	\[\E_{D}\sbrvert{\nabla_{C} \log p_{c|d}\delvert{C}{D}}{C} = \nabla_{C} \log p_c(C)\]
+\end{lemma}
+\begin{proof}
+	Delayed to \cref{sec:tweedie_proof}
+\end{proof}
+Combing this we see that \[ \argmin_{g\text{ measurable in }L^2} \E_{C,D}\sbr{\norm{\nabla_C \log p_{c|d}\delvert{C}{D} - g(C)}^2} &= \E_{D}\sbrvert{\nabla_{C} \log p_{c|d}\delvert{C}{D}}{C}\nonumber \\ &= \nabla_{C} \log p_c(C)\], and therefore can learn the score for \(\nabla_C \log p_c(C)\) if we have access to \1 samples from the joint distribution \(p_{c,d}(C, D)\) and \2 access to the analytic conditional score \(\nabla_C \log p_{c|d} \delvert{C}{D}\).\0
+
+To apply this to our SDE setting, we pick \(C = \v{X}_t\) and \(D=\v{X}_s\), with \(s < t\). We have access to samples from \(p_{t,s}\del{\v{X}_t, \v{X}_s}\) by using the fact that 
+\[
+	p_{t,s}\del{\v{X}_t, \v{X}_s} &= \int_{\R^d} p_{t|s, 0}\delvert{\v{X}_t}{\v{X}_s, \v{X}_0} p_{s|0} \delvert{\v{X}_s}{\v{X}_0} p_0\del{\v{X}_0} \d \v{X}_0 \\
+	&= \int_{\R^d} p_{t|s}\delvert{\v{X}_t}{\v{X}_s} p_{s|0} \delvert{\v{X}_s}{\v{X}_0} p_0\del{\v{X}_0} \d \v{X}_0
+\] where the second line follows as SDE transitions have the Markov property. We have access to samples from \(p_0\) from our data, and the SDE tells us how to sample from the transitions.
+We also need access to the analytic form of \(\nabla_{\v{X}_t} \log p_{t|s} \delvert{\v{X}_t}{\v{X}_s}\).
+For most SDEs used in the literature, such as the variance exploding and preserving, this is available.
+If it is not available, often good approximations are available over for short time steps between \(s\) and \(t\).
+
+The most common form of this loss in the literature is to set \(s=0\). 
+This simplifies the sampling as then we only need to sample the one transition.
+This is the denoising score matching described in \textcite{song2020score}.
+We describe the more general scheme here as it is useful when we only have access to an approximation of \(p_{t|s}\) over short times.
+
+We shall label this loss \(\gdsmlosst{}\) in the general case and \(\dsmlosst{}\) when using \(s=0\).
+
+To summarise:
+\begin{table}[h]
+	\centering
+	\begin{tabular}{lcccr}
+		\toprule
+		{\scshape Loss}                              & \multicolumn{2}{c}{{\scshape Requires}} & {\scshape Complexity} & {\scshape Variance} \\
+		& \makecell{Samples from \(p_{t|s}\)} & \makecell{Analytic \(\nabla \log p_{t|s}\)} & & \\
+		\midrule
+		{\(\ssmlosst{}\)}  & \cmark & \xmark & \(\c{O}(d)\) & Highest\\
+		{\(\ismlosst{}\)}  & \cmark & \xmark & \(\c{O}(d^2)\) & Middle\\
+		{\(\gdsmlosst{}\)}  & \cmark & \(t-s\) small & \(\c{O}(d)\) & Lowest \\
+		{\(\dsmlosst{}\)} & \cmark & \cmark & \(\c{O}(d)\) & Lowest \\
+		\bottomrule
+	\end{tabular}
+	\caption{A comparison of score-matching objectives for diffusion models}
+	\label{tab:loass_comparison}
+\end{table}
+
+The objectives detailed match the score at given time \(t\) only. 
+In order to match the score at all times, we integrate this objective over all times \(t \in \sbr{0, T}\).
+\[\ell(\scorenet{}) = \int_{\sbr{0, T}} \lambda(t) \ell_t(\scorenett{}) \d t\].
+Notice there is a weighting function applied over all \(t\).
+While this weighting does not affect the minima of the objective, it does rebalance where a network will prioritise learning the score most.
+Many choices for \(\lambda(t)\) exist and can be tuned to optimise different objectives.
+In particular picking \(\lambda(t) = \sigma(t)^2\) can be shown to be equivalent to optimising the maximum likelihood objection on the dataset \cite{huang2021variational,durkan2021maximum}.
+
+A common feature of all of these objectives is that they are
+\1 stable regression objectives and
+\2 require evaluation of the score network at a given time \(t\) only.
+\0
+Compare this to the objectives of normalsing flow models, VAE models, or GANs.
+These objective functions require us to run a full generation of samples from the model in order to evaluate the objective.
+In contrast, the score matching objectives only need us to evaluate the generative model at one point in the generative process.
+Additionally, the score matching objectives at a given time is stable with respect to other times.
+The minima at a given time will not change as we optimise the score function at other times.
+This is in comparison to other objectives where changing the weights at one point in the network significantly changes what the optimum weight at other points in the network is.
+This is exacerbated in GANs, as changing the discriminator function changes the objective the generator function is trying to learn, leading to well known instabilities.
+This cheap evaluation and objective stability is one of the key attractions of diffusion models.
+It is akin to us being able to optimise the weights in each layer of one of these other types of model independently, and this optimisation not affect the optimal weights in other layers.
+
+There is one common draw back to these objectives however, and that is the Monte Carlo sampling required to evaluate these objectives makes them particularly noisy as objectives.
+This can be mitigated however by taking an average of the weights through training.
+Typically, exponential moving averages have been used, and the smoothing rate requires tuning.
+Recently, \textcite{karras2023analyzing} proposed new averaging schemes, and importantly a mehtod to perform hyperparameter optimisation of the smoothing rates post-hoc, requiring only a single training run of the model.
+
+\subsubsection{Approximate sampling from SDEs}
+\label{sec:sde_discretisation}
+
+Much the computational impossiblity of solving genreal ODE problems exactly, it is impossible to sample from general SDEs exactly.
+We can however make good approximations to this.
+
+\subsubsection{Likelihood ODEs}
+The final thing that we are missing now is the ability to compute the likelihood of a sample from a diffusion model.
+In order to do this we will leverage the \emphmarginnote{Fokker-Plank equation} (\cref{sec:fokker_plank}).
+Recall that for an SDE of the form \[\d \v{X}_t = \v{b}(\v{X}_t, t) \d t + \m{\Sigma}(\v{X}_t, t) \d \v{B}_t \], in this case where \(\m{\Sigma}\) is a matrix of noise coefficients, the time-evolution of the density is given by
+\[ \pd{p_t(\v{X})}{t} = -\sum_{i=1}^d \pd{}{\v{X}_i}\sbr{\v{b}(\v{X}, t) p_t{\v{X}}} + \frac{1}{2} \sum_{i=1}^d \sum_{j=1}^d \frac{\partial^2}{\partial \v{X}_i \partial \v{X}_j} \sbr{\m{\Sigma}(\v{X}, t) \m{\Sigma}(\v{X}, t)^T p_t(\v{X})} \].
+Using this, we can obtain the following result
+
+\begin{theorem}[The likelihood flow ODE]
+	\label{thm:likelihood_ode}
+	For an SDE of the form 
+	\[\d \v{X}_t = \v{b}(\v{X}_t, t) \d t + \m{\Sigma}(\v{X}_t, t) \d \v{B}_t \]
+	initialised with \(\v{X}_0 \sim p_0\), the ODE
+	\[\d \v{X}_t = \sbr{\v{b}(\v{X}_t, t) - \frac{1}{2}\sbr{\nabla \cdot \sbr{\m{\Sigma}(\v{X}, t) \m{\Sigma}(\v{X}, t)^T}\nonumber +\m{\Sigma}(\v{X}, t) \m{\Sigma}(\v{X}, t)^T \nabla_{\v{X}_t}\log p_t(\v{X}_t)}} \d t\]
+	initialised with \(\v{X}_0 \sim p_0\) has the same marginal density at all times \(t\in\sbr{0,T}\)
+\end{theorem}
+\begin{proof}
+	Due to \textcite{maoutsa2020interacting} and \textcite[appendix D]{song2020score}, restated in \cref{sec:likelihood_ode_proof}.
+\end{proof}
+In diffusion models we typically use \(\m{\Sigma}(\v{X}, t) = \sigma(\v{X}, t) I\), a simple time-dependant scalar noise.
+With this, the likelihood ODE simplifies to
+\[\d \v{X}_t = \sbr{\v{b}(\v{X}_t, t) - \frac{1}{2}\sigma(\v{X}, t)^2 \log p_t(\v{X}_t)} \d t \label{eq:likelihood_ode_drift} \].
+Fortunately there already exists tools to be able to compute the change in likelihood induced by an ODE trajectory, assuming the ODE describes the flow of a density.
+\begin{theorem}[Instantanious change of likelihood of an ODE]
+	Let \(\del{\v{X}_t}_{t\in\sbr{0,T}}\) be a stochastic process with marginal density at time \(t\) \(p_t(\v{X}_t)\).
+	Let \(\d \v{X}_t = \v{b}(\v{X}_t, t) \d t\) be an ODE describing the evolution of particles.
+	Assume that \(\v{b}\) is uniformly Lipshitz continuous in \(\v{X}_t\) and continuous in \(t\).
+
+	Then, the instantaneous change in log probability is given by 
+	\[\pd{\log p_t(\v{X}_t)}{t} = -\tr\del{\eval{\od{\v{b}}{\v{X}_t}}{\del{\v{X}_t, t}}} = \nabla \cdot \v{b}\del{\v{X}_t, t}\]
+\end{theorem}
+\begin{proof}
+	Proved in \textcite[appendix A]{chen2018neural}. Restated in \cref{sec:ode_likelihood_formula}.
+\end{proof}
+Using this, we can evaluate the likelihood of a point under our diffusion model at \(t=0\).
+For a given point \(v{X}_0\) is equal to the change in likelihood over the course of the ODE, plus the likelihood of the point at the other end, \[\log p_0(\v{X}_0) = \int_0^T \nabla \cdot \v{b}\del{\v{X}_t, t} \d t + \log p_T(\v{X}_T)\]
+where \(\v{X}_t\) is the path the point \(\v{X}_0\) follows under the ODE.
+
+In practise, we solve these as a joint ODE to take advantage of error tolerant solvers on the joint system,
+\[
+	\d 
+	\begin{bmatrix}
+		\v{X}_t \\ \log p(\v{X}_t)
+	\end{bmatrix} = 
+	\begin{bmatrix}
+		\v{b}\del{\v{X}_t, t} \\ \nabla \cdot \v{b} \del{\v{X}_t, t}
+	\end{bmatrix}
+\]
+This is in fact how \emphmarginnote{continuous noramlising flows (CNFs)} \parencite{chen2018neural} work. 
+The model is defined by a parametrised drift function \(\v{b}_\theta\), and is trained by maximum likelihood by backpropogating through the ode solver \parencite{chen2018neural}. 
+There exist a number of stratergies for backpropogating through ODE solvers.
+These are discussed well in \textcite{kidger2021on}, which has accompanying it the python library \verb|diffrax| \marginnote{\url{https://github.com/patrick-kidger/diffrax}} for handling ODEs and other DEs easily.
+
+To apply this scheme for computing the likelihood to diffusion models we simply use our modified drift function in \cref{eq:likelihood_ode_drift} and use the reference distribution from our diffusion model for \(p_T\).
+
+This also gives us an additional method to sample from our diffusion model. 
+Insdead of solving the SDE approximately (\cref{sec:sde_discretisation}) we can sample from \(p_T\) and solve this ODE in reverse to draw samples from the model.
+This can outperform sampling the SDE in certain scenarios \parencite{karras2022Elucidating,song2019generative}.

@@ -1,0 +1,21 @@
+\section{Proofs from the background material}
+\subsection{Proof of the Tweedie identity}
+\label{sec:tweedie_proof}
+The main statement can be found at \cref{lem:tweedie}
+\begin{lemma*}[The Tweedie identity]
+	\[\E\sbrvert{\nabla_{\v{X}_t} \log p_{t|0}\delvert{\v{X}_t}{\v{X}_0}}{\v{X}_t} = \nabla_{\v{X}_t} \log p_t(\v{X}_t)\]
+\end{lemma*}
+\begin{proof}
+    \[
+		\E&\sbrvert{\nabla_{\v{X}_t} \log p_{t|0}\delvert{\v{X}_t}{\v{X}_0}}{\v{X}_t} \nonumber\\
+		&= \int_{\R^d} \nabla_{\v{X}_t} \log p_{t|0}\delvert{\v{X}_t}{\v{X}_0} p_{0|t}(\v{X}_0 | \v{X}_t) \d \v{X}_0 \nonumber\marginnote{By definition}\\
+		&= \int_{R^d} \frac{\nabla_{\v{X}_t} p_{t|0}\delvert{\v{X}_t}{\v{X}_0}}{p_{t|0}\delvert{\v{X}_t}{\v{X}_0}} \frac{p_{t|0}\delvert{\v{X}_t}{\v{X}_0}p_0(\v{X}_0)}{p_t(\v{X}_t)} \d \v{X}_0\nonumber\marginnote{By the gradient of log and Bayess rule}\\
+		&= \frac{1}{p_t\del{\v{X}_t}} \int_{\R^d} p_0\del{\v{X}_0} \nabla_{\v{X}_t} p_{t|0}\delvert{\v{X}_t}{\v{X}_0} \d\v{X}_0\nonumber\marginnote{Cancel terms and remove non-integrands}\\
+		&= \frac{1}{p_t\del{\v{X}_t}} \nabla_{\v{X}_t}\int_{\R^d} p_0\del{\v{X}_0}  p_{t|0}\delvert{\v{X}_t}{\v{X}_0} \d\v{X}_0\nonumber\marginnote{By linearity of integrals}\\
+		&= \frac{\nabla_{\v{X}_t}p_{t}\del{\v{X}_t}}{p_t\del{\v{X}_t}} = \nabla_{\v{X}_t}\log p_{t}\del{\v{X}_t}\nonumber\marginnote{By the gradient of log}
+ 	\]
+\end{proof}
+
+\subsection{Proof of a Hessian identity}
+\label{sec:hessian_identity}
+se phone pic 15/01/24

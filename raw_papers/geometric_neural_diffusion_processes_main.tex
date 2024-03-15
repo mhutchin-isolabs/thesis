@@ -204,7 +204,7 @@ While we could sample directly at the end time this proves difficult in practice
 Similar to the motivation of \textcite{song2019generative}, we sample along the reverse diffusion, taking a number of conditional Langevin steps at each time.
 In addition, we apply the forward noising SDE to the conditioning points at each step, as this puts the combined context and sampling set in a region that the score function will be well learned in training.
 Our procedure is illustrated in \Cref{alg:conditioning_langevin}.
-In \cref{app:conditional_sampling} we draw links between \textsc{RePaint} of \textcite{lugmayr2022RePaint} and our scheme.
+In \cref{app:conditional_sampling} we draw links between \textsc{RePaint} of \textcite{lugmayr2022repaint} and our scheme.
 
 \subsection{Likelihood evaluation}
 

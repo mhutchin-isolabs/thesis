@@ -137,7 +137,7 @@ Our goal is to show the following theorem.
 	To prove the theorem one needs to control the drift and diffusion matrix inside $\c{M}$ and show that it converges to $0$ and $\m{I}$ respectively.
 	The technical part of the proof comes from the control of the drift coefficient near the boundary.
 	In particular, we show that if the intermediate drift is large then we are close to the boundary and the intermediate drift is pointing inward.
-	To investigate the local properties of the drift near the boundary we rely on the notion of tubular neighborhood, see \cite[Theorem 6.24]{lee2012smooth}.
+	To investigate the local properties of the drift near the boundary we rely on the notion of tubular neighborhood, see \cite[Theorem 6.24]{lee2013smooth}.
 \end{proof}
 
 Some key properties of the tubular neighborhood are stated in \Cref{sec:tubular_properties}.
@@ -151,7 +151,7 @@ Finally, we conclude the proof in \Cref{sec:submartingale}.
 \subsection{Properties of the tubular neighborhood}
 \label{sec:tubular_properties}
 
-Using the results of \cite{lee2012smooth}, we establish the existence of an open set of $\cl{\c{M}}$ (for the induced topology of $\R^d$) satisfying several important properties.
+Using the results of \cite{lee2013smooth}, we establish the existence of an open set of $\cl{\c{M}}$ (for the induced topology of $\R^d$) satisfying several important properties.
 
 \begin{theorem}
 	\label{thm:tubul-neighb}
@@ -185,7 +185,7 @@ Using the results of \cite{lee2012smooth}, we establish the existence of an open
 \begin{proof}
 	Let $\gamma \in \del{0, \bar{\gamma}}$ with $\bar{\gamma} = 1$.
 	First, note that for any $\bar{x} \in \partial \c{M}$, the normal space is given by $\cbrcolon{\alpha \nabla \Phi(\bar{x})}{\alpha \in \R}$.
-	Using this result and \cite[Theorem 6.24]{lee2012smooth} there exists $\tilde{r}_0 > 0$ such that $\sf{U}_0 = \cbrcolon{\bar{x} + \alpha \nabla \Phi(\bar{x})}{\bar{x} \in \partial \c{M}, \ \alpha \in \del{-\tilde{r}_0, \tilde{r}_0}} \subset \R^d$ is open\footnote{This is the tubular neighborhood theorem which is key to the rest of the proof.
+	Using this result and \cite[Theorem 6.24]{lee2013smooth} there exists $\tilde{r}_0 > 0$ such that $\sf{U}_0 = \cbrcolon{\bar{x} + \alpha \nabla \Phi(\bar{x})}{\bar{x} \in \partial \c{M}, \ \alpha \in \del{-\tilde{r}_0, \tilde{r}_0}} \subset \R^d$ is open\footnote{This is the tubular neighborhood theorem which is key to the rest of the proof.
 	}.
 	We have that for any $\alpha \in \cobr{-r_0, 0}$ and $\bar{x} \in \partial \c{M}$ \begin{align} \Phi(\bar{x}+\alpha \nabla \Phi(\bar{x})) &= \textstyle{\Phi(\bar{x}) + \alpha \norm{\nabla \Phi(\bar{x})}^2 + \int_0^1 \nabla^2 \Phi(\bar{x}+t\alpha \nabla \Phi(\bar{x}))(\alpha \nabla \Phi(\bar{x}))^{\otimes 2} \mathrm{d} t } \\ &\leq \alpha + \tilde{C}_0 \alpha^2 < 0, \end{align} with $r_0 = \min(\tilde{r}_0, 1/(2\tilde{C}_0 ))$, where we have used that $\Phi(\bar{x}) = 0$, $\norm{\nabla \Phi(\bar{x})}=1$ and defined $\tilde{C}_0 = \sup \cbrcolon{\norm{\nabla^2 \Phi(\bar{x}+\alpha \nabla \Phi(\bar{x}))}}{\bar{x} \in \partial \c{M}, \ \alpha \in \cbr{-\tilde{r}_0,\tilde{r}_0}}$.
 	Reciprocally, we have for any $\alpha \in \cobr{0,r_0}$ and $\bar{x} \in \partial \c{M}$ \begin{align} \Phi(\bar{x}+\alpha \nabla \Phi(\bar{x})) &= \textstyle{\Phi(\bar{x}) + \alpha \norm{\nabla \Phi(\bar{x})}^2 + \int_0^1 \nabla^2 \Phi(\bar{x}+t\alpha \nabla \Phi(\bar{x}))(\alpha \nabla \Phi(\bar{x}))^{\otimes 2} \mathrm{d} t } \geq \alpha - C_0 \alpha^2, \end{align} where we have used that $\Phi(\bar{x}) =0$, $\norm{\nabla \Phi(\bar{x})}=1$ and defined $C_0 = \sup \cbrcolon{\norm{\nabla^2 \Phi(\bar{x}+\alpha \nabla \Phi(\bar{x}))}}{\bar{x} \in \partial \c{M}, \ \alpha \in \cbr{-r_0,r_0}}$.
@@ -222,7 +222,7 @@ Using the results of \cite{lee2012smooth}, we establish the existence of an open
 	In addition, using that $\bar{\alpha} + \sqrt{\gamma} \alpha \leq 2 \bar{r} \leq 1/C^{1/2} \leq x_{\mathrm{max}}$, we get that $P(\bar{\alpha} + \sqrt{\gamma}\alpha) \geq 0$ and therefore $x + \sqrt{\gamma}z \in \cl{\c{M}}$ since $\Phi(x+ \sqrt{\gamma}z) \geq 0$.
 	This concludes the proof of \ref{item:c}.
 	Note that the condition $\alpha \geq -\gamma^{-1/2} \bar{\alpha}$ is implied by the condition $\norm{v}^2 \leq (\sqrt{\gamma} \alpha + \bar{\alpha})/(\gamma C)$.
-	Using that $\sf{V} \subset \cbrcolon{x \in \cl{\c{M}}}{d(x,\partial \c{M}) \leq 2r} \subset \sf{U}$, \ref{item:c_prime} is a direct consequence of \cite[Theorem 6.24]{lee2012smooth}].
+	Using that $\sf{V} \subset \cbrcolon{x \in \cl{\c{M}}}{d(x,\partial \c{M}) \leq 2r} \subset \sf{U}$, \ref{item:c_prime} is a direct consequence of \cite[Theorem 6.24]{lee2013smooth}].
 	Next, we prove \ref{item:d}.
 	Let $x + \sqrt{\gamma}z \in \cl{\c{M}} \cap \sf{C}(x,\gamma)^\mathrm{c}$.
 	If $\alpha <-\bar{\alpha}\gamma^{-1/2}$ then since $\Phi$ is concave, we have \begin{align} \Phi(x+\sqrt{\gamma}z) = \textstyle{\Phi(\bar{x}) + \bar{\alpha} + \sqrt{\gamma} \alpha + \int_0^1 \nabla^2 \Phi(\bar{x} + t(x+\sqrt{\gamma}z-\bar{x}))(x+\sqrt{\gamma}z-\bar{x})^{\otimes 2} \mathrm{d} t } < 0 , \end{align} where we have used that $\Phi(\bar{x}) = 0$.
