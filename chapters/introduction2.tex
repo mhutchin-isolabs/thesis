@@ -1,0 +1,19 @@
+\lettrine{T}{he} focus of this thesis is on the intersection of two areas of modern machine learning, deep generative modelling and geometric machine learning.
+
+\emphmarginnote{Deep generative modelling} can be thought of as the application of \emph{deep learning}, the use of models with very larger numbers of parameters and gradient based optimisation techniques, to classical \emph{density estimation}.
+From a modelling point of view, a typical problem is to take a series of samples from a distribution, \(\cbr{x_i}_{i=1}^n, \; x_i \sim p(x)\), and optimise the parameters, \(\theta\), of a model of the distribution, \(q_\theta(x)\), so that \(q_\theta\) matches \(p(x)\) as close as possible.
+
+Where this diverges from density estimation is the complexity of the data being modelled.
+Typical deep generative modelling tasks cover images, text, video, molecules, proteins and materials, which are generally too complex to be described by interpretable models with small numbers of parameters.
+In addition, the coverage of the \(p(x)\) by the available samples \(\cbr{x_i}_{i=1}^n\) is usually poor since the balance between the dimension of the problem and the availability of data samples is usually unfavourable, making techniques such as kernel density estimation useless.
+
+
+\textbf{Chapter 2} introduces the background material for this thesis. This chapter covers two main topics: Riemannian manifolds and the theory of stochastic differential equations. Both topics are covered in some detail as the majority of this thesis is concerned with the intersection of the two topics - namely stochastic differential equations on Riemannian manifolds, and their applications to generative modelling.
+
+\textbf{Chapter 3} describes how one can define a diffusion model to model a density supported on a Riemannian manifold. Previous work has developed methods for diffusion models for densities on Euclidean space. This chapter is based on the published work \enumcite{de2022riemannian_hl}
+
+\textbf{Chapter 4} describes how one can define a diffusion model to model a density supported on a Riemannian manifold, when in addition there are constraints placed on the support of the density being modelled. This could be because the problem at hand naturally has such constraints, or that the manifold itself has a natural boundary. This chamter is based on the works \enumcite{fishman2023diffusion_hl} and \enumcite{fishman2023metropolis_hl}
+
+\textbf{Chapter 5} goes beyond densities on manifolds to model densities over spaces of functions, spaces of sections of vector bundles, and paths on manifolds. This chapter is based on the work \enumcite{mathiue2023geometric_hl}.
+
+\textbf{Chapter 6} 

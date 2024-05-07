@@ -1,0 +1,41 @@
+\documentclass[tikz,10pt]{standalone}
+\usepackage[standalone,commands]{../../MJH}
+
+\graphicspath{/Users/mhutchin/Documents/thesis/figures/diagrams/}
+
+% \usepackage{tikz}
+% \usetikzlibrary{positioning}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+% \usepgfplotslibrary{external}
+% \usepgfplotslibrary{groupplots}
+% \usepgfplotslibrary{fillbetween}
+% \usetikzlibrary{fadings}
+
+\begin{document}
+    % \tikzsetnextfilename{generative_model}
+    \begin{tikzpicture}
+
+        \node [label={45:\(p\)}] (p) at (0,0) {\(\bullet\)};
+        \node [label={}](ev) at (3,0) {};
+        \node [label={}](eu) at (0,3) {};
+        \node [] (pu) at (3,2) {\(\)};
+        \node [] (pv) at (2,3) {\(\)};
+        \node [] (pup) at (5,2) {\(\)};
+        \node [] (pvp) at (2,5) {\(\)};
+
+
+        \draw [-latex,tabblue] (p) -- (ev) node[midway, above] {\(\epsilon v_p\)};
+        \draw [-latex,taborange] (p) -- (eu) node[midway, left] {\(\epsilon u_p\)};
+        \draw [-latex,taborange] (ev) -- (pu) node[midway, left] {\(\epsilon u_{||}\)};
+        \draw [-latex,tabblue] (eu) -- (pv) node[midway, below] {\(\epsilon v_{||}\)};
+        \draw [-latex,tabred] (pv) -- (pu) node[midway, below left] {\(\epsilon^2 \tau(u_p, v_p)\)};
+        \draw [-latex,taborange] (ev) -- (pup) node[midway, below right] {\(\epsilon u_q\)};
+        \draw [-latex,tabblue] (eu) -- (pvp) node[midway, above left] {\(\epsilon v_r\)};
+        \draw [-latex,tabgreen] (pu) -- (pup) node[midway, above] {\(\epsilon^2 \nabla_{v_p}u\)};
+        \draw [-latex,tabgreen] (pv) -- (pvp) node[midway, right] {\(\epsilon^2 \nabla_{u_p}v\)};
+        \draw [-latex,tabgreen] (pup) -- (pvp) node[midway, above right] {\(\epsilon^2[u_p, v_p]\)};
+
+    \end{tikzpicture}
+\end{document}

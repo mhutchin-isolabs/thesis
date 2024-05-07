@@ -375,6 +375,18 @@
     {\includegraphics[height=.8ex]{figures/symbols/veryshortleftarrow.pdf}}
     {\includegraphics[height=.5ex]{figures/symbols/veryshortleftarrow.pdf}}
 }}}
+\newcommand{\vsua}{{\ensuremath{%
+  \mathchoice{\includegraphics[height=1.1ex]{figures/symbols/veryshortuparrow.pdf}}
+    {\includegraphics[height=1.1ex]{figures/symbols/veryshortuparrow.pdf}}
+    {\includegraphics[height=.8ex]{figures/symbols/veryshortuparrow.pdf}}
+    {\includegraphics[height=.5ex]{figures/symbols/veryshortuparrow.pdf}}
+}}}
+\newcommand{\vsda}{{\ensuremath{%
+  \mathchoice{\includegraphics[height=1.1ex]{figures/symbols/veryshortdownarrow.pdf}}
+    {\includegraphics[height=1.1ex]{figures/symbols/veryshortdownarrow.pdf}}
+    {\includegraphics[height=.8ex]{figures/symbols/veryshortdownarrow.pdf}}
+    {\includegraphics[height=.5ex]{figures/symbols/veryshortdownarrow.pdf}}
+}}}
 
 \fi
 
@@ -627,6 +639,7 @@
 		\dottedcontents{subsection}[3.8em]{}{2.3em}{1pc}
 	}
 	\@ifpackageloaded{hyperref}{\hypersetup{linktoc=all}}{}
+	\newcommand{\emphhyperref}[2]{\hyperref[#2]{\emph{#1}}}
 	\renewcommand{\contentsname}{Table of Contents}
 
 	% caption format

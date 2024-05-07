@@ -10,7 +10,8 @@ SGMs have been primarily applied to data living on Euclidean spaces, i.e. manifo
 However, in a large number of scientific domains the distributions of interest are supported on Riemannian manifolds.
 These include, to name a few, protein modelling \parencite{shapovalov2011smoothed}, cell development \parencite{klimovskaia2020poincare}, image recognition \parencite{lui2012advances}, geological sciences \parencite{karpatne2018machine,peel2001fitting}, graph-structured and hierarchical data \parencite{roy2007learning,steyvers2005large}, robotics \parencite{feiten2013rigid,senanayake2018directional} and high-energy physics \parencite{brehmer2020flows}.
 
-We introduce in this work \emphmarginnote{Riemannian Score-based Generative Models} (RSGMs), an extension of SGMs to Riemannian manifolds which incorporate the geometry of the data by defining the forward diffusion process directly on the Riemannian manifold, inducing a manifold-valued reverse process.
+In this chapter we develop \emphmarginnote{Riemannian Score-based Generative Models}, an extension of score-based generative models to Riemannian manifolds.
+The objective is to incorporate the geometry of the problem at hand by respecting the natural setting of the data being modelled.
 This requires constructing a noising process on the manifold that converges to an easy-to-sample reference distribution.
 We establish that, as in the Euclidean case, the corresponding time-reversal process is also a diffusion whose drift includes the Stein score which is intractable but can similarly be estimated via score matching.
 Methodological extensions are required as in most cases the transition kernel of the noising process cannot be sampled exactly.
@@ -23,7 +24,8 @@ We show that RGSMs achieve better performance than recent baselines \parencite{m
 \label{sec:score-appr-manif}
 In the background material we introduced diffusion models defined over Euclidean space to model densities on \(\R^n\).
 In this section, we introduce new tools and techniques to generalise diffusion models to Riemannian manifolds (without boundary).
-More specifically assume that $\c{M}$ is a complete, orientable connected and boundaryless smooth manifold manifold, and it is endowed with a Riemannian metric \(g\).
+
+More specifically our setting will be a \emphhyperref{complete}{def:complete_manifold}, \emphhyperref{orientable}{def:orientable_manifold}, \emphhyperref{connected}{def:connected_space}, \emphhyperref{boundaryless}{def:manifold_with_boundary} \emphhyperref{Riemannian}{def:riemannain_manifold} manifold, \((\c{M}, g)\).
 
 Four components are required to extend SGMs to this setting: \begin{enumerate}[label=\roman*)] \item a forward {noising} process on $\c{M}$ which converges to an easy-to-sample reference distribution, \item a time-reversal formula on $\c{M}$ which defines a backward generative process, \item a method for approximating samples of SDEs on manifolds, \item a method to efficiently perform score matching on Riemannian manifolds.
 \end{enumerate}
@@ -34,42 +36,99 @@ We provide these tools, and detail them now.
 \label{sec:non-compact}
 
 The first necessary component is a suitable generic noising process on manifolds that will converge to a convenient stationary distribution.
-In the background material we showed how the common noising processes used in Euclidean diffusion models are instances of Langevin dynamics. 
+In the background material we showed how the common noising processes used in Euclidean diffusion models are instances of \emphhyperref{Langevin dynamics}{sec:langevin_dynamics}. 
 Recall these are given for an SDE in Euclidean space by
 \[\d \v{X}_t = -\nabla_{\v{X}_t} U(\v{X}_t) \d t + \sqrt{2} \d\v{B}_t\]
 and that this SDE will converge in distribution to a density, relative to the Lebesgue measure, proportional to \(\exp\del{-U\del{\v{X}_t}}\).
+\todo[inline]{conditions on U?}
 
-On Riemannian manifolds, we have a similar result.
-An SDE of the form
+On Riemannian manifolds, we have very similar results for the equivalent Langevin stochastic differential equation.
 \[ \d \v{X}_t = -\nabla_{\v{X}_t}^g U(\v{X}_t) \d t + \sqrt{2} \d\v{B}_t^M\]
 where \(\nabla^g\) is the Riemannian gradient (see \cref{sec:riemannian_gradient}) and \(\d\v{B}_t^M\) is a Brownian motion associated with the manifold (see ...).
-This SDE will converge to a density proportional, relative to the \emphmarginnote{volume form} (\cref{sec:volume_form}) of the manifold, proportional to \(\exp(-U(\v{X}))\)\parencite[Section 2.4]{durmus2016high}.
+For example, it is easy to prove that a very similar stationary distribution exists
+\begin{theorem}[Stationary distribution of Langevin dynamics on Riemannian manifolds]
+	For a stochasitc differential equation of the form
+	\[ \d \v{X}_t = -\nabla_{\v{X}_t}^g U(\v{X}_t) \d t + \sqrt{2} \d\v{B}_t^M\]
+	the distribution \(\mu_U\) with Radon-Nikodyom derivate with respect to the Riemannian volume measure 
+	\[\od{\mu_U}{\vol_g} = \exp(-U) = p_U\]
+	is invariant under the evolution of the dynamics.
+\end{theorem}
+\begin{proof}
+	\todo[inline]{also the simple proof?}
+\end{proof}
+Further, results such as \cite[Section 2.4]{durmus2016high} show that, under conditions \todo{state conditins}, the dynamics will eventually converge in distribution to the desired density.
+Immediately then, this motivates using a form of Langevin dynamics as our noising process.
+The difficulty then is how to choose a \(U\) to suit our needs.
+To do this, we look at a number of ways of adapting the Gaussian to manifold.
 
-Two simple choices for $U(x)$ present themselves.
-Firstly, setting \[U(x) = d_\c{M}(x, \mu)^2/(2 \gamma^2)\], where $d_\c{M}$ is the geodesic distance and $\mu \in \c{M}$ is an arbitrary mean location.
+The \emphmarginnote{heat kernel on a manifold}, the solutions to \[\pd{K}{t} = \Delta_g K, \quad K:\R^+ \x \c{M} \x \c{M}\], is a natural extension, as on Euclidean space this is given by the Gaussian.
+Closed form expressions for the heat kernel are not usually available, but truncated basis expansions (see \cref{sec:laplace_beltrami_operator} and \textcite{azangulov2023stationary,azangulov2023stationary2}) are available and can be differentiated to give approximate expressions for \(U\).
+However, in general there is not a cheap algorithm to sample from this distribution.
+Instead, more expensive MCMC, such as Langevin dynamics, must be used to sample from this distribution.
+
+We can also target the \emphmarginnote{Riemannian normal} \parencite{pennec2006Intrinsic} distribution.
+We active this by setting \[U(x) = d_\c{M}(x, \mu)^2/(2 \gamma^2)\], where $d_\c{M}$ is the geodesic distance and $\mu \in \c{M}$ is an arbitrary mean location.
 This induces the drift \[\nabla_{\v{X}_t} U(\v{X}_t) = -\exp^{-1}_{\v{X}_t}(\mu) /\gamma^2\] where $\exp_x: \mathrm{T}_x \c{M} \to \c{M}$ denotes the exponential mapping on the manifold (\cref{sec:exponential_map}).
-This is the potential of the \emphmarginnote{Riemannian normal} \parencite{pennec2006Intrinsic} distribution.
-Sampling from this distribution is not closed form however, and requires sampling schemes such as MCMC to perform well.
+Again however, in general there is not a cheap algorithm to sample from this distribution and so we have to resort to MCMC methods.
 
-An alternative is to target the \emphmarginnote{exponential wrapped Gaussian}.
-This is the pushforward of a Gaussian distribution in the tangent space at the mean location along the exponential map.
-The potential is given by \[U(x) = d_{\c{M}}(x, \mu)^2/(2 \gamma^2) + \log |D \exp^{-1}_{\mu}(x)|\].
-$|\cdot|$ denotes the absolute value of the determinant, and $\partial f$ the Jacobian of $f$.
-In contrast to the Riemannian normal, sampling and evaluating the density of this distribution is easy.
+Finally, we can target the \emphmarginnote{exponential wrapped Gaussian}, under the assumption that the manifold in question is \emphhyperref{geodesically complete}{def:geodesically_complete}.
+This is the pushforward of a Gaussian distribution in the tangent space of an arbitrarily chosen mean location \(\mu\in\c{M}\) through the \emphhyperref{exponential map}{def:exponential_map}, giving \[p(x) = \exp_\mu^* \c{N}(0, \sigma^2)\] for a chosen variance.
+Sampling this distribution is very simple, we sample a regular Gaussian and pass the samples through the exponential map.
 
-One recovers the standard Ornstein--Uhlenbeck noising process~\parencite{song2020score} for both of these target distributions when $\c{M}=\R^d$ and $\mu = 0$ since then the drift $b(t, \v{X}_t) = \tfrac{1}{2} ~\exp^{-1}_{\v{X}_t}(0) = -\tfrac{1}{2}~\v{X}_t$.
-On compact manifolds, the invariant measure $\textrm{Vol}_\c{M}$ has finite volume, thus a natural choice is to target the uniform distribution which is given by $\textrm{Vol}_\c{M} / |\c{M}|$.
-In this case, $\nabla_{\v{X}_t} U(\v{X}_t) = 0$ and the noising process is simply a Brownian motion on $\c{M}$.
+Computing the density, and therefore the required \(U\) is only simple in the case where the exponential map is a bijection between the tangent space at a point and the manifold.
+This is true for some non-compact manifolds such as Euclidean space and hyperbolic space, but not others such as a cylinder.
+In this case we can write the density as
+\[p(x) = \c{N}\del{\exp^{-1}_\mu(x);0, \sigma^2} \quad x\in \c{M}\].
+Applying the change of variable formula, we arrive at a potential given by \[U(x) &= d_{\c{M}}(x, \mu)^2/(2 \gamma^2) + \log \abs \det D \exp^{-1}{\mu}(x) \\ &=d_{\c{M}}(x, \mu)^2/(2 \gamma^2) +  1/\log \abs \det D \exp{\mu}(x)\], where \(D\) denotes the \emphhyperref{Jacobian}{} of the log map.
+
+Where the exponential map is not a bijection, but the manifold is still geodesically complete, the exponential map multiple points in the tangent space to the same point in the manifold.
+The inverse exponential map is not well defined in this case, but we can instead replace this with summation over points in the tangent space that map to a given point on the manifold.
+Let us denote this as \(\c{P}(x) = \cbrcolon{\exp_\mu(y) = x}{y\in T_\mu \c{M}}\).
+Then the density is given by
+\[p(x) = \sum_{y \in \c{P}(x)}\c{N}\del{y;0, \sigma^2} \quad x\in \c{M}\].
+
+One recovers the standard Ornstein--Uhlenbeck noising process~\parencite{song2020score} for all three of the options for \(U\) when $\c{M}=\R^d$ and $\mu = 0$ since then the drift $b(t, \v{X}_t) = \tfrac{1}{2} ~\exp^{-1}_{\v{X}_t}(0) = -\tfrac{1}{2}~\v{X}_t$.
+
+Finally, in the case where the manifold is a compact manifold we can make a particularly useful choice.
+We can choose \(U(x) = 0\), giving simple Brownian motion, \[ \d \v{X}_t = \d\v{B}_t^M\].
+On a compact manifold, this will converge to a density proportional to the Riemannian volume form, simply the \emphmarginnote{uniform distribution on a manifold} given by \(\mu = \frac{\vol_g}{\int_\c{M} \vol_g} \).
+Regardless of the starting distribution the SDE will converge to the uniform distribution exponentially quickly.
 
 \subsection{Time-reversal on Riemannian manifolds}
 \label{sec:brown-moti-comp}
+Next we show that time reversal results can be extended to the case of Riemannian manifolds.
+We present here two proofs.
+The first is a simple proof in the spirit of \cref{thm:fokker-plank_time_reversal}, which shows that the time-marginals of a reverse process match those the forward process.
+This is all we need for generative modelling as we only care that the initial distribution and final time distributions match.
+For completeness, we also provide a proof of a stronger result that shows not only do the marginal distributions of the forward and backward stochastic differential equations match, but so does the full distribution on paths.
+This result is in the spirit of \textcite{cattiaux2021time}, and we also provide an alternative in the spirit of \textcite{haussmann1986time}.
 
-In order to use these noising processes we prove the time-reversal formula for manifolds, a generalisation of the results in the Euclidean case, e.g.\ see \textcite[Theorem 4.9]{cattiaux2021time}.
-Consider an SDE of the form $\mathrm{d} \v{X}_t = b(\v{X}_t) \mathrm{d} t + \mathrm{d} \v{B}_t^\c{M}$ where $\v{B}_t^\c{M}$ is a Brownian motion on $\c{M}$.
-We refer to \Cref{sec:brown-moti-manif} for an introduction to Brownian motions on manifolds.
-This result shows that if $(\v{X}_t)_{t \in \sbr{0,T}}$ is a diffusion process then $(\v{X}_{T-t})_{t \in \sbr{0,T}}$ is also a diffusion process w.r.t. the backward filtration whose coefficients can be computed, and are shown in \cref{eq:time_reversal_manifold}.
-The proof relies on an extension of \textcite[Theorem 4.9]{cattiaux2021time} to the Riemannian manifold case and is postponed to \cref{sec:time-reversal}.
 
+\begin{theorem}[Fokker-plank time reversal on a manifold]
+\label{thm:fokker-plank_time_reversal_manifold}
+Let \((\c{M}, g)\) be a Riemannian manifold.
+Let \(\Bf_t\) and \(\Bb_t\) be forward and reverse time Brownian motions on \(\c{M}\).
+
+For a forward-time stochastic differential equation 
+\[ \d\Xf_t = \v{b}(\Xf_t, t)\d t + \sigma(t)\d \Bf_t, \quad \Xf_0 \sim p_0\]
+with time-marginal distributions \(p_t(\v{X})\), the reverse-time stochastic differential equation
+\[\d\Xb_t = \sbr{\v{b}(\Xb_t, t) - \sigma(t)^2\nabla\log p_t(\Xb_t)}\d t + \sigma(t)\d \Bb_t, \quad \Xb_T \sim p_T\].
+has the same time-marginal distributions \(p_t(\v{X})\) as the forward-time stochastic differential equation.
+\end{theorem}
+\begin{proof}
+	The proof is identical to that of \cref{thm:fokker-plank_time_reversal}, except we replace the various differential operators by their manifold generalisations, in particular using the identity that \[\Delta_g p_t = \dive(\nabla_g p_t).\]
+\end{proof}
+
+We also provide generalisation of stronger the in the Euclidean case, e.g. see \textcite[Theorem 4.9]{cattiaux2021time}.
+The main difference between these stronger results and the result above is that the result above only guarantees that the \emph{marginal} distributions match.
+The stronger results tell us that the distribution on the whole space of \emph{paths} of the SDE match.
+That the marginal distributions match is then a clear corollary of the fact that the paths match.
+
+% Consider an SDE of the form $\mathrm{d} \v{X}_t = b(\v{X}_t) \mathrm{d} t + \mathrm{d} \v{B}_t^\c{M}$ where $\v{B}_t^\c{M}$ is a Brownian motion on $\c{M}$.
+% We refer to \Cref{sec:brown-moti-manif} for an introduction to Brownian motions on manifolds.
+% This result shows that if $(\v{X}_t)_{t \in \sbr{0,T}}$ is a diffusion process then $(\v{X}_{T-t})_{t \in \sbr{0,T}}$ is also a diffusion process w.r.t. the backward filtration whose coefficients can be computed, and are shown in \cref{eq:time_reversal_manifold}.
+% The proof relies on an extension of \textcite[Theorem 4.9]{cattiaux2021time} to the Riemannian manifold case and is postponed to \cref{sec:time-reversal}.
+\todo{tidy}
 \begin{theorem}[Manifold time-reversed process]
 	\label{thm:time_reversal_manifold}
 	Let $T \geq 0$ and $(\v{B}_t^\c{M})_{t \geq 0}$ be a Brownian motion on $\c{M}$ such that $\v{B}_0^\c{M}$ has distribution the volume form $p_{\textup{inv}}$\footnote{Note that in the case of a non-compact manifold $p_{\textup{inv}}$ is only a measure and not a probability measure.

@@ -1,0 +1,268 @@
+\documentclass[10pt]{book}
+\PassOptionsToPackage{table,dvipsnames,x11names,svgnames}{xcolor}
+% \usepackage{tikz}
+% \usetikzlibrary{positioning}
+\pdfminorversion=7
+
+\usepackage{standalone}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+% \usepgfplotslibrary{positioning}
+\usetikzlibrary{positioning}
+\usepgfplotslibrary{external}
+% \usepgfplotslibrary{groupplots}
+% \usepgfplotslibrary{fillbetween}
+% \usetikzlibrary{fadings}
+
+% \tikzexternalize[prefix=figures/tex/]
+% \tikzset{external/force remake}
+% \usepackage{imakeidx}
+% \makeindex
+
+% \usepackage{tikz-cd}
+%%% QUIVER
+% \usetikzlibrary{cd}
+% \usetikzlibrary{calc} % `calc` is necessary to draw curved arrows.
+% \usetikzlibrary{decorations.pathmorphing} % `pathmorphing` is necessary to draw squiggly arrows.
+% % A TikZ style for curved arrows of a fixed height, due to AndréC.
+% \tikzset{curve/.style={settings={#1},to path={(\tikztostart)
+% 					.. controls ($(\tikztostart)!\pv{pos}!(\tikztotarget)!\pv{height}!270:(\tikztotarget)$)
+% 					and ($(\tikztostart)!1-\pv{pos}!(\tikztotarget)!\pv{height}!270:(\tikztotarget)$)
+% 					.. (\tikztotarget)\tikztonodes}},
+% 	settings/.code={\tikzset{quiver/.cd,#1}
+% 			\def\pv##1{\pgfkeysvalueof{/tikz/quiver/##1}}},
+% 	quiver/.cd,pos/.initial=0.35,height/.initial=0}
+
+% % TikZ arrowhead/tail styles.
+% \tikzset{tail reversed/.code={\pgfsetarrowsstart{tikzcd to}}}
+% \tikzset{2tail/.code={\pgfsetarrowsstart{Implies[reversed]}}}
+% \tikzset{2tail reversed/.code={\pgfsetarrowsstart{Implies}}}
+% % TikZ arrow styles.
+% \tikzset{no body/.style={/tikz/dash pattern=on 0 off 1mm}}
+%%%
+
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{lettrine}
+
+
+
+% \PassOptionsToPackage{table,dvipsnames,x11names,svgnames}{xcolor}
+% \usepackage[table,dvipsnames,x11names,svgnames]{xcolor}
+\usepackage[commands,environments,enumerate,theorems,citations,authoryear,notes,a4paper,oxfordcolors]{MJH}
+\newcommand{\selfnote}[1]{\marginnote{\textcolor{red}{#1}}}
+\bibliography{bibliography,bibliography_personal}
+% \bibliography{bibliography}
+
+%%% GLOSSARY
+% \usepackage[nomain,section,sort=def]{glossaries}
+% \usepackage{glossary-mcols}
+% % (Pre glossaries v4.0 requires \glossarystyle rather than
+% % \setglossarystyle)
+% \setglossarystyle{mcolindex}
+% \renewcommand{\glspostdescription}{\dotfill}
+
+% % \newglossary[op-glg]{operators}{op-gls}{op-glo}{Operators}
+% % \newglossary[cn-glg]{constants}{cn-gls}{cn-glo}{Constants}
+% \newglossary[not-glg]{notation}{not-gls}{not-glo}{notation}
+% \makeglossaries
+% \input{glossary.tex}
+%%%%
+
+\usepackage{booktabs} % nice tables
+\usepackage{multirow} % multirow cells
+% \usepackage{minitoc} % per chapter ToC
+
+% TODO: Maybe remove?
+% \usepackage{bm}
+% \usepackage{bbm} % blackboard bold numbers
+% \usepackage{amssymb} % http://ctan.org/pkg/amssymb
+\usepackage{pifont} % http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}} % check mark
+\newcommand{\xmark}{\ding{55}} % cross mark
+
+\usepackage{subcaption}
+\usepackage{cleveref} % auto type refs
+\usepackage[inline]{enumitem} % for inline lists
+
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{etoolbox}
+
+% SI Units
+\usepackage{siunitx}
+
+% % Emojis
+% \usepackage{emoji}
+
+% TO REMOVE
+\usepackage{wrapfig}
+\usepackage{scalefnt}
+\usepackage{adjustbox}
+\usepackage{makecell}
+\renewcommand\theadalign{c}
+\usepackage{upgreek}
+
+
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=oxprimary,
+    filecolor=oxprimary,      
+    urlcolor=oxprimary,
+    citecolor=oxprimary,
+}
+
+\renewcommand*{\mkbibnamegiven}[1]{
+	\ifitemannotation{highlight}
+	{\textbf{#1}}{#1}
+}
+\renewcommand*{\mkbibnamefamily}[1]{
+	\ifitemannotation{highlight}
+	{\textbf{#1}}{#1}
+}
+
+% Cite full paper?
+\DeclareBibliographyCategory{enumpapers}
+\newcommand{\enumcite}[1]{%
+  \addtocategory{enumpapers}{#1}%
+  \defbibcheck{key#1}{
+    \iffieldequalstr{entrykey}{#1}
+      {}
+      {\skipentry}}%
+  \printbibliography[heading=none,check=key#1]%
+}
+
+% Group commands
+\def\grp{G}
+\def\hrp{H}
+
+% Manifold based typeset commnds
+\newcommand{\XM}{\XM}
+\newcommand{\TM}{\mathrm{T}\mathcal{M}}
+\newcommand{\FM}{\mathrm{F}\mathcal{M}}
+\newcommand{\OM}{\mathrm{O}\mathcal{M}}
+
+% SDE terms
+\def\carrechamp{\Upsilon}
+
+\DeclareMathOperator{\intersect}{intersect}
+\DeclareMathOperator{\reflect}{reflect}
+\DeclareMathOperator{\paralleltransport}{parallel transport}
+
+% diffusion model terms
+\newcommand{\Xf}{\v{X}^{\vsra{}}} % temp til I come up with a good sln for these
+\newcommand{\Xb}{\v{X}^{\vsla{}}} % temp til I come up with a good sln for these
+\newcommand{\scorenet}{\v{s}}
+\newcommand{\scorenett}{\v{s}_t}
+\newcommand{\scorenetxt}{\scorenet{}(\v{X}_t, t)}
+\newcommand{\ismlosst}{\ell^{\text{ism}}_t}
+\newcommand{\ismloss}{\ell^{\text{ism}}}
+\newcommand{\ssmlosst}{\ell^{\text{ssm}}_t}
+\newcommand{\ssmloss}{\ell^{\text{ssm}}}
+\newcommand{\dsmlosst}{\ell^{t|0}_t}
+\newcommand{\dsmloss}{\ell^{t|0}}
+\newcommand{\gdsmlosst}{\ell^{t|s}_t}
+\newcommand{\gdsmloss}{\ell^{t|s}}
+
+
+% symbol setup
+\newcommand{\bluesquare}{{\ensuremath{%
+  \mathchoice{\includegraphics[height=1em]{figures/diagrams/tab_blue_fill.pdf}}
+    {\includegraphics[height=1em]{figures/diagrams/tab_blue_fill.pdf}}
+    {\includegraphics[height=.8em]{figures/diagrams/tab_blue_fill.pdf}}
+    {\includegraphics[height=.5em]{figures/diagrams/tab_blue_fill.pdf}}
+}}}
+
+% Suppress font info warnings after 1st occurrence
+\makeatletter
+\let\old@font@info\@font@info
+\def\@font@info#1{%
+\expandafter\ifx\csname\detokenize{#1}\endcsname\relax
+  \old@font@info{#1}%
+\fi
+\expandafter\xdef\csname\detokenize{#1}\endcsname{}%
+}
+\makeatother
+
+\usepackage[]{todonotes}
+
+\title{Generative Modelling with Diffusions on Riemannian Manifolds}
+\author{Michael Hutchinson}
+\date{November 2022}
+
+% \usepackage{eso-pic}
+% \doublespacing
+
+% \usepackage{environ}
+
+% \RenewEnviron{figure}{}
+% \RenewEnviron{table}{}
+
+\newcommand{\icon}[1]{\includegraphics[height=1ex]{#1}}
+
+\usepackage{layouts}
+
+\begin{document}
+\pagenumbering{gobble}
+\tableofcontents 
+
+\chapter{Introduction} \setcounter{page}{1} \pagenumbering{arabic} 
+
+
+\chapter{Background - Manifolds}
+\section{Topological Spaces}
+\section{Topological Manifolds}
+\section{Differentiable and Smooth Manifolds}
+\section{Vector Spaces and Tensors}
+\section{Tangent Bundles}
+\section{Tensor Bundles}
+\section{Lie Groups and Lie Algebras}
+\section{Principle Bundles}
+\section{Differential Forms}
+\section{Orientations}
+\section{Line Integrals}
+\section{Integration on Manifolds}
+\section{Riemannian Metrics}
+\section{Connections and Parallel Transport}
+\section{Geodesics, Exponential and Logarithm Maps, Riemannian Distance functions}
+\chapter{Background - Stochastic Differential Equations}
+\chapter{Background - Deep Generative Models}
+\section{VAEs}
+\section{Normalising Flows}
+\section{Diffusion Models}
+
+\chapter{Generative modelling on Riemannian manifolds}
+\section{Measure Theory Probability}
+\section{Stochastic Processes}
+\section{Differential Equations}
+\section{The \ito and Stratonovich Integrals}
+\section{\ito Diffusions}
+\section{Langevin Dynamics}
+\section{Girsanov Theory}
+\section{Time Reversal Results}
+\section{Stochastic Calculus on Manifolds}
+
+
+\chapter{Generative modelling on constrained domains}
+\chapter{Geometric neural diffusion processes}
+
+% % \printindex
+
+\printbibliography
+
+\appendix
+% \part*{Appendix}
+\chapter{Proofs}
+
+\chapter{Riemannian Score-Based Generative Modelling}
+
+\chapter{Generative modelling on constrained domains}
+
+\chapter{Metropolis sampling for generative modelling on constrained domains}
+
+\chapter{Diffusion processes on feature fields and (some name tbd)}
+
+% % \printglossaries
+
+\end{document}
