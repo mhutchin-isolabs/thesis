@@ -236,6 +236,7 @@
 \declaremathcommand{\f}{\expandafter\operatorname} % function
 \renewmathcommand{\c}{\expandafter\mathcal} % calligraphic
 \newcommand{\s}[1]{\mathscr{#1}} % script
+\newcommand{\up}[1]{\mathsf{#1}}
 \newcommand{\fr}[1]{\mathfrak{#1}} % fraktur
 \newcommand{\bb}[1]{\in@{#1}{ABCDEFGHIJKLMNOPQRSTUVWXYZ}\ifin@\mathbb{#1}\else\mathbbold{#1}\fi} % blackboard bold
 \renewmathcommand{\t}{\expandafter\mathrel\expandafter\text} % text with spacing
@@ -358,6 +359,8 @@
 \newcommand{\groupO}[1][n]{\mathrm{O}(#1)}
 \newcommand{\groupGL}[1][n]{\mathrm{GL}(#1)}
 \newcommand{\groupSPD}[1][n]{\mathbb{S}^{#1}_+}
+\newcommand{\groupT}[1][n]{\mathrm{T}(#1)}
+
 % \newcommand{\groupSPD}{\mathbb{S}^n_+}
 
 \def\ito{{I}t\^o{}}

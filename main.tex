@@ -1,4 +1,4 @@
-\documentclass[10pt]{book}
+\documentclass[11pt]{book}
 \PassOptionsToPackage{table,dvipsnames,x11names,svgnames}{xcolor}
 % \usepackage{tikz}
 % \usetikzlibrary{positioning}
@@ -52,7 +52,7 @@
 % \usepackage[table,dvipsnames,x11names,svgnames]{xcolor}
 \usepackage[commands,environments,enumerate,theorems,citations,authoryear,notes,a4paper,oxfordcolors]{MJH}
 \newcommand{\selfnote}[1]{\marginnote{\textcolor{red}{#1}}}
-\bibliography{bibliography,bibliography_personal}
+\bibliography{bibliography}
 % \bibliography{bibliography}
 
 %%% GLOSSARY
@@ -235,26 +235,33 @@
 \setcounter{tocdepth}{2} \tableofcontents 
 
 \chapter{Introduction} \setcounter{page}{1} \pagenumbering{arabic} 
-\input{chapters/introduction2.tex}
+\input{chapters/introduction.tex}
 
 
 % \chapter{Background} \input{chapters/background.tex} 
 
-\chapter{Manifolds} \input{chapters/background_riemannian.tex}
+\chapter{Manifolds} \input{chapters/background_riemannian.tex} \label{sec:manifolds}
 
-\chapter{Stochastic Differential Equations} \input{chapters/background_stochastic.tex}
+\chapter{Stochastic Differential Equations} \input{chapters/background_stochastic.tex} \label{sec:sdes}
 
-\chapter{Deep generative modelling} \input{chapters/background_deep_generative.tex}
+% \chapter{Deep generative modelling} \input{chapters/background_deep_generative.tex}
 
-\chapter{Generative modelling on Riemannian manifolds} \begin{flushright} Work in this chapter is based on \textcite{de2022riemannian} \end{flushright} \textbf{Personal contributions:} \1 Project conception with Emile \2 Development of practical approach with Emile, Valentin \3 Writing of code and experiments with Emile \4 Some mathematical results - e.g. ISM proof \5 Paper writing with Emile and Valentin \0 
+\chapter{Generative modelling on Riemannian manifolds}\label{chp:riemannian_score_based_models} \begin{flushright} Work in this chapter is based on \textcite{de2022riemannian} and has been rewritten for this thesis, with some simplified mathematical results. \end{flushright} \textbf{Personal contributions:} \1 Project conception with Emile \2 Development of practical approach with Emile, Valentin \3 Writing of code and experiments with Emile \4 Some mathematical results - e.g. ISM proof \5 Paper writing with Emile and Valentin \0
+\vspace{4em}
 % \input{edited_papers/riemannian_score_based_generative_modelling_main.tex} 
 \input{chapters/diffusion_modelling_on_riemannian_manifolds.tex}
 
-\chapter{Generative modelling on constrained domains} \begin{flushright} Work in this chapter is based on \fullcite{fishman2023diffusion_hl} and \fullcite{fishman2023metropolis_hl} \end{flushright} \textbf{Personal contributions:} (combined on both works) \1 Project conception with Valentin, Nic, Leo \2 Development of practical approach with Nic, Valentin, Leo (mainly reflected, log-barrier) \3 Writing of code with Nic, Leo, ran some of the experiments \4 Paper writing with Emile, Valentin, Nic, Leo.
-% % \listoffigures% % \chapter{Introduction}% % \input{chapters/introduction.tex}% % \chapter{Publications}% % \input{chapters/papers.tex}% % \part{Generative modelling on finite-dimension manifolds}
-\5 Re-wrote this chapter into 1 from 2 papers.
-\0
-\input{chapters/diffusion_models_on_constrained_domains.tex}
+% \chapter{Generative modelling on constrained domains} \begin{flushright} Work in this chapter is based on \fullcite{fishman2023diffusion_hl} and \fullcite{fishman2023metropolis_hl} \end{flushright} \textbf{Personal contributions:} (combined on both works) \1 Project conception with Valentin, Nic, Leo \2 Development of practical approach with Nic, Valentin, Leo (mainly reflected, log-barrier) \3 Writing of code with Nic, Leo, ran some of the experiments \4 Paper writing with Emile, Valentin, Nic, Leo.
+% % % \listoffigures% % \chapter{Introduction}% % \input{chapters/introduction.tex}% % \chapter{Publications}% % \input{chapters/papers.tex}% % \part{Generative modelling on finite-dimension manifolds}
+% \5 Re-wrote this chapter into 1 from 2 papers.
+% \0
+% \input{chapters/diffusion_models_on_constrained_domains.tex}
+\chapter{Generative modelling on constrained domains}
+\label{cpt:constrained_domains}
+\input{chapters/score_based_modelling_for_constrained_domains_main.tex}
+
+\chapter{Efficient generative modelling on constrained domains}
+\input{chapters/metropolis_sampling_for_constrained_diffusion_main.tex}
 
 \chapter{Geometric neural diffusion processes}
 \begin{flushright}
@@ -268,7 +275,7 @@
 \5 Proof of the mathematical result regarding invariance-equivariance
 \6 Paper writing with Emile and Vincent
 \0
-\input{raw_papers/geometric_neural_diffusion_processes_main.tex}
+\input{chapters/geometric_neural_diffusion_processes_main.tex}
 
 % % \printindex
 
@@ -280,7 +287,7 @@
 \input{chapters/proofs_appendix.tex}
 
 \chapter{Riemannian Score-Based Generative Modelling}
-\input{raw_papers/riemannian_score_based_generative_modelling_appendix.tex}
+\input{chapters/appendix_riemannian_score_based_generative_modelling.tex}
 
 \chapter{Generative modelling on constrained domains}
 \input{raw_papers/score_based_modelling_for_constrained_domains_appendix.tex}

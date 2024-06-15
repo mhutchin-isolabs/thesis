@@ -1,3 +1,6 @@
+In Euclidean space, the axioms of Euclids elemets hold true.
+Angles in a triangle sum up to 180\(^o\), 
+
 \section{Topological Spaces}
 
 % Briefly, I will present the basic concepts of the field of topology.
@@ -332,23 +335,25 @@ If \(\pi: X\to Y\) is a quotient map, \(B\) a topological space, and we have a c
 \emphmarginnote{Homeomorphic quotient spaces} can be detected by analysing their quotient maps.
 If for two quotient maps \(\pi_1: X\to Y_1\) and \(\pi_2: X \to Y_2\) we have that \(\pi_1(p) = \pi_1(q) \iff \pi_2(q) = \pi_2(q)\), then \(Y_1\) and \(Y_2\) are homeomorphic, and there exists a homeomorphism \(\phi: Y_1 \to Y_2\) such that \(\pi_2 = \phi \circ \pi_2\).
 
-\subsubsection{Open and closed maps}
-We have now discussed the most important types of continuous maps in topology \begin{itemize}[nosep] \item Homeomorphisms - continuous bijections \(f: X\to Y\) with continuous inverse.
-	\item Topological embeddings - continuous injections \(f: X \to Y\) where \(X \subseteq Y\) that are homeomorphisms on their images \(f(X)\) endowed with the subspace topology \(X\^\topo{Y}\).
-	\item Quotient maps - continuous surjections \(f: X\to Y\) where \(Y\) is endowed with the quotient topology \(\topo{X}\takeaway f\).
-\end{itemize}
-It can be hard however when analysing maps between spaces with predetermined topologies, \((X, \topo{X}), (Y, \topo{Y})\), to determine if maps \(f: X\to Y\) satisfy the conditions above.
+% \subsubsection{Open and closed maps}
+% We have now discussed the most important types of continuous maps in topology \begin{itemize}[nosep] \item Homeomorphisms - continuous bijections \(f: X\to Y\) with continuous inverse.
+% 	\item Topological embeddings - continuous injections \(f: X \to Y\) where \(X \subseteq Y\) that are homeomorphisms on their images \(f(X)\) endowed with the subspace topology \(X\^\topo{Y}\).
+% 	\item Quotient maps - continuous surjections \(f: X\to Y\) where \(Y\) is endowed with the quotient topology \(\topo{X}\takeaway f\).
+% \end{itemize}
+% It can be hard however when analysing maps between spaces with predetermined topologies, \((X, \topo{X}), (Y, \topo{Y})\), to determine if maps \(f: X\to Y\) satisfy the conditions above.
 
-An \emphmarginnote{open map} \(f: X\to Y\) is a map such that the image of every open set \(U\subseteq X\), \(f(U)\subseteq\) is open in \(Y\).
-\\
-A \emphmarginnote{closed map} \(f: X\to Y\) is a map such that the image of every closed set \(U\subseteq X\), \(f(U)\subseteq\) is closed in \(Y\).
+% An \emphmarginnote{open map} \(f: X\to Y\) is a map such that the image of every open set \(U\subseteq X\), \(f(U)\subseteq\) is open in \(Y\).
+% \\
+% A \emphmarginnote{closed map} \(f: X\to Y\) is a map such that the image of every closed set \(U\subseteq X\), \(f(U)\subseteq\) is closed in \(Y\).
 
-Using these definitions we can thenprove the following: If \(f: X \to Y\) is an continuous open or closed map then \begin{itemize}[nosep] \item If \(f\) is a bijection, it is a homeomorphism.
-	\item If \(f\) is an injection, it is a topological embedding, and \(\topo{X} = X\^\topo{Y}\).
-	\item If \(f\) is a surjection, it is a quotient map, and \(\topo{Y} = \topo{X}\takeaway f\).
-\end{itemize}
+% Using these definitions we can thenprove the following: If \(f: X \to Y\) is an continuous open or closed map then \begin{itemize}[nosep] \item If \(f\) is a bijection, it is a homeomorphism.
+% 	\item If \(f\) is an injection, it is a topological embedding, and \(\topo{X} = X\^\topo{Y}\).
+% 	\item If \(f\) is a surjection, it is a quotient map, and \(\topo{Y} = \topo{X}\takeaway f\).
+% \end{itemize}
 
 \subsection{Connectedness and Compactness}
+
+Two final import conecpts are 
 
 % \subsection{Conections}
 
@@ -478,7 +483,7 @@ A \emph{partition of unity} is the type of structure we need to reduce this prob
 	Then there exists a partition of unity subordinate to \(\c{U}\).
 \end{theorem}
 
-\todo[inline]{Some examples of when this is useful}
+% \todo[inline]{Some examples of when this is useful}
 
 \section{Differentiable and Smooth Manifolds}
 
@@ -662,11 +667,13 @@ For vector spaces \(V_1, .
 Tensors are multilinear maps over copies of the same vectors space and its dual.
 We can define the following spaces of multilinear maps 
 
+% \begin{table*}
 \begin{tabular}{lcc} \scshape Map                                                                                                  & \scshape Notation           & \scshape "Archaic" name             \\ \(f: \underbracket{V\x .
                .. \x V}_{k \text{ copies}} \to \R \)                                                                               & \(T^k(V^*) = T^{(0,k)}(V)\) & covariant \(k\)-tensor on \(V\)     \\
                \(f: \underbracket{V^* \x ... \x V^*}_{k \text{ copies}} \to \R \)                                                  & \(T^k(V) = T^{(k,0)}(V)\)   & contravariant \(k\)-tensor on \(V\) \\
                \(f: \underbracket{V^*\x ... \x V^*}_{k \text{ copies}}\x \underbracket{V \x ... \x V}_{l \text{ copies}} \to \R \) & \(T^{(k,l)}(V)\)            & mixed \((k,l)\)-tensor on \(V\)     \\
 \end{tabular}
+% \end{table*}
 
 The "archaic" name refers to how the basis coefficients transform with the basis vectors.
 \emph{Covariant} tensor basis coefficients transform \emph{with} them, and \emph{contravariant} \emph{opposite} to them.
@@ -885,8 +892,8 @@ We denote the space of derivations as \(\Der A\).
 
 For our algebra of smooth functions \(C^\infty(\R^n)\), we can restrict these derivations to a point \(p\in \R^n\)
 \begin{definition}[Derivation on \(\C^\infty(\R^n)\) at \(p\in \R^n\)]
-	For the algebra \(C^\infty(\R^n)\) and a point \(p\in\R^n\), a \emph{derivation at p} is a linear map \(D: C^\infty(\R^n)\to C^\infty(\R^n)\) satisfying a reduced product rule over the algebra product, for \(f, g \in C^\infty(\R^n)\),
-	\[D(f \bullet g) = D(f)\bullet g(p) + f(p) \bullet D(g)\]	
+	For the algebra \(C^\infty(\R^n)\) and a point \(p\in\R^n\), a \emph{derivation at p} is a linear map \(D: C^\infty(\R^n)\to C^\infty(\R^n)\) satisfying a reduced product rule over the algebra product, for \(f, g \in C^\infty(\R^n)\), at a point \(p\in X\),
+	\[D(f \bullet g)(p) = (D(f)\bullet g)(p) + (f \bullet D(g))(p)\]	
 \end{definition}
 We denote the space of derivations as \(\Der_p C^\infty(\R^n)\).
 This space of derivations at a point form a \emph{vector space} over the \emph{field} \(\R\) by defining vector addition of derivations by 
@@ -1023,7 +1030,7 @@ We can then write \[\d F_p \del{\eval{\pd{}{\phi_i}}_p} = \d \del{\psi^{-1} \cir
 So again we see that the differential is associated in local coordinates with the Jacobian matrix \(\pd{\tilde F_j}{x_i}\).
 The rank of this Jacobian matrix in the usual matrix sense is equal to the more abstract rank of the differential, \(\dim \im \d F_p \subseteq T_{F(p)}N\).
 
-One particular example of the differential in coordinates is in the effect on tangent vectors under a change in chart, called a \emphmarginnote{change in coordinate}.
+One particular example of the differential in coordinates is in the effect on tangent vectors under a change in chart, called a \emphmarginnote{change in coordinate\label{def:change_of_coordinate}}.
 If we have \(p\) in two charts \((U, \phi)\), \((V, \psi)\) and a vector \(v\) at \(p\), in the two different chart bases, \(v = \sum_{i=1}^n a_i \eval{\pd{}{\phi_i}}_p = \sum_{i=1}^n b_i \eval{\pd{}{\psi_i}}_p\), then the basis coefficients are related by \(b_j = \sum_{i=1}^n \pd{\psi \circ \phi^{-1}_j}{x_i} a_i\).
 As a small abuse of notation I will write \(\pd{\psi \circ \phi^{-1}_j}{x_i} = \pd{\psi_j}{\phi_i}\).
 Since we know this differential is an isomorphism, so must its Jacobian, i.e. is it full rank, so \(\pd{\psi_j}{\phi_i}\in \groupGL\).
@@ -1058,7 +1065,7 @@ We can instead \emphmarginnote{pullback} a covector from \(T_pY^*\) to \(T_pX^*\
 \[((F^*)_p(\omega))(v) = \omega((F_*)_p(v))\]
 
 \section{Tensor Bundles}
-
+\label{sec:tensor_bundle}
 \subsection{Tangent bundles and vector fields}
 
 We have just considered the tangent space of a point \(p\) on a manifold \(X\).
@@ -1183,6 +1190,41 @@ For example,
 	There exists no non-vanishing smooth vector field on even dimension n-spheres.
 \end{theorem}
 Since there are no non-vanishing smooth vector fields, none of these can be a basis field globally, and so there is no smooth global basis.
+
+The lack of existence of a global basis for \(\Gamma(TX)\) innitially makes it difficult to see how to parametrise smooth vector fields on manifolds in a computer, as patching together local chart while maintaining smoothness without a basis is tricky.
+
+The failure of the the existence of a smooth global basis is exactly due to \(\Gamma(TX)\) being a module rather than a vector space.
+The solution to this lies in the study of modules.
+
+\begin{definition}[Generator of a module]
+	Let \((M, \oplus, \odot)\) be a module over the ring \((R, +, \cdot)\).
+	A \emph{generator} of the module is a subset \(G \subset M\) such that for any element \(m \in M\) there exsits coefficients \((r_g)_{g \in G}, \; r_g \in R\) such that 
+	\[
+		m = \sum_{g\in G} r_g g	
+	\].
+	If there exists a generator of \(M\) that is finite we say that it is \emphmarginnote{finitely generated}
+\end{definition}
+The generator of a module is similar to the basis of a vector space, but we give up injectivity between coefficients in the ring and elements of the module.
+That is, there may be more than one set of coefficients in the ring that lead to the same element in the module.
+
+Fortunately for working with vector fields on manifolds, we have the following result.
+\begin{theorem}[Modules of vector fields on smooth manifolds are finitely generated]
+	Let \(X\) be a second countable smooth manifold.
+	Then the module of smooth vector fields \(\Gamma(TX)\) over smooth functions \(C^\infty(X)\) is a finitely generated module.
+\end{theorem}
+\begin{proof}
+	\textcite[see]{falorsi2020neural}.
+	The proof is an application of the fact that we can for a second countable manifold arrive finite size local trivialization of the manifold.\todo{local triv}
+	We can use these charts to create local bases for the tangent bundle, and a \emphhyperref{partition of unity}{} subbordinte to the trivialisation to smoothly glue together local vector fields represented in these local bases into a global vector field.
+\end{proof}
+This gives us a strategy to parametrise smooth vector fields on manifolds.
+\begin{enumerate}
+	\item Pick a finite generator of \(\Gamma(TX)\), \(\del{V_i}_{i=1}^m\)
+	\item Parametrise smooth functions \(f^i: X\to \R\).
+	\item Define the vector field as \[V = f^i V_i\]
+\end{enumerate}
+Using this result therefore, we will always be able to pick a finite set of fields from which we can paremetrise the space of vector fields.
+
 
 \subsubsection{Tangent and non-tangent vector fields}
 Supposed we have \(X\), and a submanifold \(Y\subset X\), immersed or embedded, with inclusion map \(\inclusion: Y \to X\). 
@@ -1417,7 +1459,7 @@ This definition of the Lie derivative is compatible with a number of operations:
 Next we introduce \emph{Lie groups}.
 These are interesting as manifolds in their own right, but are incredibly important in the study of manifolds more generally.
 Firstly, they act as \emph{global} symmetry groups.
-For example the group \(\groupSE{3}\) is the symmetry group of the sphere \(\c{S}_2\).
+For example the group \(\groupSE[3]\) is the symmetry group of the sphere \(\c{S}_2\).
 They also act as \emph{local} symmetry groups on manifolds.
 We have already seen how elements of the group \(\groupGL\) acts as change of basis transforms under a change in chart for vectors expressed in a basis.
 
@@ -1427,7 +1469,8 @@ Typically, the notation of \(\cdot\) is suppressed.
 
 A \emphmarginnote{subgroup} of a Lie group is a subset \(H\subset G\) of the group that is itself a group under \(\cdot\), and that has a topology and smooth structure that make it an \emph{immersed submanifold} of the parent group.
 
-The most important example of a Lie group for our purposes is the group \(\groupGL{v, \R}\) and its subgroups.
+The most important example of a Lie group for our purposes is the group \(\groupGL[v, \R]\) and its subgroups.
+There do exist Lie group that are subgroups of \(\groupGL[v, \C]\), but we ill not consider these.
 This is the group of \(n\x n\) invertible matrices with real entries, and this forms a group under matrix multiplication.
 As we have seen, this provides the space of possible change of basis transforms of a basis for a tangent space under a change in chart.
 
@@ -1456,16 +1499,74 @@ For each point, we can define the \emphmarginnote{stabaliser} as \[G_x = \cbrcol
 An action is said to be a \emphmarginnote{free action} if the stabaliser of each point is the identity element only, i.e. that no non-identity group element leaves a point stationary.
 
 Suppose that we have two manifolds \(X, Y\), and a group \(G\), and each manifold has a left \(G\)-action.
-A map \(F: X\to Y\) is said to be \emphmarginnote{equivariant} with respect to \(G\) if \[F(g \cdot x) = g \cdot F(x) \quad \text{for all } x\in X, \; g\in G\].
+A map \(F: X\to Y\) is said to be \emphmarginnote{equivariant} with respect to \(G\) if \[F(g \cdot x) = g \cdot F(x) \quad \text{for all } x\in X, \; g\in G\]. Sometimes it is said that the function \(F\) \emphmarginnote{intertwines} the action of \(G\) on \(X\) and \(Y\).
+
+\subsection{Semi-direct products}
+In addition to the typical direct product of group actions, there is a construction called the \emphmarginnote{semi-direct product} of two Lie groups.
+For Lie groups \(H\) and \(N\), supposed we have a left action of \(H\) on \(N\), \(\theta: H\x N \to N\).
+If for all \(h\in H\) \(\theta_h: N\to N\) is an isomorphism on \(N\), the we can define a joint group action of \(H\) and \(N\) together by
+\[
+	(h, n) \cdot (h', n') = (h\cdot h', n \cdot \theta_h n)	
+\].
+Using this action we define a new group \(G = H \ltimes_\theta N\).
+Often this is written as \(H\ltimes N\) where the action \(\theta\) is implied.
+As a manifold this has the direct product structure \(H \x N\).
+
+The most important example of this the \emphmarginnote{Euclidean group}, \(\groupE\).
+This is given by the semi-direct product of \(\groupT\), \(\R^n\) considered as a Lie group of translation actions, and \(\groupO\), to give \(\groupE = \groupO \ltimes \R^n\).
+The action of \(\groupO\) on \(\groupT\) is given by the usual rotation of vectors.
+\(\groupE\) action on \(\R^n\) by \((R, t) \cdot x = Rx + t\) for \(R\in\groupO,\;t\in\groupT,\;x\in\R^n\).
+
+\subsection{Representations}
+Many Lie groups can be realised as subgroups of \(\groupGL[n]\).
+We can extend the analysis of groups in general by considering \emphmarginnote{(linear) representations} of a group, which is any \emph{group homeoporphism} \(\rho: G\to \groupGL[n]\), i.e. that
+\[\rho(g)\rho(g') = \rho(g\cdot g')\]
+where the left hand side is matrix multiplication.
+It is also possible to have complex representations, but again we will not consider these.
+
+A \emphmarginnote{faithful} representaiton is one that is an injection into \(\groupGL\).
+Many representations are not injections however, and will map multiple group elements of \(G\) to the same element of \(\groupGL\).
+
+The theory of representations if vast and spans harmonic analysis, differential equations, number theory, and has major applications in differential geometry also. \todo{some refs?}
+The thoery of representations if crucial to the development of equivariant nerual network architeturces, for example \todo{weiler, EMLP}.
+
 
 \section{Frame bundles}
-This group that related the basis coefficients of different bases of the tangent space is called the \emphmarginnote{structure group} of the manifold.
-If we have additional structure on our manifold, we can get a \emphmarginnote{reduced structure group} \(G\subset \groupGL\) by preferring a subset of specific bases on each tangent space.
-\todo{talk more on structure groups, frame bundles etc?
-	COvered well by weiler.
-}.
-For example, if we have a notion of an inner product on the tangent space, we can prefer orthonormal bases and reduce the structure group to \(\groupO\).
-If our manifold is \emph{orientable} then we can 
+Previously we saw how we can define a \emphhyperref{frame}{def:coordinate_frame} as the basis of a tangent space, and that under changes in charts the coefficients of a tanget vector expressed in those charts can be related by an element of \(\groupGL\), a \emphhyperref{change of coordinate}{def:change of coordinates}.
+
+One way to think of a frame \(f\) at a point \(p\in X\) is as a linear map \(f: \R^n \to T_pX\), taking coefficients of a vector in the framre and turning them into the vector itself. We can define the action of \(\groupGL\) on a frame by composition with the group action,
+\[
+	(g \cdot f)(v) = f( g \cdot v), \quad g\in \groupGL ,\;\v\in\R^n
+\].
+This action is \emphhyperref{free}{} and \emphhyperref{transitive}{}.
+This implies that the \emphmarginnote{space of frames at a point}, \(F_p\), is homeomorphic to \(\groupGL\), but is not itself a group as we have no prefered "identity" frame.
+
+We can define the \emphmarginnote{frame bundle of the tangent space} of a manifold as the disjoint union of the spaces of frames at each point,
+\[
+	F(X) = \coprod_{p\in X} F_p
+\],
+and similar to tensor bundles, it inherits a natural topology and bundle structure from \(X\).
+In addition, it inherits the group action of \(\groupGL\), acting on a point in the frame bundle \((p, f)\in F(X)\) by 
+\[g\cdot (p, f) = (p, g\cdot f)\], for which the orbits are clearly \(F_p\).
+The addition of this group action to the fibre bundle structure makes the frame bundle an example of a \emphmarginnote{principle \(G\) bundle}.
+
+It is very rare that smooth sections of the frame bundle exist, and is equivalent to the tangent bundle being \emphhyperref{parallisable}{}.
+
+\subsection{Associated vector bundles}
+
+The vector bundles we have encountered so far in \cref{sec:tensor_bundle} can also be constructed as \emph{associated vector bundles} of the frame bundle.
+
+
+
+
+
+% This group that related the basis coefficients of different bases of the tangent space is called the \emphmarginnote{structure group} of the manifold.
+% If we have additional structure on our manifold, we can get a \emphmarginnote{reduced structure group} \(G\subset \groupGL\) by preferring a subset of specific bases on each tangent space.
+% \todo{talk more on structure groups, frame bundles etc?
+% 	COvered well by weiler.
+% }.
+% For example, if we have a notion of an inner product on the tangent space, we can prefer orthonormal bases and reduce the structure group to \(\groupO\).
+% If our manifold is \emph{orientable} then we can 
 
 \section{Riemannian Metrics}
 We now turn our study to \emph{Riemannian} manifolds. 
@@ -1536,7 +1637,7 @@ In a chart \((U, \phi)\) where \(V = V^i\partial\phi_i\), \(W = W^i \partial \ph
 and so in charts
 \[g^\vsda(V) = g_{ij}V^i \d\phi^j = V_j \d\phi^j\]
 where \(V_j = g_{ij}V^i\).
-This is the motivation for the notation \(g^\vsda\), as this operation is said to \emphmarginnote{lower an index} of the coefficients of the vector field in charts.
+This is the motivation for the notation \(g^\vsda\), as this operation is said to \emphmarginnote{lower an index\label{def:lowering_an_index}} of the coefficients of the vector field in charts.
 Since this operation is unique on a manifold, we will use as shorthand \[V^\vsda = g^\vsda(V).\]
 
 The inverse of this operation is called \emphmarginnote{raising and index}.
@@ -1584,7 +1685,7 @@ For example, the \(n\)-torus can be embedded into \(2n\) Euclidean space, and th
 
 This theorem is incredibly useful.
 On the theoretical side, it allows us at any time to transfer the manifold into Euclidean space as an embedding.
-We can then (with care) use mathematical tools that apply only to Eucldiean space and use them for analysis on manifolds.
+We can then (with care) use mathematical tools that apply to Eucldiean space and use them for analysis on manifolds.
 
 On the practical side, this gives us a good way to represent Riemaninan manifolds in a computer.
 We can simply pick an isometric embedding of the manifold.
@@ -1898,6 +1999,10 @@ We can also define it via the \emphhyperref{Lie derivative}{def:lie_derivaite} a
 \]
 and also via the \emphhyperref{Levi-Civita connection}{}.
 These three are equivalent definitions.
+
+In a particalr chart \((\phi, U)\) the Riemannain divergence can be expressed as 
+\[\dive V = \frac{1}{\sqrt{\det g}} \partial\phi_i \del{\sqrt{\det g}\; V_i} \label{def:riemannain_divergence_chart}\]
+where \(V_i\) are the components of \(V\) in the chart \(\phi\).
 
 \section{Connections, geodesics, and parallel transport}
 Previously we saw in the \emphhyperref{Lie derivative}{def:tensor_lie_derivative} one way of differentiating tensor fields with respect to a vector field on a manifold.

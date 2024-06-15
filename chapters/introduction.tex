@@ -1,42 +1,63 @@
 \lettrine{T}{he} last decade has seen an explosion in the research and application of machine learning algorithms to both academic and real-world problems.
-The majority of this progress has been driven by the rise of \emphmarginnote[0.5\baselineskip]{deep learning} as an effective tool to learn to approximate very complex functions from data via gradient based optimisation.
-Although the roots of deep learning are much older, the beginning of the modern rise can be seen in the period 2010-2012 as algorithms were revisited and made significantly cheaper to run by reducing hardware costs, and engineering efforts to have them run on GPUs.
-GPUs are more appropriate devices for large liner algebra computations than CPUs, and these are the core computations used in deep learning.
-These early efforts in deep learning focused on for the most part \emphmarginnote{classification} and \emphmarginnote[2.5\baselineskip]{regression} problems, where we attempt to associate with some input \(\v{x}\) some output \(y\).
-Examples include sorting images into categories, or predicting the .
-...
-From the probabilistic perspective, we are aiming to learn the distribution \(p(y | X=x)\) from some 
+The majority of this progress has been driven by the rise of \emphmarginnote{deep learning} as an effective tool to learn to approximate very complex functions from data via gradient based optimisation.
+Although the roots of deep learning are much older, the beginning of the modern rise can be seen in the period 2010-2012 as algorithms were revisited and made significantly cheaper to run by reducing hardware costs and engineering efforts to have them run on graphics processing units (GPUs).
+% GPUs are more appropriate devices for large liner algebra computations than CPUs, and these are the core computations used in deep learning. 
 
-Since then, a number of notable instances of deep learning approaches to problems have arisen with results significantly beyond previous "classical" approaches in the respective settings, or solving probelms previously thought out of reach.
-In particular, deep learning algorithms have seen significant success in very high dimension problems for which we have access to a wealth of data.
-This success is built on the backbone of good \emph{feature-learning} and iterative gradient based optimisation of over-parametrised models using \emph{backpropagation} techniques.
+This enebaled a significant rise in the number of training steps and datapaoints that could be used in deep learning models, allowing them to suppas more simpler models such as Gaussian processes and support vector machines for which training and inference scale poorly with the number of datapoints.
+The first moment of widely known significant success is the Alexnet convulutional architecture \parencite{krizhevsky2012imagenet} beating out classical non-deep learning methods for the first time.
+Other notable moments from recent years include a single agent beating human perfomrance on a suite of 49 Atari games \parencite{mnih2015human}, an agent placing in the top 10\% of a Diplomacy tournament agains human players \parencite{meta2022human}, and solving the protein structure predition problem \parencite{jumper2021highly}.
 
-Like all attempts to solve high-dimension problems, deep learning encounters the \emphmarginnote{curse of dimensionality} - as the dimension of the problem scales, even with large amounts of data available to the practitioner, the volume of space grows faster, and so even large datasets end up being sparse in the observation space of the problem.
+Early efforts in deep learning focused on for the most part \emphmarginnote{classification} and \emphmarginnote[\baselineskip]{regression} problems, where we attempt to associate with some input \(\v{x}\) some output \(y\).
+Examples include sorting images into categories, or predicting the house price of a house given information about its location and features.
+In these taskes, from a probabilistic point of view we are aiming to learn the distribution \(p(y | X=x)\) from some examples drawn randomly of \(p(x, y)\).
+
+Typically \(x\) is of very high dimension, such as an image, and \(y\) a single scalar of a categorical distribution, such as an immage class labe;.
+In addition, the distribtion of \(p(y | X=x)\) is often either takes a single point value, or is tightly clustered around some value.
+We do not then need particualrly complex methods to specify the output of the model we learn, and the function we need to learn is not such a complex function.
+
+Beyond the supervised tasks of classification and regression, \emphmarginnote{deep generative modelling} has become a mainstay of deep learning approaches.
+The fundamental challenge of generative modelling is similar to that of \emphmarginnote{density estimation}.
+Both focus on fitting model \(p({x})\) to samples we have obtained from \(p\), and both aim to generate new samples \({x} \sim p({x})\), or to extract information about this distribtion.
+Where they differ is that deep generative models make use of the flexibility of deep learning to specify very complex distributions, leading to models of very complex data, such as images or structuted text, that have been out of reach for non-deep learning approaches.
+
+Deep generative modelling often aims to be able to sample the reverse of the distribtion learnt in the classification or regression setting, \(p(x | Y=y)\).
+While this seems like a semantic point, it often flips the complexity of the problem from predicting a low dimension summary of a high dimension object, to predicting a distribution of possible high dimension objects given a low dimension summary of the object.
+This allows generative modelling to answer some incredibly powerful questions.
+We can learn to generate images given a class or text prompt, generate text that answers a complex question provided by a user, or to generate the three-dimensional structure of a protein given the DNA sequance that specifies it.
+
+The high dimensionality of the prediction targets and the need to specify diverse answers to the same input to a model however makes the task of generative modelling very tricky. This is a common feature of many problems, known as the \emphmarginnote{curse of dimensionality}
+As the dimension of the problem scales, even with large amounts of data available to the practitioner, the volume of problem space grows faster, and so even large datasets end up being sparse in the observation space of the problem.
+
 Similar to many classical approaches, one key way to surpass this curse is the exploitation of the \emph{structure} of the problem at hand.
 Typically the space of possible solutions to a problem can be reduced significantly by placing conditions on our solutions through the structure of the problem.
-Examples include spatial invariance of image recognition, resulting in CNNs, temporal invariance of time series problems, leading to RNNs, and invariance to the order of inputs, leading to GNNs and transformers.
-
-Beyond the supervised tasks of classification and regression, \emphmarginnote{generative modelling} has become a mainstay of deep learning approaches.
-The fundamental challenge of generative modelling is similar to that of \emphmarginnote{density estimation}.
-From a probabilistic perspective, these two settings are identical.
-Both focus on fitting model \(p(\v{x})\) to samples we have obtained from \(p\), and both aim to generate new samples \(\v{x} \sim p(\v{x})\).
+Examples include spatial translation invariance of image recognition, resulting in convolutional neural netowrks \parencite{lecun1989handwritten}, temporal invariance of time series problems, leading to recurrent neural networks \parencite{hochreiter1997long,rumelhart1986learning}, and invariance to the order of inputs, leading to graph neural netowrks \parencite{sperduti1993encoding} and transformers \parencite{vaswani2017attention}.
 
 The field of \emphmarginnote{geometric deep learning} \cite{bronstein2017geometric,bronstein2021geometric} has two main goals.
 Firstly to unify these seemingly disparate architectures into a single framework, understanding the invariances in terms of group theory, and providing tools for building new architectures with the desired invariances.
-The second is to consider problems where the data does not live in Euclidean space.
+The second is to consider problems where the data lives on non-Eucldiean manifolds, continuous spaces that hav differentiabl structure, but are not "flat" like Euclidean space.
 Many deep learning algorithms inherently assume the data they process live in typical Euclidean space.
 In many applications however, particularly in physical and social science domains, data lives on non-flat manifolds, or discrete structures such as a graphs.
 Extending algorithms to data that live in these non-standard spaces is key to learning well on these problems.
 While these two goals might seem initially disparate, they have significant overlap on many common spaces, particularly homogenous spaces of Lie groups, such as the sphere, torus, projective spaces and hyperbolic spaces.
 
+In recent years the intersection of generative modelling and geometric machine learnign have been of significant interest as it provides a potential tool to solve complex problems in the scientific domain, for example protein structure prediction \parencite{jumper2021highly}, lattic quantum chromo dyanmics modelling \parencite{abbott2024applications} and material discovery \parencite{merchant2023scaling}.
+Recently the development of \emphmarginnote{diffusion models} or \emphmarginnote{score-based generative models} \parencite{song2019generative,ho2020denoising} have shown to be an extraordinarily powerful class of generative model, ripe for application to difficult problems.
+They are however limited in their application to Euclidean data as the diffusion processes used in their construction are inherently Euclidean objects.
+The aim then of this thesis is to genrealise diffusion models from modelling on Eucldiean domains, to modelling on more general spaces, namely Riemannian manifolds.
+
 The rest of this thesis can be summarised as follows:
 
-\textbf{Chapter 2} introduces the background material for this thesis. This chapter covers two main topics: Riemannian manifolds and the theory of stochastic differential equations. Both topics are covered in some detail as the majority of this thesis is concerned with the intersection of the two topics - namely stochastic differential equations on Riemannian manifolds, and their applications to generative modelling.
+\textbf{Chapters 2} and \textbf{3} introduce the background material for this thesis. These chapter covers two main topics: Riemannian manifolds and the theory of stochastic differential equations. Both topics are covered in some detail as the majority of this thesis is concerned with the intersection of the two topics - namely stochastic differential equations on Riemannian manifolds, and their applications to generative modelling.
+There is more in these chapters than is nessicary for the miminum understanding of the thesis, but I hope to leave a reader unfamiliar with these topics well informed of the skeleton of the subjects without undue rigour.
 
-\textbf{Chapter 3} describes how one can define a diffusion model to model a density supported on a Riemannian manifold. Previous work has developed methods for diffusion models for densities on Euclidean space. This chapter is based on the published work \enumcite{de2022riemannian_hl}
+\textbf{Chapter 4} answers the question of how one can define a score-based generative model supported on a Riemannian manifold, and how to practially achive this. This chapter is based on the published work \enumcite{de2022riemannian_hl}
 
-\textbf{Chapter 4} describes how one can define a diffusion model to model a density supported on a Riemannian manifold, when in addition there are constraints placed on the support of the density being modelled. This could be because the problem at hand naturally has such constraints, or that the manifold itself has a natural boundary. This chamter is based on the works \enumcite{fishman2023diffusion_hl} and \enumcite{fishman2023metropolis_hl}
+\textbf{Chapter 5} describes how one can define a diffusion model to model a density supported on a Riemannian manifold, when in addition there are constraints placed on the support of the density being modelled. This could be because the problem at hand naturally has such constraints, or that the manifold itself has a natural boundary. This chapter is based on the work \enumcite{fishman2023diffusion_hl}.
 
-\textbf{Chapter 5} goes beyond densities on manifolds to model densities over spaces of functions, spaces of sections of vector bundles, and paths on manifolds. This chapter is based on the work \enumcite{mathiue2023geometric_hl}.
+\textbf{Chapter 6} revists the reflected stochasitc differntial equation method of chapter 5. 
+Both methods proposed in chapter 5 have challenges scaling with high dimension when computing the practical rollouts of the stochasitc differential equations.
+We develop a novel method for approximating relected stochasitc diffreetial equaitons and show this performs as well as the classic methods, but significantly faster. This chapter is based on the work \enumcite{fishman2023metropolis_hl}
 
-\textbf{Chapter 6} 
+\textbf{Chapter 7} goes beyond densities on manifolds to model densities over spaces of functions, spaces of sections of vector bundles, and paths on manifolds.
+This allows for the modelling of complex datatypes attached at each point on a maifold.
+This chapter is based on the work \enumcite{mathiue2023geometric_hl}.

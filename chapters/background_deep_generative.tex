@@ -158,6 +158,7 @@ Typically, we will make this a neural network of some kind, and look to optimise
 % We denote then this loss function as \(\ismlosst{}: \scorenett \mapsto \R\) such that \(\nabla_{\v{X}} \log \pi_t(\v{X}) = \argmin_{\scorenett{}} \ismlosst{}\).
 \textcite{hyvarinen05a} proves the following result
 \begin{theorem}[Implicit score matching (ISM)]
+	\label{def:ism}
 	Consider a density \(p_a(A)\) supported on \(\R^d\) relative to the Lebesgue measure.
 	Then,
 	\[\nabla_{A} \log p_a(A) = \argmin_{g\text{ measurable in }L^2} \E_{A}\sbr{ { \tfrac{1}{2} \norm{g\del{A}}^2 + \dive(g)(A)}}.\]
@@ -178,7 +179,7 @@ It is possible to apply to this the Hutchinson trace trick estimator \parencite{
 We denote this loss function \(\ssmlosst{}\).
 In practise this additional variance does not seem to be too important, as the variance of the Monte Carlo estimation of the integral over \(p_t\) is larger.
 
-\emphmarginnote{Denoising score matching (DSM)} \parencite{vincent2011connection} is an alternative approach to implicit score matching that typically has lower variance.
+\emphmarginnote{Denoising score matching (DSM) \label{def:dsm}} \parencite{vincent2011connection} is an alternative approach to implicit score matching that typically has lower variance.
 We do not get this for free, as we will need to know a little more information to apply this.
 Recall that the definition of the conditional distribution states that for \(L^2\)-integrable random variables \(A\) and \(B\), \[\argmin_{g\text{ measurable in }L^2} \E_{A, B}\sbr{\norm{A - g(B)}^2} = g: b\mapsto\E_{A}\sbrvert{A}{B=b}\], where \(\E_{A}\sbrvert{A}{B=b}\) is the conditional expectation of \(A\) given a value of \(B\).
 We apply this by putting \(A = \nabla \log p_{c|d}\delvert{C}{D}\) and \(B = C\) for new random variables \(C\) and \(D\), assuming they have densities relative to the Lebesgue measure, and so \[g(C) = \E_{D}\sbrvert{ \nabla \log p_{c|d}\delvert{D}{C}}{C}\].
@@ -259,6 +260,7 @@ Much the computational impossiblity of solving genreal ODE problems exactly, it 
 We can however make good approximations to this.
 
 \subsubsection{Likelihood ODEs}
+\label{sec:likelihood-ode}
 The final thing that we are missing now is the ability to compute the likelihood of a sample from a diffusion model.
 In order to do this we will leverage the \emphmarginnote{Fokker-Plank equation} (\cref{sec:fokker_plank}).
 Recall that for an SDE of the form \[\d \v{X}_t = \v{b}(\v{X}_t, t) \d t + \m{\Sigma}(\v{X}_t, t) \d \v{B}_t \], in this case where \(\m{\Sigma}\) is a matrix of noise coefficients, the time-evolution of the density is given by
