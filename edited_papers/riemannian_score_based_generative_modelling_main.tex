@@ -157,13 +157,13 @@ The reverse process from \cref{eq:time_reversal_manifold} involves the Stein sco
 To derive an approximation, we first remark that for any $s,t \in \ocbr{0,T}$ with $t > s$ and $x_t \in \c{M}$, $p_t(x_t) = \int_{\c{M}} p_{t|s}(x_t|x_s) \mathrm{d} \mathbb{P}_s(x_s)$, where $\mathbb{P}_s = \mathcal{L}(\v{X}_s)$, the distribution of $\v{X}_s$.
 Thus, we have that for any $s, t \in \sbr{0,T}$ with $t > s$ and $x_t \in \c{M}$ \begin{equation} \nabla_{x_t} \log p_t(x_t) = \int_{\c{M}} \nabla_{x_t} \log p_{t|s}(x_t|x_s) \mathbb{P}_{s|t}(x_t, \mathrm{d} x_s).
 \end{equation}
-Hence, for any $s, t \in \sbr{0,T}$ with $t > s$ we have that \[\nabla \log p_t = \argmin \cbr{\ell_{t|s}(\mathbf{s}_t)}{\mathbf{s}_t \in \mathrm{L}^2(\mathbb{P}_t)}\], where $\ell_{t|s}(\mathbf{s}_t) = \int_{\c{M}^2} \norm{\nabla_x \log p_{t|s}(x_t|x_s) - \mathbf{s}_t(x_t)}^2 \mathrm{d} \mathbb{P}_{s,t}(x_s,x_t)$, which is referred as the Denoising Score Matching (DSM) loss.
+Hence, for any $s, t \in \sbr{0,T}$ with $t > s$ we have that \[\nabla \log p_t = \argmin \cbr{\ell_{t|s}(\mathbf{s}_t)}{\mathbf{s}_t \in \mathrm{L}^2(\mathbb{P}_t)},\] where $\ell_{t|s}(\mathbf{s}_t) = \int_{\c{M}^2} \norm{\nabla_x \log p_{t|s}(x_t|x_s) - \mathbf{s}_t(x_t)}^2 \mathrm{d} \mathbb{P}_{s,t}(x_s,x_t)$, which is referred as the Denoising Score Matching (DSM) loss.
 It can also be written in an \emph{implicit} fashion.
 
 \begin{proposition}[Implicit score-matching on manifolds]
 	\label{prop:implicit_der}
 	Let $t, s \in \ocbr{0,T}$ with $t>s$.
-	Then, under sufficient regularity of $p_{t|s}(x_t|x_s)s(x_t)$, for any $\mathbf{s}_t \in \mathrm{c}^\infty(\c{M})$, \[\ell_{t|s}(\mathbf{s}_t) = 2 \ell^{\textup{im}}_t(\mathbf{s}_t) + \int_{\c{M}^2} \norm{\nabla_{x_t} \log p_{t|s}(x_t|x_s)}^2 \mathrm{d} \mathbb{P}_{s,t}(x_s,x_t)\], where \(\ell^{\textup{im}}_t(\mathbf{s}_t) = \int_\c{M} \cbr{ \tfrac{1}{2}\norm{\mathbf{s}_t(x_t)}^2 + \mathrm{div}(\mathbf{s}_t)(x_t) } \mathrm{d} \mathbb{P}_t(x_t)\).
+	Then, under sufficient regularity of $p_{t|s}(x_t|x_s)s(x_t)$, for any $\mathbf{s}_t \in \mathrm{c}^\infty(\c{M})$, \[\ell_{t|s}(\mathbf{s}_t) = 2 \ell^{\textup{im}}_t(\mathbf{s}_t) + \int_{\c{M}^2} \norm{\nabla_{x_t} \log p_{t|s}(x_t|x_s)}^2 \mathrm{d} \mathbb{P}_{s,t}(x_s,x_t),\] where \(\ell^{\textup{im}}_t(\mathbf{s}_t) = \int_\c{M} \cbr{ \tfrac{1}{2}\norm{\mathbf{s}_t(x_t)}^2 + \mathrm{div}(\mathbf{s}_t)(x_t) } \mathrm{d} \mathbb{P}_t(x_t)\).
 \end{proposition}
 
 The proof is postponed to \Cref{sec:implicit-losses}.

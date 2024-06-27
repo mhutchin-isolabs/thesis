@@ -401,7 +401,7 @@ and MSE for a series of methods.
 We see that the GPs (modelled as \(f:\R\to\R^2\), one on latitude/longitude coordinates, the other via a stereographic projection, using a diagonal RBF kernel with hyperparameters fitted with maximum likelihood) fail drastically given the high non-Gaussianity of the data.
 In the interpolation task, the \textsc{NDP} performs as well as the \textsc{GeomNDP }, but the additional geometric structure of modelling the outputs living on the sphere appears to significantly help for extrapolation.
 See \cref{sec:cyclonedetail} for more fine-grained results.
-\begin{figure*}
+\begin{figure}
 	\centering
 	\begin{subfigure}{\textwidth}
 		\includegraphics[width=\textwidth]{images/geomndp/storm/data_samples.pdf}
@@ -412,7 +412,7 @@ See \cref{sec:cyclonedetail} for more fine-grained results.
 	\end{subfigure}
 	\caption{\emph{Top:} 1000 samples from the training data. \emph{Bottom:} 1000 samples from the trained model.}
 	\label{fig:cyclone_comparison}
-\end{figure*}
+\end{figure}
 
 \begin{figure}
 	\centering

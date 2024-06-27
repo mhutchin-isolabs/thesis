@@ -192,24 +192,22 @@ The sampler we propose is similar to a classical Euler-Maruyama discretisation o
 This is a \emph{Metropolised} version of the usual discretisation and is almost trivial to implement compared to the existing barrier, reflection and projection methods.
 Hence, this method enables the principled extension of diffusion models to arbitrarily constrained domains at virtually \emph{no added implementational complexity or computational expense}.
 
-\begin{table}[t]
+\begin{table*}[t]
 	\centering
 	\caption{Comparing the requirements of different constrained diffusion models.}
 	\label{tab:general_method_comparison}
 
-	\adjustbox{width=\textwidth}{
-		\begin{tabular}{lccc}
-			\toprule
-			\thead[l]{Sampling Method}                                  & \thead[c]{Set Indicator                   \\Function} & \thead[c]{Intersection\\Operator} & \thead[c]{Distance to\\Boundary} \\
-			\midrule
-			Barrier method (\Cref{cpt:constrained_domains})             & \cmark                  & \cmark & \cmark \\
-			Reflected (\Cref{cpt:constrained_domains}, \textcite{lou2023reflected}) & \cmark                  & \cmark & \xmark \\
-			Projection sampler \parencite{lou2023reflected}             & \cmark                  & \cmark & \xmark \\
-			Metropolis sampler (This chapter)                                   & \cmark                  & \xmark & \xmark \\
-			\bottomrule
-		\end{tabular}
-	}
-\end{table}
+	\begin{tabular}{lccc}
+		\toprule
+		\thead[l]{\scshape Sampling Method}                                  & \thead[c]{\scshape Set Indicator \\Function} & \thead[c]{\scshape Intersection\\Operator} & \thead[c]{\scshape Distance to\\Boundary} \\
+		\midrule
+		\scshape Barrier method (\Cref{cpt:constrained_domains})             & \cmark                  & \cmark & \cmark \\
+		\scshape Reflected (\Cref{cpt:constrained_domains}, \textcite{lou2023reflected}) & \cmark                  & \cmark & \xmark \\
+		\scshape Projection sampler \parencite{lou2023reflected}             & \cmark                  & \cmark & \xmark \\
+		\scshape Metropolis sampler (This chapter)                                   & \cmark                  & \xmark & \xmark \\
+		\bottomrule
+	\end{tabular}
+\end{table*}
 
 \subsection{Relating the Metropolis sampler to the reflected Brownian motion}
 \label{sec:theoretical_convergence}
@@ -397,7 +395,7 @@ Additional details are provided in~\Cref{sec:app_implementational_details}.
 
 	\begin{tabular}{clll}
 		\toprule
-		Constraint & \(d\) & {Reflected \emph{(hours)}}    & {Metropolis \emph{(hours)}}              \\
+		\scshape Constraint & \(d\) & {\scshape Reflected \emph{(hours)}}    & {\scshape Metropolis \emph{(hours)}}              \\
 		\midrule
 		\multirow{3}{*}{\([-1,1]^d\)}
 		           & 2     & \(2.25\pm{.01}\) \emph{(8.95)}  & \(\mathbf{2.32\pm{.05}}\) \emph{(0.72)}    \\
@@ -471,7 +469,7 @@ In many practical settings, it may often be unnecessary to model the structural 
 Modelling the conformational ensembles of such substructural elements requires positional constraints on their endpoints to ensure that they can be accommodated by the remaining protein.
 Using the parametrisation and dataset presented in \cite{fishman2023diffusion}, we formulate the problem of modelling the backbone conformations of a cyclic peptide of length \(N=6\) as learning a distribution over the product of a polytope \(\mathbb{P}\subset\R^{3}\) and the hypertorus \(\mathbb{T}^{4}\).
 
-\begin{table}[H]
+\begin{table}[h]
 	\caption{
 		Log-likelihood (\(\uparrow\)) of a held-out test set for the robotics and protein applications.
 		Means and standard deviations are computed over 3 different runs.
@@ -479,14 +477,12 @@ Using the parametrisation and dataset presented in \cite{fishman2023diffusion}, 
 	}
 	\label{tab:real_world_data}
 	\centering
-
-	\vspace{1em}
 	\begin{tabular}{llll}
 		\toprule
-		Dataset  & Domain                                      & {Reflected \emph{(hours)}}     & {Metropolis \emph{(hours)}}             \\
+		\scshape Dataset  &\scshape Domain                                      & {\scshape Reflected \emph{(hours)}}     & {\scshape Metropolis \emph{(hours)}}             \\
 		\midrule
-		Robotics & \(\c{S}_{++}^2\times\R^2\)                  & \(8.39 \pm{.06}\) \emph{(9.52)}  & \(\mathbf{9.13 \pm{.03}}\) \emph{(1.36)}  \\
-		Proteins & \(\mathbb{P}\subset\R^3\times\mathbb{T}^4\) & \(15.20\pm{.06}\) \emph{(24.80)} & \(\mathbf{15.33 \pm{.02}}\) \emph{(3.12)} \\
+		\scshape Robotics & \(\c{S}_{++}^2\times\R^2\)                  & \(8.39 \pm{.06}\) \emph{(9.52)}  & \(\mathbf{9.13 \pm{.03}}\) \emph{(1.36)}  \\
+		\scshape Proteins & \(\mathbb{P}\subset\R^3\times\mathbb{T}^4\) & \(15.20\pm{.06}\) \emph{(24.80)} & \(\mathbf{15.33 \pm{.02}}\) \emph{(3.12)} \\
 		\bottomrule
 	\end{tabular}
 \end{table}

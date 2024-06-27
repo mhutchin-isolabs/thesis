@@ -52,7 +52,7 @@ We shall term this the reverse or denoising SDE, and we will start it from time 
 We will denote this reverse SDE as \(\del{\Xb_t}_{t\in\sbr{0, T}}\) to emphasise it is an SDE with the same paths, but with time running in the other direction.
 We will use the convention that time in the reverse SDE is opposite to that of the forward SDE, i.e. that \(\Xf_t = \Xb_{T-t}\).
 While this makes it necessary to track if one is talking about the forward or backward SDE to determine when a given time refers to, it means one does not have to deal with Brownian motions going backward in time, which can be more confusing.
-This reverse SDE then has the equation \[\d \Xb_t = \sbr{-\v{b}(\Xb_t, t) + \nabla_{\Xb_t} \log \pi_{T-t}(\Xb_t) }\d t + + \v{\sigma}(\Xf_t, t) \d \v{B}_t\].
+This reverse SDE then has the equation \[\d \Xb_t = \sbr{-\v{b}(\Xb_t, t) + \nabla_{\Xb_t} \log \pi_{T-t}(\Xb_t) }\d t + + \v{\sigma}(\Xf_t, t) \d \v{B}_t.\]
 Note the time reindexing of time in the term \(\pi_{T-t}\) as the density of the reverse SDE at time \(t\) is the same as the density of the forward SDE at time \(T-t\).
 \3 All the terms in the reverse SDE are known, except for the "score" term, \(\nabla_{\Xb_t} \log \pi_{T-t}(\Xb_t)\).
 We therefore need a method to approximate or learn this term.
@@ -72,13 +72,13 @@ If we make our choices right, this will be true up to a small error.
 
 Previously we encountered Langevin dynamics.
 Recall that if we have access to a density of the form \(\pi(x) \propto \exp(-U(x))\), then the SDE \[\d \v{X}_t = \nabla_{\v{X}} U(\v{X}) \d t + \sqrt{2} \d \v{B}_t\] will in the limit of infinite time converge to \(\pi\), regardless of the distribution we initialise the SDE with.
-\todo{say something about convergence rate?} We can also rescale this SDE by a time dependant noise factor, \(\beta({t})\), and obtain the same result, giving an SDE of the form \[\d \v{X}_t = \beta(t) \nabla_{\v{X}} U(\v{X}) \d t + \sqrt{2 \beta(t)} \d \v{B}_t\].
+\todo{say something about convergence rate?} We can also rescale this SDE by a time dependant noise factor, \(\beta({t})\), and obtain the same result, giving an SDE of the form \[\d \v{X}_t = \beta(t) \nabla_{\v{X}} U(\v{X}) \d t + \sqrt{2 \beta(t)} \d \v{B}_t.\]
 This time rescaling can be very useful in diffusion models in optimising the efficiency of the discretised model rollouts and focusing the majority of the learning power of the score network on important regions of the SDE.
 \todo{decide if to suppress notation or not.}
 
 While using Langevin dynamics to sample from complex distribution can be very slow to mix effectively, sampling a simple unimodel distribution is very fast.
 This gives us an option for our SDE that converges for a known distribution.
-Choosing the unit Gaussian as our reference distribution, \(\pi_T(\v{X}) \propto \exp\del{-\tfrac{1}{2} \v{X}^T \v{X}}\), we arrive at \(U(\v{X}) = -\v{X}\), and thus a forward noising SDE of the form \[\d \Xf_t = -\Xf_t\d t + \sqrt{2} \d \v{B}_t \].
+Choosing the unit Gaussian as our reference distribution, \(\pi_T(\v{X}) \propto \exp\del{-\tfrac{1}{2} \v{X}^T \v{X}}\), we arrive at \(U(\v{X}) = -\v{X}\), and thus a forward noising SDE of the form \[\d \Xf_t = -\Xf_t\d t + \sqrt{2} \d \v{B}_t .\]
 This is the well known Ornstein–Uhlenbeck process, and this converges exponentially quickly towards the unit Gaussian.
 This is an ideal noising SDE given the exponential convergence and the tractability of the density and of sampling of the Gaussian reference distribution.
 In the literature this is typically known as the "variance preserving SDE" or "VP-SDE".
@@ -88,7 +88,7 @@ For an SDE with noising schedule \(\beta(t)\) this is given by \[ p_{s|t}\delver
 The other common alternative is the "variance exploding SDE" or "VE-SDE".
 In this we simply apply Brownian motion as the noising SDE.
 This will not converge to a stable distribution.
-However, the transition density of this SDE is given by \[\textstyle p_{s|t}\delvert{\Xf_s}{\Xf_t} = \c{N}\delvert{\Xf_s}{\Xf_t, \sqrt{{\int_t^s} \beta(\tau)\d\tau}\v{I}}\].
+However, the transition density of this SDE is given by \[\textstyle p_{s|t}\delvert{\Xf_s}{\Xf_t} = \c{N}\delvert{\Xf_s}{\Xf_t, \sqrt{{\int_t^s} \beta(\tau)\d\tau}\v{I}}.\]
 The variance of this will continue to grow with time and eventually the variance of this transition density will dominate the variance of \(\pi\), and so the distribution \[\pi_T(\Xf_t) = \int p_{T|0}\delvert{\Xf_T}{\Xf_0} \pi(\Xf_0) \d \Xf_0\] will be well approximated by \(\c{N}\delvert{\Xf_T}{\v{0}, \sqrt{{\int_t^s} \beta(\tau)\d\tau}\v{I}}\), and therefore we can use this as the reference distribution.
 
 An alternative way to choose the forward stochastic differential eqaution is to start with the forward transition density and work backwards to the coeficients. If we restrict ourselves to linear Guassian transition densities, those of the form 
@@ -153,8 +153,8 @@ We will also use the notion \(\scorenett{} : \R^d \to \R^d\) to refer to this fu
 Typically, we will make this a neural network of some kind, and look to optimise this via gradient-based learning.
 
 % \emphmarginnote{Implicit score matching (ISM)} \parencite{hyvarinen05a} says that the following is true for a density \(\pi\) supported on \(\R^d\) relative to the Lebesgue measure;
-% \[\nabla_{\v{X}} \log \pi(\v{X}) = \argmin_{\phi} \int_{\R^d} \cbr{ \frac{1}{2} \norm{\phi\del{\v{X}}}^2 + \dive(\phi)(\v{X})} \pi(\v{X}) \d \v{X} \].
-% We can apply this to our SDE setting to say that the score at a given time is given by \[\nabla_{\v{X}} \log \pi_t(\v{X}) = \argmin_{\scorenett{}} \int_{\R^d} \cbr{ \frac{1}{2} \norm{\scorenett{}(\v{X})}^2 + \dive(\scorenett{})(\v{X})} \pi_t(\v{X}) \d \v{X}\].
+% \[\nabla_{\v{X}} \log \pi(\v{X}) = \argmin_{\phi} \int_{\R^d} \cbr{ \frac{1}{2} \norm{\phi\del{\v{X}}}^2 + \dive(\phi)(\v{X})} \pi(\v{X}) \d \v{X} .\]
+% We can apply this to our SDE setting to say that the score at a given time is given by \[\nabla_{\v{X}} \log \pi_t(\v{X}) = \argmin_{\scorenett{}} \int_{\R^d} \cbr{ \frac{1}{2} \norm{\scorenett{}(\v{X})}^2 + \dive(\scorenett{})(\v{X})} \pi_t(\v{X}) \d \v{X}.\]
 % We denote then this loss function as \(\ismlosst{}: \scorenett \mapsto \R\) such that \(\nabla_{\v{X}} \log \pi_t(\v{X}) = \argmin_{\scorenett{}} \ismlosst{}\).
 \textcite{hyvarinen05a} proves the following result
 \begin{theorem}[Implicit score matching (ISM)]
@@ -165,10 +165,10 @@ Typically, we will make this a neural network of some kind, and look to optimise
 \end{theorem}
 Using this we can learn the score of a distribution \(p_a\) if we just have access to good samples from \(p_a\) as we can approximate this expectation with Monte Carlo estimation.
 
-We can apply this to our SDE setting to say that the score at a given time is given by \[\nabla_{\v{X}_t} \log p_t(\v{X}_t) = \argmin_{\scorenett{}} \E_{\v{X}_t} \sbr{ \tfrac{1}{2} \norm{\scorenett{}(\v{X}_t)}^2 + \dive(\scorenett{})(\v{X}_t)}\].
+We can apply this to our SDE setting to say that the score at a given time is given by \[\nabla_{\v{X}_t} \log p_t(\v{X}_t) = \argmin_{\scorenett{}} \E_{\v{X}_t} \sbr{ \tfrac{1}{2} \norm{\scorenett{}(\v{X}_t)}^2 + \dive(\scorenett{})(\v{X}_t)}.\]
 We denote then this loss function as \(\ismlosst{}\).
 
-In order to draw samples from \(p_t(\v{X}_t)\) we can utilise the fact that \[p_t(\v{X}_t) = \int p_{t|0}(\v{X}_t) p_0(\v{X}_0) \d \v{X}_0\].
+In order to draw samples from \(p_t(\v{X}_t)\) we can utilise the fact that \[p_t(\v{X}_t) = \int p_{t|0}(\v{X}_t) p_0(\v{X}_0) \d \v{X}_0.\]
 We can sample then from this joint density as we have as our dataset samples from \(p_0 = \pi\), and we have access to sampling from the transition density \( p_{t|0}\) from the forward noising SDE.
 We then throw away the samples from \(p_0\) to obtain samples from \(p_t\).
 
@@ -181,8 +181,8 @@ In practise this additional variance does not seem to be too important, as the v
 
 \emphmarginnote{Denoising score matching (DSM) \label{def:dsm}} \parencite{vincent2011connection} is an alternative approach to implicit score matching that typically has lower variance.
 We do not get this for free, as we will need to know a little more information to apply this.
-Recall that the definition of the conditional distribution states that for \(L^2\)-integrable random variables \(A\) and \(B\), \[\argmin_{g\text{ measurable in }L^2} \E_{A, B}\sbr{\norm{A - g(B)}^2} = g: b\mapsto\E_{A}\sbrvert{A}{B=b}\], where \(\E_{A}\sbrvert{A}{B=b}\) is the conditional expectation of \(A\) given a value of \(B\).
-We apply this by putting \(A = \nabla \log p_{c|d}\delvert{C}{D}\) and \(B = C\) for new random variables \(C\) and \(D\), assuming they have densities relative to the Lebesgue measure, and so \[g(C) = \E_{D}\sbrvert{ \nabla \log p_{c|d}\delvert{D}{C}}{C}\].
+Recall that the definition of the conditional distribution states that for \(L^2\)-integrable random variables \(A\) and \(B\), \[\argmin_{g\text{ measurable in }L^2} \E_{A, B}\sbr{\norm{A - g(B)}^2} = g: b\mapsto\E_{A}\sbrvert{A}{B=b},\] where \(\E_{A}\sbrvert{A}{B=b}\) is the conditional expectation of \(A\) given a value of \(B\).
+We apply this by putting \(A = \nabla \log p_{c|d}\delvert{C}{D}\) and \(B = C\) for new random variables \(C\) and \(D\), assuming they have densities relative to the Lebesgue measure, and so \[g(C) = \E_{D}\sbrvert{ \nabla \log p_{c|d}\delvert{D}{C}}{C}.\]
 We can then apply the Tweedie identity.
 \begin{lemma}[The Tweedie identity]\label{lem:tweedie}
 	\[\E_{D}\sbrvert{\nabla_{C} \log p_{c|d}\delvert{C}{D}}{C} = \nabla_{C} \log p_c(C)\]
@@ -190,7 +190,7 @@ We can then apply the Tweedie identity.
 \begin{proof}
 	Delayed to \cref{sec:tweedie_proof}
 \end{proof}
-Combing this we see that \[ \argmin_{g\text{ measurable in }L^2} \E_{C,D}\sbr{\norm{\nabla_C \log p_{c|d}\delvert{C}{D} - g(C)}^2} &= \E_{D}\sbrvert{\nabla_{C} \log p_{c|d}\delvert{C}{D}}{C}\nonumber \\ &= \nabla_{C} \log p_c(C)\], and therefore can learn the score for \(\nabla_C \log p_c(C)\) if we have access to \1 samples from the joint distribution \(p_{c,d}(C, D)\) and \2 access to the analytic conditional score \(\nabla_C \log p_{c|d} \delvert{C}{D}\).\0
+Combing this we see that \[ \argmin_{g\text{ measurable in }L^2} \E_{C,D}\sbr{\norm{\nabla_C \log p_{c|d}\delvert{C}{D} - g(C)}^2} &= \E_{D}\sbrvert{\nabla_{C} \log p_{c|d}\delvert{C}{D}}{C}\nonumber \\ &= \nabla_{C} \log p_c(C),\] and therefore can learn the score for \(\nabla_C \log p_c(C)\) if we have access to \1 samples from the joint distribution \(p_{c,d}(C, D)\) and \2 access to the analytic conditional score \(\nabla_C \log p_{c|d} \delvert{C}{D}\).\0
 
 To apply this to our SDE setting, we pick \(C = \v{X}_t\) and \(D=\v{X}_s\), with \(s < t\). We have access to samples from \(p_{t,s}\del{\v{X}_t, \v{X}_s}\) by using the fact that 
 \[
@@ -228,7 +228,7 @@ To summarise:
 
 The objectives detailed match the score at given time \(t\) only. 
 In order to match the score at all times, we integrate this objective over all times \(t \in \sbr{0, T}\).
-\[\ell(\scorenet{}) = \int_{\sbr{0, T}} \lambda(t) \ell_t(\scorenett{}) \d t\].
+\[\ell(\scorenet{}) = \int_{\sbr{0, T}} \lambda(t) \ell_t(\scorenett{}) \d t.\]
 Notice there is a weighting function applied over all \(t\).
 While this weighting does not affect the minima of the objective, it does rebalance where a network will prioritise learning the score most.
 Many choices for \(\lambda(t)\) exist and can be tuned to optimise different objectives.
@@ -263,8 +263,8 @@ We can however make good approximations to this.
 \label{sec:likelihood-ode}
 The final thing that we are missing now is the ability to compute the likelihood of a sample from a diffusion model.
 In order to do this we will leverage the \emphmarginnote{Fokker-Plank equation} (\cref{sec:fokker_plank}).
-Recall that for an SDE of the form \[\d \v{X}_t = \v{b}(\v{X}_t, t) \d t + \m{\Sigma}(\v{X}_t, t) \d \v{B}_t \], in this case where \(\m{\Sigma}\) is a matrix of noise coefficients, the time-evolution of the density is given by
-\[ \pd{p_t(\v{X})}{t} = -\sum_{i=1}^d \pd{}{\v{X}_i}\sbr{\v{b}(\v{X}, t) p_t{\v{X}}} + \frac{1}{2} \sum_{i=1}^d \sum_{j=1}^d \frac{\partial^2}{\partial \v{X}_i \partial \v{X}_j} \sbr{\m{\Sigma}(\v{X}, t) \m{\Sigma}(\v{X}, t)^T p_t(\v{X})} \].
+Recall that for an SDE of the form \[\d \v{X}_t = \v{b}(\v{X}_t, t) \d t + \m{\Sigma}(\v{X}_t, t) \d \v{B}_t ,\] in this case where \(\m{\Sigma}\) is a matrix of noise coefficients, the time-evolution of the density is given by
+\[ \pd{p_t(\v{X})}{t} = -\sum_{i=1}^d \pd{}{\v{X}_i}\sbr{\v{b}(\v{X}, t) p_t{\v{X}}} + \frac{1}{2} \sum_{i=1}^d \sum_{j=1}^d \frac{\partial^2}{\partial \v{X}_i \partial \v{X}_j} \sbr{\m{\Sigma}(\v{X}, t) \m{\Sigma}(\v{X}, t)^T p_t(\v{X})} .\]
 Using this, we can obtain the following result
 
 \begin{theorem}[The likelihood flow ODE]
@@ -280,7 +280,7 @@ Using this, we can obtain the following result
 \end{proof}
 In diffusion models we typically use \(\m{\Sigma}(\v{X}, t) = \sigma(\v{X}, t) I\), a simple time-dependant scalar noise.
 With this, the likelihood ODE simplifies to
-\[\d \v{X}_t = \sbr{\v{b}(\v{X}_t, t) - \frac{1}{2}\sigma(\v{X}, t)^2 \log p_t(\v{X}_t)} \d t \label{eq:likelihood_ode_drift} \].
+\[\d \v{X}_t = \sbr{\v{b}(\v{X}_t, t) - \frac{1}{2}\sigma(\v{X}, t)^2 \log p_t(\v{X}_t)} \d t \label{eq:likelihood_ode_drift} .\]
 Fortunately there already exists tools to be able to compute the change in likelihood induced by an ODE trajectory, assuming the ODE describes the flow of a density.
 \begin{theorem}[Instantanious change of likelihood of an ODE]
 	Let \(\del{\v{X}_t}_{t\in\sbr{0,T}}\) be a stochastic process with marginal density at time \(t\) \(p_t(\v{X}_t)\).

@@ -20,33 +20,9 @@
 % \usepackage{imakeidx}
 % \makeindex
 
-% \usepackage{tikz-cd}
-%%% QUIVER
-% \usetikzlibrary{cd}
-% \usetikzlibrary{calc} % `calc` is necessary to draw curved arrows.
-% \usetikzlibrary{decorations.pathmorphing} % `pathmorphing` is necessary to draw squiggly arrows.
-% % A TikZ style for curved arrows of a fixed height, due to AndréC.
-% \tikzset{curve/.style={settings={#1},to path={(\tikztostart)
-% 					.. controls ($(\tikztostart)!\pv{pos}!(\tikztotarget)!\pv{height}!270:(\tikztotarget)$)
-% 					and ($(\tikztostart)!1-\pv{pos}!(\tikztotarget)!\pv{height}!270:(\tikztotarget)$)
-% 					.. (\tikztotarget)\tikztonodes}},
-% 	settings/.code={\tikzset{quiver/.cd,#1}
-% 			\def\pv##1{\pgfkeysvalueof{/tikz/quiver/##1}}},
-% 	quiver/.cd,pos/.initial=0.35,height/.initial=0}
-
-% % TikZ arrowhead/tail styles.
-% \tikzset{tail reversed/.code={\pgfsetarrowsstart{tikzcd to}}}
-% \tikzset{2tail/.code={\pgfsetarrowsstart{Implies[reversed]}}}
-% \tikzset{2tail reversed/.code={\pgfsetarrowsstart{Implies}}}
-% % TikZ arrow styles.
-% \tikzset{no body/.style={/tikz/dash pattern=on 0 off 1mm}}
-%%%
-
 \usepackage{hyperref}
 \usepackage{microtype}
 \usepackage{lettrine}
-
-
 
 % \PassOptionsToPackage{table,dvipsnames,x11names,svgnames}{xcolor}
 % \usepackage[table,dvipsnames,x11names,svgnames]{xcolor}
@@ -114,14 +90,14 @@
     citecolor=oxprimary,
 }
 
-\renewcommand*{\mkbibnamegiven}[1]{
-	\ifitemannotation{highlight}
-	{\textbf{#1}}{#1}
-}
-\renewcommand*{\mkbibnamefamily}[1]{
-	\ifitemannotation{highlight}
-	{\textbf{#1}}{#1}
-}
+% \renewcommand*{\mkbibnamegiven}[1]{
+% 	\ifitemannotation{highlight}
+% 	{\textbf{#1}}{#1}
+% }
+% \renewcommand*{\mkbibnamefamily}[1]{
+% 	\ifitemannotation{highlight}
+% 	{\textbf{#1}}{#1}
+% }
 
 % Cite full paper?
 \DeclareBibliographyCategory{enumpapers}
@@ -238,32 +214,28 @@
 \input{chapters/introduction.tex}
 
 
-% \chapter{Background} \input{chapters/background.tex} 
-
-\chapter{Manifolds} \input{chapters/background_riemannian.tex} \label{sec:manifolds}
-
-\chapter{Stochastic Differential Equations} \input{chapters/background_stochastic.tex} \label{sec:sdes}
-
-% \chapter{Deep generative modelling} \input{chapters/background_deep_generative.tex}
+\chapter{Background} 
+\input{chapters/background.tex}
 
 \chapter{Generative modelling on Riemannian manifolds}\label{chp:riemannian_score_based_models} \begin{flushright} Work in this chapter is based on \textcite{de2022riemannian} and has been rewritten for this thesis, with some simplified mathematical results. \end{flushright} \textbf{Personal contributions:} \1 Project conception with Emile \2 Development of practical approach with Emile, Valentin \3 Writing of code and experiments with Emile \4 Some mathematical results - e.g. ISM proof \5 Paper writing with Emile and Valentin \0
 \vspace{4em}
 % \input{edited_papers/riemannian_score_based_generative_modelling_main.tex} 
 \input{chapters/diffusion_modelling_on_riemannian_manifolds.tex}
 
-% \chapter{Generative modelling on constrained domains} \begin{flushright} Work in this chapter is based on \fullcite{fishman2023diffusion_hl} and \fullcite{fishman2023metropolis_hl} \end{flushright} \textbf{Personal contributions:} (combined on both works) \1 Project conception with Valentin, Nic, Leo \2 Development of practical approach with Nic, Valentin, Leo (mainly reflected, log-barrier) \3 Writing of code with Nic, Leo, ran some of the experiments \4 Paper writing with Emile, Valentin, Nic, Leo.
-% % % \listoffigures% % \chapter{Introduction}% % \input{chapters/introduction.tex}% % \chapter{Publications}% % \input{chapters/papers.tex}% % \part{Generative modelling on finite-dimension manifolds}
-% \5 Re-wrote this chapter into 1 from 2 papers.
-% \0
-% \input{chapters/diffusion_models_on_constrained_domains.tex}
-\chapter{Generative modelling on constrained domains}
-\label{cpt:constrained_domains}
-\input{chapters/score_based_modelling_for_constrained_domains_main.tex}
+\chapter{Generative modelling on constrained domains} \label{chp:riemannian_boundary_score_based_models} \begin{flushright} Work in this chapter is based on \fullcite{fishman2023diffusion_hl} and \fullcite{fishman2023metropolis_hl} \end{flushright} \textbf{Personal contributions:} (combined on both works) \1 Project conception with Valentin, Nic, Leo \2 Development of practical approach with Nic, Valentin, Leo (mainly reflected, log-barrier) \3 Writing of code with Nic, Leo, ran some of the experiments \4 Paper writing with Emile, Valentin, Nic, Leo.
+% % \listoffigures% % \chapter{Introduction}% % \input{chapters/introduction.tex}% % \chapter{Publications}% % \input{chapters/papers.tex}% % \part{Generative modelling on finite-dimension manifolds}
+\5 Re-wrote this chapter into 1 from 2 papers.
+\0
+\input{chapters/diffusion_models_on_constrained_domains.tex}
+% \chapter{Generative modelling on constrained domains}
+% \label{cpt:constrained_domains}
+% \input{chapters/score_based_modelling_for_constrained_domains_main.tex}
 
-\chapter{Efficient generative modelling on constrained domains}
-\input{chapters/metropolis_sampling_for_constrained_diffusion_main.tex}
+% \chapter{Efficient generative modelling on constrained domains}
+% \input{chapters/metropolis_sampling_for_constrained_diffusion_main.tex}
 
 \chapter{Geometric neural diffusion processes}
+\label{chp:geom_nerual_diffusion_processes}
 \begin{flushright}
 	Work in this chapter is based on \textcite{mathiue2023geometric_hl}
 \end{flushright}
@@ -277,12 +249,20 @@
 \0
 \input{chapters/geometric_neural_diffusion_processes_main.tex}
 
+\chapter{Conclusion}
+\input{chapters/conclusion.tex}
+
 % % \printindex
 
 \printbibliography
 
 \appendix
 % \part*{Appendix}
+
+\chapter{Manifolds} \label{chp:manifolds} \input{chapters/background_riemannian.tex} 
+
+\chapter{Stochastic Differential Equations} \label{chp:sdes} \input{chapters/background_stochastic.tex} 
+
 \chapter{Proofs}
 \input{chapters/proofs_appendix.tex}
 

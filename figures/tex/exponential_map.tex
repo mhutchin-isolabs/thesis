@@ -1,0 +1,50 @@
+\documentclass[tikz,10pt]{standalone}
+\usepackage[standalone,commands]{../../MJH}
+
+\graphicspath{/Users/mhutchin/Documents/thesis/figures/diagrams/}
+
+% \usepackage{tikz}
+% \usetikzlibrary{positioning}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+% \usepgfplotslibrary{external}
+% \usepgfplotslibrary{groupplots}
+% \usepgfplotslibrary{fillbetween}
+% \usetikzlibrary{fadings}
+
+\begin{document}
+    % \tikzsetnextfilename{generative_model}
+    \begin{tikzpicture}
+        \node (simple) at (0,0) {\includegraphics{/Users/mhutchin/Documents/thesis/figures/diagrams/exponential_map.pdf}};
+        \node (math) at (0.1,1.1) {\(p\)};
+        \node (math) at (1.05,0.15) {\(q\)};
+        \node (math) at (1.,.8) {\(v\)};
+        \node (math) at (-0.0,0.2) {\(\exp(p, v)\)};
+        \node (math) at (0.8,-.8) {\(\gamma_{p,v}(t)\)};
+
+        % \node (math) at (3.3,-0.7) {\(Y\)};
+        % \node (math) at (-.7,-1.3) {\(F\)};
+        % \node (math) at (-.7,.8) {\(\d F_p\)};
+        % \node (math) at (-2.3,.8) {\(v\)};
+        % \node (math) at (1.3,0.85) {\(\d F_p (v)\)};
+        % \node (math) at (-2.6,.2) {\(p\)};
+        % \node (math) at (1.2,.05) {\(F(p)\)};
+
+
+
+        % \node (math2) at (-1.5,-1) {\(V\)};
+
+        % \node (math2) at (-1.6,-0.2) {\(U \u V\)};
+
+        % \node (math) at (-0,1.0) {\(\phi_U\)};
+        % \node (math) at (-0,-0.7) {\(\phi_V\)};
+
+        % \node (math) at (2.5,0) {\(\phi_V \circ \phi^{-1}_U\)};
+
+
+        % \node (complex) at (3,0) {\includegraphics{../diagrams/simple_distribution.pdf}};
+        % \draw[-stealth] (math.north) to [out=45,in=135] (math2.north) node [midway, yshift=1.1cm] {\(f\)} ;
+        % \draw[-stealth] (math2.west) to (math.east) node [midway, above] {\(f^{-1}(V) = U\)} ;
+    \end{tikzpicture}
+\end{document}

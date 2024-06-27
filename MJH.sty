@@ -255,7 +255,8 @@
 \newcommandPIE{\@xmapsto}{\IfEmptyTF{#2#3}{\mapsto}{\xmapsto[\GetIndex{#2}]{\GetExponent{#3}}}#1}
 \renewcommand{\|}{\@ifnextchar>{\expandafter\@xmapsto\@gobble}{\@vert}}
 
-\newcommand{\grad}{\nabla} % gradient
+% \newcommand{\grad}{\nabla} % gradient
+\DeclareMathOperator{\grad}{grad}
 \newcommand{\lap}{\Delta} % laplacian
 \renewmathcommand{\d}{\mathop{}\!\mathrm{d}} % differental
 \newcommand{\D}{\mathrm{D}} % Jacobian
@@ -335,6 +336,9 @@
 \newisom{\isombool}{bool} % boolean isomorphic
 \newisom{\isomring}{ring} % ring isomorphic
 
+\DeclareMathOperator{\diff}{Diff} % alternation
+\DeclareMathOperator{\iso}{Iso} % alternation
+
 \newcommand{\neweq}[2]{\newcommand{#1}{\mathrel{\mathchoice{\overset{\operatorname{#2}}{=}}{=^{\operatorname{#2}}}{=^{\operatorname{#2}}}{=^{\operatorname{#2}}}}}}
 \neweq{\eqdist}{dist}
 \neweq{\eqdef}{def}
@@ -354,6 +358,8 @@
 \newcommand{\subgroup}{H}
 
 \newcommand{\groupSE}[1][n]{\mathrm{SE}(#1)}
+\newcommand{\groupSU}[1][n]{\mathrm{SU}(#1)}
+\newcommand{\groupU}[1][n]{\mathrm{U}(#1)}
 \newcommand{\groupSO}[1][n]{\mathrm{SO}(#1)}
 \newcommand{\groupE}[1][n]{\mathrm{E}(#1)}
 \newcommand{\groupO}[1][n]{\mathrm{O}(#1)}
@@ -656,6 +662,9 @@
 	\newcommand{\parmarginnote}[1]{\hspace{\z@}\marginnote{#1}\ignorespaces}
 	\renewcommand{\raggedrightmarginnote}{\raggedleft}
 	\renewcommand{\raggedleftmarginnote}{\raggedright}
+
+	% doubled up commands
+	\newcommand{\emphhypermargin}[3][0em]{{\marginnote{\MakeUppercase#2}[#1]\hyperref[#3]{\emph{#2}}}}
 
 	% full width starred figures and tables
 	\RequirePackage{ifoddpage}

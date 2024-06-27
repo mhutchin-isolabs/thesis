@@ -1,334 +1,37 @@
 
 % \section{Introduction}
 % \label{sec:introduction-rsgm}
-\emphmarginnote{Score-based Generative Models} (SGMs) also called diffusion models \parencite{song2019generative,song2020score,ho2020denoising,nichol2021beatgans} formulate generative modelling as a denoising process.
+\emphmarginnote{Score-based generative models} also called diffusion models \parencite{song2019generative,song2020score,ho2020denoising,nichol2021beatgans} formulate generative modelling as a denoising process.
 Noise is incrementally added to data using a diffusion process until it becomes approximately Gaussian.
 The generative model is then obtained by simulating an approximation of the corresponding time-reversal process, which progressively denoises a Gaussian sample to obtain a data sample.
 This process is also a diffusion whose drift depends on the logarithmic gradients of the noised data densities, i.e. the Stein scores, estimated using a neural network via score matching \parencite{hyvarinen05a,vincent2011connection}.
 
-SGMs have been primarily applied to data living on Euclidean spaces, i.e. manifolds with flat geometry.
+Score-based generative models have been primarily applied to data living on Euclidean spaces, i.e. manifolds with flat geometry.
 However, in a large number of scientific domains the distributions of interest are supported on Riemannian manifolds.
 These include, to name a few, protein modelling \parencite{shapovalov2011smoothed}, cell development \parencite{klimovskaia2020poincare}, image recognition \parencite{lui2012advances}, geological sciences \parencite{karpatne2018machine,peel2001fitting}, graph-structured and hierarchical data \parencite{roy2007learning,steyvers2005large}, robotics \parencite{feiten2013rigid,senanayake2018directional} and high-energy physics \parencite{brehmer2020flows}.
 
-In this chapter we develop \emphmarginnote{Riemannian Score-based Generative Models}, an extension of score-based generative models to Riemannian manifolds.
-The objective is to incorporate the geometry of the problem at hand by respecting the natural setting of the data being modelled.
+In this chapter we develop \emphmarginnote{Riemannian score-based generative models}, an extension of score-based generative models to Riemannian manifolds.
+The objective is to incorporate the geometry of the problem at hand by respecting the natural setting of the data modelled.
 This requires constructing a noising process on the manifold that converges to an easy-to-sample reference distribution.
 We establish that, as in the Euclidean case, the corresponding time-reversal process is also a diffusion whose drift includes the Stein score which is intractable but can similarly be estimated via score matching.
 Methodological extensions are required as in most cases the transition kernel of the noising process cannot be sampled exactly.
 For example on compact manifolds it is typically only available as an infinite sum through the Sturm--Liouville decomposition \parencite{chavel1984eigenvalues}.
 To this end, we develop non-standard techniques for score estimation and rely on the use of Geodesic Random Walks for sampling \parencite{jorgensen1975central}.
-We provide theoretical convergence bounds for RSGMs on compact manifolds and demonstrate our approach on a range of manifolds and tasks, including modelling a number of natural disaster occurrence datasets collected by \textcite{mathieu2020riemannian}.
-We show that RGSMs achieve better performance than recent baselines \parencite{mathieu2020riemannian,rozen2021moser} and scale better to
-
-\section{Euclidean Score-Based Generative Modelling}
-
-Having introduced many tools in the background material, we can now see how these come together to produce the class of models known as "diffusion models" or "score-based generative models".
-Both of these terms capture part of the type of model that they are applied to, but neither is fully descriptive.
-There are two perspectives on diffusion models; discrete-time diffusion models \parencite{sohl2015deep,ho2020denoising} and continuous-time diffusion models \parencite{song2020score}.
-These are related, and the discrete-time models can be seen as a discretisation of the continuous-time.
-As such, this presentation will focus only on the continuous-time version, but will highlight where the discrete approximation comes into play.
-Throughout we will work with a state space of dimension \(d\), such that a data point is an element \(\v{X}\in \R^d\).
-
-Diffusion models are strongly related to other classes of deep generative models.
-They follow a common paradigm of taking simple to sample noise, typically a multi-dimension Gaussian random variable, and through a series of transformations try to turn this into the distribution of interest.
-Most similar are normalising flows, which also fit into the described category.
-We shall see later that there are deep connections between diffusion models and continuous normalsing flows.
-
-Let us briefly describe the process for constructing a diffusion model.
-
-We start with a density \(\pi\) that we wish to learn to sample from.
-Let us assume that we either have a set of samples and cannot access more, or that it is expensive to do so, and that we have no access to the likelihood or an unnormalised version of this.
-Our goal is to have a model from which we can sample, and compute the likelihood for samples from for the distribution \(\pi\).
-
-A summary of the diffusion modelling strategy is:
-\1 First we will evolve this density under a stochastic differential equation, which we shall term the forward or noising SDE.
-We will from now denote this SDE as \(\del{\Xf_t}_{t\in\sbr{0, T}}\), denoting the forward direction.
-These SDEs have an equation of the form \[\d \Xf_t= \v{b}(\Xf_t, t) \d t + \v{\sigma}(\Xf_t, t) \d \v{B}_t\] ref to earlier.
-We shall require that this SDE is that at "large" times converges to a distribution for which we know the density and can sample from.
-We will evolve this SDE up to a chosen time \(T\) which is large enough for such convergence to occur.
-Let us denote the desity of this SDE at time \(t\) as \(\pi_t\).
-\2 Using a time reversal result, we can obtain a stochastic differential equation that has the same sample paths as our forward noising SDE, but with time in the reverse direction.
-We shall term this the reverse or denoising SDE, and we will start it from time \(T\) in the forward SDE from the distribution of \(\Xf_T\) and run it backwards.
-We will denote this reverse SDE as \(\del{\Xb_t}_{t\in\sbr{0, T}}\) to emphasise it is an SDE with the same paths, but with time running in the other direction.
-We will use the convention that time in the reverse SDE is opposite to that of the forward SDE, i.e. that \(\Xf_t = \Xb_{T-t}\).
-While this makes it necessary to track if one is talking about the forward or backward SDE to determine when a given time refers to, it means one does not have to deal with Brownian motions going backward in time, which can be more confusing.
-This reverse SDE then has the equation \[\d \Xb_t = \sbr{-\v{b}(\Xb_t, t) + \nabla_{\Xb_t} \log \pi_{T-t}(\Xb_t) }\d t + + \v{\sigma}(\Xb_t, t) \d \v{B}_t\].
-Note the time reindexing of time in the term \(\pi_{T-t}\) as the density of the reverse SDE at time \(t\) is the same as the density of the forward SDE at time \(T-t\).
-\3 All the terms in the reverse SDE are known, except for the "score" term, \(\nabla_{\Xb_t} \log \pi_{T-t}(\Xb_t)\).
-We therefore need a method to approximate or learn this term.
-Fortunately, with the large score matching toolbox we have available to us there are several options for learning this score.
-\4 Using the standard toolkit of SDE sampling schemes we can sample the reverse SDE in practise.
-\5 Using the connection between an SDE and the associated ODE we can evaluate the likelihood of a sample under the model, using standard ODE solving toolkits.
-\0
-
-Let us in detail look at each of these steps. 
-
-\subsubsection{The forward noising SDE}
-
-The first stage of a diffusion model is to corrupt the data towards a known and tractable noise distribution, often referred to as the "reference distribution".
-The point of this step is to define a path between the distribution of interest and an easy to sample distribution, with the intent later on of following this path in the reverse direction.
-Let us denote the reference distribution as \(\pi_T\), to suggest it is the distribution the forward SDE will arrive at some large time \(T\).
-If we make our choices right, this will be true up to a small error.
-
-Recall that if we have access to a density of the form \(\pi(x) \propto \exp(-U(x))\), then the SDE \[\d \v{X}_t = \nabla_{\v{X}} U(\v{X}) \d t + \sqrt{2} \d \v{B}_t\], will in the limit of infinite time converge to \(\pi\), regardless of the distribution we initialise the SDE with.
-% \todo{say something about convergence rate?} 
-We can also rescale this SDE by a time dependant noise factor, \(\beta({t})\), and obtain the same result, giving an SDE of the form \[\d \v{X}_t = \beta(t) \nabla_{\v{X}} U(\v{X}) \d t + \sqrt{2 \beta(t)} \d \v{B}_t\].
-This time rescaling can be very useful in diffusion models in optimising the efficiency of the discretised model rollouts and focusing the majority of the learning power of the score network on important regions of the SDE.
-% \todo{decide if to suppress notation or not.}
-
-While using Langevin dynamics to sample from complex distribution can be very slow to mix effectively, sampling a simple unimodel distribution is very fast.
-This gives us an option for our SDE that converges for a known distribution.
-Choosing the unit Gaussian as our reference distribution, \(\pi_T(\v{X}) \propto \exp\del{-\tfrac{1}{2} \v{X}^T \v{X}}\), we arrive at \(U(\v{X}) = -\v{X}\), and thus a forward noising SDE of the form \[\d \Xf_t = -\Xf_t\d t + \sqrt{2} \d \v{B}_t \].
-This is the well known Ornstein–Uhlenbeck process, and this converges exponentially quickly towards the unit Gaussian.
-This is an ideal noising SDE given the exponential convergence and the tractability of the density and of sampling of the Gaussian reference distribution.
-In the literature this is typically known as the "variance preserving SDE" or "VP-SDE".
-A property that will be useful later is that the transition density in the forward direction, \(p_{s|t}\delvert{\Xf_s}{\Xf_t}, \; s > t\) has analytic density and sampling.
-For an SDE with noising schedule \(\beta(t)\) this is given by \[ p_{s|t}\delvert{\v{X}_s}{\v{X}_t} = \c{N}\delvert{\v{X}_s}{e^{-{\int_t^s \beta(\tau)\d\tau}} \v{X}_t, \del{1-e^{-2{\int_t^s \beta(\tau)\d\tau}}}\v{I}}\]
-
-The other common alternative is the "variance exploding SDE" or "VE-SDE".
-In this we simply apply Brownian motion as the noising SDE.
-This will not converge to a stable distribution.
-However, the transition density of this SDE is given by \[\textstyle p_{s|t}\delvert{\Xf_s}{\Xf_t} = \c{N}\delvert{\Xf_s}{\Xf_t, \sqrt{{\int_t^s} \beta(\tau)\d\tau}\v{I}}\].
-The variance of this will continue to grow with time and eventually the variance of this transition density will dominate the variance of \(\pi\), and so the distribution \[\pi_T(\Xf_t) = \int p_{T|0}\delvert{\Xf_T}{\Xf_0} \pi(\Xf_0) \d \Xf_0\] will be well approximated by \(\c{N}\delvert{\Xf_T}{\v{0}, \sqrt{{\int_t^s} \beta(\tau)\d\tau}\v{I}}\), and therefore we can use this as the reference distribution.
-
-An alternative way to choose the forward stochastic differential eqaution is to start with the forward transition density and work backwards to the coeficients. If we restrict ourselves to linear Guassian transition densities, those of the form 
-\[p_{t|0}(x_t | x_0) = \c{N}(x_t; \alpha_t x_0, \sigma^2_t)\]
-for some differentiable mean function \(\alpha_t:\R\to \R\), with the restriction that \(\alpha_0=1\), and differentiable noise function \(\sigma_t:\R\to\R\), with the restriction that \(\sigma_0=0\), then the stochastic differential equation that has this forward transition density is
-\[\d\v{X}_t = \od{\log \alpha_t}{t}\d t +  \sbr{\od{\sigma_t^2}{t} - \od{\log \alpha_t}{t} \sigma_t^2}\d\m{B}_t\]
-If we pick \(\alpha_t\) and \(\sigma_t\) such that as \(t\to T\), \(\alpha_t\to 0\), then the process will converge to the distribution \(\c{N}(x_T; 0, \sigma_T^2)\), giving us a reference distribution to work with.
-
-The VP-SDE and VE-SDE can be fit into this framework, with \[&\alpha_t =  \exp(-\int_0^t \beta(\tau) \d\tau)\quad &\sigma_t &= 1- \exp(-2\int_0^t \beta(\tau) \d\tau)\quad&\text{VP-SDE}\\
-&\alpha_t =  1\quad &\sigma_t = \int_0^t \beta(\tau) \d\tau\quad&\text{VE-SDE}\]
-
-
-
-The choice of forward noising stochastic differential equation can have a significant impact on performance of a diffusion model. Interesting empirical studies can be seen for example in \textcite{karras2022Elucidating}.
-
-\begin{table}[h]
-	\centering
-	\begin{tabular}{lcccr}
-		\toprule
-		{\scshape SDE}                              &  & & {\scshape Complexity} & {\scshape Variance} \\
-		& \makecell{Samples from \(p_{t|s}\)} & \makecell{Analytic \(\nabla \log p_{t|s}\)} & & \\
-		\midrule
-		{\(\ssmlosst{}\)}  & \cmark & \xmark & \(\c{O}(d)\) & Highest\\
-		{\(\ismlosst{}\)}  & \cmark & \xmark & \(\c{O}(d^2)\) & Middle\\
-		{\(\dsmlosst{}\)}  & \cmark & \(t-s\) small & \(\c{O}(d)\) & Lowest \\
-		{\(\gdsmlosst{}\)} & \cmark & \cmark & \(\c{O}(d)\) & Lowest \\
-		\bottomrule
-	\end{tabular}
-	\caption{A comparison of score-matching objectives for diffusion models}
-	\label{tab:loass_comparison}
-\end{table}
-
-% Typically in generate models such as VAEs and normalising flows the transformation we ask the model a model to turn random noise in to interesting data through a series of intermediate steps. The intermediate steps, and the path on should take between each of these however remain unspecified, and the model must learn to pick one possible solution from a typically infinite set of choices. By contrast \emphmarginnote{diffusion models} specify the whole generative process process from the simple noise distribution to the data distribution. This specification of the mapping is a key element in their success. It significantly reduces the task we ask the model to learn from that of exploring the infinite space of possible mappings between data and noise, to a simple regression problem of matching the pre-specific path. The innovation in these models is being able to specify this mapping, and train the resulting model in an efficient way.
-
-% In the following I consider the continuous time formulation of diffusion models introduced in \textcite{song2020score}, which defines the corruption of noise into data via an SDE. There also exists the discrete view of diffusion modelling \textcite{sohl2015deep,ho2020denoising} where the corruption of data is done in a series of discrete step. Since the links between the two are very clear, and the discrete view can be seen as a discretisation of the continuous time version, I will not develop this.
-
-% The recipe for producing a diffusion model has two key steps:
-% \1 Specify a way of corrupting data into noise via a diffusion equations.
-% \2 Reverse this process of corruption to be able to turn noise into data, giving us a generative model. 
-% \0
-% This recipe as it turns out can be applied much more general than diffusion models, and this will be discussed later, but for now we will consider the case of modelling distributions supported on \(\R^n\) using diffusions as the corrupting process.
-
-% The main tool for this corruption is a \emphmarginnote{stochastic differential equation} (SDE). Typically we use \emphmarginnote{linear SDEs}. These have the form \[\d \v{X}_t = b(\v{X}_t, t) \d t + \Sigma(\v{X}_t, t) \d \v{B}_t\] where \(b : \R^n \times \R \to \R^n\) and \(\Sigma : \R^n \times \R \to \R^{(n\times n)}\).
-
-\subsubsection{Applying a time reversal result}
-
-The crucial step to be able to follow backwards the path defined by our forward noising SDE is the application of a time reversal result.
-We have discussed these theoretically earlier in \cref{sec:time-reversal} but to briefly recap;
-
-For a forward-time stochastic differential equation 
-\[ \d\Xf_t = \v{b}(\Xf_t, t)\d t + \sigma(t)\d \Bf_t, \quad \Xf_0 \sim p_0\]
-with time-marginal distributions \(p_t(\v{X})\), the reverse-time stochastic differential equation
-\[\d\Xb_t = \sbr{\v{b}(\Xb_t, t) - \sigma(t)^2\nabla\log p_t(\Xb_t)}\d t + \sigma(t)\d \Bb_t, \quad \Xb_T \sim p_T\].
-has the same time-marginal distributions \(p_t(\v{X})\) as the forward-time stochastic differential equation.
-
-\subsubsection{Learning the score}
-
-The next step in producing a diffusion model is learning the score term that appears in the reverse SDE, \(\nabla_{\v{X}_t} \log p_t(\v{X}_t)\).
-At first glance this may seem difficult, but a strong literature exists on learning this term, known as \emphmarginnote{score matching}.
-In order to approximate this score function, we will use an approximation taking inputs \(\v{X}_t\) and \(t\).
-We will denote this \(\scorenet{}: \R^d \times \sbr{0, T} \to \R^d\).
-We will also use the notion \(\scorenett{} : \R^d \to \R^d\) to refer to this function partially evaluated at time \(t\), \(\scorenett{}(\cdot) = \scorenet(\cdot, t)\).
-Typically, we will make this a neural network of some kind, and look to optimise this via gradient-based learning.
-
-% \emphmarginnote{Implicit score matching (ISM)} \parencite{hyvarinen05a} says that the following is true for a density \(\pi\) supported on \(\R^d\) relative to the Lebesgue measure;
-% \[\nabla_{\v{X}} \log \pi(\v{X}) = \argmin_{\phi} \int_{\R^d} \cbr{ \frac{1}{2} \norm{\phi\del{\v{X}}}^2 + \dive(\phi)(\v{X})} \pi(\v{X}) \d \v{X} \].
-% We can apply this to our SDE setting to say that the score at a given time is given by \[\nabla_{\v{X}} \log \pi_t(\v{X}) = \argmin_{\scorenett{}} \int_{\R^d} \cbr{ \frac{1}{2} \norm{\scorenett{}(\v{X})}^2 + \dive(\scorenett{})(\v{X})} \pi_t(\v{X}) \d \v{X}\].
-% We denote then this loss function as \(\ismlosst{}: \scorenett \mapsto \R\) such that \(\nabla_{\v{X}} \log \pi_t(\v{X}) = \argmin_{\scorenett{}} \ismlosst{}\).
-\textcite{hyvarinen05a} proves the following result
-\begin{theorem}[Implicit score matching (ISM)]
-	\label{def:ism}
-	Consider a density \(p_a(A)\) supported on \(\R^d\) relative to the Lebesgue measure.
-	Then,
-	\[\nabla_{A} \log p_a(A) = \argmin_{g\text{ measurable in }L^2} \E_{A}\sbr{ { \tfrac{1}{2} \norm{g\del{A}}^2 + \dive(g)(A)}}.\]
-\end{theorem}
-Using this we can learn the score of a distribution \(p_a\) if we just have access to good samples from \(p_a\) as we can approximate this expectation with Monte Carlo estimation.
-
-We can apply this to our SDE setting to say that the score at a given time is given by \[\nabla_{\v{X}_t} \log p_t(\v{X}_t) = \argmin_{\scorenett{}} \E_{\v{X}_t} \sbr{ \tfrac{1}{2} \norm{\scorenett{}(\v{X}_t)}^2 + \dive(\scorenett{})(\v{X}_t)}\].
-We denote then this loss function as \(\ismlosst{}\).
-
-In order to draw samples from \(p_t(\v{X}_t)\) we can utilise the fact that \[p_t(\v{X}_t) = \int p_{t|0}(\v{X}_t) p_0(\v{X}_0) \d \v{X}_0\].
-We can sample then from this joint density as we have as our dataset samples from \(p_0 = \pi\), and we have access to sampling from the transition density \( p_{t|0}\) from the forward noising SDE.
-We then throw away the samples from \(p_0\) to obtain samples from \(p_t\).
-
-What is not so nice about this objective is that it requires computation of the divergence of the score.
-While this is achievable using automatic differentiation packages, it is expensive in high dimension, scaling in cost with \(\c{O}(d^2)\).
-
-It is possible to apply to this the Hutchinson trace trick estimator \parencite{hutchinson1989stochastic} to stochastically approximate the divergence to get a loss function that scales with \(\c{O}(d)\) at the cost of higher variance, as detailed in \textcite{song2020sliced}, where it is called \emphmarginnote{sliced score matching (SSM)}.
-We denote this loss function \(\ssmlosst{}\).
-In practise this additional variance does not seem to be too important, as the variance of the Monte Carlo estimation of the integral over \(p_t\) is larger.
-
-\emphmarginnote{Denoising score matching (DSM) \label{def:dsm}} \parencite{vincent2011connection} is an alternative approach to implicit score matching that typically has lower variance.
-We do not get this for free, as we will need to know a little more information to apply this.
-Recall that the definition of the conditional distribution states that for \(L^2\)-integrable random variables \(A\) and \(B\), \[\argmin_{g\text{ measurable in }L^2} \E_{A, B}\sbr{\norm{A - g(B)}^2} = g: b\mapsto\E_{A}\sbrvert{A}{B=b}\], where \(\E_{A}\sbrvert{A}{B=b}\) is the conditional expectation of \(A\) given a value of \(B\).
-We apply this by putting \(A = \nabla \log p_{c|d}\delvert{C}{D}\) and \(B = C\) for new random variables \(C\) and \(D\), assuming they have densities relative to the Lebesgue measure, and so \[g(C) = \E_{D}\sbrvert{ \nabla \log p_{c|d}\delvert{D}{C}}{C}\].
-We can then apply the Tweedie identity.
-\begin{lemma}[The Tweedie identity]\label{lem:tweedie}
-	\[\E_{D}\sbrvert{\nabla_{C} \log p_{c|d}\delvert{C}{D}}{C} = \nabla_{C} \log p_c(C)\]
-\end{lemma}
-\begin{proof}
-	Delayed to \cref{sec:tweedie_proof}
-\end{proof}
-Combing this we see that \[ \argmin_{g\text{ measurable in }L^2} \E_{C,D}\sbr{\norm{\nabla_C \log p_{c|d}\delvert{C}{D} - g(C)}^2} &= \E_{D}\sbrvert{\nabla_{C} \log p_{c|d}\delvert{C}{D}}{C}\nonumber \\ &= \nabla_{C} \log p_c(C)\], and therefore can learn the score for \(\nabla_C \log p_c(C)\) if we have access to \1 samples from the joint distribution \(p_{c,d}(C, D)\) and \2 access to the analytic conditional score \(\nabla_C \log p_{c|d} \delvert{C}{D}\).\0
-
-To apply this to our SDE setting, we pick \(C = \v{X}_t\) and \(D=\v{X}_s\), with \(s < t\). We have access to samples from \(p_{t,s}\del{\v{X}_t, \v{X}_s}\) by using the fact that 
-\[
-	p_{t,s}\del{\v{X}_t, \v{X}_s} &= \int_{\R^d} p_{t|s, 0}\delvert{\v{X}_t}{\v{X}_s, \v{X}_0} p_{s|0} \delvert{\v{X}_s}{\v{X}_0} p_0\del{\v{X}_0} \d \v{X}_0 \\
-	&= \int_{\R^d} p_{t|s}\delvert{\v{X}_t}{\v{X}_s} p_{s|0} \delvert{\v{X}_s}{\v{X}_0} p_0\del{\v{X}_0} \d \v{X}_0
-\] where the second line follows as SDE transitions have the Markov property. We have access to samples from \(p_0\) from our data, and the SDE tells us how to sample from the transitions.
-We also need access to the analytic form of \(\nabla_{\v{X}_t} \log p_{t|s} \delvert{\v{X}_t}{\v{X}_s}\).
-For most SDEs used in the literature, such as the variance exploding and preserving, this is available.
-If it is not available, often good approximations are available over for short time steps between \(s\) and \(t\).
-
-The most common form of this loss in the literature is to set \(s=0\). 
-This simplifies the sampling as then we only need to sample the one transition.
-This is the denoising score matching described in \textcite{song2020score}.
-We describe the more general scheme here as it is useful when we only have access to an approximation of \(p_{t|s}\) over short times.
-
-We shall label this loss \(\gdsmlosst{}\) in the general case and \(\dsmlosst{}\) when using \(s=0\).
-
-To summarise:
-\begin{table}[h]
-	\centering
-	\begin{tabular}{lcccr}
-		\toprule
-		{\scshape Loss}                              & \multicolumn{2}{c}{{\scshape Requires}} & {\scshape Complexity} & {\scshape Variance} \\
-		& \makecell{Samples from \(p_{t|s}\)} & \makecell{Analytic \(\nabla \log p_{t|s}\)} & & \\
-		\midrule
-		{\(\ssmlosst{}\)}  & \cmark & \xmark & \(\c{O}(d)\) & Highest\\
-		{\(\ismlosst{}\)}  & \cmark & \xmark & \(\c{O}(d^2)\) & Middle\\
-		{\(\gdsmlosst{}\)}  & \cmark & \(t-s\) small & \(\c{O}(d)\) & Lowest \\
-		{\(\dsmlosst{}\)} & \cmark & \cmark & \(\c{O}(d)\) & Lowest \\
-		\bottomrule
-	\end{tabular}
-	\caption{A comparison of score-matching objectives for diffusion models}
-	\label{tab:loass_comparison}
-\end{table}
-
-The objectives detailed match the score at given time \(t\) only. 
-In order to match the score at all times, we integrate this objective over all times \(t \in \sbr{0, T}\).
-\[\ell(\scorenet{}) = \int_{\sbr{0, T}} \lambda(t) \ell_t(\scorenett{}) \d t\].
-Notice there is a weighting function applied over all \(t\).
-While this weighting does not affect the minima of the objective, it does rebalance where a network will prioritise learning the score most.
-Many choices for \(\lambda(t)\) exist and can be tuned to optimise different objectives.
-In particular picking \(\lambda(t) = \sigma(t)^2\) can be shown to be equivalent to optimising the maximum likelihood objection on the dataset \cite{huang2021variational,durkan2021maximum}.
-
-A common feature of all of these objectives is that they are
-\1 stable regression objectives and
-\2 require evaluation of the score network at a given time \(t\) only.
-\0
-Compare this to the objectives of normalsing flow models, VAE models, or GANs.
-These objective functions require us to run a full generation of samples from the model in order to evaluate the objective.
-In contrast, the score matching objectives only need us to evaluate the generative model at one point in the generative process.
-Additionally, the score matching objectives at a given time is stable with respect to other times.
-The minima at a given time will not change as we optimise the score function at other times.
-This is in comparison to other objectives where changing the weights at one point in the network significantly changes what the optimum weight at other points in the network is.
-This is exacerbated in GANs, as changing the discriminator function changes the objective the generator function is trying to learn, leading to well known instabilities.
-This cheap evaluation and objective stability is one of the key attractions of diffusion models.
-It is akin to us being able to optimise the weights in each layer of one of these other types of model independently, and this optimisation not affect the optimal weights in other layers.
-
-There is one common draw back to these objectives however, and that is the Monte Carlo sampling required to evaluate these objectives makes them particularly noisy as objectives.
-This can be mitigated however by taking an average of the weights through training.
-Typically, exponential moving averages have been used, and the smoothing rate requires tuning.
-Recently, \textcite{karras2023analyzing} proposed new averaging schemes, and importantly a mehtod to perform hyperparameter optimisation of the smoothing rates post-hoc, requiring only a single training run of the model.
-
-\subsubsection{Approximate sampling from SDEs}
-\label{sec:sde_discretisation}
-
-Much the computational impossiblity of solving genreal ODE problems exactly, it is impossible to sample from general SDEs exactly.
-We can however make good approximations to this.
-
-\subsubsection{Likelihood ODEs}
-\label{sec:likelihood-ode}
-The final thing that we are missing now is the ability to compute the likelihood of a sample from a diffusion model.
-In order to do this we will leverage the \emphmarginnote{Fokker-Plank equation} (\cref{sec:fokker_plank}).
-Recall that for an SDE of the form \[\d \v{X}_t = \v{b}(\v{X}_t, t) \d t + \m{\Sigma}(\v{X}_t, t) \d \v{B}_t \], in this case where \(\m{\Sigma}\) is a matrix of noise coefficients, the time-evolution of the density is given by
-\[ \pd{p_t(\v{X})}{t} = -\sum_{i=1}^d \pd{}{\v{X}_i}\sbr{\v{b}(\v{X}, t) p_t{\v{X}}} + \frac{1}{2} \sum_{i=1}^d \sum_{j=1}^d \frac{\partial^2}{\partial \v{X}_i \partial \v{X}_j} \sbr{\m{\Sigma}(\v{X}, t) \m{\Sigma}(\v{X}, t)^T p_t(\v{X})} \].
-Using this, we can obtain the following result
-
-\begin{theorem}[The likelihood flow ODE]
-	\label{thm:likelihood_ode}
-	For an SDE of the form 
-	\[\d \v{X}_t = \v{b}(\v{X}_t, t) \d t + \m{\Sigma}(\v{X}_t, t) \d \v{B}_t \]
-	initialised with \(\v{X}_0 \sim p_0\), the ODE
-	\[\d \v{X}_t = \sbr{\v{b}(\v{X}_t, t) - \frac{1}{2}\sbr{\nabla \cdot \sbr{\m{\Sigma}(\v{X}, t) \m{\Sigma}(\v{X}, t)^T}\nonumber +\m{\Sigma}(\v{X}, t) \m{\Sigma}(\v{X}, t)^T \nabla_{\v{X}_t}\log p_t(\v{X}_t)}} \d t\]
-	initialised with \(\v{X}_0 \sim p_0\) has the same marginal density at all times \(t\in\sbr{0,T}\)
-\end{theorem}
-\begin{proof}
-	Due to \textcite{maoutsa2020interacting} and \textcite[appendix D]{song2020score}, restated in \cref{sec:likelihood_ode_proof}.
-\end{proof}
-In diffusion models we typically use \(\m{\Sigma}(\v{X}, t) = \sigma(\v{X}, t) I\), a simple time-dependant scalar noise.
-With this, the likelihood ODE simplifies to
-\[\d \v{X}_t = \sbr{\v{b}(\v{X}_t, t) - \frac{1}{2}\sigma(\v{X}, t)^2 \log p_t(\v{X}_t)} \d t \label{eq:likelihood_ode_drift} \].
-Fortunately there already exists tools to be able to compute the change in likelihood induced by an ODE trajectory, assuming the ODE describes the flow of a density.
-\begin{theorem}[Instantanious change of likelihood of an ODE]
-	Let \(\del{\v{X}_t}_{t\in\sbr{0,T}}\) be a stochastic process with marginal density at time \(t\) \(p_t(\v{X}_t)\).
-	Let \(\d \v{X}_t = \v{b}(\v{X}_t, t) \d t\) be an ODE describing the evolution of particles.
-	Assume that \(\v{b}\) is uniformly Lipshitz continuous in \(\v{X}_t\) and continuous in \(t\).
-
-	Then, the instantaneous change in log probability is given by 
-	\[\pd{\log p_t(\v{X}_t)}{t} = -\tr\del{\eval{\od{\v{b}}{\v{X}_t}}{\del{\v{X}_t, t}}} = \nabla \cdot \v{b}\del{\v{X}_t, t}\]
-\end{theorem}
-\begin{proof}
-	Proved in \textcite[appendix A]{chen2018neural}. Restated in \cref{sec:ode_likelihood_formula}.
-\end{proof}
-Using this, we can evaluate the likelihood of a point under our diffusion model at \(t=0\).
-For a given point \(v{X}_0\) is equal to the change in likelihood over the course of the ODE, plus the likelihood of the point at the other end, \[\log p_0(\v{X}_0) = \int_0^T \nabla \cdot \v{b}\del{\v{X}_t, t} \d t + \log p_T(\v{X}_T)\]
-where \(\v{X}_t\) is the path the point \(\v{X}_0\) follows under the ODE.
-
-In practise, we solve these as a joint ODE to take advantage of error tolerant solvers on the joint system,
-\[
-	\d 
-	\begin{bmatrix}
-		\v{X}_t \\ \log p(\v{X}_t)
-	\end{bmatrix} = 
-	\begin{bmatrix}
-		\v{b}\del{\v{X}_t, t} \\ \nabla \cdot \v{b} \del{\v{X}_t, t}
-	\end{bmatrix}
-\]
-This is in fact how \emphmarginnote{continuous noramlising flows (CNFs)} \parencite{chen2018neural} work. 
-The model is defined by a parametrised drift function \(\v{b}_\theta\), and is trained by maximum likelihood by backpropogating through the ode solver \parencite{chen2018neural}. 
-There exist a number of stratergies for backpropogating through ODE solvers.
-These are discussed well in \textcite{kidger2021on}, which has accompanying it the python library \verb|diffrax| \marginnote{\url{https://github.com/patrick-kidger/diffrax}} for handling ODEs and other DEs easily.
-
-To apply this scheme for computing the likelihood to diffusion models we simply use our modified drift function in \cref{eq:likelihood_ode_drift} and use the reference distribution from our diffusion model for \(p_T\).
-
-This also gives us an additional method to sample from our diffusion model. 
-Insdead of solving the SDE approximately (\cref{sec:sde_discretisation}) we can sample from \(p_T\) and solve this ODE in reverse to draw samples from the model.
-This can outperform sampling the SDE in certain scenarios \parencite{karras2022Elucidating,song2019generative}.
+We provide theoretical convergence bounds for Riemannian score-based generative models on compact manifolds and demonstrate our approach on a range of manifolds and tasks, including modelling a number of natural disaster occurrence datasets collected by \textcite{mathieu2020riemannian}.
+We show that Riemannian score-based generative models achieve better performance than recent baselines \parencite{mathieu2020riemannian,rozen2021moser} and scale better to higher dimensions than these approaches also.
 
 \section{Riemannian Score-Based Generative Modelling}
 \label{sec:score-appr-manif}
 In the background material we introduced diffusion models defined over Euclidean space to model densities on \(\R^n\).
 In this section, we introduce new tools and techniques to generalise diffusion models to Riemannian manifolds (without boundary).
 
-More specifically our setting will be a \emphhyperref{complete}{def:complete_manifold}, \emphhyperref{orientable}{def:orientable_manifold}, \emphhyperref{connected}{def:connected_space}, \emphhyperref{boundaryless}{def:manifold_with_boundary} \emphhyperref{Riemannian}{def:riemannain_manifold} manifold, \((\c{M}, g)\).
+More specifically our setting will be a \emphhyperref{complete}{def:geodesically_complete}, \emphhyperref{orientable}{def:orientable_manifold}, \emphhyperref{connected}{def:connected_space}, \emphhyperref{boundaryless}{def:manifold_with_boundary} \emphhyperref{Riemannian}{def:riemannain_manifold} manifold, \((\c{M}, g)\).
 
 Four components are required to extend SGMs to this setting: \begin{enumerate}[label=\roman*)] \item a forward {noising} process on \(\c{M}\) which converges to an easy-to-sample reference distribution, \item a time-reversal formula on \(\c{M}\) which defines a backward generative process, \item a method for approximating samples of SDEs on manifolds, \item a method to efficiently perform score matching on Riemannian manifolds.
 \end{enumerate}
 We provide these tools, and detail them now.
+
+If we assume that a density of a measure exists at any point, we assume that it exists relative to the \emphhyperref{Riemannain volume measure}{def:riemannain_volume_measure}, \(\d\vol_g\), the measure induced by the Riemannain volume form on the manifold.
 
 \subsection{Noising processes on manifolds}
 
@@ -360,13 +63,13 @@ Immediately then, this motivates using a form of Langevin dynamics as our noisin
 The difficulty then is how to choose a \(U\) to suit our needs.
 To do this, we look at a number of ways of adapting the Gaussian to manifold.
 
-The \emphmarginnote{heat kernel on a manifold}, the solutions to \[\pd{K}{t} = \Delta_g K, \quad K:\R^+ \x \c{M} \x \c{M}\], is a natural extension, as on Euclidean space this is given by the Gaussian.
+The \emphmarginnote{heat kernel on a manifold}, the solutions to \[\pd{K}{t} = \Delta_g K, \quad K:\R^+ \x \c{M} \x \c{M},\] is a natural extension, as on Euclidean space this is given by the Gaussian.
 Closed form expressions for the heat kernel are not usually available, but truncated basis expansions (see \cref{sec:laplace_beltrami_operator} and \textcite{azangulov2023stationary,azangulov2023stationary2}) are available and can be differentiated to give approximate expressions for \(U\).
 However, in general there is not a cheap algorithm to sample from this distribution.
 Instead, more expensive MCMC, such as Langevin dynamics, must be used to sample from this distribution.
 
 We can also target the \emphmarginnote{Riemannian normal} distribution\parencite{pennec2006Intrinsic}.
-We achieve this by setting \[U(x) = d_\c{M}(x, \mu)^2/(2 \gamma^2)\], where \(d_\c{M}\) is the geodesic distance and \(\mu \in \c{M}\) is an arbitrary mean location.
+We achieve this by setting \[U(x) = d_\c{M}(x, \mu)^2/(2 \gamma^2),\] where \(d_\c{M}\) is the geodesic distance and \(\mu \in \c{M}\) is an arbitrary mean location.
 This induces the drift \[\nabla_{\v{X}_t} U(\v{X}_t) = -\exp^{-1}_{\v{X}_t}(\mu) /\gamma^2\] where \(\exp_x: \mathrm{T}_x \c{M} \to \c{M}\) denotes the exponential mapping on the manifold (\cref{sec:exponential_map}).
 Again however, in general there is not a cheap algorithm to sample from this distribution and so we have to resort to MCMC methods.
 
@@ -377,14 +80,14 @@ Sampling this distribution is very simple, we sample a regular Gaussian and pass
 Computing the density, and therefore the required \(U\) is only simple in the case where the exponential map is a bijection between the tangent space at a point and the manifold.
 This is true for some non-compact manifolds such as Euclidean space and hyperbolic space, but not others such as a cylinder.
 In this case we can write the density as
-\[p(x) = \c{N}\del{\exp^{-1}_\mu(x);0, \sigma^2} \quad x\in \c{M}\].
-Applying the change of variable formula, we arrive at a potential given by \[U(x) &= d_{\c{M}}(x, \mu)^2/(2 \gamma^2) + \log \abs \det D \exp^{-1}{\mu}(x) \\ &=d_{\c{M}}(x, \mu)^2/(2 \gamma^2) +  1/\log \abs \det D \exp{\mu}(x)\], where \(D\) denotes the \emphhyperref{Jacobian}{} of the log map.
+\[p(x) = \c{N}\del{\exp^{-1}_\mu(x);0, \sigma^2} \quad x\in \c{M}.\]
+Applying the change of variable formula, we arrive at a potential given by \[U(x) &= d_{\c{M}}(x, \mu)^2/(2 \gamma^2) + \log \abs \det D \exp^{-1}{\mu}(x) \\ &=d_{\c{M}}(x, \mu)^2/(2 \gamma^2) +  1/\log \abs \det D \exp{\mu}(x),\] where \(D\) denotes the \emphhyperref{Jacobian}{} of the log map.
 
 Where the exponential map is not a bijection, but the manifold is still geodesically complete, the exponential map multiple points in the tangent space to the same point in the manifold.
 The inverse exponential map is not well-defined in this case, but we can instead replace this with summation over points in the tangent space that map to a given point on the manifold.
 Let us denote this as \(\c{P}(x) = \cbrcolon{\exp_\mu(y) = x}{y\in T_\mu \c{M}}\).
 Then the density is given by
-\[p(x) = \sum_{y \in \c{P}(x)}\c{N}\del{y;0, \sigma^2} \quad x\in \c{M}\].
+\[p(x) = \sum_{y \in \c{P}(x)}\c{N}\del{y;0, \sigma^2} \quad x\in \c{M}.\]
 
 One recovers the standard Ornstein--Uhlenbeck noising process~\parencite{song2020score} for all three of the options for \(U\) when \(\c{M}=\R^d\) and \(\mu = 0\) since then the drift \(b(t, \v{X}_t) = \tfrac{1}{2} ~\exp^{-1}_{\v{X}_t}(0) = -\tfrac{1}{2}~\v{X}_t\).
 
@@ -406,7 +109,7 @@ Let \(\Bf_t\) and \(\Bb_t\) be forward and reverse time Brownian motions on \(\c
 For a forward-time stochastic differential equation 
 \[ \d\Xf_t = \v{b}(\Xf_t, t)\d t + \sigma(t)\d \Bf_t, \quad \Xf_0 \sim p_0\]
 with time-marginal distributions \(p_t(\v{X})\), the reverse-time stochastic differential equation
-\[\d\Xb_t = \sbr{\v{b}(\Xb_t, t) - \sigma(t)^2\nabla_g\log p_t(\Xb_t)}\d t + \sigma(t)\d \Bb_t, \quad \Xb_T \sim p_T\].
+\[\d\Xb_t = \sbr{\v{b}(\Xb_t, t) - \sigma(t)^2\nabla_g\log p_t(\Xb_t)}\d t + \sigma(t)\d \Bb_t, \quad \Xb_T \sim p_T.\]
 has the same time-marginal distributions \(p_t(\v{X})\) as the forward-time stochastic differential equation.
 \end{theorem}
 \begin{proof}
@@ -418,18 +121,18 @@ has the same time-marginal distributions \(p_t(\v{X})\) as the forward-time stoc
 	and for a manifold-valued stochastic differential equation forwards in time
 	\[\d\Xb_t = \v{b}(\Xb_t, t)\d t + \sigma(t)\d \Bb_t\]
 	is given by
-	\[-\pd{p_t^\vsla{}(\v{X})}{t} = \dive_g\del{{\v{b}(\v{X}, t)} p_t^\vsla{}(\v{X})} + \tfrac{1}{2}\sigma^2(t)\Delta_g p_t^\vsla{}(\v{X})\].
+	\[-\pd{p_t^\vsla{}(\v{X})}{t} = \dive_g\del{{\v{b}(\v{X}, t)} p_t^\vsla{}(\v{X})} + \tfrac{1}{2}\sigma^2(t)\Delta_g p_t^\vsla{}(\v{X}).\]
 	Note the negative on the left hand side of the final equation, as time is running backwards in this case.
 
-	We can use the definition of the Laplace-Beltrami operator and the chain rule to state that for a function \(f\in C^\infty(\c{M})\), \[\Delta_g f(\v{X}) = \dive(\nabla_g f(\v{X}))= \dive(f(\v{X}) \nabla_g \log f(\v{X}))\].
+	We can use the definition of the Laplace-Beltrami operator and the chain rule to state that for a function \(f\in C^\infty(\c{M})\), \[\Delta_g f(\v{X}) = \dive(\nabla_g f(\v{X}))= \dive(f(\v{X}) \nabla_g \log f(\v{X})).\]
 	Applying to the forward Fokker-plank equation we see that
 	\[
 		-\pd{p_t^\vsra{}(\v{X})}{t} = \dive_g\del{\sbr{\v{b}(\v{X}, t) - \sigma(t)^2 \nabla_g \log p_t^\vsra{}(\v{X})} p_t^\vsra{}(\v{X})} + \tfrac{1}{2}\sigma^2(t)\Delta_g p_t^\vsra{}(\v{X})
-	\],
+	,\]
 	which is exactly the form of the Fokker-plank equation of a reverse time manifold valued stochasitc differential equation,
 	\[
 		\d\Xb_t = \sbr{\v{b}(\Xb_t, t) - \sigma(t)^2 \nabla_g \log p_t^\vsra{}(\v{X})}\d t + \sigma(t)\d \Bb_t
-	\].
+	.\]
 	Since by assumption the time-marginal of this stochastic differential equation at time \(T\) is exactly \(p_T(\v{X})\), and the reverse evolution of the time-marginals of this stochastic differnetial equation match those of the forward time stochastic differential equation, it follows that at all times the time-marginals of the two stochastic differnetial equations match.
 \end{proof}
 We here for the first time encounter the notion of the Stein score of a density supported on a manifold, \(\nabla \log p_t\).
@@ -469,14 +172,14 @@ Similarly to \textcite{song2020score}, with access to the score \(\nabla\log p_t
 \Cref{sec:ode-connection} shows how we can relate a stochastic differential equaiton with general coefficients, 
 \[ \d\v{X}_t = \v{b}(t, \v{X}_t)\d t + \sigma(t)\d \v{B}_t, \quad \v{X}_0 \sim p_0\]
 , to an ordinary differential equation with the same time-marginal distribtions given by
-\[ \d\v{X}_t = \sbr{\v{b}(t, \v{X}_t) - \frac{1}{2}\sigma(t)^2\nabla\log p_t(\v{X}_t)}\d t, \quad \v{X}_0 \sim p_0\].
+\[ \d\v{X}_t = \sbr{\v{b}(t, \v{X}_t) - \frac{1}{2}\sigma(t)^2\nabla\log p_t(\v{X}_t)}\d t, \quad \v{X}_0 \sim p_0.\]
 \Cref{sec:likelihood-ode} shows how we can also compute the instantanious change in likelihood of an ordinary differential equaiton trajectory, defined by drift field \(v: \R^n \x \sbr{0, T}\), via
-\[\od{\log p_t(\v{X}_t)}{t} = \nabla \cdot \v{b}\del{\v{X}_t, t}\label{eq:likelihood-change}\].
+\[\od{\log p_t(\v{X}_t)}{t} = \nabla \cdot \v{b}\del{\v{X}_t, t}\label{eq:likelihood-change}.\]
 Combining these two ordinary differential equations we can produce an ordinary differetial equation that when run forward in time allows us to compute the likelihood of a given point, and when run backwards in time allows us to sample from the score based diffusion model.
 See \cref{sec:likelihood-ode} for details.
 
 We can quickly generalise this to the manifold setting.
-Previous works, such as \textcite[Proposition 2]{mathieu2020riemannian} for example have already shown that the manifold equivalent of \cref{eq:likelihood-change} is given by \[\od{\log p_t(\v{X}_t)}{t} = -\mathrm{div}(v)(\v{X}_t, t)\].
+Previous works, such as \textcite[Proposition 2]{mathieu2020riemannian} for example have already shown that the manifold equivalent of \cref{eq:likelihood-change} is given by \[\od{\log p_t(\v{X}_t)}{t} = -\mathrm{div}(v)(\v{X}_t, t).\]
 We can then also prove the following
 \begin{theorem}[Manifold time-marginal ordinary differential equation]
 	For a manifold-valued stochastic differential equation 
@@ -571,11 +274,11 @@ This generalisation is key to sampling the backward diffusion process defined in
 	For any \(\gamma > 0\), we define \((\v{X}_n^\gamma)_{n \in \N, n > 0}\) such that
 	\[
 		\v{X}_{n+1}^\gamma = \exp_{X_{n}^\gamma}\sbr{\gamma \sbr{ b(X_{n}^\gamma) + \sqrt{\gamma} V_{n+1} }}
-	\], 
+	,\] 
 	where \((V_n)_{n \in \N}\) is a sequence of \(T_{\v{X}_n^\gamma}\c{M}\)-valued random variables such that for any \(n \in \N\), 
 	\[
 		\E\sbrvert{V_{n+1}}{\c{F}_n} = 0 \text{ and }\E\sbrvert{V_{n+1} V_{n+1}^\top}{\c{F}_n} = \sigma \sigma^\top
-	\], 
+	,\] 
 	where \(\c{F}_n\) is the filtration generated by \(\cbr{\v{X}_k^\gamma}_{k=0}^n\).
 
 	We say that the \(\c{M}\)-valued process \((\v{X}_n^\gamma)_{n \in \N}\) is a geodesic random walk.
@@ -629,7 +332,7 @@ Letting \(\gamma \to 0\), we obtain that under mild assumptions, see \cite[Theor
 \end{equation}
 We have that \(p_{T-t}\) is the invariant measure of \((\v{X}_s^t)_{s \geq 0}\).
 Hence, the role of the corrector step is to project the distribution back onto \(p_{T-t}\) for all times \(t \in \sbr{0,T}\), see \Cref{fig:illustration_pred_correc}.
-\begin{figure}[htb]
+\begin{figure}[t!]
 	\centering
 	\begin{tikzpicture}
 		\draw [stealth-, line width = .05cm] (0,0) .. controls  (2,-4) and (4,4) .. (6,0);
@@ -713,7 +416,7 @@ We will need to again approximate this quantity through a score matching loss.
 In this section we will assume that we have a \(\c{M}\)-valued stochasitc process \(\del{\v{X}_t}_{t\in\sbr{0, T}}\) defined by
 \[
 	\d\v{X}_t = \v{b}(t, \v{X}_t) \d t + \sigma(t) \d\v{B}_t, \quad \v{X}_0 \sim p_0	
-\].
+.\]
 We will denote \(p_t\) as the marginal denisty of \(\v{X}_t\) and \(p_{s,t}\) the joint denisty of \(\v{X}_s\) and \(\v{X}_t\) for some \(t>s \geq 0\), relative to the Riemannian volume form and the product Riemanian volume forms respectivly, and \(\P_t\) and \(\P_{t|s}\) be their distributions.
 We will let \(\v{s}: \R^+ \x \c{M}\to T\c{M}\) be an arbirtray smooth time-varying vector field on \(\c{M}\), representing the approximation we learn to the score function.
 
@@ -749,10 +452,10 @@ The regularity conditions on \(p_{t|s}(\v{X}_t | \v{X}_s) \v{s}(t, \v{X}_t)\) re
 Since the second term is independent of \(\v{s}_t\)r  for any \(t \in \ocbr{0,T}\), the minimizers of the loss \(\ell^{ism}_t\) on \(\Gamma(T\c{X})\)  are the same as the ones for \(\ell_{t|s}\).
 
 The Riemannain divergence of an arbirtray vector field can be achived in an automatic differentiation package by using the coordinate expression for the divergence in a chart \((\phi, U)\), see \cref{def:riemannain_divergence_chart},
-\[\dive V = \frac{1}{\sqrt{\det g}} \partial\phi_i \del{\sqrt{\det g}\; V_i}\label{eq:riemannian_divergence_coords}\].
+\[\dive V = \frac{1}{\sqrt{\det g}} \partial\phi_i \del{\sqrt{\det g}\; V_i}\label{eq:riemannian_divergence_coords}.\]
 The \(\partial\phi_i \del{\sqrt{\det g}\; V_i}\) part can be intepreted as the Euclidean divergence of the vector field \[V(\phi_1, ..., \phi_n) = \begin{bmatrix}
 	\sqrt{\det g(\phi_1, ..., \phi_n)}\; V_1 (\phi_1, ..., \phi_n) \\ \vdots \\ \sqrt{\det g(\phi_1, ..., \phi_n)}\; V_n (\phi_1, ..., \phi_n)
-\end{bmatrix}\label{eq:euclidean_riamannian_divergence}\],
+\end{bmatrix}\label{eq:euclidean_riamannian_divergence},\]
 and this can be computed by an automatic differetiaiton package if we have the expression for the metric and the components of the vector field in the chart.
 
 As in the Euclidean case the computation of a divergence in an automatic differentation package requres \(d\) Jacobian-vector calls.
@@ -769,7 +472,7 @@ The general stratergy shall be to parametrise a vector field as a finite sum of 
 That is,
 \[
 	V = f^i E_i, \quad f_i \in C^\infty(\c{M}), \; E_i \in \Gamma(T\c{M})	
-\].
+.\]
 In \(d\)-dimension Euclidean space there exists a set of \(d\) smooth basis fields \((E_i)_{i=1}^d\) which space the tangent sapce, as it is \emphhyperref{parallisable}{}, creating a bijection between the tanget bundle and \(C^\infty(\c{M}, \R^d)\).
 We can then express the score function as \[\v{s}_\theta(\v{X})\sum_{i=1}^d \bar{\v{s}}^i_\theta(\v{X}) E_i(\v{X})\label{eq:score_function_basis_expression}\] where \(\bar{\v{s}}_\theta \in C^\infty(\c{M}, \R^d)\).
 This is not true in general for manifolds, most are \emphhyperref{non-parallisable}{}, and the space of vector fields forms a module, not a vector space (see \cref{def:}).
@@ -777,7 +480,7 @@ This is not true in general for manifolds, most are \emphhyperref{non-parallisab
 Fortunately however the space of vector fields is \emphhyperref{finitely generated}{} for any Riemannian manifold.
 One can rely therefore on a larger set of smooth vector fields \(\{E_i(x)\}_{i=1}^n\) with \(n > d\) that \emph{does} span the tangent bundle.
 This does not create a bijection between the tangent bundle and \(C^\infty(\c{M}, \R^n)\), but does create an injection, so any vector field can be represented.
-Then it suffices to construct a smooth neural network \(\bar{\v{s}}_\theta: \sbr{0, T} \times \c{M} \rightarrow \R^n\) to parametrise the score network as \[\v{s}_\theta(t,x) = \sum_{i=1}^n \bar{\v{s}}^i_\theta(t,\v{X}) E_i(x)\].
+Then it suffices to construct a smooth neural network \(\bar{\v{s}}_\theta: \sbr{0, T} \times \c{M} \rightarrow \R^n\) to parametrise the score network as \[\v{s}_\theta(t,x) = \sum_{i=1}^n \bar{\v{s}}^i_\theta(t,\v{X}) E_i(x).\]
 There are a number of ways we can choose the generating sets \(\{E_i(\v{X})\}_{i=1}^n\).
 
 Most simply, we can use \emphmarginnote{projected vector fields}.
@@ -791,10 +494,10 @@ The Riemannain gradients of the inclusion map, \(\grad_g \inclusion_i\), generat
 
 
 More concretly, if we define \(\bar{\v{s}}_\theta: [0,T] \x \c{M} \to T\R^n\) then we can define the parametrised score function as
-\[\v{s}_\theta(t, \v{X}) = (\d F)^{-1} \sbr{\proj_{\d F(T\c{M})} \bar{\v{s}}_\theta(t, \v{X})}\].
+\[\v{s}_\theta(t, \v{X}) = (\d F)^{-1} \sbr{\proj_{\d F(T\c{M})} \bar{\v{s}}_\theta(t, \v{X})}.\]
 This is equivalent to taking the Euclidean basis fields, \((E_i)_{i=1}^n\) and defining the score function as
-\[\v{s}_\theta(t,x) = \sum_{i=1}^n \bar{\v{s}}^i_\theta(t,\v{X})\proj_{\d F(T\c{M})} (\d F)^{-1}\sbr{ E_i(\v{X}) }\]. One attractive property of this construction is that for a vector field \(V\in \Gamma{T\c{M}}\), 
-\[\dive_g V = \dive \d F (V)\], where on the right hand side this is the usual Euclidean divergence, and so we can avoid the complexity of \cref{eq:riemannian_divergence_coords} and compute the divergence of the vector field in Eucldiean space with regular automatic differentiation.
+\[\v{s}_\theta(t,x) = \sum_{i=1}^n \bar{\v{s}}^i_\theta(t,\v{X})\proj_{\d F(T\c{M})} (\d F)^{-1}\sbr{ E_i(\v{X}) }.\] One attractive property of this construction is that for a vector field \(V\in \Gamma{T\c{M}}\), 
+\[\dive_g V = \dive \d F (V),\] where on the right hand side this is the usual Euclidean divergence, and so we can avoid the complexity of \cref{eq:riemannian_divergence_coords} and compute the divergence of the vector field in Eucldiean space with regular automatic differentiation.
 
 For any Lie group \(G\) we can use a set of \emphmarginnote{divergence-free vector fields}.
 We can immediatly use a global basis of smooth frames of size \(d\) as Lie groups are parallizable.
@@ -803,12 +506,12 @@ More usefuly, we can construct this basis to be \emph{divergence free}.
 
 To construct this let \[L_g: G\to G, \quad L_g(g') = g\cdot g'\] the left translation of a Lie group.
 We call a vector field \(V\in \Gamma(TG\) on a Lie group left-invariant if
-\[(\d L_g)_{g'} (V_{g'} = V_{g\cdot g'})\].
+\[(\d L_g)_{g'} (V_{g'} = V_{g\cdot g'}).\]
 For any vector \(v\in T_eG\), where \(e\in G\) is the identity element, there exists a left-invariant vector field \(V\in \Gamma(TG)\) \parencite[Chapter 8]{lee2013smooth}.
 We can thererfore use any basis of \(T_e G\), \((v_i)_{i=1}^n\), to create a left-invariant global basis of \(\Gamma(TG)\), \((E_i)_{i=1}^d\) such that \(E_i(e) - v_i\).
 
 As a result of the left invariance of the basis fields, we have that for any \(i \in \{1, \dots, d\}\), \(\dive_g(E_i)=0\).
-This result simplifies the computation of \(\dive_g(\v{s}_\theta)\) where \(\v{s}_\theta\) is of the form of \cref{eq:score_function_basis_expression} since we have that \[\dive_g (\v{s}_\theta)(t, \v{X}) &= \sum_{i=1}^d E_i(\v{s}^i_\theta)(t, \v{X}) + \sum_{i=1}^d \v{s}^i_\theta(t,\v{X}) \dive_g (E_i)(\v{X}) \\&= \sum_{i=1}^d \d \v{s}^i_\theta (E_i)(t, \v{X}) \], and \(\d \v{s}^i_\theta\) can be computed with automatic differentiation and \emphhyperref{lowering an index}{{def:lowering_an_index}}, \cite[see][]{falorsi2020neural}.
+This result simplifies the computation of \(\dive_g(\v{s}_\theta)\) where \(\v{s}_\theta\) is of the form of \cref{eq:score_function_basis_expression} since we have that \[\dive_g (\v{s}_\theta)(t, \v{X}) &= \sum_{i=1}^d E_i(\v{s}^i_\theta)(t, \v{X}) + \sum_{i=1}^d \v{s}^i_\theta(t,\v{X}) \dive_g (E_i)(\v{X}) \\&= \sum_{i=1}^d \d \v{s}^i_\theta (E_i)(t, \v{X}) ,\] and \(\d \v{s}^i_\theta\) can be computed with automatic differentiation and \emphhyperref{lowering an index}{{def:lowering_an_index}}, \cite[see][]{falorsi2020neural}.
 Note that this simplified divergence computation can be extended to any homogeneous space of \(G\) by projecting the divergence free vector fields from the Lie group onto the homogenous space, where they remain divergence free.
 
 Finally, and least elegantly, we can use \emphmarginnote{coordinates vector fields}.
@@ -858,7 +561,7 @@ Assuming compactness of the manifold \(\c{M}\), we can leverage a number of spec
 
 \subsection{Forward noising process}
 
-In the compact case, for the distribtion we target in the forward noising process, we can choose \(U(x) = 0\), giving simple Brownian motion, \[ \d \v{X}_t = \d\v{B}_t^M\].
+In the compact case, for the distribtion we target in the forward noising process, we can choose \(U(x) = 0\), giving simple Brownian motion, \[ \d \v{X}_t = \d\v{B}_t^M.\]
 This will converge to a density proportional to the Riemannian volume form, simply the \emphmarginnote{uniform distribution on a compact manifold} given by \(\mu = \frac{\vol_g}{\int_\c{M} \vol_g} \).
 This is well-defined as a compact manifold has finite volume.
 Regardless of the starting distribution the SDE will converge to the uniform distribution exponentially quickly.\todo{cite}
@@ -893,8 +596,8 @@ It should be noted that Varadhan's asymptotics are only accurate over small time
 Using the previously defined score-matching losses for geenric manifils and the approximations to the heat kernel in this section, we highlight the various methods to compute \(\nabla \log p_t\) in \cref{tab:sm_losses}, along with the requirments to use the losses and their computational complexity.
 \begin{table*}[h]
 	\centering
-	\small
-	\renewcommand*{\arraystretch}{1.4}
+	% \small
+	% \renewcommand*{\arraystretch}{1.4}
 	\renewcommand*{\tabcolsep}{0.5em}
 	\begin{tabular}{lc|c|cc|c}
 		\toprule
@@ -934,8 +637,8 @@ We can then choose during each training step the more accurate expression of of 
 
 
 In \cref{tab:difference} we show the main differences between score based models on Eucldiean space, general Riemannian manifolds, and compact Riemannian manifolds.
-\begin{table}[h]
-	\small
+\begin{table*}[h]
+	% \small
 	\centering
 	\renewcommand*{\arraystretch}{1.2}
 	\begin{tabular}{lccc}
@@ -944,7 +647,7 @@ In \cref{tab:difference} we show the main differences between score based models
 		Forward process \(\mathrm{d} \v{X}_t=\)               & \(- \tfrac{1}{2} \v{X}_t \mathrm{d} t + \mathrm{d} \v{B}_t^\c{M}\) & \( - \tfrac{1}{2} \nabla_{\v{X}_t} U(\v{X}_t) \mathrm{d} t + \mathrm{d} \v{B}_t^\c{M}\) & \(\mathrm{d} \v{B}_t^\c{M}\)                                                                                              \\ Easy-to-sample distribution & Gaussian & Wrapped Gaussian & Uniform \\ Time reversal & \textcite{cattiaux2021time} & \multicolumn{2}{c}{\Cref{thm:time_reversal_manifold}} \\ Sampling forward process & Direct & \multicolumn{2}{c}{Geodesic Random Walk (\Cref{alg:grw_rsgm})}\\ Sampling backward process & Euler--Maruyama & \multicolumn{2}{c}{Geodesic Random Walk (\Cref{alg:grw_rsgm})} \\ \bottomrule\end{tabular} \caption{\small Differences between SGM on Euclidean spaces and RSGM on Riemannian manifolds.
 	}
 	\label{tab:difference}
-\end{table}
+\end{table*}
 
 
 \subsection{Convergence results in the compact setting}
@@ -1091,7 +794,7 @@ However, we empirically notice that Moser flows are slow to train and additional
 	\label{tab:geoscience}
 \end{table}
 
-\begin{figure*}[t]
+\begin{figure}[t]
 	\centering
 	\begin{subfigure}{0.22\textwidth}
 		\includegraphics[width=\textwidth]{images/rsgm/pdf_volcanoe_310122.pdf}
@@ -1118,7 +821,7 @@ However, we empirically notice that Moser flows are slow to train and additional
 		Blue and red dots represent training and testing datapoints, respectively.
 	}
 	\label{fig:geoscience}
-\end{figure*}
+\end{figure}
 \subsection{Synthetic data on tori}
 \label{sec:exp_torus}
 \begin{figure*}[t]
@@ -1152,15 +855,15 @@ From \cref{tab:so3} we observe that, RSGMs perform consistently, whether the tar
 Similarly to \cref{sec:exp_torus}, we find Moser flows to be much slower to train due to the large number of Monte Carlo samples needed in the reguralizer (\(K=10^4\)).
 We also note from \cref{tab:so3} that the number of score network evaluations (NFE) is significantly lower for RSGMs, and is particularly detrimental for Moser flows (\(\gg 10^3\)).
 
-\begin{figure*}[t]
+\begin{figure}[t]
 	\centering
-	\begin{subfigure}[t]{0.48\textwidth}
-		\includegraphics[width=\textwidth]{images/rsgm/so3_conditional.pdf}
+	\begin{subfigure}[t]{\textwidth}
+		\includegraphics[width=.66\textwidth]{images/rsgm/so3_conditional.pdf}
 		\caption{Histograms of \(\mathrm{SO}_3(\R)\) samples from a target mixture distribution with \(M=4\) components, represented via their Euler angles.}
 		\label{fig:so3_conditional}
 	\end{subfigure}
-	\hfill
-	\begin{subfigure}[t]{0.48\textwidth}
+	\\\vspace{1em}
+	\begin{subfigure}[t]{.66\textwidth}
 		\includegraphics[width=\textwidth]{{images/rsgm/so3_heatmap}.pdf}
 		\caption{
 			RSGMs are much more robust to hyperparameters than Exp-wrapped SGMs.
@@ -1172,20 +875,19 @@ We also note from \cref{tab:so3} that the number of score network evaluations (N
 		Trained score-based generative models on synthetic \(\mathrm{SO}_3(\R)\) data.
 	}
 	\label{fig:so3}
-\end{figure*}
+\end{figure}
 \begin{table*}[t]
 	\centering
 	\small
 	\begin{tabular}{lrrrrrrrr}
 		\toprule
-		\multirow{2}{4.5em}{Method} & \multicolumn{2}{c}{\(M=16\)}                & \multicolumn{2}{c}{\(M=32\)}              & \multicolumn{2}{c}{\(M=64\)}                                                                                                                                                  \\ \cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
-		                            & log-likelihood                            & NFE                                     & log-likelihood                            & NFE                                      & log-likelihood                             & NFE                                     \\
+		\multirow{2}{4.5em}{\scshape Method} & \multicolumn{2}{c}{\(M=16\)}                & \multicolumn{2}{c}{\(M=32\)}              & \multicolumn{2}{c}{\(M=64\)}                                                                                                                                                  \\ \cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
+		                            & \scshape log-likelihood                            & \scshape NFE                                     & \scshape log-likelihood                            & \scshape NFE                                      & \scshape log-likelihood                             & \scshape NFE                                     \\
 
 		\midrule
 
-		Moser Flow                  & \({0.85_{\pm 0.03}}\)                       & \({2.3_{\pm 0.5}}\)                       & \({0.17_{\pm 0.03}}\)                       & \({2.3_{\pm 0.9}}\)                        & \(\v{-0.49_{\pm 0.02}}\)                     & \({7.3_{\pm 1.4}}\)                       \\ Exp-wrapped SGM           & \cellcolor{blue!
-		20} \(\v{0.87_{\pm 0.04}}\)   & \cellcolor{blue!20} \({0.5_{\pm 0.1}}\)     & \cellcolor{blue!20} \({0.16_{\pm 0.03}}\) & \cellcolor{blue!20} \({0.5_{\pm 0.0}}\)     & \cellcolor{blue!20} \({-0.58_{\pm 0.04}}\) & \cellcolor{blue!20} \({0.5_{\pm 0.0}}\)                                                \\
-		RSGM                        & \cellcolor{blue!20} \(\v{0.89_{\pm 0.03}}\) & \cellcolor{blue!20} \(\v{0.1_{\pm 0.0}}\) & \cellcolor{blue!20} \(\v{0.20_{\pm 0.03}}\) & \cellcolor{blue!20} \(\v{0.1_{\pm 0.0}}\)  & \cellcolor{blue!20} \(\v{-0.49_{\pm 0.02}}\) & \cellcolor{blue!20} \(\v{0.1_{\pm 0.0}}\) \\
+		\scshape Moser Flow                  & \({0.85_{\pm 0.03}}\)                       & \({2.3_{\pm 0.5}}\)                       & \({0.17_{\pm 0.03}}\)                       & \({2.3_{\pm 0.9}}\)                        & \(\v{-0.49_{\pm 0.02}}\)                     & \({7.3_{\pm 1.4}}\)                       \\  \rowcolor{pearDark!20} \scshape Exp-wrapped SGM           &  \(\v{0.87_{\pm 0.04}}\)   &   \({0.5_{\pm 0.1}}\)     &   \({0.16_{\pm 0.03}}\) &   \({0.5_{\pm 0.0}}\)     &  \({-0.58_{\pm 0.04}}\) &   \({0.5_{\pm 0.0}}\)                                                \\
+		\rowcolor{pearDark!20} \scshape RSGM                        &   \(\v{0.89_{\pm 0.03}}\) &   \(\v{0.1_{\pm 0.0}}\) &   \(\v{0.20_{\pm 0.03}}\) &   \(\v{0.1_{\pm 0.0}}\)  &   \(\v{-0.49_{\pm 0.02}}\) &   \(\v{0.1_{\pm 0.0}}\) \\
 
 		\bottomrule
 	\end{tabular}
@@ -1207,22 +909,20 @@ From \cref{fig:hyperbolic}, we can qualitatively see that both score-based model
 
 \begin{figure}[t]
 	\centering
-	\hfill
-	\begin{subfigure}[t]{0.28\textwidth}
+	\begin{subfigure}[t]{0.32\textwidth}
 		\includegraphics[width=\textwidth, trim={0.0em 0.0em 0.0em 5em},clip]{images/rsgm/hyperbolic/ref.pdf}
 		\caption{Target distribution.}
 	\end{subfigure}
 	\hfill
-	\begin{subfigure}[t]{0.28\textwidth}
+	\begin{subfigure}[t]{0.32\textwidth}
 		\includegraphics[width=\textwidth, trim={0.0em 0.0em 0.0em 5em},clip]{images/rsgm/hyperbolic/exp_wrap.pdf}
 		\caption{Exp-wrapped SGM.}
 	\end{subfigure}
 	\hfill
-	\begin{subfigure}[t]{0.28\textwidth}
+	\begin{subfigure}[t]{0.32\textwidth}
 		\includegraphics[width=\textwidth, trim={0.0em 0.0em 0.0em 5em},clip]{images/rsgm/hyperbolic/rsgm_quadratic.pdf}
 		\caption{RSGM.}
 	\end{subfigure}
-	\hfill
 	\caption{Samples from different probability distributions on \(\mathbb{H}^2\) coloured w.r.t\ their density.}
 	\label{fig:hyperbolic}
 \end{figure}

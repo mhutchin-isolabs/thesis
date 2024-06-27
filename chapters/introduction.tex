@@ -3,61 +3,142 @@ The majority of this progress has been driven by the rise of \emphmarginnote{dee
 Although the roots of deep learning are much older, the beginning of the modern rise can be seen in the period 2010-2012 as algorithms were revisited and made significantly cheaper to run by reducing hardware costs and engineering efforts to have them run on graphics processing units (GPUs).
 % GPUs are more appropriate devices for large liner algebra computations than CPUs, and these are the core computations used in deep learning. 
 
-This enebaled a significant rise in the number of training steps and datapaoints that could be used in deep learning models, allowing them to suppas more simpler models such as Gaussian processes and support vector machines for which training and inference scale poorly with the number of datapoints.
-The first moment of widely known significant success is the Alexnet convulutional architecture \parencite{krizhevsky2012imagenet} beating out classical non-deep learning methods for the first time.
-Other notable moments from recent years include a single agent beating human perfomrance on a suite of 49 Atari games \parencite{mnih2015human}, an agent placing in the top 10\% of a Diplomacy tournament agains human players \parencite{meta2022human}, and solving the protein structure predition problem \parencite{jumper2021highly}.
+This enabled a significant rise in the number of training steps and data-points that could be used in deep learning models.
+This increase in computation power, along with the flexibility of deep learning models, allowed them to surpass models with more restricted models such as Gaussian processes \cite{williams2006gaussian} and support vector machines \cite{boser1992training} for which training and inference scale poorly with the number of data-points.
+This evolution is reflected in "The bitter lesson" \cite{sutton2019}.
+General purpose methods with little built in knowledge, given enough data and training resources, outperform more specialised methods which researchers try to encode very specific problem information into. 
+
+The first moment of widely known significant success in deep learning is the Alexnet convolutional architecture \parencite{krizhevsky2012imagenet} beating out classical non-deep learning methods for the first time.
+There are many other notable moments from recent years.
+Game playing agents have matched or beaten top ranked humans Atari games 49 Atari games \parencite{mnih2015human} in Go \cite{silver2016mastering}, Starcraft \cite{vinyals2019grandmaster} DOTA 2\cite{berner2019dota}, Diplomacy tournament against human players \parencite{meta2022human}.
+Machine learning algorithms have made breakthrough progress on scientific problems, such the protein structure prediction problem \parencite{jumper2021highly}, and have stared to show progress on algorithm finding \cite{fawzi2022discovering} and controlling instabilities in the plasma in fusion reactors \cite{degrave2022magnetic}.
+Machine learning models are producing realistic images and videos \cite{saharia2022photorealistic,betker2023improving}, and answering complex questions about text, images, and videos from users \cite{openai2024gpt4,geminiteam2024gemini}.
 
 Early efforts in deep learning focused on for the most part \emphmarginnote{classification} and \emphmarginnote[\baselineskip]{regression} problems, where we attempt to associate with some input \(\v{x}\) some output \(y\).
 Examples include sorting images into categories, or predicting the house price of a house given information about its location and features.
-In these taskes, from a probabilistic point of view we are aiming to learn the distribution \(p(y | X=x)\) from some examples drawn randomly of \(p(x, y)\).
+In these tasks, from a probabilistic point of view we are aiming to learn the distribution \(p(y | X=x)\) from some examples drawn randomly of \(p(x, y)\).
 
-Typically \(x\) is of very high dimension, such as an image, and \(y\) a single scalar of a categorical distribution, such as an immage class labe;.
-In addition, the distribtion of \(p(y | X=x)\) is often either takes a single point value, or is tightly clustered around some value.
-We do not then need particualrly complex methods to specify the output of the model we learn, and the function we need to learn is not such a complex function.
+Typically, \(x\) is of very high dimension, such as an image, and \(y\) a single scalar of a categorical distribution, such as an image label.
+In addition, the distribution of \(p(y | X=x)\) is often either takes a single point value, or is tightly clustered around some value.
+We do not then need particularly complex methods to specify the output of the model we learn, and the function we need to learn is not such a complex function.
 
 Beyond the supervised tasks of classification and regression, \emphmarginnote{deep generative modelling} has become a mainstay of deep learning approaches.
 The fundamental challenge of generative modelling is similar to that of \emphmarginnote{density estimation}.
-Both focus on fitting model \(p({x})\) to samples we have obtained from \(p\), and both aim to generate new samples \({x} \sim p({x})\), or to extract information about this distribtion.
-Where they differ is that deep generative models make use of the flexibility of deep learning to specify very complex distributions, leading to models of very complex data, such as images or structuted text, that have been out of reach for non-deep learning approaches.
+Both focus on fitting model \(p({x})\) to samples we have obtained from \(p\), and both aim to generate new samples \({x} \sim p({x})\), or to extract information about this distribution.
+Where they differ is that deep generative models make use of the flexibility of deep learning to specify very complex distributions.
+This leading to models of very complex data, such as images or structured text, that have been out of reach for non-deep learning approaches.
 
-Deep generative modelling often aims to be able to sample the reverse of the distribtion learnt in the classification or regression setting, \(p(x | Y=y)\).
-While this seems like a semantic point, it often flips the complexity of the problem from predicting a low dimension summary of a high dimension object, to predicting a distribution of possible high dimension objects given a low dimension summary of the object.
+Deep generative modelling often aims to be able to sample the reverse of the distribution learnt in the classification or regression setting, \(p(x | y)\).
+While this seems like a semantic point, it flips the complexity of the problem from predicting a low dimension summary of a high dimension object, to predicting a distribution of possible high dimension objects given a low dimension summary of the object.
 This allows generative modelling to answer some incredibly powerful questions.
-We can learn to generate images given a class or text prompt, generate text that answers a complex question provided by a user, or to generate the three-dimensional structure of a protein given the DNA sequance that specifies it.
+We can learn to generate images given a class or text prompt, generate text that answers a complex question provided by a user, or to generate the three-dimensional structure of a protein given the DNA sequence that specifies it.
+Cornerstone approaches in deep generative modelling include generative adversarial networks \cite{goodfellow2020generative}, variational auto-encoders \cite{kingma2013auto}, and normalising flows \cite{rezende15variational} and continuous normalising flows \cite{chen2018neural}.
 
-The high dimensionality of the prediction targets and the need to specify diverse answers to the same input to a model however makes the task of generative modelling very tricky. This is a common feature of many problems, known as the \emphmarginnote{curse of dimensionality}
+The high dimensionality of the prediction targets and the need to specify diverse answers to the same input to a model however makes the task of generative modelling very tricky. 
+This is a common feature of many problems, known as the \emphmarginnote{curse of dimensionality} \parencite[page ix]{bellman1957dynamic}.
 As the dimension of the problem scales, even with large amounts of data available to the practitioner, the volume of problem space grows faster, and so even large datasets end up being sparse in the observation space of the problem.
 
 Similar to many classical approaches, one key way to surpass this curse is the exploitation of the \emph{structure} of the problem at hand.
-Typically the space of possible solutions to a problem can be reduced significantly by placing conditions on our solutions through the structure of the problem.
-Examples include spatial translation invariance of image recognition, resulting in convolutional neural netowrks \parencite{lecun1989handwritten}, temporal invariance of time series problems, leading to recurrent neural networks \parencite{hochreiter1997long,rumelhart1986learning}, and invariance to the order of inputs, leading to graph neural netowrks \parencite{sperduti1993encoding} and transformers \parencite{vaswani2017attention}.
+Typically, the space of possible solutions to a problem can be reduced significantly by placing conditions on our solutions through the structure of the problem.
 
-The field of \emphmarginnote{geometric deep learning} \cite{bronstein2017geometric,bronstein2021geometric} has two main goals.
-Firstly to unify these seemingly disparate architectures into a single framework, understanding the invariances in terms of group theory, and providing tools for building new architectures with the desired invariances.
-The second is to consider problems where the data lives on non-Eucldiean manifolds, continuous spaces that hav differentiabl structure, but are not "flat" like Euclidean space.
-Many deep learning algorithms inherently assume the data they process live in typical Euclidean space.
-In many applications however, particularly in physical and social science domains, data lives on non-flat manifolds, or discrete structures such as a graphs.
+Firstly we may consider certain symmetries that a problem possesses.
+In many image recognition problems, the output of a pipeline should not change if we translate an image.
+Respecting this structure results in convolutional neural networks \parencite{lecun1989handwritten}.
+In time series problems temporal invariance leads to recurrent neural networks \parencite{hochreiter1997long,rumelhart1986learning}.
+On set-like inputs, the order in which elements are presented is not important, transformers \parencite{vaswani2017attention}, leading to graph neural networks \parencite{sperduti1993encoding} and other order invariant architectures.
+
+Secondly, many deep learning algorithms assume the data they process live in typical Euclidean space.
+In many applications however, particularly in physical and social science domains, data lives on non-flat manifolds, or discrete structures such as graphs.
+Examples include metrological data living on the surface of the earth, a sphere,  and social interaction networks being well represented by graphs.
 Extending algorithms to data that live in these non-standard spaces is key to learning well on these problems.
 While these two goals might seem initially disparate, they have significant overlap on many common spaces, particularly homogenous spaces of Lie groups, such as the sphere, torus, projective spaces and hyperbolic spaces.
 
-In recent years the intersection of generative modelling and geometric machine learnign have been of significant interest as it provides a potential tool to solve complex problems in the scientific domain, for example protein structure prediction \parencite{jumper2021highly}, lattic quantum chromo dyanmics modelling \parencite{abbott2024applications} and material discovery \parencite{merchant2023scaling}.
-Recently the development of \emphmarginnote{diffusion models} or \emphmarginnote{score-based generative models} \parencite{song2019generative,ho2020denoising} have shown to be an extraordinarily powerful class of generative model, ripe for application to difficult problems.
+The field of \emphmarginnote{geometric deep learning} \cite{bronstein2017geometric,bronstein2021geometric} aims to tackle these two problems.
+Firstly it aims to unify these seemingly disparate architectures that encoded some property of the data into a single framework, understanding the invariances in terms of group theory, and providing tools for building new architectures with the desired invariances.
+The second is to consider these architecture in the light of non-Eucldiean data.
+Either on continuous spaces that have differentiable and geometric structure, but are not “flat” like Euclidean space, or on discrete spaces such as grids and graphs.
+
+In recent years the intersection of generative modelling and geometric machine learning have been of significant interest as it provides a tool to tackle complex problems in the scientific domain, for example protein structure prediction \parencite{jumper2021highly}, lattice quantum chromo dynamics modelling \parencite{abbott2024applications} and material discovery \parencite{merchant2023scaling}. All of these methods exploit the symmetry of the physical problem at hand to drastically reduce the space of solutions, making the problem tractable.
+
+Recently the development of \emphmarginnote{diffusion models} or \emphmarginnote{score-based generative models} \parencite{sohl2015deep,song2019generative,ho2020denoising} have shown to be an extraordinarily powerful class of generative model, ripe for application to difficult problems.
 They are however limited in their application to Euclidean data as the diffusion processes used in their construction are inherently Euclidean objects.
-The aim then of this thesis is to genrealise diffusion models from modelling on Eucldiean domains, to modelling on more general spaces, namely Riemannian manifolds.
 
-The rest of this thesis can be summarised as follows:
+The overarching aim of this thesis is to generalise score-based models from Euclidean space to more general continuos geometries, namely Riemannian manifolds, Riemannian manifolds with boundaries, and more complex geometric objects living on manifolds.
 
-\textbf{Chapters 2} and \textbf{3} introduce the background material for this thesis. These chapter covers two main topics: Riemannian manifolds and the theory of stochastic differential equations. Both topics are covered in some detail as the majority of this thesis is concerned with the intersection of the two topics - namely stochastic differential equations on Riemannian manifolds, and their applications to generative modelling.
-There is more in these chapters than is nessicary for the miminum understanding of the thesis, but I hope to leave a reader unfamiliar with these topics well informed of the skeleton of the subjects without undue rigour.
+The rest of this thesis is laid out in the following format:
 
-\textbf{Chapter 4} answers the question of how one can define a score-based generative model supported on a Riemannian manifold, and how to practially achive this. This chapter is based on the published work \enumcite{de2022riemannian_hl}
+\Cref{chp:manifolds,chp:sdes} introduce the background material for this thesis. Chapter 2 covers topological, smooth, and Riemannian manifolds.
+Chapter 3 covers stochastic differential equations. 
+Both topics are covered in some detail as the majority of this thesis is concerned with the intersection of the two topics - namely stochastic differential equations on Riemannian manifolds, and their applications to generative modelling.
 
-\textbf{Chapter 5} describes how one can define a diffusion model to model a density supported on a Riemannian manifold, when in addition there are constraints placed on the support of the density being modelled. This could be because the problem at hand naturally has such constraints, or that the manifold itself has a natural boundary. This chapter is based on the work \enumcite{fishman2023diffusion_hl}.
+\Cref{chp:riemannian_score_based_models} answers the question of how one can define a score-based generative model supported on a Riemannian manifold, and how to practically achieve this.
+Core motivating problems include modelling geospatial data such as the distribution of natural disasters on the surface of the earth, and modelling data that lives on Lie groups such as the poses of objects, states of quantum theories, and internal angles of molecules and proteins.
+In this chapter we extend the theoretical framework of score-based models to Riemannian manifolds by proving new score-matching loss results and time-reversal results in the case of manifolds.
+We provide practical choices for the various components of score-based models on manifolds, and demonstrating the applicability of this methods on a series of problems.
 
-\textbf{Chapter 6} revists the reflected stochasitc differntial equation method of chapter 5. 
-Both methods proposed in chapter 5 have challenges scaling with high dimension when computing the practical rollouts of the stochasitc differential equations.
-We develop a novel method for approximating relected stochasitc diffreetial equaitons and show this performs as well as the classic methods, but significantly faster. This chapter is based on the work \enumcite{fishman2023metropolis_hl}
+% \textbf{Chapter 5} describes how one can define a score-based model to model a density supported on a Riemannian manifold, when in addition there are constraints placed on the support of the density being modelled. This could be because the problem at hand naturally has such constraints, or that the manifold itself has a natural boundary. This chapter is based on the work \enumcite{fishman2023diffusion_hl}.
 
-\textbf{Chapter 7} goes beyond densities on manifolds to model densities over spaces of functions, spaces of sections of vector bundles, and paths on manifolds.
-This allows for the modelling of complex datatypes attached at each point on a maifold.
-This chapter is based on the work \enumcite{mathiue2023geometric_hl}.
+% \textbf{Chapter 6} revists the reflected stochasitc differntial equation method of chapter 5. 
+% Both methods proposed in chapter 5 have challenges scaling with high dimension when computing the practical rollouts of the stochasitc differential equations.
+% We develop a novel method for approximating relected stochasitc diffreetial equaitons and show this performs as well as the classic methods, but significantly faster. This chapter is based on the work \enumcite{fishman2023metropolis_hl}
+
+\Cref{chp:riemannian_boundary_score_based_models} answers the question of how one can define a score-based model to model a density supported on a Riemannian manifold, when in addition there are either constraints placed on the support of the density being modelled due to modeller choices, or because the manifold that the data lives on is a manifold with boundary.
+Core motiving modelling problems include modelling data that lives inside a bounded range, such as pixel intensity, modelling data that lives on the simplex, the manifold containing categorical distributions, modelling paths of robotic movements with constraints on the speed of their movement, and modelling rigid link loops, such as cyclic peptides. 
+The core contributions of this chapter as proposing two new noising processes for score-based models that remain contained inside the boundary specified, namely reflected Brownian motion, and log-barrier diffusion processes.
+We propose a new discretisation scheme for reflected Brownian motion, a metropoloised scheme, that significantly speeds up the discrete approximation of reflected stochastic differential equations.
+We prove new score matching results and time reversal results applicable to these new noising processes, and provide practical methods for learning score functions near boundaries.
+Furthermore, we demonstrate the capabilities of these methods on a series of problems.
+
+\Cref{chp:geom_nerual_diffusion_processes} goes beyond densities on manifolds to model densities over more complex geometric structures over manifolds.
+We tackle two main classes. 
+Firslty, spaces of sections of vector bundles on manifolds, which includes smooth functions on manifolds.
+Motivating problems in this case include modelling weather data, such as temperature, pressure, and wind velocity.
+Secondly, we model distributions on paths on manifolds.
+Motivating problems in this case include modelling the trajectory of storms over the surface of the earth, and modelling path planning for robots with rotating joints.
+Core contributions of this chapter are providing a framework to model these complex data types, and introducing methods to incorporate symmetries of distributions into the models.
+We also propose a new Langenvin-based conditional sampling scheme for score-based models to provide an alternative existing methods.
+Unlike most other conditional sampling methods for score-based models, we show that this method in a limit will sample the correct conditional distribution of the score-based model.
+We finally demonstrate the method on a number of tasks. 
+
+\nocite{de2022riemannian, fishman2023diffusion, fishman2024metropolis, mathieu2024geometric}
+
+\paragraph{Publications in this thesis}
+The work in this thesis is based on the following publications:
+\enumcite{de2022riemannian}
+
+\enumcite{fishman2023diffusion}
+
+\enumcite{fishman2024metropolis}
+
+\enumcite{mathieu2024geometric}
+
+\paragraph{Additional publications}
+In addition to these I have worked on a number of other projects during the course of my thesis within the space of geometrics machine learning and generative modelling. These projects resulted in the following publications:
+\nocite{hutchinson2020lietransformer,holderith2021equivariant,thornton2022riemannian,phillips2022spectral,hutchinson2021federatedffunctional,hutchinson2021vector}
+\enumcite{hutchinson2020lietransformer}
+
+\enumcite{holderith2021equivariant}
+
+\enumcite{hutchinson2021federatedffunctional}
+
+\enumcite{hutchinson2021vector}
+
+\enumcite{thornton2022riemannian}
+
+\enumcite{phillips2022spectral}
+
+\paragraph{Work on COVID-19}
+During the period of the COVID-19 pandemic I also spent a period of time working on various statistical modelling efforts related to the pandemic.
+This work was completed as part of the Imperial COVID-19 Response team, the Royal Society DELVE Initiative action team, and the Turing-RSS Health Data Lab. Publications from work in this period that I was involved in are:
+\nocite{mellan2020subnational,monod2020age,vollmer2020report,unwin2020state,he2020technical,tehefficient}
+\enumcite{mellan2020subnational}
+
+\enumcite{monod2020age}
+
+\enumcite{vollmer2020report}
+
+\enumcite{unwin2020state}
+
+\enumcite{he2020technical}
+
+\enumcite{tehefficient}
