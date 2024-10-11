@@ -91,7 +91,7 @@ This will not converge to a stable distribution.
 However, the transition density of this SDE is given by \[\textstyle p_{s|t}\delvert{\Xf_s}{\Xf_t} = \c{N}\delvert{\Xf_s}{\Xf_t, \sqrt{{\int_t^s} \beta(\tau)\d\tau}\v{I}}.\]
 The variance of this will continue to grow with time and eventually the variance of this transition density will dominate the variance of \(\pi\), and so the distribution \[\pi_T(\Xf_t) = \int p_{T|0}\delvert{\Xf_T}{\Xf_0} \pi(\Xf_0) \d \Xf_0\] will be well approximated by \(\c{N}\delvert{\Xf_T}{\v{0}, \sqrt{{\int_t^s} \beta(\tau)\d\tau}\v{I}}\), and therefore we can use this as the reference distribution.
 
-An alternative way to choose the forward stochastic differential eqaution is to start with the forward transition density and work backwards to the coeficients. If we restrict ourselves to linear Guassian transition densities, those of the form 
+An alternative way to choose the forward stochastic differential eqaution is to start with the forward transition density and work backwards to the coeficients. If we restrict ourselves to linear Gaussian transition densities, those of the form 
 \[p_{t|0}(x_t | x_0) = \c{N}(x_t; \alpha_t x_0, \sigma^2_t)\]
 for some differentiable mean function \(\alpha_t:\R\to \R\), with the restriction that \(\alpha_0=1\), and differentiable noise function \(\sigma_t:\R\to\R\), with the restriction that \(\sigma_0=0\), then the stochastic differential equation that has this forward transition density is
 \[\d\v{X}_t = \od{\log \alpha_t}{t}\d t +  \sbr{\od{\sigma_t^2}{t} - \od{\log \alpha_t}{t} \sigma_t^2}\d\m{B}_t\]
@@ -232,7 +232,7 @@ In order to match the score at all times, we integrate this objective over all t
 Notice there is a weighting function applied over all \(t\).
 While this weighting does not affect the minima of the objective, it does rebalance where a network will prioritise learning the score most.
 Many choices for \(\lambda(t)\) exist and can be tuned to optimise different objectives.
-In particular picking \(\lambda(t) = \sigma(t)^2\) can be shown to be equivalent to optimising the maximum likelihood objection on the dataset \cite{huang2021variational,durkan2021maximum}.
+In particular picking \(\lambda(t) = \sigma(t)^2\) can be shown to be equivalent to optimising the maximum likelihood objection on the dataset \cite{huang2021variational,song2021maximum}.
 
 A common feature of all of these objectives is that they are
 \1 stable regression objectives and

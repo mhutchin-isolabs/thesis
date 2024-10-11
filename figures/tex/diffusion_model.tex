@@ -1,0 +1,38 @@
+\documentclass[tikz,10pt]{standalone}
+\usepackage[standalone,commands]{../../MJH}
+
+\graphicspath{/Users/mhutchin/Documents/thesis/figures/diagrams/}
+
+% \usepackage{tikz}
+% \usetikzlibrary{positioning}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+% \usepgfplotslibrary{external}
+% \usepgfplotslibrary{groupplots}
+% \usepgfplotslibrary{fillbetween}
+% \usetikzlibrary{fadings}
+
+\begin{document}
+    % \tikzsetnextfilename{directional_derivative}
+    \small
+    \begin{tikzpicture}
+        \node (simple) at (0,0) {\includegraphics{/Users/mhutchin/Documents/thesis/figures/diagrams/diffusion_model.pdf}};
+        % \node[rotate=90] (math) at (-8.2, 1.8) {Path distribution};
+        % \node[rotate=90] (math) at (-8.2, -1.3) {Time marginals};
+        \node[rotate=90] (math) at (-8.2, 1.95) {\(\v{X}\)};
+        \node[rotate=90] (math) at (-8.2, -1.55) {\(\v{X}\)};
+        \node[] (math) at (-4, -3.6) { \(t\)};
+        \node[] (math) at (3.5, -3.6) { \(t\)};
+
+        % \node[] (math) at (-4, -3.95) { \(p_t^\vsra{}\)};
+        % \node[] (math) at (3.5, -3.95) { \(p_{T-t}^\vsra{}\)};
+
+        \node[] (math) at (-4, 3.8) { \(\d\v{X}_t^\vsra{} = -\v{X}_t^\vsra{}  \d t + \sqrt{2} \d\v{B}_t \)};
+        \node[] (math) at (3.3, 3.8) { \(\d\v{X}_t^\vsla{} = \sbr{\v{X}_t^\vsla{} + {2} \nabla \log p_{1-t}^\vsra{}(\v{X}_t^\vsla{})}\d t + \sqrt{2} \d\v{B}_t \)};
+        \node[] (math) at (-7.3, 0.05) { \(\v{X}_0^\vsra{}\sim p_\text{data}\)};
+        \node[] (math) at (0, 0.225) { \(\v{X}_1^\vsra{}\sim p_\text{prior}\)};
+        \node[] (math) at (0, -0.215) { \(\v{X}_0^\vsla{}\sim p_\text{prior}\)};
+        \node[] (math) at (7.3, 0.05) { \(\v{X}_1^\vsla{}\sim p_\text{data}\)};
+    \end{tikzpicture}
+\end{document}

@@ -14,7 +14,7 @@ Eventually in \cref{app:experimental_details}, we give a thorough description of
 \label{sec:multivariate_ou}
 
 First, we aim to show that we can define a stochastic process on an infinite dimensional function space, by defining the joint finite marginals $\v{Y}(x)$ as the solution of a multidimensional Ornstein-Uhlenbeck process.
-In particular, for any set of input $x = (x_1, \cdots, x_k) \in \c{X}^k$, we define the joint marginal as the solution of the following SDE \begin{equation}\label{eq:app_forward_SDE_sp} \end{equation} 
+In particular, for any set of input $x = (x_1, \cdots, x_k) \in \c{X}^k$, we define the joint marginal as the solution of the following SDE \begin{equation}\label{eq:app_forward_SDE_sp} \end{equation} \todo{fill}
 
 \begin{proposition}{\parencite{phillips2022spectral}}{} \label{prop:mOU} We assume we are given a data process $(\v{Y_}0(x))_{x \in \c{X}}$ and we denote by $\mathbf{G} \sim \mathrm{GP}(0, k)$ a Gaussian process with zero mean and covariance.
 	Then let's define $$\v{Y_t} \triangleq e^{-\frac{1}{2}\cdot \int_{s=0}^t \beta_s ds} ~\v{Y_}0 + \left(1 - e^{-\frac{1}{2}\cdot \int_{s=0}^t \beta_s ds} \right) m + \left(1 - e^{-\int_{s=0}^t \beta_s ds} \right)^{1/2} \mathbf{G}.
@@ -258,7 +258,7 @@ Below we give two proofs for the group invariance of the generative process, one
 	So \begin{align} \phi \triangleright \mu_{x}^{x', f(x')} = \mu_x^{\phi\triangleright (x', y)} \end{align} as desired.
 \end{proof}
 
-\section{Langevin corrector and the iterative procedure of \textsc{RePaint}~\parencite{lugmayr2022RePaint}}
+\section{Langevin corrector and the iterative procedure of \textsc{RePaint}~\parencite{lugmayr2022repaint}}
 \label{sec:app_conditional_sampling}
 
 \subsection{Langevin sampling scheme}
@@ -271,7 +271,7 @@ This first category is the one we are interested in, and in it we have: \begin{i
 	      This method does produce visually coherent sampling in some cases, but is not an exact conditional sampling method.
 	\item SMC-based methods \cite{trippe2022Diffusion}, which are an exact method up to the particle filter assumption.
 	      These can produce good results but can suffer from the usual SMC methods downsides on highly multi-model data such as particle diversity collapse.
-	\item The {\textsc RePaint} scheme of \cite{lugmayr2022RePaint}.
+	\item The {\textsc RePaint} scheme of \cite{lugmayr2022repaint}.
 	      While not originally proposed as an exact sampling scheme, we will show later that it can in fact be shown that this method is doing a specific instantiation of our newly proposed method, and is therefore exact.
 	\item Amortisation methods, e.g. \textcite{phillips2022spectral}.
 	      While they can be effective, these methods can never perform exact conditional sampling, by definition.
@@ -344,9 +344,9 @@ Note the conditional sampling scheme other than the noise sampling is $\c{O}(NI)
 		\State \( \sbr{\textunderscore, \tilde{\v{y}}_{t-\gamma}^*} = \sbr{\textcolor{algcol}{\v{y}^c_t}, {\v{y}}_t^*} + \gamma \left\{ -\frac{1}{2} \left( m(\bar{\v{x}}) - \sbr{\textcolor{algcol}{\v{y}^c_t}, {\v{y}}_t^*} \right) + \mathrm{K}(\bar{\v{x}}, \bar{\v{x}}) \mathbf{s}_\theta(t, \bar{\v{x}}, \sbr{\textcolor{algcol}{\v{y}^c_t}, \tilde{\v{y}}_t^*}) \right\} + \sqrt{\gamma} \mathrm{K}(\bar{\v{x}}, \bar{\v{x}})^{1/2}
 		Z \) \Comment{Euler-Maruyama step} \For{$l \in \{1, \dots, L \}$} \State $\textcolor{algcol}{\v{y}^c_{t-\gamma} \sim p_{t-\gamma, \v{x}^c}(\v{y}^c_{t-\gamma} | \v{y}^c_0)}$ \Comment{Noise context outputs} \State $Z \sim \c{N}(0, \m{I})$ \Comment{Sample tangent noise} \State \( \sbr{\textunderscore, \tilde{\v{y}}_{t-\gamma}^*} = \sbr{\textunderscore, \tilde{\v{y}}_{t-\gamma}^*} + \frac{\gamma}{2} \mathrm{K}(\bar{\v{x}}, \bar{\v{x}}) \mathbf{s}_\theta(t-\gamma, \bar{\v{x}}, \sbr{\textcolor{algcol}{\v{y}^c_{t-\gamma}}, \tilde{\v{y}}_{t-\gamma}^*}) + \sqrt{\gamma} \mathrm{K}(\bar{\v{x}}, \bar{\v{x}})^{1/2} Z \) \Comment{Langevin step} \EndFor \State \( \v{y}_{t-\gamma}^* = \tilde{\v{y}}_{t-\gamma}^*\) \EndFor \State {\v{s}eries return} \({\v{y}}_\epsilon^*\) \end{algorithmic} \end{algorithm} 
 
-\subsection{\textsc{RePaint}~\parencite{lugmayr2022RePaint} correspondance} 
+\subsection{\textsc{RePaint}~\parencite{lugmayr2022repaint} correspondance} 
 
-In this section, we show that: \begin{enumerate}[label=(\alph*)] \item \Cref{alg:conditioning_langevin} and \cref{alg:conditioning_renoising} \texttt{Repaint} from \cite{lugmayr2022RePaint} are equivalent in a specific setting.
+In this section, we show that: \begin{enumerate}[label=(\alph*)] \item \Cref{alg:conditioning_langevin} and \cref{alg:conditioning_renoising} \texttt{Repaint} from \cite{lugmayr2022repaint} are equivalent in a specific setting.
 	\item There exists a continuous limit (SDE) for both procedures.
 	      This SDE targets a probability density which \emph{does not} correspond to $p(x_{t_0} | x_0^c)$.
 	\item When $t_0 \to 0$ this probability measure converges to $p(x_{0} | x_0^c)$
@@ -356,7 +356,7 @@ We begin by recalling the conditional sampling algorithm we study in \Cref{alg:c
 
 \begin{algorithm}
 	\caption{
-		\textsc{RePaint} \parencite{lugmayr2022RePaint}.
+		\textsc{RePaint} \parencite{lugmayr2022repaint}.
 	}
 	\label{alg:conditioning_renoising}
 	\small
@@ -371,7 +371,7 @@ We begin by recalling the conditional sampling algorithm we study in \Cref{alg:c
 		\State \( \sbr{\textunderscore, \tilde{\v{y}}_{t-\gamma}^*} = \sbr{\textcolor{algcol}{\v{y}^c_t}, \tilde{\v{y}}_t^*} + \gamma \left\{ -\frac{1}{2} \left( m(\bar{\v{x}}) - \sbr{\textcolor{algcol}{\v{y}^c_t}, \tilde{\v{y}}_t^*} \right) + \mathrm{K}(\bar{\v{x}}, \bar{\v{x}}) \mathbf{s}_\theta(t, \bar{\v{x}}, \sbr{\textcolor{algcol}{\v{y}^c_t}, \tilde{\v{y}}_t^*}) \right\} + \sqrt{\gamma} \mathrm{K}(\bar{\v{x}}, \bar{\v{x}})^{1/2}
 		Z \) \Comment{Reverse step} \State $Z \sim \mathrm{N}(0, \m{I})$ \Comment{Sample tangent noise} \State \( \tilde{\v{y}}_{t}^* = {\tilde{\v{y}}}_{t-\gamma}^* + \gamma \left\{ \frac{1}{2} \left( m({\v{x}^*}) - {\tilde{\v{y}}}_{t-\gamma}^* \right) \right\} + \sqrt{\gamma} \mathrm{K}({\v{x}^*}, {\v{x}^*})^{1/2} Z \) \Comment{Forward step} \EndFor \State \( \v{y}_{t-\gamma}^* = \tilde{\v{y}}_{t-\gamma}^*\) \EndFor \State {\v{s}eries return} \({\v{y}}_\epsilon^*\) \ \end{algorithmic} \end{algorithm} 
 
-First, we start by describing the RePaint algorithm \parencite{lugmayr2022RePaint}.
+First, we start by describing the RePaint algorithm \parencite{lugmayr2022repaint}.
 We consider $(Z_k^0, Z_k^1, Z_k^2)_{k \in \N}$ a sequence of independent Gaussian random variable such that for any $k \in \N$, $Z_k^1$ and $Z_k^2$ are $d$-dimensional Gaussian random variables with zero mean and identity covariance matrix and $Z_k^0$ is a $p$-dimensional Gaussian random variable with zero mean and identity covariance matrix.
 We assume that the whole sequence to be inferred is of size $d$ while the context is of size $p$.
 For simplicity, we only consider the Euclidean setting with $\mathrm{K}=\m{I}$.
@@ -387,7 +387,7 @@ While we use the exponential integrator in the proofs for simplicity other integ
 Combining \eqref{eq:sde_back} and \eqref{eq:sde_forward}, we get that for any $k \in \N$ we have \begin{equation} X_{k+1} = X_k + 2 (1 -\mathrm{e}^{-\gamma}) \nabla_{x_k} \log p_{t_0}([X_k, X_k^c]) + (1 - \mathrm{e}^{-2\gamma})^{1/2} (Z_k^1 + Z_k^2) .
 \end{equation}
 Remarking that $(Z_k)_{k \in \N} = ((Z_k^1 + Z_k^3)/\sqrt{2})_{k \in \N}$ is a family of $d$-dimensional Gaussian random variables with zero mean and identity covariance matrix, we get that for any $k \in \N$ \begin{equation} \label{eq:iterates} X_{k+1} = X_k + 2 (1 -\mathrm{e}^{-\gamma}) \nabla_{x_k} \log p_{t_0}([X_k, X_k^c]) + \sqrt{2} (1 - \mathrm{e}^{-2\gamma})^{1/2} Z_k , \end{equation} where we recall that $X_k^c = \mathrm{e}^{-t_0} X_0^c + (1-\mathrm{e}^{-2t_0})^{1/2} Z_k^0$.
-Note that the process \eqref{eq:iterates} is another version of the \texttt{Repaint} algorithm \cite{lugmayr2022RePaint}, where we have concatenated the denoising and noising procedure.
+Note that the process \eqref{eq:iterates} is another version of the \texttt{Repaint} algorithm \cite{lugmayr2022repaint}, where we have concatenated the denoising and noising procedure.
 With this formulation, it is clear that \texttt{Repaint} is equivalent to \Cref{alg:conditioning_langevin}.
 In what follows, we identify the limitating SDE of this process.
 
@@ -427,7 +427,7 @@ The rest of the section is dedicated to the proof of the following result.
 \end{theorem}
 
 This result is an application of \textcite[Theorem 11.2.3]{stroock2007multidimensional}.
-It explicits what is the \emph{continuous} limit of the \texttt{Repaint} algorithm \cite{lugmayr2022RePaint}.
+It explicits what is the \emph{continuous} limit of the \texttt{Repaint} algorithm \cite{lugmayr2022repaint}.
 
 In what follows, we verify that the assumptions of this result hold in our setting.
 For any $\gamma > 0$ and $x \in \R^d$, we define \begin{align}  & \textstyle b_\gamma(x) = (2/\gamma)[ (1- \mathrm{e}^{-\gamma}) \int_{\R^d} \nabla_{x_{t_0}} \log p_{t_0}([x_{t_0}, x_{t_0}^c]) p_{t_0|0}(x_{t_0}^c|x_0^c) \mathrm{d} x_{t_0}^c \\ &\qquad \qquad \qquad \textstyle - (1/\gamma) \E\sbr{(\v{X}_{(k+1)\gamma}^\gamma - \v{X}_{k \gamma}^\gamma)\mathbf{1}_{\norm{\v{X}_{(k+1)\gamma}^\gamma - \v{X}_{k \gamma}^\gamma} \geq 1} \vert \v{X}_{k \gamma} = x} , \\ &\textstyle \Sigma_\gamma(x) = (4/\gamma)(1- \mathrm{e}^{-\gamma})^2 \int_{\R^d} \nabla_{x_{t_0}} \log p_{t_0}([x_{t_0}, x_{t_0}^c])^{\otimes 2} p_{t_0|0}(x_{t_0}^c|x_0^c) \mathrm{d} x_{t_0}^c + (2/\gamma)(1- \mathrm{e}^{-2\gamma}) \m{I} \\ &\qquad \qquad \qquad \textstyle - (1/\gamma) \E\sbr{(\v{X}_{(k+1)\gamma}^\gamma - \v{X}_{k \gamma}^\gamma)^{\otimes 2}\mathbf{1}_{\norm{\v{X}_{(k+1)\gamma}^\gamma - \v{X}_{k \gamma}^\gamma} \geq 1} \vert \v{X}_{k \gamma} = x} .

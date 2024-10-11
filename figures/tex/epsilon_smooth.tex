@@ -1,0 +1,23 @@
+\documentclass[tikz,10pt]{standalone}
+\usepackage[standalone,commands]{../../MJH}
+
+\graphicspath{/Users/mhutchin/Documents/thesis/figures/diagrams/}
+
+% \usepackage{tikz}
+% \usetikzlibrary{positioning}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+% \usepgfplotslibrary{external}
+% \usepgfplotslibrary{groupplots}
+% \usepgfplotslibrary{fillbetween}
+% \usetikzlibrary{fadings}
+
+\begin{document}
+    % \tikzsetnextfilename{generative_model}
+    \begin{tikzpicture}
+        \node (simple) at (0,0) {\includegraphics{/Users/mhutchin/Documents/thesis/figures/diagrams/epsilon_smooth.pdf}};
+        \draw[->] (2.3,.8)   -- (2.6, 1.1);
+        \node (eps) at (2.55, .85) {\(\epsilon\)};
+    \end{tikzpicture}
+\end{document}

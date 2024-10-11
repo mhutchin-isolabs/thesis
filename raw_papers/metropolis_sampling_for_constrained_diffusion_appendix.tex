@@ -758,7 +758,7 @@ This ensures the score obeys the Neumann boundary conditions required by the ref
 For the geospatial dataset within non-convex country borders, we do not use distance rescaling.
 Instead, we substitute it with a series of step functions to rescale the score.
 This is a proof-of-concept to show that even when computing the distance is hard, simple and efficient approximations suffice.
-When constructing Riemannian diffusion models on the torus and sphere for the protein and geospatial datasets, we follow \cite{debortoli2022riemannian} and include an additional preconditioner for the score on the manifold.
+When constructing Riemannian diffusion models on the torus and sphere for the protein and geospatial datasets, we follow \cite{de2022riemannian} and include an additional preconditioner for the score on the manifold.
 We \emph{do not} use the residual trick or the standard deviation trick, which are both common score-rescaling functions in image model architectures; in our setting, we find that they adversely affect model training.
 
 For the forward/reverse process we always set $T=1$, $\beta_0=\num{1e-3}$ and then tune $\beta_1$ to ensure that the forward process just reaches the invariant distribution with a linear $\beta$-schedule.

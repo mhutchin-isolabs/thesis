@@ -34,8 +34,8 @@
 % They work by progressively adding noise to data following a Stochastic Differential Equation (SDE)---the forward \emph{noising} process---until it is close to the invariant distribution of the SDE.
 % The generative model is then given by an approximation of the associated time-reversed \emph{denoising} process, which is also an SDE whose drift depends on the gradient of the logarithmic densities of the forward process, referred to as the \emph{Stein score}.
 
-In the previous chapter we extended the framework of score-based genreative modelling to a wide range of Riemannian manifolds, enabling the specification of inherent structural properties of the modelled domain.
-This has broadened the applicability of diffusion models to problems in the natural and engineering sciences, including the conformational modelling of small molecules \parencite{jing2022torsional, corso2022DiffDock}, proteins \parencite{trippe2022Diffusion,watson2022Broadly,yim2023se} and robotic platforms \parencite{urain2022se}.
+In the previous chapter we extended the framework of score-based generative modelling to a wide range of Riemannian manifolds, enabling the specification of inherent structural properties of the modelled domain.
+This has broadened the applicability of diffusion models to problems in the natural and engineering sciences, including the conformational modelling of small molecules \parencite{jing2022torsional, corso2023diffdock}, proteins \parencite{trippe2022Diffusion,watson2022Broadly,yim2023se} and robotic platforms \parencite{urain2022se}.
 
 However, in many data-scarce or safety-critical settings, modellers may want to restrict the modelled domain further by specifying problem-informed constraints to make maximal use of limited experimental data or prevent unwanted behaviour \parencite{Morris2002,han2006inverse,Thiele2013,lukens2020practical}.
 As illustrated in~\Cref{fig:intro_figure}, such domain-informed constraints can be naturally represented as a \emph{Riemannian manifold with boundary}.
@@ -46,7 +46,7 @@ While this holds for a large class of stochastic processes, it is not the case f
 For instance, in the case of the hypercube \(\del{-1,1}^d\) equipped with the Euclidean metric, the Riemannian Brownian motion coincides with the Euclidean \(d\)-dimensional Brownian motion \((\v{B}_t)_{t \in \cbr{0,T}}\) as long as \(\v{B}_t \in \del{-1,1}\).
 With probability one, \((\v{B}_t)_{t \geq 0}\) escapes from \(\del{-1,1}\), meaning that the Riemannian Brownian motion is not defined for all times and the frameworks introduced does not apply.
 
-Such constrained manifolds comprise a wide variety of settings---including polytopes and convex sets of Euclidean spaces---and are studied across a large number of disciplines, ranging from computational statistics \parencite{Morris2002}, over robotics \parencite{han2006inverse} and quantum physics \parencite{lukens2020practical}, to computational biology \parencite{Thiele2013}.
+Such constrained manifolds comprise a wide variety of settings---including polytopes and convex sets of Euclidean spaces---and are studied across many disciplines, ranging from computational statistics \parencite{Morris2002}, over robotics \parencite{han2006inverse} and quantum physics \parencite{lukens2020practical}, to computational biology \parencite{Thiele2013}.
 Deriving principled diffusion models that are able to operate directly on these constrained manifolds is thus of significant practical importance, as they enable generative modelling in data-scarce and safety-critical settings in which constraints on the modelled domain may reduce the number of degrees of freedom or prevent unwanted behaviour.
 
 As sampling problems on such manifolds are important \parencite{kook2022sampling,heirendt2019creation}, a flurry of Markov chain based methods have been developed to sample from unnormalised densities.
@@ -62,12 +62,12 @@ They require bespoke implementations for different manifolds and constraints.
 Concurrently to the development of our methods, \textcite{lou2023reflected} investigated the use of reflected diffusion models for image modelling.
 They focus on the high-dimensional hypercube, as this setting admits a theoretically grounded treatment of the \emph{static thresholding} method which is widely used in image models such as \textcite{saharia2022photorealistic}.
 Their method exhibits robust scaling properties and impressive visual results in this framework.
-However, the introduced samplers suffer from the same limitations as the log-barrier and reflected Brownian motion approches we disucess for more complex manifolds and constraints beyond the hypercube setting.
+However, the introduced samplers suffer from the same limitations as the log-barrier and reflected Brownian motion approaches we discuss for more complex manifolds and constraints beyond the hypercube setting.
 
-Therefore we also propose a new method for generative modelling on constrained manifolds based on a novel Metropolis-based discretisation of the reflected Brownian motion.
+Therefore, we also propose a new method for generative modelling on constrained manifolds based on a novel Metropolis-based discretisation of the reflected Brownian motion.
 The Metropolised process' chief advantage is that it is lightweight: the only additional requirement over those outlined in the previous chapter that is needed to implement a constrained diffusion model is an efficient binary function that indicates whether any given point is within the constrained set.
 The Metropolised approximation of the reflected Brownian motion is substantially easier to implement, faster to compute and more numerically stable than the other schemes considered.
-A core theoretical contribution is to show that this new discretisation converges to the reflected SDE by using the invariance principle for SDEs with boundary \parencite{stroock1971diffusion}.
+A core theoretical contribution is to show that this new discretisation converges to the reflected stochastic differential equation by using the invariance principle for stochastic differential equations with boundary \parencite{stroock1971diffusion}.
 To the best of our knowledge, this is the first time that such a process has been investigated.
 We demonstrate that our method attains improved empirical results on manifolds with convex and non-convex constraints by applying it to a range of problems from geospatial modelling, robotics and protein design.
 
@@ -78,7 +78,7 @@ We demonstrate that our method attains improved empirical results on manifolds w
 
 \begin{figure}[t]
 	\includegraphics{images/constrained_diffusion/polytope2.pdf}
-	\caption{An example of a polytope in two dimensions, with example geodesics under the usual Eucidelan metric, the log-barrier metric, and boundary reflection.}
+	\caption{An example of a polytope in two dimensions, with example geodesics under the usual Euclidean metric, the log-barrier metric, and boundary reflection.}
 	\label{fig:polytope}
 \end{figure}
 
@@ -89,12 +89,12 @@ We then define \begin{equation} \label{eq:constrained} \c{M} = \cbr{x \in \c{N} 
 In this scenario, \(\{f_i\}_{i \in \mathcal{I}}\) is interpreted as a set of constraints on \(\c{N}\).
 For example, choosing \(\c{N} = \R^d\) and affine constraints \(f_i(x) = \langle a_i, x\rangle - b_i\), \(x\in \R^d\), we get that \(\c{M}\) is an open polytope as illustrated in \cref{fig:polytope}.
 Assuming the constraints together form an open set on the manifold \(c{N}\), we can consider this a \emphhyperref{manifold with boundary}{def:manifold_with_boundary}, \((\c{M}, \partial \c{M}, g)\), and our goal is to model densities that live inside the boundary.
-We consider throughout this section that the the constrainst we encounter form a compact set on the manifold.
+We consider throughout this section that the constraints we encounter form a compact set on the manifold.
 Many of the results can be extended to the setting of non-compact constraints, but the settings we study do not need this.
 
 This setting naturally appears in many areas of engineering, biology, and physics \parencite{boyd2004convex, han2006inverse, lukens2020practical}.
 
-While the methods we introduce in \Cref{sec:bsgm,sec:reflected_diffusion_model} can be applied to the general framework (\ref{eq:constrained}) , in our applications, we focus on two specific settings: \begin{enumerate*}[label=(\alph*)] \item polytopes---\(\c{N} = \R^d\), \item symmetric positive definite matrices (SPD) under trace conditions---\(\c{N}=\mathcal{S}_{++}^{d}\).
+While the methods we introduce in \Cref{sec:bsgm,sec:reflected_diffusion_model} can be applied to the general framework (\ref{eq:constrained}), in our applications, we focus on two specific settings: \begin{enumerate*}[label=(\alph*)] \item polytopes---\(\c{N} = \R^d\), \item symmetric positive definite matrices (SPD) under trace conditions---\(\c{N}=\mathcal{S}_{++}^{d}\).
 \end{enumerate*}
 
 % \paragraph{Continuous diffusion models.}
@@ -171,7 +171,7 @@ Among these functions, the \emph{logarithmic barrier} is the most popular among 
 
 Generically we can define for any \(x \in \c{M}\) \begin{equation} \label{eq:log_barrier_manifold} { \phi(x) = - \sum_{i=1}^m \log(d(x, \partial \c{M}_i)) } \end{equation} 
 where \(d(x, \partial \c{M}_i)\) computes the minimum geodesic distance from \(x\) to the boundary \(\partial \c{M}\), made up of the constraints.
-In general this is a highly non-trivial optimization problem however.
+In general this is a highly non-trivial optimisation problem, however.
 
 In special cases we can exploit the constraints at hand to compute this distance function.
 For a convex polytope \(\c{M}\) defined by the constraints \(\mathrm{A} x < b\), with \(\mathrm{A} \in \R^{m \times d}\) and \(b \in \R^m\), the logarithmic barrier \(\phi: \ \c{M} \to \R_+\) is given for any \(x \in \c{M}\) by \begin{equation} \label{eq:log_barrier_polytope} { \phi(x) = - \sum_{i=1}^m \log(\langle \mathrm{A}_i, x\rangle-b_i).
@@ -204,7 +204,7 @@ Assuming that \(g^{-1}\) and its derivative are bounded on \(\c{M}\), the time-r
 \end{align}
 \(\v{X}_t^\vsla{}_0\) is initialised with the uniform distribution on \(\c{M}\) (which is close to the one of \( \v{X}_T\) for large \(T\)).
 
-The estimation of the score term \(\nabla \log p_t\) is done by minimising the implicit score-matching loss function (\cref{prop:manifold_ism}) .
+The estimation of the score term \(\nabla \log p_t\) is done by minimising the implicit score-matching loss function (\cref{prop:manifold_ism}).
 We refer to \Cref{sec:score-netw-param} for details on the training and parameterisation.
 
 \subsection{Sampling.}
@@ -218,7 +218,7 @@ This involves a linear approximation of the exponential map, taking a straight s
 
 \begin{algorithm}[]
 	\caption{\emph{Geodesic Random Walk.}
-		Discretisation of the SDE \(\mathrm{d} \v{X}_t = d(t, \v{X}_t) \mathrm{d} t + \mathrm{d} \v{B}_t\).
+		Discretisation of the stochastic differential equation \(\mathrm{d} \v{X}_t = d(t, \v{X}_t) \mathrm{d} t + \mathrm{d} \v{B}_t\).
 	}
 	\label{alg:grw_cdm}
 	\begin{algorithmic}[1]
@@ -260,14 +260,14 @@ It is worth noting that while barrier approaches have received considerable theo
 In the next section, we recall the basics of reflected stochastic processes.
 
 \subsection{Skorokhod problem.}
-Briefly we intorduce the technical detial needed to define a reflected Brownian motion.
+Briefly we introduce the technical detail needed to define a reflected Brownian motion.
 The reflected Brownian motion is defined as the solution to the \emphmarginnote{Skorokhod problem}.
 Roughly speaking a solution to the Skorokhod problem consists into two coupled processes \((\bar{ \v{B}}_t, \v{k}_t)_{t \geq 0}\) such that \((\bar{ \v{B}}_t)_{t \geq 0}\) acts \emph{locally} as a Euclidean Brownian motion \(( \v{B}_t)_{t \geq 0}\) and \( \v{k}_t\) compensates for the excursion of \(( \v{B}_t)_{t \geq 0}\) outside the boundary so that \((\bar{ \v{B}}_t)_{t \geq 0}\) remains in \(\c{M}\).
+See \Cref{sec:refl-brown-moti} for a rigorous introduction.`'
 
-We say that \((\bar{ \v{B}}_t, \v{k}_t)_{t \geq 0}\) is a solution to the \emph{Skorokhod problem} \parencite{skorokhod1961stochastic} if \(( \v{k}_t)_{t \geq 0}\) and \((\bar{ \v{B}}_t)_{t \geq 0}\) are two processes satisfying mild conditions, see \Cref{sec:refl-brown-moti} for a rigorous introduction, such that for any \(t \geq 0\), \begin{equation} \label{eq:rbm} \bar{ \v{B}}_t = \bar{ \v{B}}_0 + \v{B}_t - \v{k}_t \in \c{M}, \end{equation} and \[{\abs{ \v{k}}_t = \int_0^t \mathbf{1}_{\bar{ \v{B}}_s \in \partial \c{M}} \mathrm{d} \abs{ \v{k}_s}}, \quad { \v{k}_t = \int_0^t \v{n}(\bar{ \v{B}}_s) \mathrm{d} \abs{ \v{k}_s} ,}\] where \((\abs{ \v{k}}_t)_{t \geq 0}\) is the total variation of \(( \v{k}_t)_{t \geq 0}\) and \( \v{n}\) is the \emphhyperref{outward normal}{def:outward_pointing} to \(\c{M}\)
-% \footnote{We extend the normal \( \v{n}\) to the whole space by letting \( \v{n}(x)=0\) if \(x \not \in \partial \c{M}\).}.
-
-When \((\bar{ \v{B}}_t)_{t \geq 0}\) hits the boundary, the condition \[{ \v{k}_t = \int_0^t \v{n}(\bar{ \v{B}}_s) \mathrm{d} \abs{ \v{k}_s} ,}\] tells us that \(- \v{k}_t\) ``compensates'' for \(\bar{ \v{B}}_t\) by pushing the process back into \(\c{M}\) along the inward normal \(- \v{n}\), while the condition \[{\abs{ \v{k}_t} = \int_0^t \mathbf{1}_{\bar{ \v{B}}_s \in \partial \c{M}} \mathrm{d} \abs{ \v{k}_s}}\] can be interpreted as \( \v{k}_t\) being constant when \((\bar{ \v{B}}_t)_{t \geq 0}\) does not hit the boundary.
+We say that \((\bar{ \v{B}}_t, \v{k}_t)_{t \geq 0}\) is a solution to the \emph{Skorokhod problem} \parencite{skorokhod1961stochastic} if \(( \v{k}_t)_{t \geq 0}\) and \((\bar{ \v{B}}_t)_{t \geq 0}\) are two processes satisfying mild conditions, such that for any \(t \geq 0\), \begin{equation} \label{eq:rbm} \bar{ \v{B}}_t = \bar{ \v{B}}_0 + \v{B}_t - \v{k}_t \in \c{M}, \end{equation} and \[{\abs{ \v{k}}_t = \int_0^t \mathbf{1}_{\bar{ \v{B}}_s \in \partial \c{M}} \mathrm{d} \abs{\v{k}}_s}, \quad { \v{k}_t = \int_0^t \v{n}(\bar{ \v{B}}_s) \mathrm{d} \abs{\v{k}}_s ,}\] where \((\abs{ \v{k}}_t)_{t \geq 0}\) is the total variation of \(( \v{k}_t)_{t \geq 0}\) and \( \v{n}\) is the \emphhyperref{outward normal}{def:outward_pointing} to \(\c{M}\).
+When \((\bar{ \v{B}}_t)_{t \geq 0}\) hits the boundary, the condition \[{ \v{k}_t = \int_0^t \v{n}(\bar{ \v{B}}_s) \mathrm{d} \abs{\v{k}}_s ,}\] tells us that \(- \v{k}_t\) "compensates" for \({ \v{B}}_t\) by pushing the process back into \(\c{M}\) along the inward normal \(- \v{n}\).
+Meanwhile, the condition \[{\abs{\v{k}}_t = \int_0^t \mathbf{1}_{\bar{ \v{B}}_s \in \partial \c{M}} \mathrm{d} \abs{\v{k}}_s}\] can be interpreted as \( \v{k}_t\) being constant when \((\bar{ \v{B}}_t)_{t \geq 0}\) does not hit the boundary.
 As a result \((\bar{ \v{B}}_t)_{t \geq 0}\) can be understood as the continuous-time counterpart to the reflected Gaussian random walk.
 The process \(( \v{k}_t)_{t \geq 0}\) can be related to the notion of \emph{local time} \parencite{revuz2013continuous} and quantifies the amount of time \((\bar{ \v{B}}_t)_{t \geq 0}\) spends at the boundary \(\partial \c{M}\).
 \textcite[Theorem
@@ -290,12 +290,12 @@ Hence, \((\bar{ \v{B}}_t)_{t \geq 0}\) is a candidate for a forward noising proc
 
 \subsection{Time-reversal.}
 In order to extend the diffusion model approach to the reflected setting, we need to derive a \emph{time-reversal} for \((\bar{ \v{B}}_t)_{t \in \sbr{0,T}}\).
-Namely, we need to characterise the evolution of \((\v{X}_t^\vsla{}_t)_{t \in \sbr{0,T}} = (\bar{ \v{B}}_{T-t})_{t \in \sbr{0,T}}\).
+Namely, we need to characterise the evolution of \((\v{X}_t^\vsla{})_{t \in \sbr{0,T}} = (\bar{ \v{B}}_{T-t})_{t \in \sbr{0,T}}\).
 It can be shown that the time-reversal of \((\bar{ \v{B}}_t)_{t \in \sbr{0,T}}\) is also the solution to a Skorokhod problem.
 
 \begin{theorem}[Time reversal of reflected Brownian motion]
 	\label{sec:time-reversal-reflected}
-	There exist \((\v{k}_t^\vsla{})_{t \geq 0}\) a bounded variation process and a Brownian motion \(( \v{B}_t)_{t \geq0}\) such that \begin{equation} { \v{X}_t^\vsla{} = \v{X}_0^\vsla{} + \v{B}_t + \int_0^t \nabla \log p_{T-s}(\v{X}_s^\vsla{}) \mathrm{d} s - \v{k}_t^\vsla{} .
+	There exist \((\v{k}_t^\vsla{})_{t \geq 0}\) a bounded variation process and a Brownian motion \(( \v{B}_t)_{t \geq0}\) such that \begin{equation} { \v{X}_t^\vsla{} = \v{X}_0^\vsla{} + \v{B}_t - \v{k}_t^\vsla{} + \int_0^t \nabla \log p_{T-s}(\v{X}_s^\vsla{}) \mathrm{d} s .
 		}
 	\end{equation}
 	In addition, for any \(t \in \sbr{0,T}\) we have \begin{equation} \label{eq:skorokhod_reversal} {\abs{ \v{k}_t^\vsla{}} = \int_0^t \mathbf{1}_{\v{X}_t^\vsla{}_s \in \partial \c{M}} \mathrm{d} \abs{ \v{k}_s^\vsla{}} , \quad \v{k}_t^\vsla{} = \int_0^t \v{n}(\v{X}_t^\vsla{}_s) \mathrm{d} \abs{ \v{k}_s^\vsla{}} .
@@ -317,9 +317,9 @@ In practice, we approximately sample the reflected dynamics by considering the M
 We refer to \textcite{pacchiarotti1998numerical,bossy2004symmetrized} for weak convergence results on this numerical scheme in the Euclidean setting.
 
 \subsection{Likelihood evaluation}
-In the case of a reflected Brownian motion, it is possible to compute an equivalent ODE in order to perform likelihood evaluation.
-The associated ODE was first derived in \cite{lou2023reflected}.
-The form of the ODE and the proof that it remains in \(\c{M}\) are postponed to \Cref{sec:likel-eval}.
+In the case of a reflected Brownian motion, it is possible to compute an equivalent ordinary differential equation in order to perform likelihood evaluation.
+The associated ordinary differential equation was first derived in \cite{lou2023reflected}.
+The form of the ordinary differential equation and the proof that it remains in \(\c{M}\) are postponed to \Cref{sec:likel-eval}.
 
 \begin{algorithm}[t]
 	\begin{algorithmic}
@@ -350,7 +350,7 @@ The form of the ODE and the proof that it remains in \(\c{M}\) are postponed to 
 
 \begin{algorithm}[t]
 	\caption{\emph{Reflected Random Walk}.
-		Discretisation of the SDE \(\mathrm{d} \v{X}_t = b(t, \v{X}_t) \mathrm{d} t + \mathrm{d} \v{B}_t - \mathrm{d} \v{k}_t\).
+		Discretisation of the stochastic differential equation \(\mathrm{d} \v{X}_t = b(t, \v{X}_t) \mathrm{d} t + \mathrm{d} \v{B}_t - \mathrm{d} \v{k}_t\).
 	}
 	\label{alg:rrw}
 	\begin{algorithmic}
@@ -383,21 +383,21 @@ The form of the ODE and the proof that it remains in \(\c{M}\) are postponed to 
 
 \section{Metropolis sampling of reflected diffusion models}
 \label{sec:metropolis_sampling}
-Building on the reflected diffusion model intorducted in \cref{sec:reflected_diffusion_model}, we now propose a new discretisation of the reflected Brownian motion that is much cheaper to compute than the typical one previously discussed.
+Building on the reflected diffusion model introduced in \cref{sec:reflected_diffusion_model}, we now propose a new discretisation of the reflected Brownian motion that is much cheaper to compute than the typical one previously discussed.
 
-As a reminder, the usual discretisation of the reflected SDE is to \begin{enumerate*}[label=(\roman*)] \item consider a classical step of the Euler-Maruyama discretization (or the Geodesic Random Walk in the Riemannian setting) and \item reflect this step according to the boundary defined by \(\partial \c{M}\).
+As a reminder, the usual discretisation of the reflected stochastic differential equation is to \begin{enumerate*}[label=(\roman*)] \item consider a classical step of the Euler-Maruyama discretisation (or the Geodesic Random Walk in the Riemannian setting) and \item reflect this step according to the boundary defined by \(\partial \c{M}\).
 \end{enumerate*}
 To compute the reflection, one must check whether the step crosses the boundary.
 If it does, the point of intersection needs to be calculated, the ray reflected at this point, and the step continued in the reflected direction.
 This can require an arbitrarily large number of reflections depending on the step size, the geodesic on the manifold, and the geometry of the bounded region within the manifold.
 
-An alternative approach to discretising a reflected SDE is to replace the reflection with a projection, see \cite{slominski1994approximation} for instance.
+An alternative approach to discretising a reflected stochastic differential equation is to replace the reflection with a projection, see \cite{slominski1994approximation} for instance.
 However, the projection still requires the most expensive part of the reflection algorithm: computing the intersection of the geodesic with the boundary.
 
 Instead of these two approaches, which require manifold and constraint specific functions to be implemented in order to be applied we propose a new sampling scheme based on Metropolis sampling that only requires an indicator function for if the constraint has been violated or not.
 
-The sampler we propose is similar to a classical Euler-Maruyama discretisation of the Brownian motion, except that, whenever a step would carry the Brownian motion outside of the constrained region, we reject it.
-This is a \emph{Metropolised} version of the usual discretisation and is almost trivial to implement compared to the existing barrier, reflection and projection methods.
+The sampler we propose is similar to a classical Euler-Maruyama discretisation of the Brownian motion, except that, whenever a step would carry the Brownian motion outside the constrained region, we reject it and move on to the next step.
+This is a \emph{Metropolised} version of the usual discretisation and is almost trivial to implement compared to the existing barrier, reflection, and projection methods.
 Hence, this method enables the principled extension of diffusion models to arbitrarily constrained domains at virtually {no added implementational complexity or computational expense}.
 We call this process the \emphmarginnote{rejection approximation of reflected Brownian motion}.
 
@@ -476,13 +476,13 @@ In~\Cref{sec:rejection-convergence}, we prove the following result.
 \end{theorem}
 
 \begin{proof}
-	See \cref{sec:rejection-convergence}.
-
+	For the full proof see \cref{sec:rejection-convergence}.
 	Here we give some elements of the proof.
+
 	Our approach is based on the invariance principle of \cite{stroock1971diffusion}.
 	More precisely, we show that we can compute an equivalent `drift' and `diffusion matrix' for the discretised process and that, as \(\gamma \to 0\), the drift converges to zero and the diffusion matrix converges to \(\m{I}\).
 
-	In the Euclidean setting, this result, accompanied by mild regularity and growth assumptions, ensures that the discretization weakly converges to the original SDE.
+	In the Euclidean setting, this result, accompanied by mild regularity and growth assumptions, ensures that the discretization weakly converges to the original stochastic differential equation.
 	However, the case with boundary is much more complicated, primarily because the approximate drift might explode near the boundary, thus we need to verify exactly how the drift behaves as \(\gamma \to 0\) and as the process approaches the boundary.
 
 	We show that the \emph{normalised} drift converges to the inward normal near the boundary.
@@ -560,26 +560,26 @@ If we keep the Euclidean metric, then \emph{unconstrained} stochastic processes 
 To counter this effect, it has been proposed to \emph{reflect} the Brownian motion \cite{williams1987Reflected,petit1997Time,shkolnikov2013Timereversal}.
 Finally, we also highlight hit-and-run approaches \parencite{Smith1984,Lovasz2006} which generalise Gibbs' algorithm and enjoy fast convergence properties provided that one knows how to sample from the one-dimensional marginals.
 
-\subsection{Diffusion models on manifolds.}
-\textcite{debortoli2022riemannian} extended the work of \textcite{song2020score} to
-Riemannian manifolds by defining forward and backward stochastic processes in
-this setting.
-Concurrently, a similar framework was introduced by \textcite{huang2022riemannian} extending the maximum likelihood approach of \textcite{huang2021variational}.
-Existing applications of denoising diffusion models on Riemannian manifolds have been focused on well-known manifolds for which one can find metrics so that the framework of \textcite{debortoli2022riemannian} applies.
-In particular, on compact Lie groups, geodesics and Brownian motions can be defined in a canonical manner.
-Their specific structure can be leveraged to define efficient diffusion models \cite{yim2023se}.
-\textcite{leach2022denoising} define diffusion models on
-\(\groupSO{3}\) for rotational alignment, while \textcite{jing2022torsional}
-consider the product of tori for molecular conformer
-generation. \textcite{corso2022DiffDock} use diffusion models on
-\(\R^3 \times \groupSO{3} \times \groupSO{2}\) for protein docking
-applications.
-RFDiffusion \parencite{watson2022Broadly} and FrameDiff also incorporate \(\groupSE{3}\) diffusion models.
-Finally, \textcite{urain2022se} introduce a methodology for \(\groupSE{3}\) diffusion models with applications to robotics.
+% \subsection{Diffusion models on manifolds.}
+% \textcite{de2022riemannian} extended the work of \textcite{song2020score} to
+% Riemannian manifolds by defining forward and backward stochastic processes in
+% this setting.
+% Concurrently, a similar framework was introduced by \textcite{huang2022riemannian} extending the maximum likelihood approach of \textcite{huang2021variational}.
+% Existing applications of denoising diffusion models on Riemannian manifolds have been focused on well-known manifolds for which one can find metrics so that the framework of \textcite{de2022riemannian} applies.
+% In particular, on compact Lie groups, geodesics and Brownian motions can be defined in a canonical manner.
+% Their specific structure can be leveraged to define efficient diffusion models \cite{yim2023se}.
+% \textcite{leach2022denoising} define diffusion models on
+% \(\groupSO{3}\) for rotational alignment, while \textcite{jing2022torsional}
+% consider the product of tori for molecular conformer
+% generation. \textcite{corso2023diffdock} use diffusion models on
+% \(\R^3 \times \groupSO{3} \times \groupSO{2}\) for protein docking
+% applications.
+% RFDiffusion \parencite{watson2022Broadly} and FrameDiff also incorporate \(\groupSE{3}\) diffusion models.
+% Finally, \textcite{urain2022se} introduce a methodology for \(\groupSE{3}\) diffusion models with applications to robotics.
 
-\subsection{Approximation schemes of reflected SDEs}
+\subsection{Approximation schemes of reflected stochastic differential equations}
 Several schemes have been introduced to approximately sample from reflected Stochastic Differential Equations.
-They can be interpreted as modifications of classical Euler-Maruyama schemes used to discretise SDEs without boundary.
+They can be interpreted as modifications of classical Euler-Maruyama schemes used to discretise stochastic differential equations without boundary.
 One of the most common approaches is to use the Euler-Maruyama discretisation and project the solution onto the boundary if it escapes from the domain \(\c{M}\).
 In this case, mean-square error rates of order \emph{almost} \(1/2\) have been proven under various conditions \parencite{liu1995discretization,chitashvili1981strong,pettersson1995approximations,slominski1994approximation}.
 Concretely this means that \(\E[\| \bar{\v{B}}_{t} - X_{n}^{t/n}\|^2] = O(n^{-1+\varepsilon})\) with \(\varepsilon>0\) arbitrary small and where \((X_k^\gamma)_{k \in \N}\) is the projection scheme.
@@ -591,7 +591,7 @@ It is possible to use the Euler-Peano method to get slight improvements for a me
 method which pushes the solution away from the boundary and shows a mean-square error
 of order \(1/4\), see also \cite{pettersson1997penalization}.
 Weak errors of order \(1\) have been obtained in \cite{bossy2004symmetrized} and \cite{gobet2001euler} by introducing a reflection component in the discretisation or using some local approximation of the domain to a half-space.
-We refer to \cite{pilipenko2014introduction} for an introduction to the discretisation of reflected SDEs.
+We refer to \cite{pilipenko2014introduction} for an introduction to the discretisation of reflected stochastic differential equations.
 Closer to our work, \cite{burdzy2008discrete} consider three different methods to approximate reflected Brownian motions on general domains (two based on discrete methods and one based on killed diffusions).
 Only qualitative results are provided.
 To the best of our knowledge, no previous work in the probability literature has investigated the \emph{Metropolised} scheme we propose.
@@ -980,7 +980,7 @@ Drawing on the definition above, the space on which we effectively parameterise 
 \end{figure*}
 
 
-To learn a distribution over this space, we leverage the methodology introduced in \cref{sec:constrained_diffusion_models} for the polytope component \(\mathbb{P}^3\) and in \cref{chp:riemannian_score_based_models} for the torus component \(\mathbb{T}^4\).
+To learn a distribution over this space, we leverage the methodology introduced in \cref{sec:constrained_diffusion_models} for the polytope component \(\mathbb{P}^3\) and in \cref{cpt:riemannian_score_based_models} for the torus component \(\mathbb{T}^4\).
 A qualitative comparison of samples from the data distribution, our log-barrier and reflected diffusion models, and the uniform distribution is presented in \Cref{fig:loop_plot}.
 For enhanced visual clarity, we project the modelled spatial chain onto the 2D plane by removing the (unconstrained) torus component of the product manifold and only plotting the planar chains encoded by the (constrained) polytope component (a correlation plot of the full product manifold is presented in \Cref{fig:loops_pairs}).
 
@@ -1029,7 +1029,7 @@ The improved relative performance of the log-barrier method seems likely due to 
 		\midrule
 		Barrier Diffusions                                                                                                                                                                                                                                        \\
 		\scshape \textcite{fishman2023diffusion_hl}  & \xmark                                                                                        & \xmark \hspace{0.1em} \(\del{\c{O}(?)}\) & \(\text{\small convex}\;{\subset}\;\text{any}\;\c{M}\) & \cmark \\
-		\scshape \textcite{liu2023mirror}            & \cmark                                                                                        & \cmark                                   & \(\text{\small convex}\;{\subset}\;\R^d\)              & \xmark \\
+		\scshape \textcite{liu2024mirror}            & \cmark                                                                                        & \cmark                                   & \(\text{\small convex}\;{\subset}\;\R^d\)              & \xmark \\
 
 		\bottomrule
 	\end{tabular}

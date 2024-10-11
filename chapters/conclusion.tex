@@ -1,0 +1,100 @@
+\section{Contributions and applications}
+\lettrine{T}{his thesis} has focused on extending the capabilities of score-based generative models to Riemannian manifolds.
+\Cref{cpt:riemannian_score_based_models} developed methods for modelling on geodesically complete manifolds. \Cref{cpt:constrained_domains,cpt:efficient_constrained_domains} extended these ideas to geodesically incomplete manifolds, allowing for modelling in the presence of constraints. \Cref{cpt:geom_nerual_diffusion_processes} looked at modelling data structures that live on manifolds, namely tensor fields and paths on manifolds.
+This has been achieved by generalising technical results to the manifold setting from the Euclidean setting, proposing practical modelling choices needed to make the manifold setting tractable, and efficient implementations of the algorithms proposed.
+The main motivation for this has been tackling scientific problems with generative modelling and throughout we have demonstrated practical examples on scientifically relevant tasks.
+
+The work presented in this thesis has already seen a range of applications in scientific modelling problems.
+The problem of modelling the three-dimension structure of a protein given its amino acid sequence has been studied by \textcite{watson2022Broadly, watson2023novo, wang2024protein, yim2023se}.
+This involves modelling over products of the group \(\groupSE[3]\).
+The design of novel proteins, with the additional complexity of modelling the protein backbone residue types has been tackled by \textcite{anand2022protein, luo2022antigen}.
+\textcite{urain2022se} also consider this setting for the modelling of robotics trajectories.
+This involves modelling over products of the group \(\groupSE[3]\) as well as a categorical distribution for the amino acid type.
+Modelling proteins \cite{wu2024protein} and small molecules
+\cite{jing2022torsional} by their internal bond rotation angles has also been studied, involving modelling over products of \(\groupSO[2]\).
+The problem of predicting the interaction between multiple proteins and small molecules has been considered in \textcite{corso2023diffdock,ketata2023diffdock}.
+Applications in material science have also been considered by \textcite{jiao2024crystal} which involves modelling over Euclidean space with periodic boundary conditions and \(\groupE[3]\) symmetries.
+Modelling in hyperbolic space has also been considered for modelling tree structures \cite{wen2024hyperbolic} and molecules \cite{wen2023hyperbolic2023}.
+
+
+
+\section{Concurrent work}
+
+In the field of machine learning there is never a single group working to tackle a given idea. 
+I would like to briefly touch on other works that tackled similar problems at similar times to the work presented in this thesis, or made direct theoretical improvements.
+
+\textcite{huang2022riemannian} developed methods to tackle a similar setting as presented in \cref{cpt:riemannian_score_based_models}.
+The approach taken by the authors differs from \cref{cpt:riemannian_score_based_models} in a number of ways.
+The authors prove a time-reversal result similar to \cref{thm:fokker-plank_time_reversal_manifold}.
+In order to define a valid training loss they take a maximum likelihood perspective and generalise the work of \textcite{huang2021variational,song2021maximum}, resulting in an implicit score matching like objective, but not denoising score matching.
+Finally, in discretising the stochastic differential equations they rely on embedding the manifold into Euclidean space and solving the stochastic differential equation as a Euclidean stochastic differential equation.
+This relies on expensive nearest point projection operations to keep points on the skin of the manifold, and so can lead to slower and less accurate results than the scheme based on geodesic random walks developed in \cref{cpt:riemannian_score_based_models}.
+
+\textcite{lou2023scaling} extend the work of \cref{cpt:riemannian_score_based_models} and \textcite{huang2022riemannian} by providing better tools for heat kernel estimation and sampling on Riemannian manifolds, making these models more tractable.
+
+\textcite{lou2023reflected} also worked on the constrained domain setting explored in \cref{cpt:constrained_domains,cpt:efficient_constrained_domains}.
+The focus of this work is on the hypercube.
+By exploiting the specific product structure of the hypercube and the tractability of the unit interval they arrive at a tractable approximation to the heat kernel on the hypercube and therefore a denoising score matching objective, and a simulation free forward noising process sampling method.
+This improves on the implicit score matching objective and the need to simulate the forward noising process.
+The method is however limited to the hypercube, and domains that can be projected into it, and would not apply to domains with non-zero curvature.
+By contrast our approach is designed to handle a wider range of settings, such as non-convex polytopes in Euclidean space, or non-Euclidean geometries, where such approximations are not tractable.
+
+\textcite{tae2023mirror, liu2024mirror} also build on the constrained setting of \cref{cpt:constrained_domains,cpt:efficient_constrained_domains}. They explore using mirror maps to project a constrained space into an unconstrained space where unconstrained diffusion modelling is then done. 
+This is similar to the log-barrier method proposed in this thesis, but making use a different map to an unconstrained space.
+The specific forms of the mirror map can be exploited to allow for a denoising score matching objective and simulation free forward noising process sampling, but at the cost of warping the geometry of the underlying space.
+
+\section{Future work}
+
+\subsection{Beyond diffusions: flow and bridge matching on manifolds}
+
+The paradigm of diffusion modelling starts with samples from an unknown distribution and uses a stochastic differential equation to noise samples from this distribution to a stable reference distribution.
+By exploiting stochastic differential equations with analytic forward transition densities and sampling, we arrive at efficient score matching training objectives.
+This has the drawback of limiting us to noising processes that are aprticularly tractable.
+When these are not available we have to resort to simulating the forward noising process and either making approximations to the transition density for denoising score matching, or resorting to implicit score matching.
+This limits the possible maps between target and noise distributions.
+This is particularly true in the manifold case, as highlighted in \cref{cpt:riemannian_score_based_models}, where even simple noising processes such as Brownian motion are not analytic.
+
+Flow matching \cite{lipman2022flow,liu2022rectified,albergo2023stochastic} and bridge matching \cite{peluchetti2023non,liu2022let,albergo2023stochastic} take a different perspective.
+Instead, for samples from two distributions these methods define a deterministic and stochastic map between these points respectively. 
+From these tractable score matching-like objectives can be obtained to define ordinary and stochastic differential equations mapping between the two distributions.
+The diffusion modelling paradigm can be recovered from the bridge matching paradigm when one of the distributions is a tractable target distribution and can be analytically integrated out of the training objective.
+
+There are two main advantages to these paradigms.
+Firstly the ability to map two intractable distributions to each other, rather than an intractable one to a tractable one, and secondly a much greater choice in the mapping specified between distributions.
+For example one can try to match the optimal transport map between distributions, or match the Schrödinger bridge between distributions \cite{debortoli2021neurips,vargas2021solving,,shi2024diffusion,chen2021likelihood}.
+
+These methods potentially provide a way to deal with the additional intractability imposed by modelling on Riemannian manifolds.
+For example \textcite{chen2024flow} provide a flow matching method that relies only on analytic exponential and logarithm maps on the manifold, rather than needing a tractable noising stochastic differential equation, resulting in significantly better scaling to high dimension problems.
+\textcite{thornton2022riemannian_hl} extends the Schrödinger bridge matching methods to manifolds.
+There remains ground to explore in this direction for more scalable and efficient generative modelling methods on manifolds.
+
+\subsection{Energy-based training}
+
+In this thesis we have explored diffusion modelling methods in the setting where we have a collection of samples \(\cbr{x_i}_{i=1}^N\) from an unknown distribution \(\pi\).
+In many scientific problems however the problem setting is that we know a target distribution up to a constant, \(q \propto \pi\), without knowing the normalising constant that would allow us to recover \(\pi\).
+Classically such problems are sampled with Markov chain Monte Carlo methods \cite{metropolis1953equation} such as Hamiltonian Monte Carlo \cite{neal2012mcmc}, sequential Monte Carlo \cite{doucet2001introduction} techniques, annealed importance sampling \cite{neal2001annealed} and parallel tempering \cite{geyer1991markov}.
+
+Most generative modelling frameworks throw away such an unnormalised target \(q\).
+It contains significant information however and a number of methods have been developed to make use of this \cite{noe2019boltzmann}, most commonly in normalising flow models by mixing these with classic sampling techniques \cite{midgley2022flow,matthews2022continual,gabrie2022adaptive,wirnsberger2022normalizing}.
+
+For diffusion models it seems natural to be able to incorporate this unnormalised target into the model as the score at the data is given exactly by \(\nabla_x \log \pi(x) = \nabla_x \log q(x)\).
+This has been exploited in a number of ways.
+
+\textcite{zheng2023predictingequilibriumdistributionsmolecular} use the known score at the data, \(\nabla \log q\), to train the score function at \(t=0\) and then use the continuity equation to enforce path consistency on the rest of the score function.
+While an exact method, the training objective to enforce consistency both involves the computation of a divergence of the score network, an \(\c{O}(d^3)\) cost operation in dimension, and is also not a stationary regression objective, eliminating some of the key performance benefits of diffusion models.
+
+Where in \cref{sec:likelihood_training} the forward Kullback-Leibler divergence between the desired diffusion process and the parametrised process, \(\c{D}_{KL}\delvert{P_\text{data}}{P^\theta_{\text{model}}}\), is used to derive a maximum likelihood objective for diffusion models, \textcite{zhang2021path,vargas2021solving} utilise the reverse Kullback-Leibler divergence, \(\c{D}_{KL}\delvert{P^\theta_{\text{model}}}{P_\text{data}}\), to arrive at algorithms that incorporate \(q\) and do not require samples from \(\pi\) to compute.
+The reliance on the reverse Kullback-Leibler divergence however means the algorithms suffer from mode seeking behaviour, and the use of importance sampling presents difficulties in high dimension.
+
+\textcite{phillips2024particle} develop a particle filtering scheme in which the series of distributions traversed by the particles is defined by a diffusion path, and the score of this path approximated with a simple linear approximation.
+This approximation, and therefore efficiency of the particle filter, can be improved by training the approximation using samples from the particle filter, bootstrapping the model to generate self-training data.
+
+\textcite{akhound2024iterated} similarly develop a model bootstrapping approach to sampling.
+They derive an importance sampled loss function incorporating \(q\) allowing for arbitrary samples to be used to train the diffusion model.
+
+\textcite{de2024target} introduce a new score matching loss, the target score matching loss, that depends only on \(q\).
+They show that this loss has lower variance near the start of the noising diffusion, and that denoising score matching has lower variance further into the noising process. 
+By combining these two losses and varying their weights over time they obtain a loss with the best of the properties of denoising and target score matching over time.
+
+This current body of work shows that there is strong promise in combining classic sampling techniques for unnormalised densities with diffusion model ideas.
+Given that solving many scientific problems requires good unnormalised density sampling further combining the power of diffusion modellings generalisation capabilities with the statistical accuracy of classical sampling techniques seems like an appealing direction for pushing the bounds of science.

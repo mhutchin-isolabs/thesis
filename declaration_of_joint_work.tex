@@ -1,0 +1,201 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{lettrine}
+\usepackage{libertine}
+\usepackage{graphicx}
+
+
+
+\PassOptionsToPackage{table,dvipsnames,x11names,svgnames}{xcolor}
+\usepackage[citations,authoryear,a4paper,notes]{MJH}
+\bibliography{bibliography_declaration}
+
+\DeclareBibliographyCategory{enumpapers}
+\newcommand{\enumcite}[1]{%
+  \addtocategory{enumpapers}{#1}%
+  \defbibcheck{key#1}{
+    \iffieldequalstr{entrykey}{#1}
+      {}
+      {\skipentry}}%
+  \printbibliography[heading=none,check=key#1]%
+}
+
+\title{Declaration of contributions made by Michael John Hutchinson to joint work included in the dissertation ``Generative modelling with diffusion models on Riemannian manifolds'' for the degree of Doctor of Philosophy}
+
+\begin{document}
+
+\nocite{de2022riemannian,fishman2023diffusion,fishman2024metropolis,mathieu2024geometric}
+
+\maketitle
+
+The contents of this thesis is made up of four published papers, each turned into chapters.
+
+These are:
+\begin{itemize}
+    \item Chapter 3 is based on the paper "Riemannian Score-Based Generative Modelling".
+    \item Chapter 4 is based on the paper "Diffusion Models for Constrained Domains".
+    \item Chapter 5 is based on the paper "Metropolis Sampling for Constrained Diffusion Models".
+    \item Chapter 6 is based on the paper "Geometric Neural Diffusion Processes".
+\end{itemize}
+The next pages declare my personal contributions to these works.
+In addition to these contributions I have rewritten large parts of the papers into chapter form.
+
+\newpage
+\section{Riemannian score-based generative models}
+
+\subsection{Paper details}
+
+\begin{itemize}
+    \item \textbf{Title of paper}: Riemannian Score-Based Generative Modelling.
+    \item \textbf{Publication status}: Published.
+    \item \textbf{Publication detail}: \enumcite{de2022riemannian}
+    * indicates equal first author contribution
+\end{itemize}
+
+\subsection{Student conformation}
+
+\begin{itemize}
+    \item \textbf{Student name}: Michael John Hutchinson.
+    \item \textbf{Contributions to the paper}:  
+        \begin{enumerate}
+            \item Project conception with Emile.
+            \item Development of practical approach with Emile, Valentin.
+            \item Development of the code base with Emile.
+            \item Running of experiments: Earth and climate science, synthetic data on tori, and synthetic data on hyperbolic space experiments.
+            \item Mathematical results: Implicit score matching on Riemannian manifolds.
+            \item Original manuscript writing with Emile and Valentin.
+        \end{enumerate}  
+    \item \textbf{Signature}: \raisebox{
+        -0.3cm
+    }{\includegraphics[width=2cm]{images/signature.jpg}}
+    \item \textbf{Date}: 30/09/2024
+\end{itemize}
+
+\subsection{Supervisor conformation}
+\begin{itemize}
+    \item \textbf{Supervisor name and title}: Professor Yee Whye Teh. 
+    \item \textbf{Supervisor comments}:\vspace{4\baselineskip}
+    \item \textbf{Signature}:
+    \item \textbf{Date}:
+\end{itemize}
+
+
+\newpage
+\section{Diffusion Models for Constrained Domains}
+
+\subsection{Paper details}
+
+\begin{itemize}
+    \item \textbf{Title of paper}: Diffusion Models for Constrained Domains.
+    \item \textbf{Publication status}: Published.
+    \item \textbf{Publication detail}: \enumcite{fishman2023diffusion}
+\end{itemize}
+
+\subsection{Student conformation}
+
+\begin{itemize}
+    \item \textbf{Student name}: Michael John Hutchinson.
+    \item \textbf{Contributions to the paper}:  
+    \begin{enumerate}
+        \item Project conception with Valentin, Nic.
+        \item Development of practical approachs with Nic, Leo, Valentin, including the problem-specific details.
+        \item Development of the code with Nic and Leo.
+        \item Running experiments: Robotics experiment.
+        \item Supervision of the project.
+    \end{enumerate}  
+    \item \textbf{Signature}: \raisebox{
+        -0.3cm
+    }{\includegraphics[width=2cm]{images/signature.jpg}}
+    \item \textbf{Date}: 30/09/2024
+\end{itemize}
+
+\subsection{Supervisor conformation}
+\begin{itemize}
+    \item \textbf{Supervisor name and title}: Professor Yee Whye Teh. 
+    \item \textbf{Supervisor comments}:\vspace{4\baselineskip}
+    \item \textbf{Signature}:
+    \item \textbf{Date}:
+\end{itemize}
+
+\newpage
+\section{Metropolis sampling for constrained diffusion models}
+
+\subsection{Paper details}
+
+\begin{itemize}
+    \item \textbf{Title of paper}: Metropolis sampling for constrained diffusion models.
+    \item \textbf{Publication status}: Published.
+    \item \textbf{Publication detail}: \enumcite{fishman2024metropolis}
+\end{itemize}
+
+\subsection{Student conformation}
+
+\begin{itemize}
+    \item \textbf{Student name}: Michael John Hutchinson.
+    \item \textbf{Contributions to the paper}:  
+    \begin{enumerate}
+        \item Project conception with Valentin, Nic, Leo.
+        \item Development of practical approachs with Nic, Leo, Valentin, including the problem-specific details.
+        \item Development of the code with Nic and Leo.
+        \item Running experiments: Robotics and convergence speed experiments.
+        \item Supervision of the project.
+    \end{enumerate}  
+    \item \textbf{Signature}: \raisebox{
+        -0.3cm
+    }{\includegraphics[width=2cm]{images/signature.jpg}}
+    \item \textbf{Date}: 30/09/2024
+\end{itemize}
+
+\subsection{Supervisor conformation}
+\begin{itemize}
+    \item \textbf{Supervisor name and title}: Professor Yee Whye Teh. 
+    \item \textbf{Supervisor comments}:\vspace{4\baselineskip}
+    \item \textbf{Signature}:
+    \item \textbf{Date}:
+\end{itemize}
+
+
+\newpage
+\section{Geometric Neural Diffusion Processes}
+
+\subsection{Paper details}
+
+\begin{itemize}
+    \item \textbf{Title of paper}: Geometric Neural Diffusion Processes
+    \item \textbf{Publication status}: Published.
+    \item \textbf{Publication detail}: \enumcite{mathieu2024geometric}
+    * indicates equal first author contribution
+\end{itemize}
+
+\subsection{Student conformation}
+
+\begin{itemize}
+    \item \textbf{Student name}: Michael John Hutchinson.
+    \item \textbf{Contributions to the paper}:  
+        \begin{enumerate}
+            \item Project conception with Emile.
+            \item Development of geometric nerual diffusion process framework with Emile, Vincent.
+            \item Development of code with Emile, Vincent.
+            \item Running of experiments: Global tropical cyclone trajectory prediction experiment.
+            \item Developed the conditional sampling approaches.
+            \item Mathematical results: Those regarding the invariance/equivariance of the proposed models, and the results regarding the equivariance of the posterior maps of invariant measures.
+            \item Original manuscript writing with Emile and Vincent.     
+        \end{enumerate}  
+        \item \textbf{Signature}: \raisebox{
+            -0.3cm
+        }{\includegraphics[width=2cm]{images/signature.jpg}}
+        \item \textbf{Date}: 30/09/2024
+\end{itemize}
+
+\subsection{Supervisor conformation}
+\begin{itemize}
+    \item \textbf{Supervisor name and title}: Professor Yee Whye Teh. 
+    \item \textbf{Supervisor comments}:\vspace{4\baselineskip}
+    \item \textbf{Signature}:
+    \item \textbf{Date}:
+\end{itemize}
+
+\end{document}

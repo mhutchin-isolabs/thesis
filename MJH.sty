@@ -373,28 +373,28 @@
 
 % short arrows
 \newcommand{\vsra}{{\ensuremath{%
-  \mathchoice{\includegraphics[height=1.1ex]{figures/symbols/veryshortrightarrow.pdf}}
-    {\includegraphics[height=1.1ex]{figures/symbols/veryshortrightarrow.pdf}}
-    {\includegraphics[height=.8ex]{figures/symbols/veryshortrightarrow.pdf}}
-    {\includegraphics[height=.5ex]{figures/symbols/veryshortrightarrow.pdf}}
+  \mathchoice{\includegraphics[height=1.1ex]{/Users/mhutchin/Documents/thesis/figures/symbols/veryshortrightarrow.pdf}}
+    {\includegraphics[height=1.1ex]{/Users/mhutchin/Documents/thesis/figures/symbols/veryshortrightarrow.pdf}}
+    {\includegraphics[height=.8ex]{/Users/mhutchin/Documents/thesis/figures/symbols/veryshortrightarrow.pdf}}
+    {\includegraphics[height=.5ex]{/Users/mhutchin/Documents/thesis/figures/symbols/veryshortrightarrow.pdf}}
 }}}
 \newcommand{\vsla}{{\ensuremath{%
-  \mathchoice{\includegraphics[height=1.1ex]{figures/symbols/veryshortleftarrow.pdf}}
-    {\includegraphics[height=1.1ex]{figures/symbols/veryshortleftarrow.pdf}}
-    {\includegraphics[height=.8ex]{figures/symbols/veryshortleftarrow.pdf}}
-    {\includegraphics[height=.5ex]{figures/symbols/veryshortleftarrow.pdf}}
+  \mathchoice{\includegraphics[height=1.1ex]{/Users/mhutchin/Documents/thesis/figures/symbols/veryshortleftarrow.pdf}}
+    {\includegraphics[height=1.1ex]{/Users/mhutchin/Documents/thesis/figures/symbols/veryshortleftarrow.pdf}}
+    {\includegraphics[height=.8ex]{/Users/mhutchin/Documents/thesis/figures/symbols/veryshortleftarrow.pdf}}
+    {\includegraphics[height=.5ex]{/Users/mhutchin/Documents/thesis/figures/symbols/veryshortleftarrow.pdf}}
 }}}
 \newcommand{\vsua}{{\ensuremath{%
-  \mathchoice{\includegraphics[height=1.1ex]{figures/symbols/veryshortuparrow.pdf}}
-    {\includegraphics[height=1.1ex]{figures/symbols/veryshortuparrow.pdf}}
-    {\includegraphics[height=.8ex]{figures/symbols/veryshortuparrow.pdf}}
-    {\includegraphics[height=.5ex]{figures/symbols/veryshortuparrow.pdf}}
+  \mathchoice{\includegraphics[height=1.1ex]{/Users/mhutchin/Documents/thesis/figures/symbols/veryshortuparrow.pdf}}
+    {\includegraphics[height=1.1ex]{/Users/mhutchin/Documents/thesis/figures/symbols/veryshortuparrow.pdf}}
+    {\includegraphics[height=.8ex]{/Users/mhutchin/Documents/thesis/figures/symbols/veryshortuparrow.pdf}}
+    {\includegraphics[height=.5ex]{/Users/mhutchin/Documents/thesis/figures/symbols/veryshortuparrow.pdf}}
 }}}
 \newcommand{\vsda}{{\ensuremath{%
-  \mathchoice{\includegraphics[height=1.1ex]{figures/symbols/veryshortdownarrow.pdf}}
-    {\includegraphics[height=1.1ex]{figures/symbols/veryshortdownarrow.pdf}}
-    {\includegraphics[height=.8ex]{figures/symbols/veryshortdownarrow.pdf}}
-    {\includegraphics[height=.5ex]{figures/symbols/veryshortdownarrow.pdf}}
+  \mathchoice{\includegraphics[height=1.1ex]{/Users/mhutchin/Documents/thesis/figures/symbols/veryshortdownarrow.pdf}}
+    {\includegraphics[height=1.1ex]{/Users/mhutchin/Documents/thesis/figures/symbols/veryshortdownarrow.pdf}}
+    {\includegraphics[height=.8ex]{/Users/mhutchin/Documents/thesis/figures/symbols/veryshortdownarrow.pdf}}
+    {\includegraphics[height=.5ex]{/Users/mhutchin/Documents/thesis/figures/symbols/veryshortdownarrow.pdf}}
 }}}
 
 \fi
@@ -658,7 +658,7 @@
 
 	% theorem styles and margin notes
 	\RequirePackage{marginnote}
-	\newcommand{\emphmarginnote}[2][0em]{\marginnote{\MakeUppercase#2}[#1]\emph{#2}}
+	\newcommand{\emphmarginnote}[2][0em]{\emph{#2}\marginnote{\MakeUppercase#2}[#1]}
 	\newcommand{\parmarginnote}[1]{\hspace{\z@}\marginnote{#1}\ignorespaces}
 	\renewcommand{\raggedrightmarginnote}{\raggedleft}
 	\renewcommand{\raggedleftmarginnote}{\raggedright}
@@ -694,13 +694,19 @@
 	\g@addto@macro\@subfloatboxreset{\centering}
 
 \fi
-
+\newcommand\ifcounter[3]{\@ifundefined{c@#1}{#3}{#2}}
 % theorem styles
 \ifMJH@theorems
 	\RequirePackage{amsthm}
 	\RequirePackage{thmtools}
 
-	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi, numberwithin=chapter]{theorem}
+
+	\ifcounter{chapter}{
+		\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi, numberwithin=chapter]{theorem}
+	}{
+		\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi, numberwithin=section]{theorem}
+	}
+
 	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{algorithm}
 	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{assumption}
 	\declaretheorem[style=\ifMJH@notes marginnotethm\else plain\fi,numberlike=theorem]{axiom}

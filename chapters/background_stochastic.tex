@@ -1,5 +1,5 @@
 
-Stochastic differential equations are the second core techincal area used in this thesis.
+Stochastic differential equations are the second core technical area used in this thesis.
 They form the mathematical foundation for dealing processes that evolve randomly in time through some state space.
 The core mathematics of diffusion models are built on stochastic differential equations, and so having an understanding of the underlying mathematical tools is helpful for making advances.
 
@@ -15,8 +15,7 @@ Finally, we discuss how to define, and tools to work with, stochastic differenti
 \label{sec:measure_theory}
 It is necessary when talking about stochastic processes to work with probability under the \emphmarginnote{measure theory} approach.
 Without this, there is no clear way to discuss probability on infinite dimension spaces, such as the space of continuos functions on interval \(\sbr{0,1}\). 
-There are a number of other otivations for studying measure thoery, particualrly concerning techicaly difficulties that arise with the usual definitions of probability that one encounters.
-Examples of such motivations can be found in ....
+There are a number of other motivations for studying measure theory, particularly concerning technical difficulties that arise with the usual definitions of probability that one encounters.
 
 The presentation is based on \textcite{kallenberg1997foundations}, and takes inspiration from \textcite{terenin22}.
 
@@ -36,45 +35,46 @@ From this it also follows that a \(\sigma\)-algebra is closed under countable in
 The definition of a \(\sigma\)-algebra means that it contains within itself the limits of any sequence of sets contained in it, which allows us to define some sensible concepts of convergence of random variables, to be discussed later.
 
 Of particular relevance are \emphmarginnote{Borel \(\sigma\)-algebras\label{def:borel_sigma_algebra}}.
-For a topological space \((X, \topo{X})\), the Borel \(\sigma\)-algebra, \(\c{B}\del{(X, \topo{X})}\) is the smallest sigma algebra containing the topolog \(\topo{X}\). \todo{manifold boreal are the volume form ones go look at forre}
+For a topological space \((X, \topo{X})\), the Borel \(\sigma\)-algebra, \(\c{B}\del{(X, \topo{X})}\) is the smallest sigma algebra containing the topology \(\topo{X}\).
+On a Riemannian manifold this is given by the \emphhyperref{Riemannian volume form}{prop:riemannian_volume_form}
 
-A \emphmarginnote{measure\label{def:measure}} on a measureable space is a function \(\mu: \sigalg{X} \to \R\) that is also non-negative, is zero on the empty set, and is countably additive.
-This is that for disjonit sets \(\E_1,...  \in \sigalg{X}\), \(\mu\del{\U_i E_i} = \sum_i  \mu(E_i)\).
-With this in mind we can intepret the \(\sigma\)-algebra as the set of sets we can measure.
-The restriction we place on this set of measurable sets is exactly designed to avoid techincal issues that can appear.
+A \emphmarginnote{measure\label{def:measure}} on a measurable space is a function \(\mu: \sigalg{X} \to \R\) that is also non-negative, is zero on the empty set, and is countably additive.
+This is that for disjoint sets \(\E_1,...  \in \sigalg{X}\), \(\mu\del{\U_i E_i} = \sum_i  \mu(E_i)\).
+With this in mind we can interpret the \(\sigma\)-algebra as the set of sets we can measure.
+The restriction we place on this set of measurable sets is exactly designed to avoid technical issues that can appear.
 For example, on the real numbers \(\R\) for a particular subset \(\sbr{a,b}\) we would make this simply \(|b-a|\).
-In this way, we are leasuring the length of this set.
+In this way, we are measuring the length of this set.
 A \emphmarginnote{measure space} is a measurable space along with a metric, \((X, \sigalg{X}, \mu)\).
 
-We can take \emphmarginnote{products of measureable spaces}.
-For a countable sequance of spaces \((X_i, \sigalg{X_i})_{i=1}^\infty\) the \emphmarginnote{product \(\sigma\)-algerba} \(\bigotimes_i \sigalg{X_i}\) is given by the smallest \(\sigma\)-algebra containing the \emph{cylendar sets} (\cref{eq:cylendar_sets}) of the \(\sigalg{X_i}\).
+We can take \emphmarginnote{products of measurable spaces}.
+For a countable sequence of spaces \((X_i, \sigalg{X_i})_{i=1}^\infty\) the \emphmarginnote[\baselineskip]{product \(\sigma\)-algerba} \(\bigotimes_i \sigalg{X_i}\) is given by the smallest \(\sigma\)-algebra containing the \emph{cylinder sets} (\cref{eq:cylendar_sets}) of the \(\sigalg{X_i}\).
 Note the similarity to the definition of the product topology.
-Indeed for \emph{Hausdorff} (\cref{def:hausdorff}) (and other types of seperablity) the product \(\sigma\)-algebra and the product topology interact nicely.
+Indeed, for \emph{Hausdorff} (\cref{def:hausdorff}) (and other types of separability) the product \(\sigma\)-algebra and the product topology interact nicely.
 \[
 	\c{B}\del{\prod_i (X_i, \topo{X_i})} = \bigotimes_i \c{B}\del{(X, \topo{X})}
 \]
 
-A function \(f: X\to Y\) between two measureable spaces, \((X, \sigalg{X})\), \((Y, \sigalg{Y})\), \(f:X \to Y\) is said to be a \emphmarginnote{measurable function}, denoted \(\sigalg{X}/\sigalg{Y}\)-measurable, if for any \(U \in \sigalg{{Y}}\), \(f^{-1}(U)\in \sigalg{X}\).
-This says if I can measure a set in \(Y\), then I can measure its preimage in \(X\). Notice again the similiarity to this definition to the definition of continuity. Indeed for any pair of topological spaces with the Borel \(\sigma\)-algebra, \((X, \topo{X}, \c{B}(\topo{X}))\), \((Y, \topo{Y}, \c{B}(\topo{Y}))\), any continuout function \(f:X\to Y\) is \(\c{B}(\topo{X})/\c{B}(\topo{Y})\)-measureable. Like continuous functions, the \emphmarginnote{composition} of measureable functions is again measurable.
+A function \(f: X\to Y\) between two measurable spaces, \((X, \sigalg{X})\), \((Y, \sigalg{Y})\), \(f:X \to Y\) is said to be a \emphmarginnote{measurable function}, denoted \(\sigalg{X}/\sigalg{Y}\)-measurable, if for any \(U \in \sigalg{{Y}}\), \(f^{-1}(U)\in \sigalg{X}\).
+This says if I can measure a set in \(Y\), then I can measure its preimage in \(X\). Notice again the similarity to this definition to the definition of continuity. Indeed, for any pair of topological spaces with the Borel \(\sigma\)-algebra, \((X, \topo{X}, \c{B}(\topo{X}))\), \((Y, \topo{Y}, \c{B}(\topo{Y}))\), any continuous function \(f:X\to Y\) is \(\c{B}(\topo{X})/\c{B}(\topo{Y})\)-measurable. Like continuous functions, the \emphmarginnote{composition} of measurable functions is again measurable.
 
-For \emphmarginnote{measureable functions on product spaces} the function \(f: X\to Y\times Y'\) is \(\sigalg{X}/\sigalg{Y}\otimes\sigalg{Y'}\)-measureable if each component function is measureable. The conversere is \emph{not} true.  \(f: X\times X'\to Y\) is not nessicarily measureable if \(f(\cdot, x'): X\to Y\) and \(f(x, \cdot): X'\to Y\) are measurable.
+For \emphmarginnote{measurable functions on product spaces} the function \(f: X\to Y\times Y'\) is \(\sigalg{X}/\sigalg{Y}\otimes\sigalg{Y'}\)-measurable if each component function is measurable. The converse is \emph{not} true.  \(f: X\times X'\to Y\) is not nessicarily measurable if \(f(\cdot, x'): X\to Y\) and \(f(x, \cdot): X'\to Y\) are measurable.
 
-A \emphmarginnote{probability measure} is a measure \(\mu: X\to \R\) on a measureable space \((X, \sigalg{X})\) such that \(\pi_X(X) = 1\).
-A \emphmarginnote{probabilty space}, \((\Omega, \c{F}, \P)\) in standard notation, is a measurable space along with a probability measure.
+A \emphmarginnote{probability measure} is a measure \(\mu: X\to \R\) on a measurable space \((X, \sigalg{X})\) such that \(\pi_X(X) = 1\).
+A \emphmarginnote{probability space}, \((\Omega, \c{F}, \P)\) in standard notation, is a measurable space along with a probability measure.
 In this way, we can think about \(\c{F}\) as the set of sets of events \(A_\omega \subset \Omega\) that we can ask questions about probability about.
-We are preculded from asking questions about sets that are not in \(\c{F}\) as it creates techincal issues.
+We are precluded from asking questions about sets that are not in \(\c{F}\) as it creates technical issues.
 In this sense a probability measure describes the uncertainty we have about the events \(\omega \in \Omega\).
-Typically when dealing with probabiities, the space \(\Omega\) is very abstract, and we simply choose one with "enough elements" and a \(\sigma\)-algebra with enough sets in be able to achive what we want to. 
-We can see \(\Omega\) as a bag of random numbers and \(\P\) as a random generator function from this bag, not dissimliar to a random number generator influencing events in a computer simulation.
+Typically, when dealing with probabilities, the space \(\Omega\) is very abstract, and we simply choose one with "enough elements" and a \(\sigma\)-algebra with enough sets in be able to achieve what we want to. 
+We can see \(\Omega\) as a bag of random numbers and \(\P\) as a random generator function from this bag, not dissimilar to a random number generator influencing events in a computer simulation.
 
 We define a \emphmarginnote{random variable} as a measurable function \(\up{X}: \Omega \to X\) from a probability space into a measurable space. 
 A random variable can then be thought as mapping abstract randomly generated events \(\omega \in \Omega\) into real observations in \(X\).
 The \emphmarginnote{distribution of a random variable} is given by \(\pi_\up{X} = \up{X}^*\P\), where this denotes the \emph{pushforward} of \(\P\) through \(\up{X}\), defined by \((\up{X}^*\P)(A_x) = \P(\up{X}^{-1}(A_x))\) for \(A_x\in \sigalg{X}\).
-The probabilty of a collection of events \(A_x\) happening in \(X\) is then the probabiity of their preimage happening in \(\Omega\).
-The fact that \(\up{X}\) is measurable guarentees this is well defined.
+The probability of a collection of events \(A_x\) happening in \(X\) is then the probability of their preimage happening in \(\Omega\).
+The fact that \(\up{X}\) is measurable guarantees this is well defined.
 
-\marginnote{The existence of random variables}To expand on the point of being able to choose \(\Omega\) to include enough events to be interesting, it is not guarenteed that for a given proabilty space \((\Omega, \c{F}, \P)\) and distribution \(\pi_\up{X}\) that there exists a random variable \(\up{X}: \Omega \to X\) such that \(\pi_\up{X} = \up{X}^*\P\). 
-However, given a \(\pi_\up{X}\) and a proabilty space \((\Omega, \c{F}, \P)\) it is possible to find a \emph{bigger} probability space \((\Omega', \c{F}', \P')\) along with a measureable surjection \(i: \Omega' \to \Omega\) such that \(i_* \P' = \P\) and a random variable \(\up{X}: '\Omega \to X\) exists with distribution \(\pi_{\up{X}}\).
+To\marginnote{The existence of random variables} expand on the point of being able to choose \(\Omega\) to include enough events to be interesting, it is not guaranteed that for a given probability space \((\Omega, \c{F}, \P)\) and distribution \(\pi_\up{X}\) that there exists a random variable \(\up{X}: \Omega \to X\) such that \(\pi_\up{X} = \up{X}^*\P\). 
+However, given a \(\pi_\up{X}\) and a probability space \((\Omega, \c{F}, \P)\) it is possible to find a \emph{bigger} probability space \((\Omega', \c{F}', \P')\) along with a measurable surjection \(i: \Omega' \to \Omega\) such that \(i_* \P' = \P\) and a random variable \(\up{X}: '\Omega \to X\) exists with distribution \(\pi_{\up{X}}\).
 
 The \emphmarginnote{expectation} of a random variable is only defined is the space of the random variable has enough structure, namely vector space structure. For real valued random variables, \(\up{X}:\Omega\to \R\), \(\E\sbr{\up{X}}\) can be thought of as the weighted average value of \(\up{X}\) under the values of \(\up{X}\) generated by \(\P\). For a suitable notion of integration, namely Lebesgue integration, this is
 \[\E\sbr{\mathsf{X}} = \int_X x \d \pi_{\up{X}}(x) = \int_\Omega \mathsf{X}(\omega) \d\P (\omega)\]
@@ -84,7 +84,7 @@ For \emphmarginnote{manifold-valued random variables}, \(\up{X}:\Omega\to M\), h
 In order to study such random variables we often look at their behaviour under composition with measurable test functions \(f: M \to \R\) as we can then take the expectation of the random variable \(f\circ \up{X} : \Omega\to \R\).
 This definition of expection applies clearly to real vector-valued random variables as well.
 
-The \emphmarginnote{covariance} of a pair of random variables, if it exisits, is then given by \(\Cov\del{\up{X}, \up{X}'} = \E\sbr{\up{X}\up{X}'} - \E\sbr{\up{X}}E\sbr{\up{X}'}\).
+The \emphmarginnote{covariance} of a pair of random variables, if it exists, is then given by \(\Cov\del{\up{X}, \up{X}'} = \E\sbr{\up{X}\up{X}'} - \E\sbr{\up{X}}E\sbr{\up{X}'}\).
 This definition also extends to real vector-valued random variables as well by applying it component-wise.
 
 For a pair of random variables, \(\up{X}\), \(\up{X}'\) on a measurable space \((X, \sigalg{X})\) relative to a probability space \((\Omega, \c{F}, \P)\), we can define equality in a number of ways.
@@ -95,22 +95,22 @@ We say that they are \emphmarginnote{equal almost-surely}, denoted \(\up{X} = \u
 This means that they agree as functions \emph{except} on sets of probability zero.
 Almost-sure equality is implied by sure equality.
 
-Weaker than this, but still maintaining the , we say that two random variables are \emphmarginnote{equal in distribution}, denoted \(\up{X} \overset{d}{=} \up{X}'\), if the measures \(\pi_{\up{X}} = \up{X}_*\P\) and  \(\pi_{\up{X}'} = \up{X}_*'\P\) are equal.
+Weaker than this, we say that two random variables are \emphmarginnote{equal in distribution}, denoted \(\up{X} \overset{d}{=} \up{X}'\), if the measures \(\pi_{\up{X}} = \up{X}_*\P\) and  \(\pi_{\up{X}'} = \up{X}_*'\P\) are equal.
 In other words this implies that \(\up{X}(A) = \up{X}'(A) \; \forall A\in \sigalg{X}\).
 This means that they assign the same probabilities to events in \(X\), but these events may \emph{not} have been generated by the same random events in \(\Omega\).
-Equality in distribtion is implied by almost-sure equality.
+Equality in distribution is implied by almost-sure equality.
 
 \begin{figure}
 	\centering
 	\hspace{0.5in}\input{figures/tex/random_variable_equality_x.tex}\hfill\input{figures/tex/random_variable_equality_y.tex}\hfill \input{figures/tex/random_variable_equality_z.tex}\hspace{0.5in}
 	\caption{Consider random variables \(f_1,f_2,f_3\), with \(\Omega=\cbr{a,b,c,d}\) and \(X=\cbr{1,2,3,4}\). Since this is a finite set, we can make the \(\sigma\)-algebra \(\c{F}\) the power set (the set of all subsets) of \(\Omega\) (this does not work on uncountable spaces like \(\R\)
-	), and the same for \(\sigalg{X}\). Let \(\P(\cbr{a}) = \P(\cbr{b}) = 0.5\) and \(\P(\cbr{c}) = \P(\cbr{d}) = 0\). Clearly then \(f_1,f_2, f_3\) are equal to themselves surely. \(f_1\) and \(f_2\) are equal almost surely as the only sets they don't agree on are \(\cbr{c}, \cbr{d}\), and these are measure 0 under \(\P\). \(f_1,f_2\) are equal to \(f_3\) in distribution only. The measures \(\pi_{f_1}, \pi_{f_2}, \pi_{f_3}\) all assign the same probabilites to sets of \(X\) (\(\pi_f(\cbr{1}) = \pi_f(\cbr{2}) = 0.5\), \(\pi_f(\cbr{1,2}) = 1\),  \(\pi_f(\cbr{3}) = \pi_f(\cbr{4}) = 0.0\), etc ), but the are not the same as functions on sets of non-zero measure, (\(f{1,2}(\cbr{a}) \neq f_3(\cbr{a})\), \(f_{1,2}(\cbr{2})\neq f_3(\cbr{2})\))}
+	), and the same for \(\sigalg{X}\). Let \(\P(\cbr{a}) = \P(\cbr{b}) = 0.5\) and \(\P(\cbr{c}) = \P(\cbr{d}) = 0\). Clearly then \(f_1,f_2, f_3\) are equal to themselves surely. \(f_1\) and \(f_2\) are equal almost surely as the only sets they don't agree on are \(\cbr{c}, \cbr{d}\), and these are measure 0 under \(\P\). \(f_1,f_2\) are equal to \(f_3\) in distribution only. The measures \(\pi_{f_1}, \pi_{f_2}, \pi_{f_3}\) all assign the same probabilities to sets of \(X\) (\(\pi_f(\cbr{1}) = \pi_f(\cbr{2}) = 0.5\), \(\pi_f(\cbr{1,2}) = 1\),  \(\pi_f(\cbr{3}) = \pi_f(\cbr{4}) = 0.0\), etc ), but the are not the same as functions on sets of non-zero measure, (\(f{1,2}(\cbr{a}) \neq f_3(\cbr{a})\), \(f_{1,2}(\cbr{2})\neq f_3(\cbr{2})\))}
 \end{figure}
 
 These notions of equality also lead to definitions of limits of sequences of random variables.
-Let us consider a random variable \(X\) and a sequence of random variables \(\del{X_n}_{n=1}^\infty\) on a proabilty space \((\Omega, \c{F}, \P)\).
+Let us consider a random variable \(X\) and a sequence of random variables \(\del{X_n}_{n=1}^\infty\) on a probability space \((\Omega, \c{F}, \P)\).
 
-\emphmarginnote{Sure convergence} or \emphmarginnote{pointwise convergence} implies that \(X_n\) converges as a function to \(X\), that is
+\emphmarginnote{Sure convergence} or \emphmarginnote[\baselineskip]{pointwise convergence} implies that \(X_n\) converges as a function to \(X\), that is
 \[
 	\lim_{n\to\infty} X_n(\omega) = X(\omega)\;\forall\;\omega\in\Omega, \quad \text{and is denoted by} \quad X_n \to X
 .\]
@@ -119,46 +119,46 @@ As before, this notion is often too strong, and so we define \emphmarginnote{alm
 	\P\del{\lim_{n\to\infty} X_n = X} = 1, \quad \text{and is denoted by} \quad X_n \overset{\as}{\to} X
 \]
 which means that \(X_n\) need not converge to \(X\) on sets of measure zero.
-Almost-sure convergence is implied by sure converge
+Almost-sure convergence is implied by sure convergence.
 
-If \(X\) has metric space structure we can define \emphmarginnote{convergence in proabilty\label{def:probability-converge-rv}} as, for all \(\epsilon\)
+If \(X\) has metric space structure we can define \emphmarginnote{convergence in probability\label{def:probability-converge-rv}} as, for all \(\epsilon\)
 \[
 	\lim_{n\to\infty}{\P\del{d\del{X, X_n} \geq \epsilon}} = 0, \quad \text{and is denoted by} \quad X_n \overset{p}{\to} X
 .\]
-convergence in proabilty is implied by almost-sure convergence.
+Convergence in probability is implied by almost-sure convergence.
 
 We define \emphmarginnote{convergence in distribution\label{def:distribution-converge-rv}} as
 \[
 	\lim_{n\to \infty} \P\del{X_n\in A} = \P\del{X\in A}, \quad \text{and is denoted by} \quad X_n \overset{L^p}{\to} X
 .\]
-Convergence in distribtion is implied by convergence in proabilty.
+Convergence in distribution is implied by convergence in probability.
 
-Finally, if we have stucture that allows for expectations we can define \emphmarginnote{convergence in \(L^p\)-norm\label{def:l2-converge-rv}}, if \(\E\sbr{\norm{X_n}_p^p}\) and \(\E\sbr{\norm{X}_p^p}\) exist, as
+Finally, if we have structure that allows for expectations we can define \emphmarginnote{convergence in \(L^p\)-norm\label{def:l2-converge-rv}}, if \(\E\sbr{\norm{X_n}_p^p}\) and \(\E\sbr{\norm{X}_p^p}\) exist, as
 \[
 	\lim_{n\to\infty} \E\sbr{\norm{X_n - X}_p^p} = 0, \quad \text{and is denoted by} \quad X_n \overset{\as}{\to} X
 .\]
 Convergence in \(L^p\) for \(p\geq1\) implies convergence in probability, and is usually easier to work with directly.
 
 \subsubsection{Interactions between random variables}
-We will need often to work with the interaction between one or more random variables.
+We will often need to work with the interaction between one or more random variables.
 
 Consider a joint random variable \(\mathsf{Z}: \Omega \to X \times Y\), a \(\c{F}/\sigalg{X}\otimes \sigalg{Y}\) measurable function, with distribution \(\pi_{\mathsf{Z}}:X \x Y \to \R\).
 
 The \emphmarginnote{marginal random variable} \(\mathsf{X}: \Omega \to X\) is given by \[\proj_X\circ \mathsf{Z}: \Omega \to X, \quad \text{ where } \proj_X: X\times Y \to X, \; (x, y) \mapsto x,\] where the \(\proj_X\) function projects onto the \(X\) coordinate. 
 We can create from the \emphmarginnote{marginal distribution} \(\pi_{\mathsf{X}}:X\to\R\), given by \[\pi_{\mathsf{X}}(A_x) = \pi_{\mathsf{Z}}(A_x\x Y), \; A_x\in\sigalg{X}.\]
 
-A \emphmarginnote{probability kernel} is a function \(\pi_{\mathsf{X} | \mathsf{Y}}: \sigalg{X}\times Y \to \R\) is a function that 1) \(\pi_{\up{X}|\up{X}}(\cdot \given y): X\to \R\) is a probability measure and 2) \(\pi_{\up{X}|\up{X}} (A_x \given \cdot):Y\to\R\) is \(\sigalg{Y}/\c{B}(\R)\)-measureable. These are useful for a few reasons, defining stochastic processes, but also conditional distributions. 
+A \emphmarginnote{probability kernel} is a function \(\pi_{\mathsf{X} | \mathsf{Y}}: \sigalg{X}\times Y \to \R\) is a function that 1) \(\pi_{\up{X}|\up{X}}(\cdot \given y): X\to \R\) is a probability measure and 2) \(\pi_{\up{X}|\up{X}} (A_x \given \cdot):Y\to\R\) is \(\sigalg{Y}/\c{B}(\R)\)-measurable. These are useful for a few reasons, defining stochastic processes, but also conditional distributions. 
 
-We define the \emphmarginnote{conditional distribution}, \(\pi_{\up{X}|y}:X\times Y\to \R\), where it exists, as the unique probability kernel satisfying
+We define the \emphmarginnote{conditional distribution\label{def:conditional_distribution}}, \(\pi_{\up{X}|y}:X\times Y\to \R\), where it exists, as the unique probability kernel satisfying
 \[\pi_{\up{X}, \up{X}}(A_x \times A_y) = \int_{A_y} \pi_{\up{X}|\up{X}}(A_x | y) \d\pi_\up{X}(y)\]
 where \(\pi_{\up{X},\up{X}}\) is a joint distribution and \(\pi_\up{Y}\) is the marginal distribution of \(y\).
 
-This can also be viewed from the perspective of \emphmarginnote{disintegration of a measure}.
-\cite{chang1997conditioning}\todo{I quite liked this as a perspective on conditional probability}
+This can also be viewed from the perspective of \emphmarginnote{disintegration of a measure} \cite{chang1997conditioning}.
+% \todo{I quite liked this as a perspective on conditional probability}
 
 \subsubsection{Densities}
 When we have two measures on the same measurable space \((X, \sigalg{X})\), we can sometimes relate them to one another through a simple function.
-For measures \(\mu\), \(\nu\), if for every \(A\in \sigalg{X}\), if \(\nu(A) = 0\) implies that \(\mu(A)=0\), we say that \(\mu\) is \emphmarginnote{absolutely continuous} with respect to \(\nu\). This is often denoted \(\mu << \nu\). If this is the case, then there exists a \(\sigalg{X}/\c{B}(\R)\)-measureable function \(f\) such that 
+For measures \(\mu\), \(\nu\), if for every \(A\in \sigalg{X}\), if \(\nu(A) = 0\) implies that \(\mu(A)=0\), we say that \(\mu\) is \emphmarginnote{absolutely continuous} with respect to \(\nu\). This is often denoted \(\mu << \nu\). If this is the case, then there exists a \(\sigalg{X}/\c{B}(\R)\)-measurable function \(f\) such that 
 \[\mu(A+x) = \int_{A_x} f(x) \d \nu(x).\]
 Such an \(f\) if called the \emphmarginnote{Radon-Nikodyom derivative} of \(\mu\) with respect to \(\nu\), and is often denoted as \(\od{\mu}{\nu}\).
 The existence of this is not guaranteed, however.
@@ -180,7 +180,7 @@ Let \(\del{\Omega, \c{F}, \P}\) be a probability space, \(\del{S, \sigalg{S}}\) 
 
 A \emphmarginnote{stochastic process} is a function \(X: \Omega\x I \to S\) that 1) \(X(\cdot, i): \Omega \to S\) is a random variable for all \(i\in I\) and 2) \(X(\omega, \cdot): I\to S\) is measurable for all \(\omega\in \Omega\).
 The index set and observation space can be any measurable space that we like, restricting our choices avoids many technical difficulties, however.
-We will limit ourselves to the case of Polish spaces as ... \todo{maybe I should mention these earlier, or maybe restrict to something a bit weaker - but I think restricting neatly to the case where disintegration / conditioning / intereactions with a topology are nice would be good. I need to nail this down}
+We will limit ourselves to the case of Polish spaces as they poses many nice properties.
 
 Typically, the \emphmarginnote{observation space} is Euclidean space of some dimension, \(S=\R^n\).
 We will begin with this, and then later study the case where \(S=X\), a Riemannian manifold.
@@ -214,7 +214,7 @@ This makes the finite dimension marginals significantly easier to work with as w
 One of the most important theorems in the study of stochastic processes is the \emph{Kolmogorov extension theorem}.
 Opposite to the projection from law of the process to law of the marginals, it tells us that if we can write down all sets of finite-dimension marginals, and they agree properly, then we can conclude the existence of a stochastic process.
 There exist many statements of this theorem, often with specific index sets or observation space.
-A more generic statement for topological spaces is \begin{theorem}[Kolmanagorov Extentsion Theorem] Let \(\del{\del{X_a, \sigalg{X_a}}, \topo{X_a}}_{a\in A}\) be a arbitrary collection of measurable spaces \(\del{X_a, \sigalg{X_a}}\) each equipped with topology \(\topo{X_a}\).
+A more generic statement for topological spaces is \begin{theorem}[Kolmanagorov Extentsion Theorem] Let \(\del{\del{X_a, \sigalg{X_a}}, \topo{X_a}}_{a\in A}\) be an arbitrary collection of measurable spaces \(\del{X_a, \sigalg{X_a}}\) each equipped with topology \(\topo{X_a}\).
 	For each finite \(B \subset A\), let \(\mu_B\) be an inner regular probability measure on the sigma algebra \(\sigalg{X_B} = \prod_{a \in B} \sigalg{X_a}\) with the product topology \(\topo{X_B} = \prod_{a\in B} \topo{X_a}\).
 	Let \(C \subset B\).
 	If for all \(C, B\), the measures are compatible in the sense that \[(\pi_{C \leftarrow B})_* \mu_B = \mu_C,\] then there exists a unique probability measure \(\mu_A\) on \(\sigalg{X_A}\) such that \[(\pi_B)_* \mu_A = \mu_B\] for all finite \(B \subset A\).
@@ -232,16 +232,16 @@ The \emphmarginnote{Kolmogorov continuity theorem} states that we can choose \(X
 This means we can restrict the law of the process to be a measure on the space of continuous functions.
 This is extremely useful as this is again a Polish space with its useful properties.
 One other property that continuity brings is that the stochastic processes will now be measurable \(\c{{F}}\otimes\Sigma_i / \Sigma_X\), not just individually measurable in each argument.
-\todo{Kolmonogorov contiuity thm}
+% \todo{Kolmonogorov contiuity thm}
 
 An important class of stochastic process if that of \emph{martingales}.
 In order to define this, we need the concept of a \emph{filtration}.
 A \emphmarginnote{filtration} on a sigma algebra \(\sigalg{}\) is a collection of sigma algebras indexed by a totally ordered set \(\cbr{\sigalg{i}}_{i \in I}\), such that for all \(0 \leq i < j\), \[\sigalg{i} \subset \sigalg{j} \subset \sigalg{}.\]
 
-We say that a stochasitc process \(\del{X_t}_{t\geq 0}\) on a measurable space \((X, \sigalg{X})\) with a probabilty space \((\Omega, \c{F}, \P)\) is \emphmarginnote{adapted to a filtration\label{def:adapted_process}} \(\del{\c{F}_t}_{t\geq 0}\) if for all \(t\), \(X_t: \Omega \to X\) is an \(\c{F}_t/\sigalg{X}\)-measurable function.
+We say that a stochastic process \(\del{X_t}_{t\geq 0}\) on a measurable space \((X, \sigalg{X})\) with a probabilty space \((\Omega, \c{F}, \P)\) is \emphmarginnote{adapted to a filtration\label{def:adapted_process}} \(\del{\c{F}_t}_{t\geq 0}\) if for all \(t\), \(X_t: \Omega \to X\) is an \(\c{F}_t/\sigalg{X}\)-measurable function.
 Being adapted to a filtration says that a random variable at time \(t\) is only dependent on events in the "history" (times \( < t\)) of the filtration, and not its "future" (times \( > t\)).
-For any stochasitc process we can give its \emphmarginnote{natural filtration}, which is made of us at each time \(t\) the smallest \(\sigma\)-algebra that makes all past events of the stochasitc process measureable.
-A stochasitc process is always adapted to its natural filtration, and we say one stochasitc process is adapted to another if it is adpted to the natural filtration of the other process.
+For any stochastic process we can give its \emphmarginnote{natural filtration}, which is made of us at each time \(t\) the smallest \(\sigma\)-algebra that makes all past events of the stochastic process measurable.
+A stochastic process is always adapted to its natural filtration, and we say one stochastic process is adapted to another if it is adapted to the natural filtration of the other process.
 
 Further, if \(X_t\) is a adapted to the filtration \(\c{F}_t\), it is a \emphmarginnote{martingale} if 
 \begin{enumerate}[noitemsep]
@@ -249,19 +249,19 @@ Further, if \(X_t\) is a adapted to the filtration \(\c{F}_t\), it is a \emphmar
 	\item \(\E\sbr{X_s \given \c{F}_t} = X_t\) for all \(s \geq t\).\todo{define this conditionl expectation earlier.}
 \end{enumerate}
 These conditions effectively say that the distribution of the process 1. that it is integrable, and 2. that the best guess for the process into the future is the last observed value.
-The properties of martingles make them both a practially reasonable case to study, and techincally easier to manage than general stochastic processes.
+The properties of martingales make them both a practically reasonable case to study, and technically easier to manage than general stochastic processes.
 
-We can relax the definition of a martingle a little to arrive at the definition of a \emphmarginnote{semimartingale\label{def:semimartingale}}
+We can relax the definition of a martingale a little to arrive at the definition of a \emphmarginnote{semimartingale\label{def:semimartingale}}
 This is a stochastic process that can be decomposed into two more stochastic processes, \(W_t = M_t + A_t\), where \(M_t\) is a \emphmarginnote{local martingale}, a relaxed, localised, version of the martingale property \todo{see .
 	..}, and \(A_t\) is a stochastic process with bounded total variation.
-Again, the techincal properties of semimartingles make them attractive to study.
+Again, the technical properties of semimartingales make them attractive to study.
 
-One final class of stochasitc processes of interest are \emphmarginnote{Markov processes\label{def:markov_process}}.
-For a stochasitc procsses \(\del{X_t}_{t\geq 0}\) on a measurable space \((X, \sigalg{X})\) with a probabilty space \((\Omega, \c{F}, \P)\) adapted to the filtration \(\del{\c{F}_t}_{t\geq 0}\), it is Markov if 
+One final class of stochastic processes of interest are \emphmarginnote{Markov processes\label{def:markov_process}}.
+For a stochastic processes \(\del{X_t}_{t\geq 0}\) on a measurable space \((X, \sigalg{X})\) with a probability space \((\Omega, \c{F}, \P)\) adapted to the filtration \(\del{\c{F}_t}_{t\geq 0}\), it is Markov if 
 \[
 	\E\sbrdelim{f(X_t)}{\c{F}_s} = \E\sbrdelim{f(X_t)}{\sigma{X_s}}	\quad \text{for all} \quad f: X\to \R \; \text{bounded and measurable}
-\] where \(\sigma(X_s)\) is the smallest \(\sigma\)-algebra that makes \(X_s\) measureable.
-Intepreting this, it means that the expectation of a function of the process at time \(t\), given the path the process takes up to time \(s\), encoded in \(\c{F}_s\), depends \emph{only} on the value of the process at time \(s\), encoded by \(\sigma(X_s)\).
+\] where \(\sigma(X_s)\) is the smallest \(\sigma\)-algebra that makes \(X_s\) measurable.
+Interpreting this, it means that the expectation of a function of the process at time \(t\), given the path the process takes up to time \(s\), encoded in \(\c{F}_s\), depends \emph{only} on the value of the process at time \(s\), encoded by \(\sigma(X_s)\).
 In essence, the process is \emph{memoryless}.
 
 The most important process that is both a martingale and Markov studied is that of the Brownian motion.
@@ -298,12 +298,12 @@ For now, we will consider the state space \(X=\R^d\).
 
 One of the more simple differential equations can be written as \[\od{f(t)}{t} = b(t, f(t)),\] with \(f: \R \to \R^n\) and \(b: \R \x\R^n\).
 This is a \emph{first order, non-linear} differential equation.
-Coupled with an initial point \((f(t_0) = f_0)\) and conditions on \(b\), that it is continous in \(t\) and Lipschitz-continuous in \(X\), this constitutes an \emphmarginnote{initial value problem}.
+Coupled with an initial point \((f(t_0) = f_0)\) and conditions on \(b\), that it is continuous in \(t\) and Lipschitz-continuous in \(X\), this constitutes an \emphmarginnote{initial value problem}.
 
-By the \emphmarginnote{Picard–Lindelöf theorem}, also known as the \emph{Cauchy–Lipschitz theorem}, this has a unique solution, defined by the integral equation \[f(t) = f(t_0) + \int_{t_0}^t b(s, f(t)) \d s\] for times \(\sbr{t_0 - \epsilon, t_0+\epsilon}\). More strongly, if \(b\) is bounded , i.e. that \(\norm{b} < K\) for some finite \(K\), then the solutions are guarenteed to exist for all times.
+By the \emphmarginnote{Picard–Lindelöf theorem\label{thm:picard-lindelof}}, also known as the \emph{Cauchy–Lipschitz theorem}, this has a unique solution, defined by the integral equation \[f(t) = f(t_0) + \int_{t_0}^t b(s, f(t)) \d s\] for times \(\sbr{t_0 - \epsilon, t_0+\epsilon}\). More strongly, if \(b\) is bounded, i.e. that \(\norm{b} < K\) for some finite \(K\), then the solutions are guaranteed to exist for all times.
 
 If we are lucky, the integral may be analytic.
-More likely we will need to use numerical solvers to approximate the solution to this equation\todo{citation?}.
+More likely we will need to use numerical solvers to approximate the solution to this equation.
 In a small abuse of notation, this ODE is typically written as \[\d f(t) = b(t, f(t))\d t.\]
 From now on we will replace \(f(t)\) with \(X_t\) to denote the path through a space \(X\) over time.
 
@@ -320,8 +320,8 @@ If we add another condition, that the process have unit variance, \(\E\sbr{W_t} 
 	180]{Kallianpur1980}.
 It is \emph{possible} to construct such a \emphmarginnote{white noise process} satisfying these conditions, however it is defined on a very different, larger space of \emph{generalized functions}, a space where notions such as the Dirac delta can be made rigorous.
 
-In order to come up with a coherent way of integrating a noise term, and to avoid the difficlty of the white noise process described above, we generalise a specific theory of integration of deteriministic integrals, namely the \emph{Riemann-Stieltjes integral}, to stochastic integrals.
-Breifly, we recap the construction of this.
+In order to come up with a coherent way of integrating a noise term, and to avoid the difficulty of the white noise process described above, we generalise a specific theory of integration of deterministic integrals, namely the \emph{Riemann-Stieltjes integral}, to stochastic integrals.
+Briefly, we recap the construction of this.
 
 \section{The Riemann-Stieltjes integral}
 
@@ -351,7 +351,7 @@ If \(g\) is of bounded variation, then all continuous functions \(f\) are integr
 \label{sec:ito_strat_integrals}
 
 To define a stochastic integral, we follow a similar process to the Riemann-Stieltjes integral.
-The Riemann-Stieltjes integral is not immediatly applicable however, for example because the types of object we will want to integrate against, such as Brownian motion, are \emph{not} of bounded variation, and are not continous.
+The Riemann-Stieltjes integral is not immediately applicable however, for example because the types of object we will want to integrate against, such as Brownian motion, are \emph{not} of bounded variation, and are not continuous.
 
 First let us focus on the one dimension setting, where we have a drift function \(b:\R\times\sbr{0,T} \to \R\) and a noise functions \(\sigma: \R \times \sbr{0,T} \to \R\).
 In this case we are studying a stochastic process with index set \(\sbr{0,T}\) and state space \(\R\).
@@ -359,17 +359,17 @@ In this case we are studying a stochastic process with index set \(\sbr{0,T}\) a
 First we need to choose something to be our noise which we can integrate against.
 Consider a discretisation of the stochastic process \(X_t\) as \[X_{{k+1}} - X_{k} = b(t_k, X_{k}) \Delta t_k + \sigma(t_k, X_{k}) \text{"noise"} \Delta t_k\] on a partition \(0=t_0 < .
 .. < t_n = t\), \(X_k = X_{t_k}, \; W_k = W_{t_k}, \; \Delta t_k = t_{k+1} - t_k\).
-Lets replace \(\text{"noise"} \Delta t_k\) with \(\Delta V_k = V_{t_{k+1}} - V_{t_k}\), the difference between some timepoints of a stochastic process \(\del{V_t}_{t \geq 0}\), as this seems another reasonable choice for the noise.
+Let us replace \(\text{"noise"} \Delta t_k\) with \(\Delta V_k = V_{t_{k+1}} - V_{t_k}\), the difference between some time points of a stochastic process \(\del{V_t}_{t \geq 0}\), as this seems another reasonable choice for the noise.
 
-If we review our previous conditions for the "noise" term (stationary, independent, mean \(0\)) and instead apply them to the \emph{increments} \(\Delta V_{k}\), it turns out that exactly one stochastic process that satisfies these conditions if we make another reqirement, that of the increments being \emph{Gaussian}, and that is Brownian motion.
+If we review our previous conditions for the "noise" term (stationary, independent, mean \(0\)) and instead apply them to the \emph{increments} \(\Delta V_{k}\), it turns out that exactly one stochastic process that satisfies these conditions if we make another requirement, that of the increments being \emph{Gaussian}, and that is Brownian motion.
 
 Thus, we approximate our stochastic differential equation by \[X_k = X_0 + \sum_{j=0}^{k-1} b(t_j, X_{j}) \Delta t_j + \sum_{j=0}^{k-1} \sigma(t_j, X_{j}) \Delta B_j ,\] giving rise to and integral of the form \[X_t = X_0 + \int_0^t b(s, X_x) \d s + ``\int_0^t \sigma(s, X_s) \d B_s".\]
 The first term is the usual Riemann-Stieltjes integral, but the second is something we will need to see find a way to define this integral.
 
 For a sequence of partitions \(P_n\) such that \(\lim_{n\to \infty}\norm{P_n} = 0\), define \[S(P_n, f, \del{B_t}_{t \geq 0}, \omega) = \sum_{i=0}^{n-1} f(c_i, \omega)\sbr{B_{t_{i+1}} - B_{t_i}}(\omega),\] again with \(c_i\in \sbr{t_i, t_{i+1}}\), and then define the integral as \[\int_0^t f(s, \omega) \d B_s(\omega) = \lim_{n\to \infty} S(P_n, f, \del{B_t}_{t \geq 0}, \omega),\] where the limit converges in \emphhyperref{\(L^2\)-norm}{def:l2-converge-rv}.
-This limit is independant of the choice of \(P_n\).
+This limit is independent of the choice of \(P_n\).
 
-As it has been alluded to, this definition is not well behaved with respect to the choice of  \(c_i\), as although we can choose the paths of our Brownian motion to be continuous, it is nowhere differentiable, and the total variation of the paths is almost surely infinate, making it very poorly behaved as a Riemann-Stieltjes integral.
+As it has been alluded to, this definition is not well behaved with respect to the choice of  \(c_i\), as, although we can choose the paths of our Brownian motion to be continuous, it is nowhere differentiable, and the total variation of the paths is almost surely infinite, making it very poorly behaved as a Riemann-Stieltjes integral.
 
 As an example of this, choose \(f(t, \omega) = B_t(\omega)\), and choose \(c_i = t_i + \alpha(t_{i+1} - t_i)\), where \(\alpha\) interpolates between choosing the start and end of the intervals in the discretisation.
 Then \[\E\sbr{S(P_n, f, \del{B_t}_{t \geq 0}, \omega)} &= \E\sbr{\sum_{i=0}^{n-1} f(c_i, \omega)\sbr{B_{t_{i+1}} - B_{t_i}}(\omega)} \\ &= \sum_{i=0}^{n-1} \E\sbr{B_{t_i + \alpha\del{t_{i+1} - t_i}}(\omega)\sbr{B_{t_{i+1}} - B_{t_i}}(\omega)} \\ &= \sum_{i=0}^{n-1} \E\sbr{{\sbr{B_{t_i + \alpha\del{t_{i+1} - t_i}} - B_{t_i}}(\omega)}^2} \\ &= \alpha t .\]
@@ -384,30 +384,30 @@ It can be shown that these integrals can be defined (i.e. the Riemann-Stieltjes 
 
 Against a semimartingale \(\del{W_t}_{t\geq 0}\) we can integrate any stochastic process \(\del{H_t}_{t\geq0}\) that has left-continuous, locally bounded paths that is \emphhyperref{adapted}{def:adapted_process} to \(\del{W_t}_{t\geq 0}\)\todo{adapted}.
 
-It should be noted that the time function \(W_t = t\) is a semimartingale, and so the drift term and its integrals can also be defined in terms of an \ito{} or Stratonovich integral.
-We can therefore write any stochasitc differential equation as a collection of semimartingales \((V^i_t)_{i=1}^n\), coefficient functions, \((c_i)_{i=1}^n,\) and a start point \(X_0\) with defining equation
+It should be noted that the time function \(W_t = t\) is a semimartingale, and so the drift term and its integrals can also be defined in terms of an {I}t\^o or Stratonovich integral.
+We can therefore write any stochastic differential equation as a collection of semimartingales \((Z^i_t)_{i=1}^n\), coefficient functions, \((c_i)_{i=1}^n,\) and a start point \(X_0\) with defining equation
 \[X_t = X_0 +  \int_0^t \sum_{i=1}^n c_i(t, X_t) \circ_\alpha \d Z^i_t \label{def:general_sde}.\]
-The previously presented form with a dirft and diffusion term are given by \(Z = (t, B_t)\) and \(c = (b(t, X_t), \sigma(t, X_t))\).
+The previously presented form with a drift and diffusion term are given by \(Z = (t, B_t)\) and \(c = (b(t, X_t), \sigma(t, X_t))\).
 
-Given this, we can also rewrite our stochasitc process \(X_t\) as \((X_t, t)\), add an additional coefficient function \(c_{n+1}\), constant in the time index, and add another integrator \(\d Z_t^{n+1} = \d t\).
-This allows us to incoperate the time variable into the statespace variable, and therefore our coeffifficient funtcions can depend only on the state-space variable, as time is explicitly included in this.
-While it seems like trickery, much of the study of stochasitc differential equations is made easier with \emphmarginnote{time-homogenous} coefficient functions, those that do not have an explicit time dependance seperat for a state space dependance.
-Using this trick we can easily map between the ntational convinience of an explicit time dependance, and the techinical convinience of time-homoegenous coefficients.
+Given this, we can also rewrite our stochastic process \(X_t\) as \((X_t, t)\), add an additional coefficient function \(c_{n+1}\), constant in the time index, and add another integrator \(\d Z_t^{n+1} = \d t\).
+This allows us to incorporate the time variable into the state space variable, and therefore our coefficient functions can depend only on the state-space variable, as time is explicitly included in this.
+While it seems like trickery, much of the study of stochastic differential equations is made easier with \emphmarginnote{time-homogenous} coefficient functions, those that do not have an explicit time dependence separate for a state space dependence.
+Using this trick we can easily map between the notational convenience of an explicit time dependence, and the technical convenience of time-homoegenous coefficients.
 
-\subsection{Advantages to different stochastic integrals}\todo{alpha type?}
+\subsection{Advantages to different stochastic integrals}\label{sec:advantage_of_stochastic_integrals}
 How then should we choose the value of \(\alpha\) to use?
 Both choices of \(\alpha\) have advantages and disadvantages.
 The \ito~integral primarily is attractive as function evaluations, \(f(c_i, \omega)\), are independent of the Brownian motion increments, \(\sbr{B_{t_{i+1}} - B_{t_i}}\).
 Firstly, this is attractive in definition as the process doesn't "look ahead" to evaluate the integrand.
-Secondly, if we look at \emphmarginnote{\ito{} processes\label{def:ito_process}}, stochasitc processes that can be written as stochasitc differential equations of the form \[X_t = X_0 + \int_0^t b(s, \omega) \d s + \int_0^t \sigma(s, \omega) \d B_t\label{eq:ito:process},\] and the fact that \(\E\sbr{\int_0^t f(t, \omega) \d B_t} = 0\) we arrive at the \emphmarginnote{martingale representation theorem}, which gives the connection that \[X_t \text{ is a martingale} \iff X_t \text{ is an \ito~process}\] \parencite[theorem 4.3.4]{oksendal2003stochastic}.
-This property is very useful mathematically and makes proving statements about \ito{} integrals much easier.
+Secondly, if we look at \emphmarginnote{{I}t\^o processes\label{def:ito_process}}, stochastic processes that can be written as stochastic differential equations of the form \[X_t = X_0 + \int_0^t b(s, \omega) \d s + \int_0^t \sigma(s, \omega) \d B_t\label{eq:ito:process},\] and the fact that \(\E\sbr{\int_0^t f(t, \omega) \d B_t} = 0\) we arrive at the \emphmarginnote{martingale representation theorem}, which gives the connection that \[X_t \text{ is a martingale} \iff X_t \text{ is an \ito~process}\] \parencite[theorem 4.3.4]{oksendal2003stochastic}.
+This property is very useful mathematically and makes proving statements about {I}t\^o integrals much easier.
 
-On the other hand, the \ito{} integral behaves clunkily with a change of variable.
-\begin{theorem}[\ito{}'s formula \emph{or} Integration by parts]
-    For an \ito{} process \(\del{X_t}_{t\geq 0}\) 
+On the other hand, the {I}t\^o integral behaves clunkily with a change of variable.
+\begin{theorem}[{I}t\^o's formula \emph{or} Integration by parts]
+    For an {I}t\^o process \(\del{X_t}_{t\geq 0}\) 
 	\[X_t = X_0 + \int_0^t b(s, \omega) \d s + \int_0^t \sigma(s, \omega) \d B_t\]
 	and a twice differentiable function \(g: \R\times \cobr{0, \infty}\to \R\) (i.e. \(g\in C^2\del{\R\times \cobr{0, \infty}}\))
-    \1 \(\del{Y_t}_{t\geq 0}, \; Y_t = g(X_t, t)\) is also a \ito{} process and 
+    \1 \(\del{Y_t}_{t\geq 0}, \; Y_t = g(X_t, t)\) is also a {I}t\^o process and 
     \2 they are related by the stochastic differential equation
     \begin{align}
         \d Y_t =& \pd{g}{t}(t, X_t)\d t + \pd{g}{x}(t, X_t) \d X_t + \frac{1}{2} \pd[2]{g}{x}(t, X_t) \cdot (\d X_t)^2 \\
@@ -427,8 +427,8 @@ On the other hand, the \ito{} integral behaves clunkily with a change of variabl
     \4 We can then expand the above sum in terms of \(\Delta t_i\) and \(\Delta B_i\), and take the limit. Collecting the various terms results in the two above formulas.
     \0
 \end{proof}
-The term-complexity of this change of variable formula can make working with \ito{} integrals unwieldy. 
-% \emphmarginnote{\ito{}'s formula} states that for a twice differentiable function \(g(t, X_t) \in C^2\del{\cobr{0, \infty}, \R}\), the \ito{} process \(Y_t = g(t, X_t)\) is given by the formula \[\d Y_t = \pd{g}{t}(t, X_t)\d t + \pd{g}{x}(t, X_t) \d X_t + \frac{1}{2} \pd[2]{g}{x}(t, X_t) \cdot (\d X_t)^2,\] derived via a Taylor expansion, and utilising the fact that 
+The term-complexity of this change of variable formula can make working with {I}t\^o integrals unwieldy. 
+% \emphmarginnote{{I}t\^o's formula} states that for a twice differentiable function \(g(t, X_t) \in C^2\del{\cobr{0, \infty}, \R}\), the {I}t\^o process \(Y_t = g(t, X_t)\) is given by the formula \[\d Y_t = \pd{g}{t}(t, X_t)\d t + \pd{g}{x}(t, X_t) \d X_t + \frac{1}{2} \pd[2]{g}{x}(t, X_t) \cdot (\d X_t)^2,\] derived via a Taylor expansion, and utilising the fact that 
 % Where we see an extra term involving the second derivative appears.
 % This can make working with changes of variable trickier.
 
@@ -451,9 +451,9 @@ For a stochastic differential equation of the form \[\d X_t = b(t, X_t) \d t + \
  with solution \(\del{X_t}_{t \geq 0}\) % given by \[ X_t = X_0 + \int_0^t b(s, X_s) \d s + \int_0^t \sigma(s, X_s) \circ_\alpha \d B_s\] 
 then \(X_t\) is also the solution to a \emphmarginnote{modified \ito~equation} \[\d X_t = \sbr{b(t, X_t) + \alpha \pd{\sigma}{x}(t, X_t)\sigma(s, X_t)} \d t + \sigma(t, X_t) \d B_t.\]
 % with solutions given by \[X_t = X_0 = \int_0^t b(s, X_s) + \alpha \pd{\sigma}{x}(s, X_s)\sigma(s, X_t) \d s + \int_0^t \sigma(s, X_s) \d B_s.\]
-Using this connection we can map between using any \(\alpha\) we desire, particularly between the \ito{} and Stratonovich forms for the technical properties.
+Using this connection we can map between using any \(\alpha\) we desire, particularly between the {I}t\^o and Stratonovich forms for the technical properties.
 
-One very useful observation here is that when the noise is spatially constant, known as \emphmarginnote{addative noise}, the solutions for all \(\alpha \in \sbr{0,1}\) coincide. 
+One very useful observation here is that when the noise is spatially constant, known as \emphmarginnote{additive noise}, the solutions for all \(\alpha \in \sbr{0,1}\) coincide. 
 
 \subsection{Multidimension stochastic differential equations}
 
@@ -469,7 +469,7 @@ We can the define a vector of stochastic processes as
     \d \v{X}_{t, d} = \v{b}_d(t, \v{X}_t) \d t + \m{\Sigma}_{d, 1}(t, \v{X}_t) \circ_\alpha \d B_{1, t} + ...  \m{\Sigma}_{d, d}(t, \v{X}_t) \circ_\alpha \d B_{d, t} 
 ,\]
 or, in matrix notation,
-\[\d\v{X}_t = \v{b}(t, \v{X}_t) \d t + \m{\Sigma}(t, \v{X}_t)\circ_\alpha\d\m{B}_t,\] where the stochasitc integral of the matrix coefficient \(\Sigma\) against the vector of Brownian motions \(\v{B}_t\) can be understood as the column-wise sum \(\sum_{i=1}^d \m{\Sigma}_i(t, \v{X}_t)\circ_\alpha\d\m{B}^i_t\), in the manner of \cref{def:general_sde}.
+\[\d\v{X}_t = \v{b}(t, \v{X}_t) \d t + \m{\Sigma}(t, \v{X}_t)\circ_\alpha\d\m{B}_t,\] where the stochastic integral of the matrix coefficient \(\Sigma\) against the vector of Brownian motions \(\v{B}_t\) can be understood as the column-wise sum \(\sum_{i=1}^d \m{\Sigma}_i(t, \v{X}_t)\circ_\alpha\d\m{B}^i_t\), in the manner of \cref{def:general_sde}.
 
 The change of variable formula can also be extended to the mutli-dimension and any \(\alpha\) setting.
 \begin{theorem}[Multivariate change of variable]
@@ -488,40 +488,55 @@ This can be extended to functions \(g:\R^d\to \R^n\) by applying the formula to 
 
 The quantity \(\frac{1}{2}\m{\Sigma}(t, \v{X}_t)\m{\Sigma}(t, \v{X}_t)^\top\) appears very commonly, and for compactness, this will be written as \(\m{D}(\v{X}_t, t)\) where appropriate from now on.
 
+Similar to \cref{def:general_sde} we can write the most general form of a multi-dimension stochastic differential as
+\[
+	\v{X}_t = \v{X}_0 + \int_0^t \v{c}_i (t, \v{X}_t) \circ_\alpha \d Z_t^i \label{def:general_sde_multidim}
+\]
+where now \(\v{c}_i\) are time-dependent \emph{vector fields}, not just scalar coefficients.
+
 \subsection{Solutions to stochastic differential equations} 
 \todo{notation for solutions starting at a certain point in time / space}
 
 An important question to ask is when a stochastic differential equation that we write down has a solution, and when these solutions are unique.
 This can be summarised neatly for Euclidean stochastic differential equations via the following theorem \begin{theorem}[Existance and uniqueness of solutions to a stochastic differential equation]\label{thm:sde_solution_exist_unique} Let \(T >0\) and \begin{itemize}[noitemsep] \item \(b: \sbr{0, T} \times \R^d \to \R^d\) \item \(\Sigma: \sbr{0, T} \x \R^d \to \R^{d \times d}\) \end{itemize} be measurable functions satisfying \[\norm{b(t, x)}_2 + \norm{\sigma(t, x)}_2 \leq C(1 + \norm{x}_2), \quad x\in\R^d, t\in\sbr{0,T} \label{eq:exist_unique_cond_1}\] for some constant \(C\), and \[\norm{b(t, x) - b(t, y)}_2 + \norm{\Sigma(t, x) - \Sigma\del{t, y}}_2 \leq D\norm{x-y}_2 \label{eq:exist_unique_cond_2}\] for some constant \(D\).
-	Let \(\c{F}_\infty\) be the \(\sigma\)-algebra generated by the \(m\)-dimension Brownian motion \(\del{B_t}_{t\geq 0}\), and \(Z\) be a random variable independent of this \(\sigma\)-algebra such that \(\E\sbr{\norm{Z}_2^2} < \infty\).
+	
+	Let \(\c{F}_\infty\) be the \(\sigma\)-algebra generated by an \(m\)-dimension Brownian motion \(\del{B_t}_{t\geq 0}\) defined on a probability space \((\Omega, \c{F}, \P)\).
+	Let \(Z\) be a random variable independent of this \(\sigma\)-algebra such that \(\E\sbr{\norm{Z}_2^2} < \infty\).
 
-	The the stochastic differential equation \[\d X_t = b(t, X_t) \d t + \Sigma(t, X_t) \d B_t, \quad 0\leq t\leq T, \; X_0 \sim Z\] has a unique \(t\)-path-continuous solution \(X_t(\omega)\) such that at tie \(t\), \(X_t(\omega)\) is adapted to the filtration \(\c{F}_t^Z\) generated by \(Z\) and \(\del{B_s}_{s\leq t}\).
-	In addition \[\E\sbr{\int_0^T \norm{X_t}_2^2 \d t} < \infty .
+	The stochastic differential equation \[\d X_t = b(t, X_t) \d t + \Sigma(t, X_t) \d B_t, \quad 0\leq t\leq T, \; X_0 \sim Z\] has a unique \(t\)-path-continuous solution \(X_t(\omega)\) such that at \(t\), \(X_t(\omega)\) is adapted to the filtration \(\c{F}_t^Z\) generated by \(Z\) and \(\del{B_s}_{s\leq t}\).
+	In addition, \[\E\sbr{\int_0^T \norm{X_t}_2^2 \d t} < \infty .
 	\]
 \end{theorem}\begin{proof}
 	\textcite[theorem 5.2.1]{oksendal2003stochastic}
-\end{proof}.
+\end{proof}
 The conditions of this theorem are reasonably natural.
 Condition \ref{eq:exist_unique_cond_1} tells us that the coefficients of the process do not blow up too fast, and so the process does not explode, i.e. that \(\norm{X_t}_2 < \infty\) for finite time.
-Condition \ref{eq:exist_unique_cond_2}, effectively a joint Lipschitz condition, says that the coefficients don't change too rapidly, and guarantees the the solutions to the stochastic differential equation is unique, in the sense that if \(X_1(t, \omega)\) and \(X_2(t, \omega)\) are two solutions to the stochastic differential equation, then \[X_1(t, \omega) = X_2(t, \omega)\quad \text{for all } 0 \leq t \leq T, \; \as \] 
+Condition \ref{eq:exist_unique_cond_2}, effectively a joint Lipschitz condition, says that the coefficients don't change too rapidly, and guarantees the solutions to the stochastic differential equation is unique, in the sense that if \(X_1(t, \omega)\) and \(X_2(t, \omega)\) are two solutions to the stochastic differential equation, then \[X_1(t, \omega) = X_2(t, \omega)\quad \text{for all } 0 \leq t \leq T, \; \as \] 
 
 \subsection{Weak solutions} 
-\todo{yes/no?}
+By contrast, we can also have \emph{weak} solutions to a given stochastic differential equation.
+In a strong solution to the differential equation
+\[\d X_t = b(t, X_t) \d t + \Sigma(t, X_t) \d B_t, \quad 0\leq t\leq T, \; X_0 \sim Z\]
+We specified a specific Brownian motion \(B_t\) and probability space \((\Omega, \c{F}, \P)\) for which the solution \(X_t\) needs to be adapted to.
+
+By contrast for a weak solution all we specify is the form of the differential equation.
+We simply require that for a weak solution there exists \emph{some} Brownian motion and probability space for with the stochastic differential equation has a solution that is adapted to the filtration of the Brownian motion.
+It is often possible to prove the existence of weak solutions without explicitly finding this Brownian motion.
 
 
 \section{The Kolmogorov equations}
-We now turn to studying how functions of \ito{} processes, the transition density of \ito{} processes, and the marginal density of \ito{} processes evolve over time.
+We now turn to studying how functions of {I}t\^o processes, the transition density of {I}t\^o processes, and the marginal density of {I}t\^o processes evolve over time.
 We will see that we can connect these quantities to standard partial differential equations.
 Particularly the last of these studies is very useful.
 
-A \emphmarginnote{diffusion procsses} is a markov stochasitc process that have almost-surely continuous sample paths.
+A \emphmarginnote{diffusion process\label{def:diffision_process}} is a Markov stochastic process that have almost-surely continuous sample paths.
 
-We witll study these in the particular setting of \emphmarginnote{\ito{} diffusions}.
-These are stochasitc differential equations of the form
+We will study these in the particular setting of \emphmarginnote{{I}t\^o diffusions}.
+These are stochastic differential equations of the form
 \[\d X_t = b(t, X_t) \d t + \sigma(t, X_t) \d B_t, \quad 0\leq t\leq T, \; X_0 \sim Z\]
 that satisfy the conditions of \cref{thm:sde_solution_exist_unique}.
 
-Consider the \ito{} change of variable formula for a Borel function \(f: \R \times \R^d \to \R\), \(f\in C^2(\R\times\R^d)\), on the stochastic differential equation \(\del{\v{X}_t}_{t\geq0}\).
+Consider the {I}t\^o change of variable formula for a Borel function \(f: \R \times \R^d \to \R\), \(f\in C^2(\R\times\R^d)\), on the stochastic differential equation \(\del{\v{X}_t}_{t\geq0}\).
 \[
 	d f(t, \v{X}_t) =& \del{\pd{f}{t}(t, \v{X}_t) + \v{b}(t, \v{X}_t) \cdot \nabla f(t, \v{X}_t) + \m{D}(t, \v{X}_t) : \nabla^2f(t, \v{X}_t)} \d t \\&+ \nabla f(t, \v{X}_t)^\top \m{\Sigma}(t, \v{X}_t) \d \m{B}_t
 \]
@@ -533,18 +548,18 @@ Taking expectations, and denoting \(\v{X}_t^{s, y}\) as the process \(\v{X}_t\) 
 \[
 	\E\sbr{f\del{t, \v{X}_t^{s,y}}} - \E\sbr{f\del{s, \v{X}_s^{s,y}}} &= \E\sbr{f\del{t, \v{X}_t^{s,y}}} - f(s, y) \nonumber \\ &= \E\sbr{\int_s^t \sbr{\del{\pd{}{u} + L}f}(u, \v{X}_u)}\d u \label{eq:develop_kolmogorov_bk}
 \]
-as the last term disappears due to the properties of the \ito{} integral, and the operator \(L\) is defined by 
+as the last term disappears due to the properties of the {I}t\^o integral, and the operator \(L\) is defined by 
 \[
 	(Lf)(t, x) = \v{b}(t, x) \cdot \nabla f(t, x) + \m{D}(t, x) : \nabla^2 f(t, x)	
 \]
 
 \subsection{The Kolmogorov backward equation}
-In short, the Kolmogorov backward equation tells us how the expectation of Borel functions of an \ito{} diffusion will evolve over time, and how the transition density will evolve in the conditioned argument.
+In short, the Kolmogorov backward equation tells us how the expectation of Borel functions of an {I}t\^o diffusion will evolve over time, and how the transition density will evolve in the conditioned argument.
 We study the backward equation first as it is better posed than the forward equation, and the forward equation will follow from the backward.
 
 \begin{theorem}[The Kolmogorov backward equation I]
 	\label{thm:kolmogorov_bk}
-	Let \(f\in C_0^2(\R^d)\) and let \(\v{X}_t\) be an \ito{} diffusion.
+	Let \(f\in C_0^2(\R^d)\) and let \(\v{X}_t\) be an {I}t\^o diffusion.
 	Define \[u(s, y) = \E\sbr{f\del{\v{X}_t^{s, y}}} \label{eq:kolmogorov_bk_0}.\]
 	Then \(u(s, \cdot)\in C_0^2(\R^d)\) for all \(s \leq t\) and 
 	\begin{align}
@@ -556,11 +571,11 @@ We study the backward equation first as it is better posed than the forward equa
 \end{theorem}
 \begin{proof}
 	% \textcite[section 8.1]{oksendal2003stochastic}.
-	\textcite{weinan2021applied}
-	\todo{nail down whwer in the book}
-	\url{https://cims.nyu.edu/~holmes/teaching/asa19/handout_Lecture10_2019.pdf} - page 3
+	\textcite[page 3]{weinan2021applied}
+	% \todo{nail down whwer in the book}
+	% \url{https://cims.nyu.edu/~holmes/teaching/asa19/handout_Lecture10_2019.pdf} - page 3
 	\todo{type out the above?}
-	% Alternatively, we can derive this from the \ito{} change of variable formula. 
+	% Alternatively, we can derive this from the {I}t\^o change of variable formula. 
 
 	% For a function \(f\in C^2(\R^d)\), assuming the diffusion is time-homogenous
 	% \[
@@ -571,14 +586,14 @@ We study the backward equation first as it is better posed than the forward equa
 	% Taking expectations of this 
 	
 \end{proof}
-Note how we are differetiating with respect to the time of the \emph{intial condition} of the diffusion we specify, not the time at which we evaluate the expectation.
-This is where the bakcward name of this equation is derived from.
+Note how we are differentiating with respect to the time of the \emph{intial condition} of the diffusion we specify, not the time at which we evaluate the expectation.
+This is where the backward name of this equation is derived from.
 
 One interesting way to view this result is as follows.
 Define a new operator \(Q_{s,y}^t : f \mapsto \E\sbr{f\del{\v{X}_t^{s, y}}}\). 
 Then both of the following are true
 \begin{align}
-	\od{}{s} \del{Q_{s,y}^t f} &= Q_{s,y}^t\del{\del{\pd{}{s} + L}f} & \text{ by \cref{eq:develop_kolmogorov_bk, eq:kolmogorov_bk_0}} \\
+	\od{}{s} \del{Q_{s,y}^t f} &= Q_{s,y}^t\del{\del{\pd{}{s} + L}f} & \text{ by \cref{eq:develop_kolmogorov_bk,eq:kolmogorov_bk_0}} \\
 	\od{}{s} \del{Q_{s,y}^t f} &= \del{\pd{}{s} + L}\del{Q_{s,y}^t f} & \text{ by \cref{eq:kolmogorov_bk_1}}
 \end{align}
 and so in this sense the operator evaluating the expectation of \(f\) on \(\v{X}_t\) given an initial condition \(\v{X}_s = y\) and the operator \(\pd{}{s} + L\) commute.
@@ -586,7 +601,7 @@ and so in this sense the operator evaluating the expectation of \(f\) on \(\v{X}
 
 Assuming for the diffusion there exists a transition density, \(p_{t|s}(x|y)\) \todo{nail it down in measure thoery}, and that this density has continuous bounded derivatives in \(s\) and \(y\), then we can prove a result about how this transition density changes as we vary \(s\). 
 \begin{theorem}[The Kolmogorov backward equation II]
-	Let \(\v{X}_t\) be an \ito{} diffusion and assume that it has a transition density \(p_{t|s}(x|y)\) with respect to the Lebesgue measure.
+	Let \(\v{X}_t\) be an {I}t\^o diffusion and assume that it has a transition density \(p_{t|s}(x|y)\) with respect to the Lebesgue measure.
 	Then
 	\[\pd{p_{t|s}}{s} + L_y p_{t|s} = 0, \quad s < t, \; p_{s|s}(x|y) = \delta_x(y)\]
 	where the operator \(L_y\) is the operator \(L\) acting on the \(y\) argument of \(p_{t|s}(x|y)\)
@@ -605,7 +620,7 @@ Assuming for the diffusion there exists a transition density, \(p_{t|s}(x|y)\) \
 
 \subsection{The generator of a diffusion}
 We can arrive at the differential operator in the Kolmogorov backwards equation in a slightly different way.
-We can define the \emph{generator} of a \emph{time-homoegenous} diffusion, one for which the diffusion coefficients are independant of time, as
+We can define the \emph{generator} of a \emph{time-homoegenous} diffusion, one for which the diffusion coefficients are independent of time, as
 \begin{definition}[The generator of a diffusion]
 	\label{def:generator}
 	Let \(\del{\v{X}_t}_{t\geq 0}\) be a time-homogenous diffusion in \(\R^d\).
@@ -613,10 +628,10 @@ We can define the \emph{generator} of a \emph{time-homoegenous} diffusion, one f
 	\[(Af)(x) = \lim_{s\downarrow 0^+}\frac{\E\sbr{f\del{\v{X}_{s}^{0,x}}} - f(x)}{s}.\]
 	The set of functions for which this converges at \(x\in \R^d\) is denoted \(\c{D}_A(x)\) and the set of functions for which it converges everywhere is denoted \(\c{D}_A\).
 \end{definition}
-For \ito{} diffusions, we can compute the generator in terms of the diffusion's coefficients.
-\begin{theorem}[The generator of an \ito{} diffusion]
+For {I}t\^o diffusions, we can compute the generator in terms of the diffusion's coefficients.
+\begin{theorem}[The generator of an {I}t\^o diffusion]
 	\label{thm:ito_generator}
-	Let \(\v{X}_t\) be a time-homogenous \ito{} diffusion with equation 
+	Let \(\v{X}_t\) be a time-homogenous {I}t\^o diffusion with equation 
 	\[\d\v{X}_t = \v{b}(\v{X}_t) \d t + \m{\Sigma}(\v{X}_t) \d \m{B}_t,\]
 	and let \(f \in C_0^2(\R^d)\), where \(C_0^2(\R^d)\) is the set of twice differentiable functions that vanish as \(\norm{x} \to infty\).
 	Then the generator of this stochastic process is given by
@@ -628,13 +643,13 @@ For \ito{} diffusions, we can compute the generator in terms of the diffusion's 
 		(Af)(x) = \lim_{s\downarrow 0^+}\frac{\E\sbr{f\del{\v{X}_{s}^{0,x}}} - f(x)}{s} = \lim_{s\downarrow 0^+} \E \frac{1}{s}\int_0^{+s} L f(\v{X}_u^x)\d u = (Lf)(x)
 	\]
 	Giving the desired form.
-	The first equality follows from the argument in \cref{eq:develop_kolmogorov_bk} and removing the partial derivative with respect to \(t\), and the second by the dominated convergence theorem \todo{define this somewhere or ref}.
+	The first equality follows from the argument in \cref{eq:develop_kolmogorov_bk} and removing the partial derivative with respect to \(t\), and the second by the dominated convergence theorem \cite[Theorem 1.21]{kallenberg1997foundations}.
 \end{proof}
 
 The \emph{adjoint} operator of the generator of a diffusion, \(A^*\) or \(L^*\), is also very interesting to us.
 This is the operator that for any \(f\in C_0^2\) and \(g\in C^2\), \(\innerprod{g}{Af} = \innerprod{A^*g}{f}\), for \(\innerprod{\cdot}{\cdot}\) being the \(L^2\) norm on the space of \(L^2\) integrable functions.
-\begin{theorem}[The adjoit of the generator of an \ito{} diffusion]
-	The adjoint of the generator of an \ito{} diffusion
+\begin{theorem}[The adjoit of the generator of an {I}t\^o diffusion]
+	The adjoint of the generator of an {I}t\^o diffusion
 	\[(Af)(t, x) = \v{b}(t, x) \cdot \nabla f(x) + \m{D}(t, x) : \nabla^2 f(x)	\]
 	is given by 
 	\[(A^*f)(t, x) = -\nabla\cdot\del{\v{b} f}(t, x) + \nabla^2 :\del{\m{D}f}(t, x)\]
@@ -654,7 +669,7 @@ This is the operator that for any \(f\in C_0^2\) and \(g\in C^2\), \(\innerprod{
 		&=\int_{\R^d} \sbr{f \del{-\nabla \cdot (\v{b}g) + \nabla^2:(g \m{D})}}(x) \d x
 	\end{align}
 	The second group of terms in \cref{eq:adjoint_generator_div_terms} are all divergences.
-	Applying the divergence theorem \todo{ref to befroe in manifold} and assuming that all these terms tend to \(0\) as \(\norm{x} \to \infty\), the integral of these terms are zero.
+	Applying the \emphhyperref{divergence theorem}{thm:divergence} and assuming that all these terms tend to \(0\) as \(\norm{x} \to \infty\), the integral of these terms are zero.
 
 	This gives the form of the adjoint operator as required, and is also the form of the adjoint of the \(L\) operator.
 \end{proof}
@@ -665,18 +680,18 @@ Importantly the form of \cref{thm:ito_generator} holds not just for functions \(
 This greatly expands the space of functions we can study.
 
 The notions of the generator of a diffusion gives us a way of defining Brownian motion via its generator.
-Note that in the form of the \emphhyperref{generator of an \ito{} diffusion}{thm:ito_generator}, if we have no drift and a diffusion coefficient given by the identity, then the generator of the diffusion is simply the Laplace operator, \(\Delta = \nabla^2 = \sum_{i=1}^d \pd{}{x_i}\).
+Note that in the form of the \emphhyperref{generator of an {I}t\^o diffusion}{thm:ito_generator}, if we have no drift and a diffusion coefficient given by the identity, then the generator of the diffusion is simply the Laplace operator, \(\Delta = \nabla^2 = \sum_{i=1}^d \pd{}{x_i}\).
 We can therefore define Brownian motion as the diffusion with the Laplace operator as its generator.
 
 
 \subsection{The Kolmogorov forward equation}
 The backward Kolmogorov equation told us how the expectations of Borel functions of a diffusion evolve over time, or how the transition density changes with respect to the time we are transitioning \emph{from}. 
-The forward equation tells us how the transition density changes with respect to the time we are transitioning \emph{to}, and as a knock on how the \emph{time-marginal density} of the diffusion will evolve with time given an initial denisty. 
+The forward equation tells us how the transition density changes with respect to the time we are transitioning \emph{to}, and as a knock on how the \emph{time-marginal density} of the diffusion will evolve with time given an initial density. 
 
 
 \begin{theorem}[The Kolmogorov forward equation I]
-	Let \(\v{X}_t\) be an \ito{} diffusion and assume that it has a transition density \(p_{t|s}(x|y)\) with respect to the Lebesgue measure.
-	Assume that the derivaitive of \(p_{t|s}(x|y)\) with respect to \(t\) is bounded and continuous.
+	Let \(\v{X}_t\) be an {I}t\^o diffusion and assume that it has a transition density \(p_{t|s}(x|y)\) with respect to the Lebesgue measure.
+	Assume that the derivative of \(p_{t|s}(x|y)\) with respect to \(t\) is bounded and continuous.
 	Then
 	\[\pd{}{t}p_{t|s} = L^*_x p_{t|s}, \quad s < t, \; p_{s|s}(x|y) = \delta_x(y) \label{eq:kolmogorov_fwd}\]
 	where the operator \(L^*_x\) is the adjoint operator \(L^*\) acting on the \(x\) argument of \(p_{t|s}(x|y)\)
@@ -687,7 +702,7 @@ The forward equation tells us how the transition density changes with respect to
 		\E\sbr{f\del{t, \v{X}_t^{s,y}}} - f(s, y) &= \int_{\R^d} f(x)p_{t|s}(x, y) \d x - f(y) \\
 		&= \int_s^t \int_{\R^d}  (Lf)(u, x)p_{u|s}(x, y) \d x \d u
 	\]
-	Taking the partial derivaite with respect to time of both sides,
+	Taking the partial derivate with respect to time of both sides,
 	\[
 		\pd{}{t} \del{\int_{\R^d} f(x)p_{t|s}(x, y) \d x - f(y)} &= \pd{}{t}\del{\int_s^t \int_{\R^d}  (Lf)(u, x)p_{u|s}(x, y) \d x \d u} \\
 		\implies \int_{\R^d} f(x)\pd{}{t}\del{p_{t|s}(x, y)} \d x &=  \int_{\R^d}  (Lf)(t, x)p_{t|s}(x, y) \d x
@@ -702,7 +717,7 @@ The forward equation tells us how the transition density changes with respect to
 We now apply this to the evolution of a density \(p_t\) given some initial distribution \(p_0\)
 \begin{theorem}[The Kolmogorov forward equation II, The Fokker-Plank eqaution]
 	\label{thm:fokker-plank}
-	Let \(\v{X}_t\) be an \ito{} diffusion, with initial distribution \(\v{X}_0  \sim p_0\), where \(p_0\) is a density with respect to the Lebesgue measure on \(\R^d\).
+	Let \(\v{X}_t\) be an {I}t\^o diffusion, with initial distribution \(\v{X}_0  \sim p_0\), where \(p_0\) is a density with respect to the Lebesgue measure on \(\R^d\).
 	Let \(p(t, x)\) denote the density of \(\v{X}_t\) at time \(t\).
 	Then 
 	\begin{align}
@@ -713,16 +728,16 @@ We now apply this to the evolution of a density \(p_t\) given some initial distr
 \begin{proof}
 	Remember \[p(t, x) = \int_{\R^d} p_{t|0}(x|y) p_0(y) \d y.\] If we integrate both sides of \cref{eq:kolmogorov_fwd} by \(p_0(y)\), we recover exactly \cref{eq:kolmogorov_fwd_2}.
 \end{proof}
-\Cref{thm:fokker-plank} was infact discovered in physics before the discovery of the more general Kolmogorov eqautions.
-There it is know as the Fokker-Plank eqaution, and as such is refered to as this sometimes.
+\Cref{thm:fokker-plank} was in fact discovered in physics before the discovery of the more general Kolmogorov equations.
+There it is known as the Fokker-Plank equation, and as such is referred to as this sometimes.
 
 The Fokker-Plank equation is a very powerful tool in the study of stochastic processes as we will see in the next two sections.
 
 \section{Langevin Dynamics}
 \label{sec:langevin_dynamics}
-Langevin dynamics is a type of stochastic differential eqaution for which we can show that the density to which the equation will converge over time is a distribution we can control.
+Langevin dynamics is a type of stochastic differential equation for which we can show that the density to which the equation will converge over time is a distribution we can control.
 \begin{definition}[Langevin dynamics]
-	Let \(U: \R^d \to \R\) be a function often called the \emphmarginnote{energy function}.
+	Let \(U: \R^d \to \R\) be a function often called the \emphmarginnote[\baselineskip]{energy function}.
 	The \emph{Langevin dynamics} defined by \(U\) is given by the time-homogenous stochastic differential equation
 	\[
 		\d \v{X}_t  = -\nabla_{\v{X}_t}U(\v{X}_t) \d t + \sqrt{2} \d \m{B}_t	
@@ -770,7 +785,7 @@ such that for all times \(t\in\sbr{0, T}\), \(\Xf_t \overset{d}{=} \Xb_{T-t}\), 
 
 % There are two approaches to notating this, with the difficulty arising from the fact that we want time to run contrary to the direction it does in the forward process.
 
-% The first notation defines the reverse process with increasing time, and uses a normal stochasitc differential equation for this, but has the value of time in the reverse dirtection mean a different thing to the time in the forward process.
+% The first notation defines the reverse process with increasing time, and uses a normal stochastic differential equation for this, but has the value of time in the reverse dirtection mean a different thing to the time in the forward process.
 % For example if we have the time in the forward process run from \(t=0\) to \(t=T\), then we will have time in the reverse process run from \(t'0\) to \(t'=T\), however with the association that \(t' = T-t\).
 % This introduces a complexity of remembering which time definition we are talking about at a given time.
 % We deonte the reverse process as
@@ -778,7 +793,7 @@ such that for all times \(t\in\sbr{0, T}\), \(\Xf_t \overset{d}{=} \Xb_{T-t}\), 
 
 % The second notation leave the notion of time in the forward and reverse directions meaning the same thing, and works directly with stochastic processes flowing backward in time.
 % This adds the complexity of defining what a reverse time Brownian motion means, and keeping track of whether we are integrating from \(0\) to \(T\) or form \(T\) to \(0\).
-% In this case we denote the reverse stochasitc diferential eqautionm as
+% In this case we denote the reverse stochastic differential eqautionm as
 % \[\d\Xb_t = \v{b}^\vsla{}(\Xb_t, t)\d t + \v{\Sigma^\vsla{}}(\Xf, t)\d \v{B}_t\]
 % where \(\Bb\) is a Brownian motion in the reverse time direction (something about the filtration), initialised with \(\Bb_T = \v{0}\).
 
@@ -789,15 +804,18 @@ such that for all times \(t\in\sbr{0, T}\), \(\Xf_t \overset{d}{=} \Xb_{T-t}\), 
 
 % With this in place, we can state a very simple time reversal result. We will consider first the case where \(\m{\Sigma}(\v{X}, t) = \sigma(t)\m{I}\).
 
-\begin{theorem}[Fokker-plank time reversal]
+\begin{theorem}[Fokker-Plank time reversal]
 \label{thm:fokker-plank_time_reversal}
-For a forward-time stochastic differential equation 
-\[ \d\Xf_t = \v{b}(\Xf_t, t)\d t + \sigma(t)\d \v{B}_t, \quad \Xf_0 \sim \pi\]
-with time-marginal distributions \(p_t^\vsra{}(\v{X})\), the reverse-time stochastic differential equation
-\[\d\Xb_t = \sbr{-\v{b}(\Xb_t, t) + \sigma(t)^2\nabla\log p_t(\Xb_t)}\d t + \sigma(t)\d \v{B}_t, \quad \Xb_0 \sim p_T,\] with time-marginal distributions \(p^\vsla{}_t(\v{X})\), the time-marginals are equal in the sense that \(p_t^\vsra{} = p_{T-t}^\vsla{} \;\forall\; t\in \sbr{0,T}\).
+Let the stochastic differential equation \(\Xf\), called the forward stochastic differential equation, be given by
+\[ \d\Xf_t = \v{b}(\Xf_t, t)\d t + \sigma(t)\d \v{B}_t, \quad \Xf_0 \sim \pi, \quad t\in \sbr{0, T},\]
+with time-marginal distributions \(p_t^\vsra{}(\v{X})\).
+Let the stochastic differential equation, called the reverse stochastic differential equation, \(\Xb\) be given by
+\[\d\Xb_t = \sbr{-\v{b}(\Xb_t, t) + \sigma(t)^2\nabla\log p_t(\Xb_t)}\d t + \sigma(t)\d \v{B}_t, \quad \Xb_0 \sim p_T, \quad t\in \sbr{0, T},\] with time-marginal distributions \(p^\vsla{}_t(\v{X})\).
+
+The time-marginals of these two stochastic differential equations match, but reversed in time, in the sense that \(p_t^\vsra{} = p_{T-t}^\vsla{} \;\forall\; t\in \sbr{0,T}\).
 \end{theorem}
 \begin{proof}
-The Fokker-Plank equation for the forward stochastic differetial equation is given by 
+The Fokker-Plank equation for the forward stochastic differential equation is given by 
 \[\pd{p_t^\vsra{}(\v{X})}{t} = -\dive\del{{\v{b}^\vsra{}(\v{X}, t)} p_t^\vsra{}(\v{X})} + \tfrac{1}{2}\sigma^2(t)\Delta p_t^\vsra{}(\v{X})\]
 % Therefore
 % \[-\pd{p_t(\v{X})}{t} = \dive\del{{\v{b}(\v{X}, t)} p_t(\v{X})} - \tfrac{1}{2}\sigma^2(t)\Delta p_t(\v{X})\]
@@ -813,11 +831,11 @@ Adding and subtracting this identity  we get
 	&\pd{p_t^\vsra{}(\v{X})}{t}\\ &= \dive\del{{\v{b}(\v{X}, t)} p_t^\vsra{}(\v{X})} + \tfrac{1}{2}\sigma^2(t)\Delta p_t^\vsra{}(\v{X}) - \sigma(t)^2\dive\del{p_t^\vsra{}(\v{X})\nabla \log p_t^\vsra{}(\v{X})} \\
 	&= \dive\del{\sbr{\v{b}(\v{X}, t) - \sigma(t)^2\nabla {\log p_t^\vsra{}(\v{X})}} p_t^\vsra{}(\v{X})} - \tfrac{1}{2}\sigma^2(t)\Delta p_t^\vsra{}(\v{X})
 \end{align}
-Taking the negative of this term we see that the evolution of the time-maringal density of a stochasitc differenetial eqaution, but with the evolution happing in reverse, is given by
+Taking the negative of this term we see that the evolution of the time-maringal density of a stochastic differential equation, but with the evolution happing in reverse, is given by
 \[
 	\pd{p_t^\vsla{}(\v{X})}{t} = \dive\del{-\sbr{\v{b}(\v{X}, t) + \sigma(t)^2\nabla {\log p_t^\vsra{}(\v{X})}} p_t^\vsra{}(\v{X})} + \tfrac{1}{2}\sigma^2(t)\Delta p_t^\vsra{}(\v{X})
 \]
-which is exactly the Fokker-Plank equation of a stochasitc differential equation of the form
+which is exactly the Fokker-Plank equation of a stochastic differential equation of the form
 \[\d\Xb_t = \sbr{ -\v{b}(\Xb_t, t) + \sigma(t)^2\nabla {\log p_t^\vsra{}(\Xb_t)}}\d t + \sigma(t)\d \v{B}_t.\]
 The instantaneous change of the forward and reverse time-marginal densities are therefore equal.
 
@@ -860,7 +878,7 @@ We will make one other note-worthy observation using a similar technique to the 
 \end{proof}
 This gives us an interesting way of connecting a stochastic differential equation to a deterministic ordinary differential equation.
 Note however the \emph{paths} of this ordinary differential equation are wildly different to that of the stochastic differential equation, unlike in the reverse-time case.
-If all one cares about is sampling independently from each time marginal however, this is not an issue.
+If all one cares about is sampling independently of each time marginal however, this is not an issue.
 If one has access to the quantity \(\nabla {\log p_t(\v{X}_t)}\) and samples from \(p_0\) it would be possible to use out of the box equation solvers with guaranteed error tolerance to sample from each marginal.
 
 \section{Approximate sampling from stochastic differential equations}
@@ -876,7 +894,7 @@ with an initial condition \(\v{X}_0\), the most simple approximate solution is \
 Picking a temporal step size \(\Delta t\), we iteratively take steps of the form
 \[\v{X}_{n+1} =  \v{X}_n + f(n\Delta t, \v{X}_n) \Delta t\]
 to produce an approximate solution \(\del{\v{X}_n}_{n=0}^N\), where \(\v{X}_n\) corresponds to time \(n\Delta t\).
-This scheme has discretisation error of \(\c{O}\del{\Delta t}\), and so we can increase precision arbitrarilty with decresing step size.
+This scheme has discretisation error of \(\c{O}\del{\Delta t}\), and so we can increase precision arbitrarily with decreasing step size.
 
 Analogously for a stochastic differential equation of the form
 \[\d\v{X}_t = \v{b}\del{t, \v{X}_t} \d t + \v{\Sigma}(t, \v{X}_t) \d\v{B}_t\]
@@ -885,129 +903,129 @@ For a chosen step size \(\Delta t\) we iteratively take steps of the form
 \[\v{X}_{n+1} = \v{X}_n + \v{b}\del{t, \v{X}_n} \Delta t + \v{\Sigma}^{1/2}(t, \v{X}_n) \v{z} \sqrt{\Delta t} \]
 where \(\v{z} \sim \c{N}(0, I)\), a random Gaussian vector of the dimension of the Brownian motion.
 
-Let \(\v{X}_T\) be the solution to the stochasitc differenetial equaiton at time \(T\), and let \(\v{X}_T^n\) be the solution to the directetised scheme of \(n\) steps from \(0\) to \(T\), giving a step size of \(\Delta t = T/n\).
-Under the condition that the elements of \(\v{b}\) and \(\v{\Sigma}\) are \(C^\infty\) functions with bounded derivatives, and for any measureable and bounded function \(f\), we have that
+Let \(\v{X}_T\) be the solution to the stochastic differential equation at time \(T\), and let \(\v{X}_T^n\) be the solution to the discretised scheme of \(n\) steps from \(0\) to \(T\), giving a step size of \(\Delta t = T/n\).
+Under the condition that the elements of \(\v{b}\) and \(\v{\Sigma}\) are \(C^\infty\) functions with bounded derivatives, and for any measurable and bounded function \(f\), we have that
 \[
 	\E\sbr{f(\v{X}_T)} - \E \sbr{f(\v{X}_T^n)} = -A \Delta t + B (\Delta t)^2
 \]
 where the constants \(A, B\) depend on \(f, T\) \parencite[Theorem 3.1]{bally1996law}.
-As such, the Eular-Maruyama scheme \emphhyperref{def:distribution-converge-rv}{converges in distribution} to the solution to the original stochasitc differenital eqaution as we decrease step size of the solution.
+As such, the Eular-Maruyama scheme \emphhyperref{def:distribution-converge-rv}{converges in distribution} to the solution to the original stochastic differential equation as we decrease step size of the solution.
 
 
-\section{Stochastic calculus on manifolds}
-Finally we turn to the study of stochastic differnetial equations that take values on manifolds.
-We will introduce stochasitc differenetial equations in the time-homogenous setting for ease of presentation, but remembering the trick described in \cref{sec:ito_strat_integrals}, we can map between time-homoegenous and inhomogeneous settings by including the time variable in the statespace.
+% \section{Stochastic calculus on manifolds}
+% Finally we turn to the study of stochastic differnetial equations that take values on manifolds.
+% We will introduce stochastic differenetial equations in the time-homogenous setting for ease of presentation, but remembering the trick described in \cref{sec:ito_strat_integrals}, we can map between time-homoegenous and inhomogeneous settings by including the time variable in the statespace.
 
-The presentation here is based on \textcite{hsu2002stochastic}. 
-Many other texts on the subject exist \todo{hsu list}.
+% The presentation here is based on \textcite{hsu2002stochastic}. 
+% Many other texts on the subject exist \todo{hsu list}.
 
-The central object we are able to integrate with stochasitc integrals on Euclidean space is the \emphhyperref{semimartingle}{def:semimartingale}.
-Since manifolds lack the structure for us to define expectations on them, we will need a new definition of semimartingle to work with them on manifolds
-\begin{definition}[Semimartingale on a manifold]
-	Let \(\c{M}\) be a \(d\)-dimension differentiable manifold and \((\Omega, \c{F}, \P)\) be a filtered probability space.
-	A continuous \(\c{M}\)-valued stochasitc process \((X_t)_{t\in\sbr{0,T}}\) is an \(\c{M}\)-valued semimaringle if \(f(X_t)\) is a semimartingle for all \(C^\infty(\c{M})\).
-\end{definition}
-This definition is useful as we can then study the image of the semimartingale on the manifold via Eucldiean space, where we can define expectations.
+% The central object we are able to integrate with stochastic integrals on Euclidean space is the \emphhyperref{semimartingale}{def:semimartingale}.
+% Since manifolds lack the structure for us to define expectations on them, we will need a new definition of semimartingale to work with them on manifolds
+% \begin{definition}[Semimartingale on a manifold]
+% 	Let \(\c{M}\) be a \(d\)-dimension differentiable manifold and \((\Omega, \c{F}, \P)\) be a filtered probability space.
+% 	A continuous \(\c{M}\)-valued stochastic process \((X_t)_{t\in\sbr{0,T}}\) is an \(\c{M}\)-valued semimaringle if \(f(X_t)\) is a semimartingale for all \(C^\infty(\c{M})\).
+% \end{definition}
+% This definition is useful as we can then study the image of the semimartingale on the manifold via Eucldiean space, where we can define expectations.
 
-\emphmarginnote{stochasitc differential equation on a manifold} can be defined, in the most general way, via a series of vector fields on the manifold, \((V_i)_{i=1}^n, \; V_i \in \Gamma\del{T\c{M}}\), a series of driving \(\R\)-valued semimartingales, \((Z^i_t)_{i=1}^n\), and an initial point (or more generally distribution) \(X_0\).
-Symbollically we write the equation as
-\[
-	\d X_t = V_i(X_t) \circ \d Z_t	
-.\]
-Note that we will make use of the Stratonovich integral due to its change of variable formulae.
-Intuitivly, the choice of vector fields as the object of integration makes sense, as they specify an direction and magnitude of travel on the manifold, and we integrate these aginst random scaling by the \(R\)-valued semimartingales.
+% \emphmarginnote{stochastic differential equation on a manifold} can be defined, in the most general way, via a series of vector fields on the manifold, \((V_i)_{i=1}^n, \; V_i \in \Gamma\del{T\c{M}}\), a series of driving \(\R\)-valued semimartingales, \((Z^i_t)_{i=1}^n\), and an initial point (or more generally distribution) \(X_0\).
+% Symbollically we write the equation as
+% \[
+% 	\d X_t = V_i(X_t) \circ \d Z_t	
+% .\]
+% Note that we will make use of the Stratonovich integral due to its change of variable formulae.
+% Intuitivly, the choice of vector fields as the object of integration makes sense, as they specify an direction and magnitude of travel on the manifold, and we integrate these aginst random scaling by the \(R\)-valued semimartingales.
 
-We say that an \(\c{M}\)-valued semimartingale \(X_t\) is a solution to this this stochasitc differential equation if
-\[
-	f(X_t) = f(X_0) + \int_0^t [V_i f](X_s) \circ \d Z_s^i, \; t\in \sbr{0,t}
-\]
-for all \(f\in C^\infty(\c{M})\).
-
-
-\todo{Havent explained explosion times...}
-We will study stochastic processes \(\v{X}: \Omega \times \sbr{0, T} \to M\), stochastic processes taking values on a manifold \(M\) on a compact time interval. 
-We begin by defining what the form of the differential equation, \(\d\v{X}_t\) will be.
-As we are talking about instantaneous changes in positions, it is natural that this quantity should be a \emph{tangent vector}.
-We will use
-\[\d\v{X}_t = \v{b}(t, \v{X}_t) \d t + \sum_{i=1}^n {\m{\Sigma}}_j (t, \v{X}_t) \circ \d \v{B}_t^j \label{eq:manifold_sde_form}\]
-where \(\v{b}(t, \cdot), {\m{\Sigma}}_i(t, \cdot) \in \Gamma(TM)\) are \emph{smooth vector fields} over \(M\), so that \(\v{b}(t, \v{X}_t), {\m{\Sigma}}_j(t, \v{X}_t) \in T_{\v{X}_t}M\) are \emph{tangent vectors} at \(\v{X}_t\), and \(\d \v{B}_t\) is and \(n\)-dimension Euclidean Brownian motion, with filtration \(\c{F}_t\).
-Typically, we will suppress the summation notation in favour of implicit Einstein summation notation.
-In the next section we will study how we can make rigourours the notion of solutions to \cref{eq:manifold_sde_form}.
-
-\subsection[short]{Solutions to manifold-valued stochastic differential equations}
-We begin by defining immediately that the space of solutions as the space of continuous functions from time into the manifold, \(C^0(\sbr{0,T}, M)\).
-
-There are two main stratergies to working with \cref{eq:manifold_sde_form}.
-The first relies on an \emph{intrinsic view} of the stochastic process by looking at its behavious in charts of the manifold.
-The second relies on an \emph{extrinsic view} of the stochastic process by looking at the manifold embeded into higher dimension Euclidean space.
-Fundimentally, both settings rely on returning the study of the stochastic process to the Euclidean setting by exploiting generic properties of manifolds.
-
-\subsubsection{The intrinsic view}
-The first staretergy to define solutions relies on mapping the process to one dimension Euclidean space.
-We say that a solution \(\v{X}_t\), with intital condition \(\v{X}_0 = x\in M\) to \cref{eq:manifold_sde_form} is an \(\c{F}_t\)-adapted \(C_0(\sbr{0,T}, M)\)-valued random variable such that for any \(f\in C^\infty(M)\), the space of smooth functions on the manifold, the following holds
-\[f(\v{X}_t) - f(\v{X}_t) = \int_0^t (\v{b} f)(\v{X}_t) \d t + \int_0^t ({\m{\Sigma}}_j f)(\v{X}_t) \circ \d \v{B}_t^j,\] and that \(\v{X}_0 = x\).
-Since the action of a vector field on a smooth function on \(M\) is again a smooth function on \(M\), this is exactly a Stratonovich stochastic differential equation on \(\R\), which we have already seen how to define.
-This in essence says that the image of the stochastic process under a smooth function on the manifold is again a stochastic process for any smooth function on the manifold.
-
-It is then possible to prove that such a solution exists.
-The detail is technical and can be found in \textcite[chapter V]{ikeda1989sto}, but it relies on the following strategy:
-\begin{enumerate}
-	\item Project the stochastic process into charts. For each chart \((U, \phi)\), define the coordinate coefficients \(\v{b}^i\) and \({\m{\Sigma}}_j^i\) by \(\v{b} = \v{b}^i\partial\phi_i\), \({\m{\Sigma}}_i = {\m{\Sigma}}_j^i \partial \phi_i\), and extend each of \(\v{b}^i, {\m{\Sigma}}_j^i\) to bounded functions on \(\R^d\). Then define in each chart the Eucldiean Stratonovich stochastic process
-	\[\d\v{X}_t^U = \v{b}^U(t, \v{X}_t) \d t + \m{\Sigma}^U(t, \v{X}_t) \circ \d \m{B}_t, \quad \v{X}_0^U = \phi(x)\] where \(\v{b}^U: \sbr{0, T}\times \R^n \to \R^n\) is made up of the component functions \(\v{b}^i\), and \(\m{\Sigma}^U: \sbr{0,T}\times \R^d \to \R^{d\times d}\) is a matrix made up of the component functions \(\m{\Sigma}_j^i\). From earlier discussion of the Euclidean case, this Stratonovich stochastic differential equation has a strong solution of the form desired.
-	We have chosen to worth with Stratonovich integrals exactly because it macke the change of variable into charts simple.
-	\item Prove that for any two coordinate charts, the solutions to the stochastic differential equation in the pair of charts agree on the intersection of the charts. This is done by first finding the solutions to the stochastic differential equations in each chart, and then second showing that these solutions are related exactly by the transition map between charts, as the coefficients of the diffusions are related exactly by the Jacobian of the transition map. I.e. for charts \((U, \phi)\), \((V, \psi)\),
-	\[
-		\d\v{X}_t^U = \v{b}^U(t, \v{X}_t) \d t + \m{\Sigma}^U(t, \v{X}_t) \circ \d \m{B}_t, \quad \v{X}_0^U = \phi(x) \\
-		\d\v{X}_t^V = \v{b}^V(t, \v{X}_t) \d t + \m{\Sigma}^V(t, \v{X}_t) \circ \d \m{B}_t, \quad \v{X}_0^V = \psi(x)
-	\]
-	we have that 
-	\[\v{X}_t^V = \psi \circ \phi^{-1}(\v{X}_t^U)\]
-	since 
-	\[
-		\d \v{X}_t^V &= \d (\psi\circ\phi^{-1})(\v{X}_t^U)\\ 
-		&= \d (\psi\circ\phi^{-1})\del{\v{b}^U(t, \v{X}_t)} \d t +\d (\psi\circ\phi^{-1})\del{\m{\Sigma}^U(t, \v{X}_t)} \circ \d \m{B}_t\\ 
-		&= \v{b}^V(t, \v{X}_t) \d t +\m{\Sigma}^V(t, \v{X}_t)\circ \d \m{B}_t
-	\]
-	by the relationship between vectors expressed in differnet charts.
-	Again choosing to work with Stratonovich integrals makes working with transitioning between charts much simpler.
-	\item By chosing a series of charts that cover the manifold, we patch togehter these local solutions. 
-	We choose first a chart that contains the intial point, \(x\in M\). 
-	When the stochastic process is about to leave this chart at time \(\tau\), we pick a new chart that contains \(\v{X}_\tau\) and start a new stochastic process in this chart, \(\tilde{\v{X}}_t\), with the intiail condition \(\tilde{\v{X}}_\tau = \v{X}_\tau\). It is clear from the previous step that on the overlap between these charts, the solution agrees. We repeat this process until we reach time \(T\).
-\end{enumerate}
-With this strategy we can prove that both the desired type of solution to \cref{eq:manifold_sde_form} exists, and that it is unique.
-
-\subsubsection{The extrinsic view}
-\label{sec:embedded_manifold_sdes}
-The second method for proving the the exisitance and uniqueness of solutions relies on embedding the manifold into higher dimension Euclidean space.
-By the \emphmarginnote{Whitney embedding theorem} we can smoothly embed any \(m\)-dimension smooth manifold into Eucldiean space of at most dimension \(2m\).
-Let us label this space as \(N=\R^n\) and the embedding the function \(f:M \to N\).
-The vector fields \(\v{b}\), \(\v{\Sigma}_j\) can also then be embedded into \(N\) as vector fields in \(TN\) restricted to the surface of the embedded manifold.
-In this case agian we have a Eucldiean stochastic differential eqaution of the form
-\[\d f(\v{X}_t) = \v{b}^N(t, f(\v{X}_t))\d t + \v{\Sigma}^N(t, f(\v{X}_t)) \circ \d\v{B}_t\]
-where, \(\v{b}^N: \sbr{0,T} \to \Gamma(TN)\), \(\v{b}^N = \d f(\v{b})\) is the embedding of the drift vector field, and the columns of \(\v{\Sigma}^N\) are similarly made up of the embeddings of each of the \(\v{\Sigma}_j\).
-The solutions can then be proved to exist and be unique the same way we proved that Euclidean stochasitc differential equations did, and then show that with an initial condition starting on the manifold, with the restrictions on the drift and diffusion terms, the solutions will not leave the surface of the manifold.
-
-A simple example of this can be seen by looking at the embedding of a stochastic process on the sphere \(\c{S}_n\) embedded into \(\R^{n+1}\), via the usual construct where all points in \(\R^n\) of norm 1 are on the sphere.
-Therefore, for any point on the sphere \(\sum_i x_i^2 = 1\).
-Let us write \(g(x) = \sum_i x_i^2 - 1\), and look at the the Stratonovich change of variable formula for this function of our stochastic process.
-\[
-	\d g(\v{X}_t) &= \sbr{\pd{g}{t}(t,f( \v{X}_t)) + \nabla g(t, f(\v{X}_t)) \cdot \v{b}^N(t, f(\v{X}_t))  } \d t \\ \quad&+   \nabla g(t,f (\v{X}_t))\cdot\m{\Sigma}(t, f(\v{X}_t)) \d \v{B}_t \nonumber
-\]
-The first term is 0 as \(g\) does not depend on time. The second term is zero as \(\nabla f = \sbr{f(\v{X}_t)_1, ..., \f(\v{X}_t)_n}^\top\), which is normal to the surface of the manifold, and therefore its dot product with a vector tangent to the manifold is zero.
-By a simialr argument, since the columns of \(\v{\Sigma}^U\) are tangent to the surface of the manifold, the thrid term is zero. 
-Since the evolution of \(g\) over time is zero, we conclude that \(g\) is constant at all times for the stochastic process, and therefore the stochastic process stays on the surface of the sphere at all times, assuimg it beings on the surface.
-
-This argument can be generalise to any ebmedding of a manifold and a stochastic process by considering a function \(g\) that measures the distance from a point in \(N\) to the closest point on the surface of manifold.
-The derivative of such a function is guarenteed to be normal to the sureface of the manifold for any point on the manifold, and so its dot product with vectors tangential to the manifold will also be zero.
+% We say that an \(\c{M}\)-valued semimartingale \(X_t\) is a solution to this this stochastic differential equation if
+% \[
+% 	f(X_t) = f(X_0) + \int_0^t [V_i f](X_s) \circ \d Z_s^i, \; t\in \sbr{0,t}
+% \]
+% for all \(f\in C^\infty(\c{M})\).
 
 
+% \todo{Havent explained explosion times...}
+% We will study stochastic processes \(\v{X}: \Omega \times \sbr{0, T} \to M\), stochastic processes taking values on a manifold \(M\) on a compact time interval. 
+% We begin by defining what the form of the differential equation, \(\d\v{X}_t\) will be.
+% As we are talking about instantaneous changes in positions, it is natural that this quantity should be a \emph{tangent vector}.
+% We will use
+% \[\d\v{X}_t = \v{b}(t, \v{X}_t) \d t + \sum_{i=1}^n {\m{\Sigma}}_j (t, \v{X}_t) \circ \d \v{B}_t^j \label{eq:manifold_sde_form}\]
+% where \(\v{b}(t, \cdot), {\m{\Sigma}}_i(t, \cdot) \in \Gamma(TM)\) are \emph{smooth vector fields} over \(M\), so that \(\v{b}(t, \v{X}_t), {\m{\Sigma}}_j(t, \v{X}_t) \in T_{\v{X}_t}M\) are \emph{tangent vectors} at \(\v{X}_t\), and \(\d \v{B}_t\) is and \(n\)-dimension Euclidean Brownian motion, with filtration \(\c{F}_t\).
+% Typically, we will suppress the summation notation in favour of implicit Einstein summation notation.
+% In the next section we will study how we can make rigourours the notion of solutions to \cref{eq:manifold_sde_form}.
+
+% \subsection[short]{Solutions to manifold-valued stochastic differential equations}
+% We begin by defining immediately that the space of solutions as the space of continuous functions from time into the manifold, \(C^0(\sbr{0,T}, M)\).
+
+% There are two main stratergies to working with \cref{eq:manifold_sde_form}.
+% The first relies on an \emph{intrinsic view} of the stochastic process by looking at its behavious in charts of the manifold.
+% The second relies on an \emph{extrinsic view} of the stochastic process by looking at the manifold embeded into higher dimension Euclidean space.
+% Fundimentally, both settings rely on returning the study of the stochastic process to the Euclidean setting by exploiting generic properties of manifolds.
+
+% \subsubsection{The intrinsic view}
+% The first staretergy to define solutions relies on mapping the process to one dimension Euclidean space.
+% We say that a solution \(\v{X}_t\), with intital condition \(\v{X}_0 = x\in M\) to \cref{eq:manifold_sde_form} is an \(\c{F}_t\)-adapted \(C_0(\sbr{0,T}, M)\)-valued random variable such that for any \(f\in C^\infty(M)\), the space of smooth functions on the manifold, the following holds
+% \[f(\v{X}_t) - f(\v{X}_t) = \int_0^t (\v{b} f)(\v{X}_t) \d t + \int_0^t ({\m{\Sigma}}_j f)(\v{X}_t) \circ \d \v{B}_t^j,\] and that \(\v{X}_0 = x\).
+% Since the action of a vector field on a smooth function on \(M\) is again a smooth function on \(M\), this is exactly a Stratonovich stochastic differential equation on \(\R\), which we have already seen how to define.
+% This in essence says that the image of the stochastic process under a smooth function on the manifold is again a stochastic process for any smooth function on the manifold.
+
+% It is then possible to prove that such a solution exists.
+% The detail is technical and can be found in \textcite[chapter V]{ikeda1989sto}, but it relies on the following strategy:
+% \begin{enumerate}
+% 	\item Project the stochastic process into charts. For each chart \((U, \phi)\), define the coordinate coefficients \(\v{b}^i\) and \({\m{\Sigma}}_j^i\) by \(\v{b} = \v{b}^i\partial\phi_i\), \({\m{\Sigma}}_i = {\m{\Sigma}}_j^i \partial \phi_i\), and extend each of \(\v{b}^i, {\m{\Sigma}}_j^i\) to bounded functions on \(\R^d\). Then define in each chart the Eucldiean Stratonovich stochastic process
+% 	\[\d\v{X}_t^U = \v{b}^U(t, \v{X}_t) \d t + \m{\Sigma}^U(t, \v{X}_t) \circ \d \m{B}_t, \quad \v{X}_0^U = \phi(x)\] where \(\v{b}^U: \sbr{0, T}\times \R^n \to \R^n\) is made up of the component functions \(\v{b}^i\), and \(\m{\Sigma}^U: \sbr{0,T}\times \R^d \to \R^{d\times d}\) is a matrix made up of the component functions \(\m{\Sigma}_j^i\). From earlier discussion of the Euclidean case, this Stratonovich stochastic differential equation has a strong solution of the form desired.
+% 	We have chosen to worth with Stratonovich integrals exactly because it macke the change of variable into charts simple.
+% 	\item Prove that for any two coordinate charts, the solutions to the stochastic differential equation in the pair of charts agree on the intersection of the charts. This is done by first finding the solutions to the stochastic differential equations in each chart, and then second showing that these solutions are related exactly by the transition map between charts, as the coefficients of the diffusions are related exactly by the Jacobian of the transition map. I.e. for charts \((U, \phi)\), \((V, \psi)\),
+% 	\[
+% 		\d\v{X}_t^U = \v{b}^U(t, \v{X}_t) \d t + \m{\Sigma}^U(t, \v{X}_t) \circ \d \m{B}_t, \quad \v{X}_0^U = \phi(x) \\
+% 		\d\v{X}_t^V = \v{b}^V(t, \v{X}_t) \d t + \m{\Sigma}^V(t, \v{X}_t) \circ \d \m{B}_t, \quad \v{X}_0^V = \psi(x)
+% 	\]
+% 	we have that 
+% 	\[\v{X}_t^V = \psi \circ \phi^{-1}(\v{X}_t^U)\]
+% 	since 
+% 	\[
+% 		\d \v{X}_t^V &= \d (\psi\circ\phi^{-1})(\v{X}_t^U)\\ 
+% 		&= \d (\psi\circ\phi^{-1})\del{\v{b}^U(t, \v{X}_t)} \d t +\d (\psi\circ\phi^{-1})\del{\m{\Sigma}^U(t, \v{X}_t)} \circ \d \m{B}_t\\ 
+% 		&= \v{b}^V(t, \v{X}_t) \d t +\m{\Sigma}^V(t, \v{X}_t)\circ \d \m{B}_t
+% 	\]
+% 	by the relationship between vectors expressed in differnet charts.
+% 	Again choosing to work with Stratonovich integrals makes working with transitioning between charts much simpler.
+% 	\item By chosing a series of charts that cover the manifold, we patch togehter these local solutions. 
+% 	We choose first a chart that contains the intial point, \(x\in M\). 
+% 	When the stochastic process is about to leave this chart at time \(\tau\), we pick a new chart that contains \(\v{X}_\tau\) and start a new stochastic process in this chart, \(\tilde{\v{X}}_t\), with the intiail condition \(\tilde{\v{X}}_\tau = \v{X}_\tau\). It is clear from the previous step that on the overlap between these charts, the solution agrees. We repeat this process until we reach time \(T\).
+% \end{enumerate}
+% With this strategy we can prove that both the desired type of solution to \cref{eq:manifold_sde_form} exists, and that it is unique.
+
+% \subsubsection{The extrinsic view}
+% \label{sec:embedded_manifold_sdes}
+% The second method for proving the the exisitance and uniqueness of solutions relies on embedding the manifold into higher dimension Euclidean space.
+% By the \emphmarginnote{Whitney embedding theorem} we can smoothly embed any \(m\)-dimension smooth manifold into Eucldiean space of at most dimension \(2m\).
+% Let us label this space as \(N=\R^n\) and the embedding the function \(f:M \to N\).
+% The vector fields \(\v{b}\), \(\v{\Sigma}_j\) can also then be embedded into \(N\) as vector fields in \(TN\) restricted to the surface of the embedded manifold.
+% In this case agian we have a Eucldiean stochastic differential eqaution of the form
+% \[\d f(\v{X}_t) = \v{b}^N(t, f(\v{X}_t))\d t + \v{\Sigma}^N(t, f(\v{X}_t)) \circ \d\v{B}_t\]
+% where, \(\v{b}^N: \sbr{0,T} \to \Gamma(TN)\), \(\v{b}^N = \d f(\v{b})\) is the embedding of the drift vector field, and the columns of \(\v{\Sigma}^N\) are similarly made up of the embeddings of each of the \(\v{\Sigma}_j\).
+% The solutions can then be proved to exist and be unique the same way we proved that Euclidean stochastic differential equations did, and then show that with an initial condition starting on the manifold, with the restrictions on the drift and diffusion terms, the solutions will not leave the surface of the manifold.
+
+% A simple example of this can be seen by looking at the embedding of a stochastic process on the sphere \(\c{S}_n\) embedded into \(\R^{n+1}\), via the usual construct where all points in \(\R^n\) of norm 1 are on the sphere.
+% Therefore, for any point on the sphere \(\sum_i x_i^2 = 1\).
+% Let us write \(g(x) = \sum_i x_i^2 - 1\), and look at the the Stratonovich change of variable formula for this function of our stochastic process.
+% \[
+% 	\d g(\v{X}_t) &= \sbr{\pd{g}{t}(t,f( \v{X}_t)) + \nabla g(t, f(\v{X}_t)) \cdot \v{b}^N(t, f(\v{X}_t))  } \d t \\ \quad&+   \nabla g(t,f (\v{X}_t))\cdot\m{\Sigma}(t, f(\v{X}_t)) \d \v{B}_t \nonumber
+% \]
+% The first term is 0 as \(g\) does not depend on time. The second term is zero as \(\nabla f = \sbr{f(\v{X}_t)_1, ..., \f(\v{X}_t)_n}^\top\), which is normal to the surface of the manifold, and therefore its dot product with a vector tangent to the manifold is zero.
+% By a simialr argument, since the columns of \(\v{\Sigma}^U\) are tangent to the surface of the manifold, the thrid term is zero. 
+% Since the evolution of \(g\) over time is zero, we conclude that \(g\) is constant at all times for the stochastic process, and therefore the stochastic process stays on the surface of the sphere at all times, assuimg it beings on the surface.
+
+% This argument can be generalise to any ebmedding of a manifold and a stochastic process by considering a function \(g\) that measures the distance from a point in \(N\) to the closest point on the surface of manifold.
+% The derivative of such a function is guarenteed to be normal to the sureface of the manifold for any point on the manifold, and so its dot product with vectors tangential to the manifold will also be zero.
 
 
 
-Watnabe chapter on local diffusions that we stich together
 
-mention the global view maybe, but that this is very hard and needs lots more techical machinery
 
-extrinsice definition of the BM
+% Watnabe chapter on local diffusions that we stich together
 
-Relationship between the brownian motion and the laplace beltrami operator.
+% mention the global view maybe, but that this is very hard and needs lots more techical machinery
+
+% extrinsice definition of the BM
+
+% Relationship between the brownian motion and the laplace beltrami operator.

@@ -1,60 +1,64 @@
-\section{Geometric machine learning}
+\lettrine{I}{n this chapter} we provide an overview of two areas of machine learning.
+In \cref{sec:geometric_machine_learning} we focus on geometric machine learning and in particular its application to Riemannian manifolds (\cref{sec:manifold_background}).
+In \cref{sec:deep_generative_modelling_background} we focus on deep generative modelling, with a focus on diffusion models (\cref{sec:score_based_models_background}).
 
-Geometric machine learning is a field of machine learning concerned with producing models that in preserve the geometric structure of the space they are applied to.
+
+\section{Geometric machine learning}
+\label{sec:geometric_machine_learning}
+Geometric machine learning is a field of machine learning concerned with producing models that preserve the geometric structure of the space they are applied to.
 
 This is achieved by carefully considering the space in question, the structure it has that we wish to preserve, and the symmetries that lead to this. 
-This has two main results.
+This approach has two main benefits.
 
-Firstly, it reduces greatly the problem space of possible solutions.
+Firstly, it greatly reduces the problem space of possible solutions.
 Typical deep learning models can learn to approximate any function, proved by ubiquitous \emphmarginnote{universal approximation theorem}s \cite{cybenko1989approximation,leshno1993multilayer,ismailov2023three,maiorov1999lower}.
-However, the \emphmarginnote[2\lineskip]{curse of dimensionality} \cite{bellman1957dynamic} means that as we expand the dimension of a problem space, the number of data samples needed to accuratly estimate a function in reasonable classes, such as Lipshitz functions or Sobelov spaces grows exponentially fast with the dimension of the space \cite{tsybakov2009nonparametric}.
+However, the \emphmarginnote[2\baselineskip]{curse of dimensionality} \cite{bellman1957dynamic} means that as we expand the dimension of a problem space, the number of data samples needed to accurately estimate a function in reasonable classes, such as Lipschitz functions or Sobelov spaces, grows exponentially fast with the dimension of the space \cite{tsybakov2009nonparametric}.
 
 This poses a problem for the generalisation of machine learning models in high dimension to data not previously seen.
-Function regularisation schemes can help significantly with regularising the learnt function and improving generalisation, either explicitly via a penalty, e.g. \(L_2\) weight decay \cite{krogh1991simple}, or implicitly via the mechanics of stochastic gradient descent \cite{vardi2021implicit}, but this is not always enough.
-Enforcing that models respect the structure of a given space greatly reduces the space of solutions, helping with generalisation by reducing the quantity of data needed to achive certain accuracy..
+\emphmarginnote{Function regularisation} schemes can help significantly with regularising the learnt function and improving generalisation, either explicitly via a penalty, e.g. \(L_2\) weight decay \cite{krogh1991simple}, or implicitly via the mechanics of stochastic gradient descent \cite{vardi2021implicit}, but this is not always enough.
+Enforcing that models respect the structure of a given space greatly reduces the space of solutions, which in turn reduces the quantity of data needed to achieve a given accuracy.
 
-For example, consider a simple image recognition task.
-Our goal is to recognise if a cat or a dog is in the image.
-If we apply a typical multilayer perceptron to this image, it will need to explicitly learn what a cat or dog is in every possible position in the image.
+For example, consider a simple \emphmarginnote{image recognition} task.
+We aim to recognise if a cat or a dog is in the image.
+If we apply a typical \emphmarginnote{multilayer perceptron} to this image, it will need to explicitly learn what a cat or dog is in every position in the image.
 This is because it treats all pixels uniquely, preserving all the structure of the input.
-On the other extreme, we can apply a network that is invariant to the position of pixels.
-This erases all structure in the input.
+On the other extreme, we can apply a network that is invariant to the position of pixels, treating their intensities as a histogram, such as a \emphmarginnote{transformer}.
+This erases all spatial structure in the input.
 This will fail to learn however as it cannot identify how pixels are arranged with respect to one another, preventing the recognition of relative multi-pixel structures such as ears and eyes.
-In the middle of these is the standard convolutional neural network \cite{lecun1989handwritten}.
+In the middle of these is the standard \emphmarginnote{convolutional neural network} \cite{lecun1989handwritten}.
 This respects that images can be translated up and down, left and right, and remain the same, but that if pixels are rearranged more than this, then it is a different image.
 This strikes the right balance between preserving all structure of the input and preserving none.
 As a result, a convolutional neural network takes significantly fewer parameters and computation to produce the same or better performance than a multilayer perceptron, and significantly outperforms a set-based model on this task.
 
-The second result of this consideration is the application of machine learning models to non-Euclidean data.
+The second result of this consideration is the application of machine learning models to \emphmarginnote{non-Euclidean data}.
 Typical models make an implicit assumption that the data they are dealing with are vectors living in Euclidean space.
 This is convenient as Euclidean vector spaces come with many mathematical tools.
 There exists a significant number of problems that do not natively lie in Euclidean space, however.
-By considering the inputs more carefully, we can expand the types of inputs to models to a wide variety of geometric spaces, such as sets, graphs, grids, and manifolds.
-This opens up the application of machine learning to a wide range of new problem domains, for example applications to social networks \cite{TODO}, molecular science \cite{TODO}, quantum physics \cite{TODO}, and climate sciences \cite{TODO}.
+By considering the inputs more carefully, we can expand the input spaces of models to a wide variety of \emphmarginnote{geometric spaces}, such as sets, graphs, grids, and manifolds.
+This opens up the application of machine learning to a wide range of new problem domains, for example applications to social networks, molecular science, quantum physics, and climate sciences.
 
-Geometric machine learning aims to view all these spaces through the same lens of symmetries of spaces.
-This unifies the tools that create common machine learning models such as convolutional neural networks, recurrent neural networks, graph neural networks, and many others into a single theory.
-This allows us to quickly design networks for new types of spaces and transfer tools between then.
+Overall, geometric machine learning aims to view the space that particular data lives on through its geometric structure and the symmetries they possess.
+It allows us to unify common machine learning models such as convolutional neural networks, recurrent neural networks, graph neural networks, and many others into a single theory.
+This also allows us to quickly design networks for new types of geometric spaces and transfer tools between them.
 
 \subsection{Geometric priors}
 
 Let us consider a set \(X\) on which we are going to place a machine learning model.
 \(X\) may come with additional information.
 
-Firstly it may come with geometric structure, telling us something about how the points in the set are related to each other.
-Secondly it may come with a set of symmetries, telling us how the elements can be swapped around while preserving the fundamental nature of the space.
-Often the space of symmetries of a space naturally arises from the geometric structure, or lack of geometric structure, of a space.
+Firstly it may come with a \emphmarginnote{geometric structure}, a set of relations telling us about how the points in the set are related to each other.
+Secondly it may come with a \emphmarginnote{set of symmetries}, telling us how the elements can be permuted while preserving the geometric structure the space.
 
 Two modelling scenarios arise in geometric deep learning.
-Firstly we may be interested in learning functions of the set \(X\) itself, functions of the form \(f: X \to Y\), where \(Y\) is some other space with its own geometric structure.
+Firstly, for geometric spaces \(X\) and \(Y\) each with their own geometric structure we may be interested in learning \emphmarginnote{functions between geometirc spaces} of the form \(f: X \to Y\).
 For example, consider a two dimension grid, \(X= \Z_n  \x \Z_n\).
 The grid has a natural structure of points and their neighbours.
 The structure is preserved if we translate the grid up/down or left/right, if we rotate the grid, or if we mirror the grid through an axis.
-The grid structure therefore encodes translation symmetry, and tells us that models on a grid should preserve this translation symmetry.
+The grid structure therefore encodes translation, rotation and reflection symmetries, and tells us that models on a grid should preserve such symmetries.
 
 Secondly, we may be interested in learning functions of signals on \(X\).
-A signal is a function that assigns a value in some space \(Z\) to every point in the space \(X\), a function \(f: X \to Z\).
-Continuing the grid example, a signal \(f: X \to \sbr{0,1}^3\) assigning three intensity values to each point on the grid makes up an image.
+A \emphmarginnote{signal on a space\label{def:signal}} is a function that assigns a value in some space \(Z\) to every point in the space \(X\), a function \(f: X \to Z\).
+Continuing the grid example, a signal \(f: \Z_n  \x \Z_n \to \sbr{0,1}^3\) assigning three intensity values to each point on the grid makes up an image.
 We can denote the space of signals on \(X\) taking values in \(Z\) as \(\c{X}\del{X, Z}\).
 A model that takes as input an image should respect the symmetries of the underlying grid.
 
@@ -67,19 +71,19 @@ Formally this can be summarised as
 \begin{definition}[Group]
 	A group \(\del{G, \cdot}\) is a set \(G\) along with an operation \(\cdot: G\x G \to G\) such that it has the following properties:
 	\begin{itemize}[leftmargin=1in]
-		\item[\emph{Associativity}] For element \(f,g,h, \in G\), \( f\cdot \del{g \cdot ih} = \del{f \cdot g} \cdot h\).
-		\item[\emph{Identity}] There exists and element \(e \in G\) such that for every element \(g\in G\), \(e \cdot g = g \cdot e = g\). 
+		\item[\emph{Associativity}] For element \(f,g,h, \in G\), \( f\cdot \del{g \cdot h} = \del{f \cdot g} \cdot h\).
+		\item[\emph{Identity}] There exists an element \(e \in G\) such that for every element \(g\in G\), \(e \cdot g = g \cdot e = g\). 
 		\item[\emph{Invertability}] There exists for every element \(g\in G\) and element \(g'\in G\) such that \(g \cdot g' = g' \cdot g = e\). This is typically denoted as \(G^{-1}\). 
 		\item[\emph{Closure}] For every \(g, h\in G\), \(g \cdot h \in G\).
 	\end{itemize}
 \end{definition}
-Groups can have significant extra structure to this basic definition.
-For example some group actions are commutative, \(g \cdot h = h \cdot g\), known as \emphmarginnote{Abelian group}, some are continuous functions, known as \emphmarginnote{topological groups}, and some have Riemannian manifold structure, known as \emphmarginnote{Lie groups}.
-Often the group operation, like the multiplication symbol, is often omitted, and instead operations written as \(g\cdot h = gh\).
+Groups can have significant extra structure in addition to this basic definition.
+For example some group actions are commutative, \(g \cdot h = h \cdot g\), known as \emphmarginnote{Abelian group}, some are continuous functions, known as \emphmarginnote[\baselineskip]{topological groups}, and some have Riemannian manifold structure, known as \emphmarginnote[\baselineskip]{Lie groups}.
+Often the group operation, like the multiplication symbol, is omitted, and instead operations are written as \(g\cdot h = gh\).
 
 For example, the \emphmarginnote{cyclic group} of order \(n\) is defined by element \(\cbr{0, ..., n}\), has group composition \(\cdot: (g, h) \mapsto g + h \mod n\), and has identity element \(0\).
 Taking a product of this group, \(C_n \x C_n = C_n^2\) defines a group of cycles in two directions.
-The\emphmarginnote{dihedral group} \(D_n\) represents cycles with an additional flip operation. It has elements \((1, 1), ..., (1, n), (-1, 0), ..., (-1, n)\) where the first index indicates if there is a flip or not, and the second a cycle of order \(n\). 
+The \emphmarginnote{dihedral group} \(D_n\) represents cycles with an additional flip operation. It has elements \((1, 1), ..., (1, n), (-1, 0), ..., (-1, n)\) where the first index indicates if there is a flip or not, and the second a cycle of order \(n\). 
 It has group composition \(\cdot: (a, g), (b, h) \mapsto (a*b, g+h \mod n)\) and identity element \((1, 0)\).
 
 
@@ -87,68 +91,52 @@ It has group composition \(\cdot: (a, g), (b, h) \mapsto (a*b, g+h \mod n)\) and
 
 Groups in the abstract are often not the objects we want to study.
 Instead, we are interested in their action on some space.
-The \emphmarginnote{(left) action of a group on a space} \(X\) is a function \(\triangleright_X: G \x X \to X\) that is compatible with the group operation, that is 
+The \emphmarginnote{(left) action of a group on a space} \(X\) is a function \(\triangleright: G \x X \to X\) that is compatible with the group operation, that is 
 \[g \triangleright \del{h \triangleright x} = \del{g \cdot h} \triangleright x\]
 for \(g, h \in G\), \(x \in X\).
 
-To continue the grid example, the group \(C_n^2\) defines the translation symmetries of a one dimension grid of size \(n\), wrapping around at the edges.
+To continue the grid example, the group \(C_n^2\) defines the translation symmetries of a two dimension grid of size \(n\), wrapping around at the edges.
 The group \(D_4\) represents the rotation and reflection symmetry of the grid.
 Their \emphmarginnote{semi-direct product}\footnote{A type of group product that means any element of the group can be decomposed as successive actions of one group and then the next} \(C_n^2 \rtimes D_4\) represents the combined translation, rotation, and reflection symmetries of the grid.
 
-A \emphmarginnote{representation of a group} is a specific type of action of a group acting linearly on a vector space.
+A \emphmarginnote{representation of a group\label{def:representation}} is a specific type of action of a group acting linearly on a vector space.
 A (real) representation of a group is a map \(\rho: G \to \groupGL\), a map from the group into the space of invertible \(n\x n\) matrices.
-This map must obey \(\rho(g\cdot h) = \rho(g) \rho(h)\) where the right hand side is standard matrix multiplication.
+This map must obey \(\rho(g\cdot h) = \rho(g) \rho(h)\) where the right-hand side is standard matrix multiplication.
 Their action on \(\R^n\) and the group composition operations are given by the usual matrix multiplication.
 There also exist complex representations, action on complex vector spaces.
 Representations that map to orthogonal or unitary matrices are called orthogonal or unitary representations.
-An excellent introductory text to linear representations is \textcite{serreFiniteGroups}.
+An introductory text to linear representations is \textcite{serreFiniteGroups}.
 
 Representations are useful in building \emphmarginnote{actions on signals}.
-Let us have a signal on \(X\) taking values in \(\R^n\), \(f \in \c{X}(X, \R^n)\).
+Let us consider a signal on \(X\) taking values in \(\R^n\), \(f \in \c{X}(X, \R^n)\).
 If we have a group action \(G\) on \(X\) and a representation of \(X\) acting on \(\R^n\), then an action of the group \(G\) on this signal can be defined by 
-\[\del{g\triangleright_f f}(x) = \rho(g) f(g^{-1} \triangleright_X x).\]
+\[\del{g\triangleright_f f}(x) = \rho(g) f(g^{-1} \triangleright_X x)\]
+for a representation of \(G\), \(\rho\).
 This states that if we transform our signal by \(g\), then this involves mapping the underlying space \(X\) under the group action, and also mapping the observations under the same group action.
 This whole operation can be seen as a single group action, and so again we can view the space of signals just as a geometric space in its own right.
 
 To again continue the image grid example, the action of \(C_n^2\) will and translate an image, and the action of \(D_4\) will rotate and flip it.
 The representation action on the colour channels of the image however is simply the identity action, leaving the channels unchanged.
-This representation is the \emphmarginnote{trivial representation}.
+This representation is the \emphmarginnote{trivial representation}, \(\rho(g) \to I\).
 
 To see the action of a more complex representation, consider different data attached at each point on the grid, for example a vector representing the wind direction at each point.
 In this case, we might expect that when we rotate the grid, the wind vector will rotate with it.
-This is given by the \emphmarginnote{faithful representation}, a representation that is a bijection, of \(D_4\). If we let \(h = (a, r)\) be , then a faithful representation is given by 
-\[
-	\rho(h) = \begin{bmatrix}
-		\cos \tfrac{2\pi r}{4} &  -a \sin \tfrac{2\pi r}{4} \\ \sin \tfrac{2\pi r}{4} &  a \cos \tfrac{2\pi r}{4}
-	\end{bmatrix}.
-\]
-If we place the action of this representation on the wind vectors attached to each point, then for \(g = (t, h) \in C_n^2 \rtimes D_4\), the action on the wind field is given by
-\[(g\triangleright f)(x) = \rho(h) f(g^{-1} \triangleright x).\]
-This is illustrated in \cref{fig:steerable_demo}
-
-\begin{figure}
+This is given by the \emphmarginnote{faithful representation}, a representation that is a bijection, of \(D_4\). If we let \(h = (a, r) \in D_4\), with \(a\) representing the flip component and \(r \in\sbr{0, 2\pi}\) the rotation component, then a faithful representation is given by 
+\begin{figure}[t]
 	\begin{center}
 		\includegraphics[width=.55\textwidth]{images/geomndp/2d/steerable_demo.pdf}
 	\end{center}
 	\caption{Illustration of a vector field \(f: \Z^2 \rightarrow \R^2\) being transformed by a group element \(g = (r, h) \in C^2_n \rtimes D_4\).}
-	\label{fig:steerable_demo}
+	\label{fig:steerable_demo_background}
 \end{figure}
-
-% \subsubsection{Structure preserved by different group actions}
-
-% A given space \(X\) may have a number of different group actions that can act on it.
-% Choosing the right group action usually depends on what type of structure one wishes to preserve about \(X\).
-% Maps from \(X\) onto itself that preserve a given structure are called \emphmarginnote{automorphisms}.
-% In addition, maps from \(X\) onto a different space \(Y\) that preserve certain structure are called \emphmarginnote{isomorphisms}.
-
-% In the simplest case, we may wish to preserve no structute about \(X\), where it is just a set, and so we choose the permutation group.
-% Any element in the set can be swapped with any other element.
-
-% If our set is endowed with a topology, then we may wish our group action to preserve the notion of continuity.
-% These maps are \emphmarginnote{homeomorphisms}, and are bijections continuous in both directions.
-% These form a group that is a subgroup of the permutation of points in the set.
-
-% Stronger than this, if we endow our space with a notion
+\[
+	\rho(h) = \begin{bmatrix}
+		\cos r &  -a \sin r \\ \sin r &  a \cos r
+	\end{bmatrix}.
+\]
+If we place the action of this representation on the wind vectors attached to each point, then for \(g = (t, h) \in C_n^2 \rtimes D_4\), the action on the wind field is given by
+\[(g\triangleright f)(x) = \rho(h) f(g^{-1} \triangleright x).\]
+This is illustrated in \cref{fig:steerable_demo_background}.
 
 \subsubsection{Symmetric functions}
 
@@ -166,8 +154,6 @@ The label does not change if the image is translated, rotated or reflected.
 An example of this might be locating where in the image a cat or a dog is.
 If we translate or rotate the image, the location of the cat or dog will also translate or rotate.
 
-It should be noted that invariant functions are equivariant functions where the group action on the output space is an identity operation.
-
 The goal of many geometric deep learning architectures is to produce models that respect either the invariance or equivalence of the problem at hand.
 In doing so, we automatically allow models to generalise to examples that they have seen before, but under a different group symmetry.
 
@@ -177,7 +163,7 @@ If we consider a hypothesis space of functions \(\c{H}\) between some spaces \(X
 and 
 \[\c{H}_{\text{equivariant}} = \cbrcolon{f: X\to Y}{f(g\triangleright_X x) = g \triangleright_Y f(x) \; \forall x\in X, \; g\in G} \subset \c{H}.\]
 Depending on the original hypothesis space of functions and the group symmetry \(G\), this can be a significant reduction in the hypothesis space.
-There exist various learning theory results that guarantee that under the assumption that the problem at hand does possess the specified symmetry, using a model that respect this symmetry will result in guaranteed better generalisation \cite{elesedy2021provably,elesedy2021provably2,lyle2020benefits,NEURIPS2022_257b9a6a}.
+There exist various learning theory \cite{vapniknature,hastie2009elements} results that guarantee that under the assumption that the problem at hand does possess the specified symmetry, a model that respects this symmetry exhibit guaranteed better generalisation performance \cite{elesedy2021provably,elesedy2021provably2,lyle2020benefits,NEURIPS2022_257b9a6a}.
 
 % \subsubsection{Constructing geometric architectures}
 
@@ -196,7 +182,6 @@ There exist various learning theory results that guarantee that under the assump
 
 
 \subsection{Some types of geometric priors}
-\todo[inline]{Is this too long?}
 Here we briefly discuss a number of common geometric priors used in geometric deep learning.
 We discuss the case of sets, graphs, grids, homogenous spaces and manifolds.
 
@@ -205,14 +190,14 @@ We discuss the case of sets, graphs, grids, homogenous spaces and manifolds.
 The simplest of geometric architectures concerns sets.
 Typically, we only consider finite sets.
 With no additional geometric structure, any network processing sets should not take into account the order in which elements are presented.
-In building networks for sets then, we need architectures with \emphmarginnote{permutation equavariant} layers.
+In building networks for sets then, we need architectures with \emphmarginnote{permutation equivariant} layers.
 
 DeepSets \cite{DeepSets} and transformers \cite{vaswani2017attention} are the two most common architectures for learning on sets.
 
 \subsubsection{Graphs}
 
 Graphs bring one additional element over sets.
-Graphs consist of a set of nodes \(\c{V}\) and edges connecting some nodes together, \(\c{E}\).
+Graphs consist of a set of nodes \(\c{V}\) and a set of edges connecting some nodes together, \(\c{E}\).
 Similar to sets, the goal is to create an architecture that is invariant to permutations of the inputs.
 Each node and each edge may carry some information in the way of features.
 
@@ -221,7 +206,7 @@ Instead, they use successive layers that apply local operations to nodes, their 
 These layers, combined with non-linearities and sometimes pooling operations, form the backbone of graph neural networks.
 
 \emphmarginnote{Convolutional graph neural networks} apply a convolution to the features of the local neighbourhood to produce updated features.
-Examples of this include \textcite{kipf2016semi, defferrard2016convolutional, wu2019simplifying}. \emphmarginnote{Attentive graph neural networks} apply attention between nodes and their neighbours features. Examples of this include \textcite{velickovic2017graph,monti2017geometric,zhang2018gaan}. \emphmarginnote{Message-passing graph neural networks} construct messages between pairs of nodes from the features of each node, and aggregate them to produce updated features. Example of this include \textcite{gilmer2017neural, battaglia2018relational}.
+Examples of this include \textcite{kipf2016semi, defferrard2016convolutional, wu2019simplifying}. \emphmarginnote{Attentive graph neural networks} apply attention between nodes and their neighbours' features. Examples of this include \textcite{velickovic2017graph,monti2017geometric,zhang2018gaan}. \emphmarginnote{Message-passing graph neural networks} construct messages between pairs of nodes from the features of each node, and aggregate them to produce updated features. Example of this include \textcite{gilmer2017neural, battaglia2018relational}.
 These kinds of networks are useful for modelling structures social networks and other interactions.
 
 In addition to basic graphs, a common extension is \emphmarginnote{geometric graphs}.
@@ -233,33 +218,39 @@ Such models are useful for example in models of physics for modelling systems of
 \subsubsection{Grids}
 
 Grids are a regular lattice of points in \(n\) dimensions, where each point is connected to its neighbours.
-This can be considered a restriction of a graph, where we force it to have specific structure.
+This can be considered a restriction of a graph which has a specific structure.
 
-Most commonly in machine learning we deal with one dimension grids, representing \emphmarginnote{time series} of points, and two dimension grids representing \emphmarginnote{images}. 
+Most commonly in machine learning we deal with one dimension grids, representing \emphmarginnote{time series} of points, and two dimension grids representing \emphmarginnote[\baselineskip]{images}. 
 Higher dimension grids are also possible to represent three dimension structures and more.
 
 The primary natural group action on grids is translation.
 In each dimension of the grid, we can translate the coordinates, moving each point to the point next to it.
 This additional structure allows us to require \emphmarginnote{translation} equivariance of maps on grids, and this greatly reduces the space of linear operators to that of \emphmarginnote{discrete convolutions}.
 
-In one dimension, recurrent neural networks exploit the grid structure to process each element in the grid in turn \cite{elman1990finding,jordan1997serial}, and extensions such as long-short term memory networks \cite{hochreiter1997long,rumelhart1986learning} and gated recurrent units \cite{cho2014learning}.
+In one dimension, recurrent neural networks exploit the grid structure to process each element in the grid in turn \cite{elman1990finding,jordan1997serial}, including extensions such as long-short term memory networks \cite{hochreiter1997long,rumelhart1986learning} and gated recurrent units \cite{cho2014learning}.
 
-This structure exploited in convolutional neural networks \cite{lecun1989handwritten,fukushima1980neocognitron} and residual networks \cite{he2016deep}, along with a multitude of other works.
+This structure is also exploited in convolutional neural networks \cite{lecun1989handwritten,fukushima1980neocognitron} and residual networks \cite{he2016deep}, along with a multitude of other works.
 
-Beyond the translation symmetry of grids \cite{cohen2016group, cohen2016steerable} extend the capabilities of two dimension convolutional neural networks to be equivariant to 90\(^o\) rotations and flips of the grid as well.
+Beyond the translation symmetry of grids \cite{cohen2016group, cohen2016steerable} extend the capabilities of two dimension convolutional neural networks to be equivariant to 90\(^o\) rotations and reflections of the grid as well.
 
 % \subsubsection{Homogenous spaces}
 
 % \emphmarginnote{Homogenous spaces}
 
 \subsection{Manifolds}
-
-We now give a more in-depth look at Riemannian manifolds and geometric machine learning upon them, as they are the main setting of study in this thesis.
-The rigorous definitions of a manifold and the associated technical machinery is involved.
+\label{sec:manifold_background}
+\subsubsection{Topological manifolds}
+\begin{figure}[t]
+	\includegraphics[width=0.3\textwidth]{images/extra/torus.png}
+	\hspace{1em}
+	\includegraphics[width=0.3\textwidth]{images/extra/sphere.png}
+	\caption{Common manifolds: The torus, \(T^2\), and sphere, \(\c{S}^2\).}
+\end{figure}
+We now give a more in-depth look at Riemannian manifolds and geometric machine learning on them, as they are the main setting of study in this thesis.
 In this section we aim to give an introduction to the core concepts without delving into the details.
 A more complete introduction can be found in \cref{chp:manifolds}.
 
-A useful introductory series of textbooks on the subject are \textcite{lee2010introduction,lee2013smooth,lee2006riemannian}, along with the lecture notes \textcite{schuller2013lectures}. Other useful texts are \textcite{kolar2013natural, thorne2000gravitation}. \textcite{bronstein2021geometric} also contains a machine learning oriented introduction to Riemannian manifolds.
+A useful introductory series of textbooks on the subject are \textcite{lee2010introduction,lee2013smooth,lee2006riemannian} and the lecture notes \textcite{schuller2013lectures}. Other useful texts are \textcite{kolar2013natural, thorne2000gravitation}. \textcite{bronstein2021geometric} also contains a machine learning oriented introduction to Riemannian manifolds.
 
 % First, why should we consider manifolds as objects we want to study?
 % Riemannian manifolds provide the natural setting for many types of data, particularly scientific data.
@@ -276,27 +267,18 @@ Like other geometric priors manifolds are sets equipped with extra geometric str
 There are three main levels that we discuss.
 Topological manifolds admit topological properties such as continuous functions.
 Smooth manifolds in addition gain differentiable structure, allowing for the construction of differentiation and linear structures on the manifold.
-Finally, the addition of a Riemannian metric adds usual geometric notation like distance, angles, a
+Finally, the addition of a Riemannian metric adds usual geometric notation like distance, angles, and straight lines.
 
-\subsubsection{Topological manifolds}
-\begin{figure}[t]
-	\includegraphics[width=0.3\textwidth]{example-image}
-	\hfill
-	\includegraphics[width=0.3\textwidth]{example-image}
-	\hfill
-	\includegraphics[width=0.3\textwidth]{example-image}
-	\caption{Common manifolds: The circle, \(\c{S}^1\), the torus, \(T^2\), and sphere, \(\c{S}^2\).}
-\end{figure}
 
 A \emphmarginnote{topological space} is a tuple \((X, \topo{X})\). 
 This is a set \(X\) along with a \emph{topology} \(\topo{X}\), a collection of subsets of \(X\) closed under pairwise intersections and arbitrary unions, called \emphmarginnote{open sets}.
 Topologies allow for the definition of notions of continuity, convergence of sequences and locality, amongst others.
 Maps between topological spaces that preserve the topology are \emphmarginnote{homeomorphisms}.
 
-A \(d\)-dimension \emphmarginnote{topological manifold} is a topological space with some extra conditions.
+A \(d\)-dimension \emphmarginnote{topological manifold} is a topological space with additional conditions.
 It must \emph{locally} be homeomorphic to \(d\)-dimension Euclidean space, and it must be \emph{second-countable} and \emph{Haussdorff}. 
 These properties make the topology of the manifold non-pathological.
-Amongst other things, the Haussdorff property implies that the limits of sequences are unique, and the second countable property makes the notion of topological convergence and sequential convergence the same.
+Amongst other things, the Haussdorff property implies that the limits of sequences are unique, and the second countable property makes the notion of topological convergence and sequential convergence coincide.
 
 On topological manifolds we may define \emphmarginnote{charts}.
 Charts are tuples \((U, \phi)\), where \(U\) is an open set in \(\topo{X}\) and \(\phi: U \to \R^d\) is a map from \(U\) into an open subset of \(\R^n\).
@@ -306,7 +288,7 @@ An atlas that contains all possible charts is a \emph{maximal atlas}.
 The transition function \(\phi \circ \psi^{-1}:\R^d \to \R^d\) is a map between open sets of Euclidean space.
 
 Unlike Euclidean space, manifolds do not come with a canonical choice of coordinates.
-We can induce local coordinate systems through a chart, but since there are no canonical charts, there are no canonical coordinates.
+We can induce a system of \emphmarginnote{local coordinates} through a chart, but since there are no canonical charts, there are no canonical coordinates on manifolds.
 For this reason when working with manifolds we must define our various operations in a \emphmarginnote{coordinate-free} manner.
 This is a large part of the difficulty presented when working with manifolds.
 
@@ -319,21 +301,26 @@ The points on the manifold homeomorphic to the edge of the half-plane are known 
     \input{figures/tex/boundary_chart.tex}
     \caption{Two charts of the atlas \(\atlas{X}\) of \(X\), the unit disk, a manifold with boundary. \(\del{U, \phi}\), a chart mapping into a subset of \(\R^n\), and \(\del{V, \psi}\), a chart mapping into a subset of the upper half-space \(\mathbb{H}^2\).}
 \end{figure}
+\begin{figure}[t]
+	\includegraphics{figures/diagrams/earth.pdf}\hspace{1cm}\includegraphics{figures/diagrams/earth_flat.pdf}
+	\caption{The projection of the earth onto a flat map is the prototypical example of a chart.
+		While the Mercator projection it looks like the chart covers the whole globe, but mathematically it is in fact missing the poles and a line connecting them as we need the set to be an open one.
+	}
+\end{figure}
 
 \subsubsection{Smooth manifolds}
 
-A \emphmarginnote{smooth manifold} or \emph{differentiable manifold} \((X, \topo{X}, \atlas{X})\) is a topological manifold \((X, \topo{X})\) along with an atlas for which all the transition maps between charts are infinitly differentiable.
+A \emphmarginnote{smooth manifold} or \emph{differentiable manifold} \((X, \topo{X}, \atlas{X})\) is a topological manifold \((X, \topo{X})\) along with an atlas for which all the transition maps between charts are infinitely differentiable.
 This allows us to define notions of differentiation on the manifold.
 Maps between manifolds that preserve the smooth structure of the manifold are called \emphmarginnote{diffeomorphisms}.
 
-If we can restrict the atlas of a smooth manifold to charts where the determinant of the Jacobian is positive for all pairs.
-We call this an \emphmarginnote{orientable} manifold, as it is allows for a consistent choice of handedness of local bases on the manifold.
+If we can restrict the atlas of a smooth manifold to charts where the determinant of the Jacobian is positive for all pairs we call this an \emphmarginnote{orientable} manifold as it is allows for a consistent choice of handedness of local bases on the manifold.
 
-On smooth manifolds we can define \emphmarginnote{smooth functions} \(f\in C^\infty(X)\) from the manifold to the real numbers as functions that for any chart in the atlas, \((U, \phi)\), the composition function \(f \circ \phi^{-1}: \R^d \to \R\) is infinitely differentiable.
+On smooth manifolds we can define \emphmarginnote{smooth functions} \(f\in C^\infty(X)\) from the manifold to the real numbers as functions such that for any chart in the atlas, \((U, \phi)\), the composition function \(f \circ \phi^{-1}: \R^d \to \R\) is infinitely differentiable.
 
 The \emphmarginnote{tangent space} of a point, \(p\), on a manifold, denoted \(T_p X\), can be thought of as a local linear approximation of the manifold, like placing a plane tangent to the surface of the manifold.
 Formally it is made up of the vector space of \emph{directional derivatives} of smooth functions at the point on the manifold. 
-A tangent space is isomorphic to \(\R^d\).
+Tangent spaces are isomorphic to \(\R^d\).
 Unlike \(\R^d\) however, it does not come with a canonical choice of basis, again necessitating working in a coordinate-free manner.
 
 \begin{figure}[h]
@@ -341,13 +328,19 @@ Unlike \(\R^d\) however, it does not come with a canonical choice of basis, agai
     \caption{The tangent space of the point \(\icon{figures/diagrams/dot_red.pdf}\in \c{S}_2\) with example tangent vectors.}
 \end{figure}
 
-The \emphmarginnote{differential} of a smooth function between manifolds \(F: X\to Y\) is a linear map \(F_*: T_pX \to T_{F(p)}Y\) that connects the tangent space \(T_pX\) to \(T_{F(p)}Y\). 
-The \emphmarginnote{pushforward map} denoted \(F_*\), is another name for the differential.
-The differential of a smooth function \(f\in C^\infty(X)\) is a notion similar to the gradient of function in standard multivariate calculus. 
-
 The \emphmarginnote{cotangent space} at a point on a manifold, \(T^*_pX\) is the vector space dual of the tangent space. 
 By taking arbitrary tensor products of the tangent and cotangent spaces we can construct \emphmarginnote{tensor spaces} at each point on the manifold.
 These are denoted \(T^p_q X\) for the tensor product of \(p\) copies of tangent space and \(q\) copies of the cotangent space.
+
+The \emphmarginnote{differential} of a smooth function between manifolds \(F: X\to Y\) is a linear map \(F_*: T_pX \to T_{F(p)}Y\) that connects the tangent space \(T_pX\) to \(T_{F(p)}Y\). 
+The \emphmarginnote{pushforward map} denoted \(F_*\), is another name for the differential.
+The differential of a smooth function \(f\in C^\infty(X)\) is a notion similar to the gradient of function in standard multivariate calculus, except it maps a function to a cotangent vector, not a tangent vector as one might expect.
+
+\begin{figure}[h]
+	\input{figures/tex/differential.tex}
+	\caption{A smooth map between smooth manifolds \(F: X \to Y\) induces a natural map between the tangent spaces of \(p\) and \(F(p)\), the differential \(\d F_p\).}
+\end{figure}
+
 
 The union of all tangent spaces on the manifold, \(TX = \U_{p \in X} \cbrcolon{(p, v)}{v\in T_pX}\), combined with the projection operation \(\proj_X: (x, v) \mapsto x\), and the manifold itself gives rise to the \emphmarginnote{tangent bundle} of the manifold, \((TX, \proj_X, X)\).
 This is itself a smooth manifold with a structure inherited from \(X\).
@@ -365,15 +358,15 @@ A vector field is an example of a \emphmarginnote{section} of a fibre bundle, a 
 Stronger than this, it is an example of a \emphmarginnote{vector bundle}, a fibre bundle where the fibre is a vector space.
 
 \begin{figure}[h]
-	\includegraphics[width=0.3\textwidth]{example-image}
-	\hfill
+	% \includegraphics[width=0.3\textwidth]{example-image}
+	% \hfill
 	\includegraphics[width=0.3\textwidth]{images/kernels_on_manifolds/extra/torus.pdf}
-	\hfill
+	\hspace{1em}
 	\includegraphics[width=0.3\textwidth]{images/kernels_on_manifolds/illustration/s2_pr.pdf}
-	\caption{Examples of a vector fields on the circle, torus, and sphere.}
+	\caption{Examples of a vector fields on the torus and sphere.}
 \end{figure}
 
-From the cotangent and general tensor spaces at a point on a manifold we can construct other vector bundles, namely the \emphmarginnote{cotangent bundle} and arbitrary \emphmarginnote[\baselineskip]{tensor bundles}.
+From the cotangent and general tensor spaces at a point on a manifold we can construct other vector bundles, namely the \emphmarginnote{cotangent bundle} and arbitrary \emphmarginnote{tensor bundles}.
 Sections of these are known as \emphmarginnote[1\baselineskip]{covector fields} and \emphmarginnote[2\baselineskip]{\((p,q)\)-tensor fields} respectively.
 The spaces of these fields are denoted \(\Gamma\del{T^*X}\) and \(\Gamma\del{T^p_q X}\) respectively.
 The study of more advanced topics on manifolds involve the study of tensor fields.
@@ -389,11 +382,12 @@ The \emphmarginnote{exterior derivative} is a natural notion of differentiation 
 On smooth functions, which are \(0\)-forms, it agrees with the differential.
 
 A nowhere vanishing \(d\)-form on a \(d\)-dimension manifold is known as a \emphmarginnote{volume form}.
-The existence of these is guaranteed on orientable manifolds.
+The existence of these is guaranteed on an orientable manifolds.
 These allow us to define a notion of the volume spanned by a set of vectors.
 Using this we can define a consistent notion of \emphmarginnote{integration of smooth functions} on manifolds.
-The choice of volume form is not unique on smooth manifolds however, and different choices of volume for lead to different integrals of the same smooth function.
+The choice of volume form is not unique on smooth manifolds however, and different choices of volume form lead to different integrals of the same smooth function.
 Via the Riesz-Markov-Kakutani representation theorem we can connect a volume form to a measure-theoretic Radon measure on the manifold, a measure compatible with the topology of the manifold, known as the \emphmarginnote{volume measure}.
+This generalises the \emphmarginnote{Lebesgue measure} to manifolds.
 
 It should be noted it is possible to define a notation of integration on non-orientable manifolds also via \emphmarginnote{densities} on the manifold.
 
@@ -402,19 +396,19 @@ Riemannian manifolds add one additional point of structure over a smooth manifol
 They are a quadruple \((X, \topo{X}, \atlas{X}, g)\), containing a topology, smooth atlas and a \emph{Riemannian metric}.
 
 Intuitively a \emphmarginnote{Riemannian metric} is a smooth choice of inner product on each tangent space.
-More precisely is a non-vanishing symmetric \((0,2)\)-tensor field.
+More precisely is a smooth non-vanishing symmetric \((0,2)\)-tensor field.
 These are guaranteed to exist for all smooth manifolds.
 The metric also defines a \emphmarginnote{Riemannian norm} \(\norm{v}_g = \sqrt{g\del{v, v}}\) on the tangent space.
 
-A choice of Riemannian metric allows us to make unique a series of choices we had to make on smooth manifolds.
+A choice of Riemannian metric allows us to canonicalise a series of choices we had to make on smooth manifolds.
 Such choices as called \emphmarginnote{intrinsic choices}.
 For example, it allows us to define a unique volume form on the manifold, \(\vol_g\), giving a unique notion of integration on Riemannian manifolds.
 
 This unique choice of integration also lets us define an \emphmarginnote{inner product on smooth functions} on the manifold, \(\innerprod{f}{h}_g = \int_X f(p)h(p) \d\vol_g\) for \(f,h\in C^\infty(X)\).
-Using this inner product we can define the Hilbert space \(L^2(X)\) of \emphmarginnote{\(L^2\)-integrable functions} on the manifold as the completion of \(C^\infty(X)\) under the inner product.
+Using this inner product we can define the Hilbert space \(L^2(X)\) of \emphmarginnote[\baselineskip]{\(L^2\)-integrable functions} on the manifold as the completion of \(C^\infty(X)\) under the inner product.
 We can extend this to vector bundles on the manifold, for example for vector fields by \(\innerprod{V}{W} = \int_X g_p\del{V(p), W(p)} \d \vol_g\) for \(V, W \in \Gamma\del{TX}\).
 
-By the Riesz-Fr\'echet representation theorem, which states that every dual vector can be expressed as an inner product with a vector, we can make \emphmarginnote{tangent-cotangent isomorphism}.
+By the Riesz-Fr\'echet representation theorem, which states that every dual vector can be expressed as an inner product with a vector, we can define a \emphmarginnote{tangent-cotangent isomorphism}.
 We identify the covector \(\omega \in T_p^*X\) with the vector \(v\in T_pX\) if 
 \[\omega(w) = g(v , w) \quad \forall \; w\in T_pX.\]
 Using this we can define the \emphmarginnote{Riemannian gradient} of a smooth function \(f\in C^\infty (X)\) as the unique map \(\nabla_g: C^\infty(X) \to \Gamma(TX)\) such that 
@@ -424,8 +418,8 @@ This definition of the gradient is now more similar to the usual multivariate ca
 
 We can also define the \emphmarginnote{divergence of a vector} on a Riemannian manifold via its volume form.
 It is the unique map \(\dive_g: \Gamma\del{TX} \to C^\infty(X)\) such that
-\[\d(V \iprod \vol_g) = \dive_g \vol_g \quad \forall \; V \in \Gamma\del{TX}.\]
-The divergence is also notated as \(\nabla^*_g\), as it is the dual of the Riemannian gradient in the sense that for \(V\in \Gamma\del{TX}\) and \(f\in C^\infty(X)\) \[\innerprod{\nabla_g f}{V}_g = \innerprod{f}{\nabla^*g}_g.\]
+\[\d(V \iprod \vol_g) = \dive_g \vol_g V \quad \forall \; V \in \Gamma\del{TX}.\]
+The divergence is also notated as \(\nabla^*_g\), as it is the dual of the Riemannian gradient in the sense that for \(V\in \Gamma\del{TX}\) and \(f\in C^\infty(X)\) \[\innerprod{\nabla_g f}{V}_g = \innerprod{f}{\nabla^*_g V}_g.\]
 This definition of divergence lets us state a version of \emphmarginnote{Stoke's theorem} on a manifold with boundary.
 \[\int_X \dive_g V \d\vol_g = \int_{\partial X} g(V, N) \d\vol_g,\]
 where \(N\) is a vector field normal to the boundary.
@@ -434,9 +428,8 @@ This has the same intuitive meaning as in the Euclidean case.
 It tells us that the integral of the divergence of a vector field inside a volume is equal to the flux passing through the boundary of the volume.
 
 To define further geometric concepts on Riemannian manifolds we need another construction, a \emphmarginnote{connection}.
-A connection is a map \(\nabla: \Gamma\del{TX} \x \Gamma\del{TX} \to \Gamma\del{TX}\) and defines a differentiation of one vector field with respect to another.
+A connection is a map \(\nabla: \Gamma\del{TX} \x \Gamma\del{TX} \to \Gamma\del{TX}\) that is linear, distributive in the second argument and compatible with scaling. It defines a differentiation of one vector field with respect to another.
 As such, the operation \(\nabla(V, W)\) is usually written \(\nabla_V W\).
-It is a map that is linear, distributive in the second argument and compatible with scaling.
 
 On smooth manifolds we can choose many connections. 
 With a metric however we can make a canonical choice, the \emphmarginnote{Levi-Civita connection}, that is compatible with the metric.
@@ -467,7 +460,7 @@ A \emphmarginnote{geodesic} generalises the notion of straight lines to manifold
 We say that a curve is a geodesic if its velocity is parallel to the curve, that is \(\nabla_{\gamma'} \gamma' = 0\).
 We define the \emphmarginnote{length of a curve} by the integral \(L(\gamma) = \int_I \norm{\gamma'(t)}_g \d t\).
 A geodesic passing through two points on a manifold is provably the shortest path between those two points.
-This allows us to define a \emphmarginnote{geodesics distance} on the manifold as \(\d_g(p, q) = \min L(\gamma), \; \gamma(0) = p, \; \gamma(1) = q\).
+This allows us to define a \emphmarginnote{geodesics distance} on the manifold as \[\d_g(p, q) = \arg\min_{\gamma} L(\gamma), \; s.t. \; \gamma(0) = p, \; \gamma(1) = q, \; \gamma:\sbr{0, 1} \to \c{M}.\]
 
 The \emphmarginnote{exponential map} at a point is a map \(\exp: TX \to X\) that maps \((p, v) \mapsto \gamma_{p,v}(1)\) where \(\gamma_{p,v}\) is the unique geodesic with \(\gamma(0) = p\) and \(\gamma'(0) = v\).
 The inverse of the exponential map is the \emphmarginnote{logarithm map}, \(\log: X \x X \to TX\) that maps \((p, q) \mapsto v\) such that \(\exp(p, v) = q\).
@@ -478,6 +471,17 @@ We say that the parallel transport of \(v\) along \(\gamma\) is simply \(V(\gamm
 Note that parallel transport is entirely dependent on the path, and as such there is no canonical way to compare tangent vectors in different tangent spaces.
 The norm of a vector is preserved by parallel transport.
 If we parallel transport two tangent vectors along the same path, the Riemannian inner product of them is preserved along the path also.
+
+On manifolds with boundary we can define a \emphmarginnote{boundary intersection\label{def:boundary_intersection}} operation that defines when a geodesic will hit the boundary of the manifold.
+For a point \(p\in X\) and a unit tangent vector \(v\in T_pX\) we can define this as the function \(i: X\x TX \to \R^+\) such that 
+\[
+	i(p, \v{v}) = \arg\min_{t\in\R^+} \exp_p(t\v{v}) \in \partial X.
+\]
+
+Finally, can define a notion of \emphmarginnote{reflection of tangent vectors\label{def:manifold_reflection}} in a plane.
+For a point \(p\in X\), a vector to be reflected \(v\in T_pX\), and a unit vector normal to the plane of reflection \(n\in T_pX\), we can define the reflection of \(v\) by the plane of \(n\) as
+\[v - 2 g(v, n) n.\]
+This is particularly useful for reflecting tangent vectors on the boundary of a manifold.
 
 \subsubsection{The Laplace-Beltrami operator}
 
@@ -497,6 +501,7 @@ This can be extended further to \(L^2\)-integrable functions on the manifold, an
 Since these are Hilbert spaces, we can leverage spectral theory to decompose functions in the Hilbert space over eigenvalues and eigenfunctions of \(-\Delta_g\).
 In particular for compact manifolds, the spectrum of \(-\Delta_g\) is countable.
 \begin{theorem}[Strun-Liouville decomposition]
+	\label{thm:strum-liouville}
 	Let \((X, g)\) be a compact manifold.
 	Then there exists an orthonormal basis of \(L^2(X)\), \(f_n\in L^2(X)\), \(n\in \Z^+\), such that
 	\[-\Delta_g f_n = \lambda_n\]
@@ -509,7 +514,7 @@ This means we can write any function \(f\in L^2(X)\) on a compact manifold as th
 \(f = \sum_{i=1}^\infty \innerprod{f}{f_n}_g f_n.\)
 This basis expansion can be truncated to a finite length
 \(f_N \approx \sum_{i=1}^N \innerprod{f}{f_n}_g f_n.\)
-The error of this basis truncation can be bounded 
+The error of this basis truncation can be bounded.
 \begin{theorem}[Bounded error of the Strum-Liouville decomposition]
 	Let \((X, g)\) be a compact Riemannian manifold, and \((f_n, \lambda_n)_{n=0}^\infty\) be the eigen-spectrum of \(-\Delta_g\).
 	Let \(f \in L^2(X)\).
@@ -530,7 +535,7 @@ For two Riemannian manifolds \((X, g^x)\) and \((Y, g^y)\) and a map between the
 \[F^*g^y_p (v, w) = g^y_{F(p)}(\d F_p(v), \d F_p(w))\quad \forall \; (p, v), (p, w) \in TX.\]
 We call a map \(F\) such that \(g^x = F^*g^y\) a \emphmarginnote{Riemannian isometry}.
 
-Such isometries and particularly the group of isometries of a manifold onto itself, are key symmetries of study when producing geometry-aware deep learning models.
+Such isometries and particularly the group of isometries of a manifold, denoted \(\isomg_g(X)\), onto itself, are key symmetries of study when producing geometry-aware deep learning models.
 
 \subsubsection{The Nash embedding theorem}
 \begin{figure}[h]
@@ -540,20 +545,30 @@ Such isometries and particularly the group of isometries of a manifold onto itse
 	\caption{A sphere isometrically embedded into Euclidean space. An ambient Euclidean vector field (left) projected onto the surface of the sphere (right).}
 \end{figure}
 
-The Nash embedding theorem is a cornerstone result of Riemannian geometry.
-It tells us that we can take any Riemannian manifold and include it inside Euclidean space of dimension \(\c{O}(d^2)\) in a way such that the pullback of the Euclidean metric on the embedded manifold coincides with the metric of the original manifold \cite{nash1956imbedding}.
+\begin{theorem}[Nash embedding theorems]
+	Given a \(d\)-dimension smooth Riemannian manifold \((X, g)\), there exists a smooth embedding \(F:X \to \R^n\) such that
+	\[
+		g = F^* g_{\R^n},	
+	\]
+	where \(g_{\R^n}\) is the standard Euclidean metric, for \(n \leq \frac{d(d+1)(3d+11)}{2}\).
+\end{theorem}
+\begin{proof}
+	\cite{nash1956imbedding}
+\end{proof}
 
-Usually from a technical point of view this is avoided as there is no canonical choice of the embedding. 
+The Nash embedding theorem is a cornerstone result of Riemannian geometry.
+It allows us to take any manifold and embed it into Euclidean space while preserving the geometric properties of the manifold.
+
+From a technical point of view embeddings are avoided as there is no canonical choice. 
 However, it is useful in a few ways in machine learning.
-Firstly for parametrising machine learning models, it provides a global way to specify inputs to a model, and therefore a way to parametrise globally smooth functions on the manifold.
+
+Firstly for smoothly parametrising machine learning models, it provides a global way to smoothly specify the inputs to a function on a manifold via Euclidean coordinates, real numbers, and therefore a way to parametrise globally smooth functions on the manifold in a computer.
 
 It also allows for an easy way to specify smooth vector fields on manifolds.
-We cannot express a vector field on a manifold as a function \(V:X \to \R^d\).
-We can however do this for Euclidean space.
-By embedding a manifold into Euclidean space, we can define an ambient Euclidean vector field \(V:\R^d\to \R^d\) with a typical deep learning method and project it onto the manifold.
+We cannot express a vector field on a manifold as a function \(V:X \to \R^d\), see \cref{def:projected_vector_field}.
 
 Finally, it lets us compute differential operators on parametrised functions more easily using automatic differentiation.
-For example, for a vector field on an isometrically embedded manifold the ambient Euclidean divergence coincides with the intrinsic divergence \cite{rozen2021moser}
+For example, for a vector field on an isometrically embedded manifold the ambient Euclidean divergence coincides with the intrinsic divergence \cite{rozen2021moser}.
 
 % \begin{theorem}[Nash embedding theorem]
 % 	Let \((X, g)\) be an \(n\)-dimension Riemannian manifold.
@@ -563,51 +578,52 @@ For example, for a vector field on an isometrically embedded manifold the ambien
 % 	\textcite{nash1956imbedding}.
 % \end{proof}
 
-\subsubsection{Geometric deep learning on manifolds}
+\subsection{Geometric deep learning on manifolds}
 
-There are several distinct challenges when making deep learning models that act on manifolds.
+There are several distinct challenges when constructing deep learning models that act on manifolds.
 
 Firstly, due to the lack of a canonical choice of coordinates for the manifold and for the tangent space, it is key to develop models that are independent of a specific parametrisation of the manifold and tangent space.
 
-Second is that we may want a method to respect the group of self-isomorphisms of a Riemannian manifold.
+Secondly, we may want a method to respect the group of self-isomorphisms of a Riemannian manifold.
 These symmetries are typically not global symmetries for most manifolds, and a large class of real-world manifolds do not have any symmetries.
 
 Lastly, and most rarely, we may wish to develop methods that are invariant to \emph{diffeomorphisms} of manifolds, ignoring the metric structure and looking simply at the shape of the manifold.
 
 Most of the architectures developed for manifolds deal with signals supported on the manifold, scalar functions on the manifold or sections of tensor bundles.
-\textcite{weiler2023equivariant} treats this topic in great detail, with a comprehensive development of these methods, and a deep coverage and unification of the literature on this topic.
+These approaches are based on manifold-aware convolutions.
+\textcite{weiler2023equivariant} treats this topic in great detail, with a comprehensive development of these methods, and a deep coverage of the literature on this topic.
 
-There is some literature on methods for learning functions of the manifold itself.
+There is also some literature on methods for learning functions of the manifold itself.
 Methods have been developed for functions of Lie groups \cite{huang2017deep}, Grassman manifolds \cite{huang2018building,zhang2018grassmannian}, and general manifolds \cite{fang2023intrinsic}.
-There is also significant literature for learning functions on meshes, discretised two dimension manifolds, for the purpose of representing textures \cite{koestler2022intrinsic, baatz2022nerf, chibane2020implicit, oechsle2019texture} and displacement maps \cite{yifan2022geometryconsistentneuralshaperepresentation}
+There is also significant literature for learning functions on meshes, discretised two dimension manifolds, for the purpose of representing textures \cite{koestler2022intrinsic, baatz2022nerf, chibane2020implicit, oechsle2019texture} and displacement maps \cite{yifan2022geometryconsistentneuralshaperepresentation}.
 
 
 \section{Deep generative modelling}
-
-The strategies in the previous section show how to construct neural networks that preserve certain types of structure and act on geometric spaces.
-We now turn to looking at one application of such networks, the task of \emphmarginnote{deep generative modelling}.
+\label{sec:deep_generative_modelling_background}
+% The strategies in the previous section show how to construct neural networks that preserve certain types of structure and act on geometric spaces.
+% We now turn to looking at one application of such networks, the task of \emphmarginnote{deep generative modelling}.
 
 Deep generative modelling aims to combine the flexibility of deep learning with classical density estimation.
 The aim is to overcome the rigidity of classical methods such as \emphmarginnote{kernel density estimation} \cite{rosenblatt1956remarks,parzen1962estimation}, and to overcome the curse of dimensionality present in these estimation problems.
 
-The most common application of deep generative models include images \cite{TODO}, text \cite{TODO}, and video \cite{TODO}, and these application spaces are beginning to see widespread deployment in the real world.
+The most common application of deep generative models include images \cite{saharia2022photorealistic,pmlr-v139-ramesh21a}, text \cite{team2023gemini,openai2024gpt4technicalreport}, and video \cite{videoworldsimulators2024}, and these application spaces are beginning to see widespread deployment in the real world.
 
 In addition, there has been recently strong interest in applying deep generative modelling to scientific problems.
-Applications have arisen in molecular physics \cite{TODO}, particle physics \cite{TODO}, quantum mechanics \cite{TODO}, statistical mechanics \cite{TODO}, protein modelling \cite{TODO} and material science \cite{TODO}.
+Applications have arisen in molecular physics \cite{zheng2023predictingequilibriumdistributionsmolecular,klein2024timewarp}, particle physics \cite{louppe2019adversarial,paganini2018accelerating}, quantum mechanics \cite{cheng2024highlyaccuraterealspaceelectron,PhysRevResearch.2.033429,doi:10.1126/science.adn0137}, statistical mechanics \cite{noe2019boltzmann}, protein modelling \cite{abramson2024accurate,krishna2024generalized}.
 
-At a high level, the deep generative modelling task has access to a series of samples \(\cbr{x_i}_{i=1}^n,\; x_i \sim p_{\text{data}}\) from some ground truth data distribution, to which we have no access.
-We aim to learn a parametrised model, \(q_\theta\), which is close to \(p_{\text{data}}\) in some sense.
+At a high level, the deep generative modelling task has access to a series of samples \(\cbr{x_i}_{i=1}^n,\; x_i \sim \pdata\) from some ground truth data distribution, to which we have no access.
+We aim to learn a parametrised model, \(q_\theta\), which is close to \(\pdata\) in some sense.
 This closeness is measured by a statistical divergence, \(\c{D}\), and the goal is therefore
-\[\arg \min_{\theta \in \Theta} \c{D}\del{p_{\text{data}}\from q_\theta }.\]
-Since we do not have access to \(p_{\text{data}}\), this is approximated by 
-\[p_{\text{data}} \approx {\frac{1}{n}\sum_{i=1}^n \delta_{x_i}},\]
+\[\arg \min_{\theta \in \Theta} \c{D}\del{\pdata\from q_\theta }.\]
+Since we do not have access to \(\pdata\), this is approximated by the \emphmarginnote{empirical distribution}
+\[\pdata \approx {\frac{1}{n}\sum_{i=1}^n \delta_{x_i}},\]
 replacing the data distribution by a mix of delta distributions of the data we have available.
 Typical statistical divergences include the Kullback-Leibler divergence \cite{kullback1951information} (which can be seen as performing maximum likelihood inference), f-divergences \cite{renyi1961measures}, the Wasserstein distance \cite{kantorovich1960mathematical}, maximum mean
 discrepancy \cite{gretton2012kernel} and integral probability metrics \cite{muller1997integral}.
 
-Typically, in generative modelling we want to be able to generate new samples from this distribution and evaluate the likelihood of samples under our model.
+Typically, we want to be able to generate new samples from this distribution and evaluate the likelihood of samples under our model.
 In addition, we may want to perform \emphmarginnote{conditional generation} from our models.
-If our data distribution is a joint distribution \(p_{\text{data}}(x, y)\) where \(x\) is some high dimension observation such as an image, and \(y\) is a low dimension label or summary of \(x\), such as a text description, then we may want our models to be able to generate samples from a distribution \(q_\theta(x | y)\), trying to match as closely as possible \(p_{\text{data}}(x | y)\).
+If our data distribution is a joint distribution \(\pdata(x, y)\) where \(x\) is some high dimension observation such as an image, and \(y\) is a low dimension label or summary of \(x\), such as a text description, then we may want our models to be able to generate samples from a distribution \(q_\theta(x | Y=y)\), trying to match as closely as possible \(\pdata(x | Y=y)\).
 
 There exist a wide variety of deep generative models.
 Almost all of them exploit a strategy of taking random noise in some base space, \(z\sim p_{\text{prior}}\) and transforming it through some function to produce samples.
@@ -616,118 +632,131 @@ These can be categorised into a series of main methods.
 \emphmarginnote{Generative adversarial networks} \cite{goodfellow2014generative} train two models, one generator \(G\) to create samples from noise, and one discriminator \(D\) which tries to distinguish between model samples and real data samples. 
 The two models are jointly trained by minimising 
 \[
-	\min_G \max_D \E_{x\sim p_{\text{data}}} \sbr{\log D(x)} + \E_{z\sim p_{\text{prior}}} \sbr{\log(1- D(G(z)))},
+	\min_G \max_D \E_{x\sim \pdata} \sbr{\log D(x)} + \E_{z\sim p_{\text{prior}}} \sbr{\log(1- D(G(z)))},
 \]
 where \(p_z\) is typically Gaussian noise.
 These models are known to be unstable to train \cite{wiatrak2019stabilizing} however, and do not allow for likelihood evaluations.
 % \emphmarginnote{Autoregressive models} \cite{neal1992connectionist, bengio1999modeling, larochelle2011neural} are applicable to sequence data, \(x_i = (x_{i, 1}, x_{i, 2}, ...)\).
 % They break the distribution modelled down into a 
 
-\emphmarginnote{Variational autoencoders} \cite{kingma2013auto} apply a probabilistic perspective to autoencoders \cite{rumelhart1986learning}.
+\emphmarginnote{Variational autoencoders} \cite{kingma2013auto,rezende2014stochastic} apply a probabilistic perspective to autoencoders \cite{rumelhart1986learning}.
 The data is assumed to be the marginal of some joint distribution \(p_{data}(x) \int p_{\text{joint}} (x, z) \d z\), where again for a sample \(z_i\) is a low dimension summary of \(x_i\).
-A prior is placed over the latent space, \(p_\text{prior}(z)\).
+A prior is placed over the latent space, \(\pprior(z)\).
 The decoder, \(q_\theta(x \given z)\) attempts to model the conditional distribution \(p_{decoder}\del{x \given z}\), such that \(q_\theta(x \given z) p_{\text{prior}} (z) = p_{\text{joint}}(x, z)\).
-The encoder, \(q_\phi(z \given x)\) aims to match the reverse distribution, \(p_{\text{encoder}}(z | x)\) so that \(q_\phi(z \given x) p_{\text{data}} (x) = p_{\text{joint}}(x, z)\).
+The encoder, \(q_\phi(z \given x)\) aims to match the reverse distribution, \(p_{\text{encoder}}(z | x)\) so that \(q_\phi(z \given x) \pdata (x) = p_{\text{joint}}(x, z)\).
 One observed drawback of variational autoencoders is that they tend to produce fuzzy or blurry samples, particularly in the image domain.
 
-\emphmarginnote{Normalising flows} \cite{rezende15variational,tabak2010density, tabak2013family} exploit the fact that for an invertible function \(f\) and a distribution \(p_{\text{prior}} (z)\), the pushforward of this distribution through the function \(f\), given by sampling \(p_{\text{prior}}\) and passing the samples through \(f\) to give \(x = f(z)\), is given by 
-\[ \log p_{\text{model}}(x) = \log p_{\text{prior}} (f^{-1}(x)) + \log \abs{\det\od{f^{-1}(x)}{x}}.\]
-\(f\) is designed to be parametrisable, invertible, and have fast to compute \(\log \abs{\det\od{f^{-1}(x)}{x}}\), we can compute the likelihood of the data under this model, and train it via maximum likelihood.
+\emphmarginnote{Normalising flows} \cite{rezende15variational,tabak2010density, tabak2013family} exploit the fact that for an invertible function \(f\) and a distribution \(p_{\text{prior}} (z)\), the density of the pushforward of \(p_{\text{prior}} (z)\) through \(f\), \(\pmodel = f^* p_{\text{prior}}\), is given by 
+\[ \log \pmodel(x) = \log p_{\text{prior}} (f^{-1}(x)) + \log \abs{\det\od{f^{-1}(x)}{x}}.\]
+\(f\) is designed to be parametrisable, invertible, and have a fast to compute the log-det-Jacobian.
+With this we can compute the likelihood of the data under this model quickly and therefore train it via maximum likelihood.
 The requirement that \(f\) be invertible places significant difficulty on designing flexible \(f\).
-To add complexity to the model, we can stack further transformations on top of one another.
+To add complexity to the model, we can stack multiple transformations on top of one another.
 However, this can be increasingly expensive and normalising flows can suffer from expressiveness issues and poor training dynamics.
 
-\emphmarginnote{Continuous normalising flows} \cite{chen2018neural,grathwohl2019scalable} are an extension of normalising flows that replace the transformation \(f\) with a neural ordinary differential equation \cite{chen2018neural}.
+\emphmarginnote{Continuous normalising flows} \cite{chen2018neural,grathwohl2019scalable} are an extension of normalising flows that replace the transformation \(f\) with a neural ordinary differential equation \cite{chen2018neural}, an ordinary differential equation with a vector field parametrised by a neural network.
 This creates a model that continuously deforms noise into samples from the model.
 They are also trained by maximum likelihood, and requires the computation of the change in likelihood induced by an ordinary differential equation.
 This step can be expensive, and so continuous normalising flows can struggle to scale to higher dimensions.
 
-\emphmarginnote{Diffusion models} or \emphmarginnote{score-based models} \cite{song2019generative,sohl2015deep, ho2020denoising} are a class of model that define a forward noising process that erodes \(p_{\text{data}}\) into a specified \(p_{\text{prior}}\) under a specific nosing process.
-These models then learn to reverse this noising process into a denoising process in order to generate samples from these models.
+\emphmarginnote{Diffusion models} or \emphmarginnote[\baselineskip]{score-based models} \cite{song2019generative,sohl2015deep, ho2020denoising} are a class of model that define a forward noising process that corrupts samples from \(\pdata\) under a specific nosing process.
+These models then learn to reverse this noising process through a denoising process in order to generate samples.
 We will explore these models in more detail in \cref{sec:score_based_models_background}.
-Diffusion models have proved to be very effective models.
+Diffusion models have proven to be very effective.
 They are fast to train, produce sharp, high quality samples, and place very few restrictions on the types of neural networks that can be used to produce them.
 One drawback is that computing likelihoods under these models is either impossible, or very slow and non-exact.
-
-Since they form the major study of this thesis, we now take some time to study in depth score-based generative models.
 
 
 \subsection{Score-Based Generative Modelling}
 \label{sec:score_based_models_background}
+\begin{figure*}
+	\input{figures/tex/diffusion_model.tex}
+	\caption{
+		An illustrative diagram of the main concepts of a diffusion model. \emph{Top:} Histogram plots of the path density of the evolution of the stochastic differential equations, with example trajectories. \emph{Bottom}: Time-marginal densities, \(p_t^\vsra{}\) and \(p_t^\vsla{}\) of the path densities. \emph{Left:} The forward noising stochastic differential equation. \emph{Right:} The reverse denoising  stochastic differential equation.\\\\The forward noising process is initialised with \(p_0^\vsra{} = \pdata = \tfrac{1}{2}\c{N}(3, 1^2) + \tfrac{1}{2}\c{N}(-3, 0.5^3)\) and converges to \(p_1^\vsra{}=\pdata = \c{N}(0, 1^2)\) via the stochastic differential equation \(\d\v{X}_t^\vsra{} = -\v{X}_t^\vsra{}  \d t + \sqrt{2} \d\v{B}_t\) over the time interval \(\sbr{0,1 }\).
+		The reverse denoising process is initialised with \(p_0^\vsla{} = p_1^\vsra{} = \pprior\) and converges to \(p_1^\vsla{} = p_0^\vsra{} = \pdata\) via the stochastic differential equation \(\d\v{X}_t^\vsla{} = \sbr{\v{X}_t^\vsla{} + {2} \nabla \log p_{1-t}^\vsra{}(\v{X}_t^\vsla{})}\d t + \sqrt{2} \d\v{B}_t \) over the time interval \(\sbr{0,1 }\). Note how \(p_t^\vsra{} = p_{1-t}^\vsla{}\).
+	}
+	\label{fig:diffusion_model_illustration}
+\end{figure*}
 
 In this section we give a presentation of the score-based generative modelling framework.
 
-A technical introduction to measure theory, stochastic differential equations and various tools useful in the study of score-based models can be found in \cref{chp:sdes}.
-Here we focus on a high level presentation.
 There are two perspectives on diffusion models; discrete-time diffusion models \parencite{sohl2015deep,ho2020denoising} and continuous-time diffusion models \parencite{song2020score}.
-These are related, and the discrete-time models can be seen as a discretisation of the continuous-time.
+These are related, and the discrete-time models can be seen as a discretisation of the continuous-time framework.
 As such, this presentation will focus only on the continuous-time version.
 Throughout we will work with a state space of dimension \(d\), such that a data point is an element \(\v{X}\in \R^d\).
+
+The core of diffusion models are \emphmarginnote{stochastic differential equations}.
+These are random variables, denoted for example \(\del{\v{X}_t}_{t\in \sbr{0, T}}\), that place a distribution on time-indexed paths through a state space.
+They are driven by an instantaneous change formula, in a common form given by
+\[
+	\d\v{X}_t = \v{b}(t, \v{X}_t) \d t + \v{\Sigma}(t, \v{X}_t) \v{B}_t	
+\]
+where \(\v{b}: \R\x\R^d \to \R^d\) is a \emphmarginnote{drift term}, like an ordinary differential equation, and \(\v{\Sigma}(t, \v{X}_t): \R\x\R^d \to \R^{d\x d}\) is a \emphmarginnote{diffusion term} controlling the instantaneous noise added into the stochastic differential equation.
+A technical introduction to measure theory, stochastic differential equations and various tools useful in the study of score-based models can be found in \cref{chp:sdes}.
 
 % Score-based models are strongly related to other classes of deep generative models.
 % They follow a common paradigm of taking simple to sample noise, typically a multi-dimension Gaussian random variable, and through a series of transformations try to turn this into the distribution of interest.
 % % Most similar are normalising flows, in particular there are deep connections between diffusion models and continuous normalsing flows.
 
-% The main problem setting of score-based models is that we start with a density \(p_{\text{data}}\) that we wish to learn to sample from.
+% The main problem setting of score-based models is that we start with a density \(\pdata\) that we wish to learn to sample from.
 % We assume that we either have a set of samples and cannot access more, or that it is expensive to do so, and that we have no access to the likelihood or an unnormalised version of this.
-% Our goal is to have an approximate model of \(p_{\text{data}}\) from which we can sample from and compute the likelihood for samples under the model from.
+% Our goal is to have an approximate model of \(\pdata\) from which we can sample from and compute the likelihood for samples under the model from.
 
 A summary of the diffusion modelling strategy is:
-\1 First we evolve \(p_{\text{data}}\) under a stochastic differential equation, which we shall term the noising of \emphmarginnote{forward stochastic differential equation}.
+\1 First we evolve \(\pdata\) under a stochastic differential equation, which we shall term the noising or \emphmarginnote{forward stochastic differential equation}.
 % We will from now denote this stochastic differential equation as \(\del{\Xf_t}_{t\in\sbr{0, T}}\), denoting the forward direction.
-% This stochastic differential equations is given by \[\d \Xf_t= \v{b}(\Xf_t, t) \d t + \v{\sigma}(\Xf_t, t) \d \v{B}_t \quad \Xf_0 \sim p_{\text{data}}.\]
-We require that this stochastic differential equation is that at large times converges to a known reference distribution, \(p_{\text{ref}}\).
+% This stochastic differential equations is given by \[\d \Xf_t= \v{b}(\Xf_t, t) \d t + \v{\sigma}(\Xf_t, t) \d \v{B}_t \quad \Xf_0 \sim \pdata.\]
+We require that this stochastic differential equation converges to a known reference distribution, \(\pprior\) at large time scales.
 % We will evolve this SDE up to a chosen time \(T\) which is large enough for such convergence to occur.
 % We denote the density of this stochastic differential equation at time \(t\) as \(p_t\).
-\2 Using a time reversal result, we can obtain a stochastic differential equation that has the same sample paths as our forward noising stochastic differential equation, but in the reverse direction.
+\2 Using a time reversal result, we can obtain a stochastic differential equation that has the same sample paths as our forward noising stochastic differential equation, but reversed in time.
 % We shall term this the reverse or denoising SDE, and we will start it from time \(T\) in the forward SDE from the distribution of \(\Xf_T\) and run it backwards.
 % We will denote this reverse stochastic differential equation as \(\del{\Xb_t}_{t\in\sbr{0, T}}\). %to emphasise it is an stochastic differential equation with the same paths but reversed in time.
 % The goal of this is to have \(\Xb_t\) equal in distribution to \(\Xf_{T-t}\).
 % While this makes it necessary to track if one is talking about the forward or backward stochastic differential equation to determine when a given time refers to, it means one does not have to deal with Brownian motions going backward in time, which can be more confusing.
 % This reverse stochastic differential equation then has the equation \[\d \Xb_t = \sbr{-\v{b}(\Xb_t, t) + \nabla_{\Xb_t} \log p_{T-t}(\Xb_t) }\d t + + \v{\sigma}(\Xb_t, t) \d \v{B}_t.\]
 % Note the time reindexing of time in the term \(p_{T-t}\) as the density of the reverse stochastic differential equation at time \(t\) is the same as the density of the forward stochastic differential equation at time \(T-t\).
-Using this denoising or \emphmarginnote{reverse stochastic differential equation} we can map from \(p_{\text{ref}}\) to \(p_{\text{data}}\), giving a generative model.
-\3 All the terms in the reverse stochastic differential equation are known, except for the "score" term.%, \(\nabla_{\Xb_t} \log p_{T-t}(\Xb_t)\).
+Using this denoising or \emphmarginnote{reverse stochastic differential equation} we can create a map from \(\pprior\) to \(\pdata\), giving a generative model.
+\3 All the terms in the reverse stochastic differential equation are known, except for the "score" term, \(\nabla \log p_t\), of the stochastic differential equation.
 We therefore need a method to approximate or learn this term.
 Fortunately, with the large \emphmarginnote{score matching} toolbox we have available to us there are several options for learning this score.
 \4 Using the standard toolkit of \emphmarginnote{discrete sampling schemes} for stochastic differential equation we can sample the reverse stochastic differential equation in practise.
-\5 Using the connection between a stochastic differential equation and an associated ordinary differential equation we can evaluate the \emphmarginnote{likelihood of a sample} under the model, using standard ODE solving toolkits.
+\5 Using the connection between a stochastic differential equation and an associated ordinary differential equations we can evaluate the \emphmarginnote{likelihood of a sample} under the model, using standard ordinary differential equation solving toolkits.
 \0
 
+See \cref{fig:diffusion_model_illustration} for an illustration of this summary.
 Let us in detail look at each of these steps. 
 
 \subsubsection{The forward noising stochastic differential equation}
 
-The first stage of a diffusion model is to corrupt the data towards a known and tractable noise distribution, \(p_{\text{ref}}\).
-The point of this step is to define a path between \(p_{\text{data}}\) and \(p_{\text{ref}}\), with the intent later on of following this path in the reverse direction.
+The first stage of a diffusion model is to corrupt the data towards a known and tractable noise distribution, \(\pprior\).
+The point of this step is to define a path between \(\pdata\) and \(\pprior\), with the intent later on of following this path in the reverse direction.
 % If we make our choices right, this will be true up to a small error.
 
 \emphhypermargin{Langevin dynamics}{sec:langevin_dynamics} are a type of stochastic differential equation.
-If we have access to a density of the form \(p(x) \propto \exp(-U(x))\), then the stochastic differential equation \[\d \v{X}_t = \nabla_{\v{X}} U(\v{X}) \d t + \sqrt{2} \d \v{B}_t\] will in the limit of infinite time converge to \(p\), regardless of the distribution we initialise the stochastic differential equation with.
+If we have access to a density of the form \(p(x) \propto \exp(-U(x))\), then the stochastic differential equation \[\d \v{X}_t = \nabla U(\v{X}) \d t + \sqrt{2} \d \v{B}_t\] will in the limit of infinite time converge to \(p\), regardless of the distribution we initialise the stochastic differential equation with.
 
-We can also rescale this stochastic differential equation by a time dependant noise factor, \(\beta({t})\), and obtain the same result, giving a stochastic differential equation of the form \[\d \v{X}_t = \beta(t) \nabla_{\v{X}} U(\v{X}) \d t + \sqrt{2 \beta(t)} \d \v{B}_t.\]
-This time rescaling can be very useful in diffusion models in optimising the efficiency of the discretised model rollouts and focusing the majority of the learning power of the score network on important regions of the stochastic differential equation.
+We can also rescale this stochastic differential equation by a time dependant noise factor, \(\beta({t})\), and obtain the same result, giving a stochastic differential equation of the form \[\d \v{X}_t = \beta(t) \nabla U(\v{X}) \d t + \sqrt{2 \beta(t)} \d \v{B}_t.\]
+This time rescaling can be very useful in diffusion models for optimising the efficiency of the discretised model rollouts and focusing the majority of the learning power of the score network on important regions of the stochastic differential equation.
 
 % While using Langevin dynamics to sample from complex distribution can be very slow to mix. 
 % Fourtunatly the convergence to a simple unimodel distribution is very fast.
-This gives us an option for our stochastic differential equation that converges for a known distribution.
+Langevin dynamics gives us an option for our stochastic differential equation that converges to a known distribution.
 Choosing the unit Gaussian as our reference distribution, \(p_T(\v{X}) \propto \exp\del{-\tfrac{1}{2} \v{X}^T \v{X}}\), we arrive at \(U(\v{X}) = -\v{X}\), and thus a forward noising stochastic differential equation of the form \[\d \Xf_t = -\Xf_t\d t + \sqrt{2} \d \v{B}_t .\]
-This is the well known \emphmarginnote{Ornstein–Uhlenbeck process}, and this converges exponentially quickly towards the unit Gaussian.
-This is an ideal noising stochastic differential equation given the exponential convergence and the tractability of the density and of sampling of the Gaussian reference distribution.
+This is the well known \emphmarginnote{Ornstein–Uhlenbeck process} which converges exponentially quickly towards the unit Gaussian.
 In the literature this is typically known as the \emphmarginnote{variance preserving stochastic differential equation} or "VP-SDE".
-A property that will be useful later is that the transition density in the forward direction, \(p_{s|t}\delvert{\Xf_s}{\Xf_t}, \; s > t\) has analytic density and sampling.
-For an stochastic differential equation with noising schedule \(\beta(t)\) this is given by \[ p_{s|t}\delvert{\v{X}_s}{\v{X}_t} = \c{N}\delvert{\v{X}_s}{e^{-{\int_t^s \beta(\tau)\d\tau}} \v{X}_t, \del{1-e^{-2{\int_t^s \beta(\tau)\d\tau}}}\v{I}}\]
+A property that will be useful later is that the transition density in the forward direction, \(p_{s|t}\delvert{\v{X}_s}{\v{X}_t}, \; s > t\) has analytic density and sampling.
+For a stochastic differential equation with noising schedule \(\beta(t)\) this is given by \[ p_{s|t}\delvert{\v{X}_s}{\v{X}_t} = \c{N}\delvert{\v{X}_s}{e^{-{\int_t^s \beta(\tau)\d\tau}} \v{X}_t, \del{1-e^{-2{\int_t^s \beta(\tau)\d\tau}}}\v{I}}\]
 
 Another other common alternative is the \emphmarginnote{variance exploding stochastic differential equation} or "VE-SDE".
 In this we simply apply Brownian motion as the noising stochastic differential equation.
-This will not converge to a stable distribution.
-However, the transition density of this stochastic differential equation is given by \[\textstyle p_{s|t}\delvert{\Xf_s}{\Xf_t} = \c{N}\delvert{\Xf_s}{\Xf_t, \sqrt{{\int_t^s} \beta(\tau)\d\tau}\v{I}}.\]
-The variance of this will continue to grow with time and eventually the variance of this transition density will dominate the variance of \(p_{\text{data}}\).
-The distribution \[p_T(\Xf_t) = \int p_{T|0}\delvert{\Xf_T}{\Xf_0} p(\Xf_0) \d \Xf_0\] will therefore be well approximated by \(\c{N}\delvert{\Xf_T}{\v{0}, \sqrt{{\int_t^s} \beta(\tau)\d\tau}\v{I}}\), and we can use this as the reference distribution.
+The transition density of this stochastic differential equation is given by \[\textstyle p_{s|t}\delvert{\v{X}_s}{\v{X}_t} = \c{N}\delvert{\v{X}_s}{\v{X}_t, {{\int_t^s} \beta(\tau)\d\tau}\v{I}}.\]
+The variance of this will continue to grow with time and eventually the variance of this transition density will dominate the variance of \(\pdata\).
+The distribution \[p_T(\v{X}_T) = \int p_{T|0}\delvert{\v{X}_T}{\v{X}_0} p(\v{X}_0) \d \v{X}_0\] will therefore be well approximated by \(\c{N}\delvert{\v{X}_T}{\v{0}, {{\int_t^s} \beta(\tau)\d\tau}\v{I}}\), and we can use this as the reference distribution.
 
 A final alternative way to choose the forward stochastic differential equation is to start with the forward transition density and work backwards to the coefficients which we will call the \emphmarginnote{\(\alpha-\sigma\) parametrisation}.
-We restrict ourselves to linear Gaussian transition densities, those of the form 
-\[p_{t|0}(x_t | x_0) = \c{N}\del{x_t; \alpha_t x_0, \sigma^2_t}.\]
+We restrict ourselves to stochastic differential equations with transition densities of the form
+\[p_{t|0}(\v{X}_t | \v{X}_0) = \c{N}\del{\v{X}_t; \alpha_t \v{X}_0, \sigma^2_t}.\]
 Let \(\alpha_t:\R\to \R\) be some differentiable mean function, with the restriction that \(\alpha_0=1\).
 Let \(\sigma_t:\R\to\R\) be some differentiable noise function, with the restriction that \(\sigma_0=0\).
 Then the stochastic differential equation that has this forward transition density is
@@ -736,7 +765,7 @@ If we pick \(\alpha_t\) and \(\sigma_t\) such that as \(t\to T\), \(\alpha_t\to 
 
 The VP-SDE and VE-SDE can be fit into this framework, with \[\alpha_t &=  \exp\del{-\int_0^t \beta(\tau) \d\tau} \quad && \sigma_t = 1- \exp\del{-2\int_0^t \beta(\tau) \d\tau}\quad&&\text{VP-SDE}\\
 \alpha_t &=  1 \quad && \sigma_t = \int_0^t \beta(\tau) \d\tau\quad&&\text{VE-SDE}.\]
-It also allows us to easily explore other schedules such as the cosine schedule where we set \(\alpha_t = \sin \del{\frac{t\pi}{2T}}\), \(\sigma_t = \cos \del{\frac{t\pi}{2T}}\), or even linear schedules where we set \(\alpha_t = \frac{T-t}{T}\), \(\sigma_t = \frac{t}{T}\)
+It also allows us to easily explore other schedules such as the cosine schedule where we set \(\alpha_t = \sin \del{\frac{t\pi}{2T}}\), \(\sigma_t = \cos \del{\frac{t\pi}{2T}}\), or even linear schedules where we set \(\alpha_t = \frac{T-t}{T}\), \(\sigma_t = \frac{t}{T}\).
 
 The choice of forward noising stochastic differential equation can have a significant impact on performance of a diffusion model. Interesting empirical studies can be seen for example in \textcite{karras2022Elucidating,karras2023analyzing,nichol2021improved}.
 
@@ -773,31 +802,42 @@ The choice of forward noising stochastic differential equation can have a signif
 
 The crucial step to be able to follow backwards the path defined by our forward noising stochastic differential equation is the application of a time reversal result.
 
-We can prove a simple result showing that we can indeed create such a stochastic differential equation in the following, leveraging the \emphhypermargin{Fokker-plank equation}{thm:fokker-plank}.
+We  prove a simple result showing that we can indeed create such a stochastic differential equation in the following, leveraging the \emphhypermargin{Fokker-Plank equation}{thm:fokker-plank}.
 
-The crux of these results is that for a forward-time stochastic differential equation 
-\[ \d\Xf_t = \v{b}(\Xf_t, t)\d t + \sigma(t)\d \Bf_t, \quad \Xf_0 \sim p_0\]
-with time-marginal distributions \(p_t^\vsra{}\), the reverse-time stochastic differential equation
-\[\d\Xb_t = \sbr{-\v{b}(\Xb_t, t) + \sigma(t)^2\nabla\log p_t(\Xb_t)}\d t + \sigma(t)\d \Bb_t, \quad \Xb_0 \sim p_T^\vsra{}.\]
-with time-marginals \(p_t^\vsla{}\)
-
-\begin{theorem}[Fokker-plank time reversal]
-% \label{thm:fokker-plank_time_reversal}
-For a forward-time stochastic differential equation 
-\[ \d\Xf_t = \v{b}(\Xf_t, t)\d t + \sigma(t)\d \v{B}_t, \quad \Xf_0 \sim p_{\text{data}}\]
-with time-marginal distributions \(p_t^\vsra{}(\v{X})\), the reverse-time stochastic differential equation
-\[\d\Xb_t = \sbr{-\v{b}(\Xb_t, t) + \sigma(t)^2\nabla\log p_t(\Xb_t)}\d t + \sigma(t)\d \v{B}_t, \quad \Xb_0 \sim p_T^\vsra{},\] with time-marginal distributions \(p_t^\vsla{}(\v{X})\), the time-marginals are equal in the sense that \(p_t^\vsra{} = p_{T-t}^\vsla{} \;\forall\; t\in \sbr{0,T}\).
+\begin{theorem}[The Fokker-Plank eqaution]
+	\label{thm:fokker-plank_background}
+	Let \(\del{\v{X}_t}_{t\geq 0}\) be stochastic differential equal, with initial distribution \(\v{X}_0  \sim p_0\) and equation \[\d \v{X}_t = \v{b}(t, \v{X}_t) \d t + \m{\Sigma}(t, \v{X}_t) \d\v{B}_t.\]
+	Let \(p(t, x)\) denote the density of \(\v{X}_t\) at time \(t\).
+	Then 
+	\begin{align}
+		\pd{p}{t} &= L^* p \nonumber \\
+		p(0, x) &= p_0(x)
+	\end{align}
+	where \(L^* f = -\dive \del{\v{b}f} + \frac{1}{2} \m{\Sigma}\m{\Sigma}^T \Delta f\) and \(\Delta\) is the Laplace operator.
 \end{theorem}
 \begin{proof}
-The Fokker-Plank equation for the forward stochastic differetial equation is given by 
+	See \cref{thm:fokker-plank}.
+\end{proof}
+
+The crux of these results is that for a stochastic differential equation, we can find another stochastic differential equation with the same time-marginal distributions, but reversed in time.
+
+\begin{theorem}[Fokker-Plank time reversal]
+\label{thm:fokker-plank_time_reversal_background}
+For a forward-time stochastic differential equation 
+\[ \d\Xf_t = \v{b}(\Xf_t, t)\d t + \sigma(t)\d \v{B}_t, \quad \Xf_0 \sim \pdata\]
+with time-marginal densities \(p_t^\vsra{}(\v{X})\), the reverse-time stochastic differential equation
+\[\d\Xb_t = \sbr{-\v{b}(\Xb_t, t) + \sigma(t)^2\nabla\log p_t(\Xb_t)}\d t + \sigma(t)\d \v{B}_t, \quad \Xb_0 \sim p_T^\vsra{},\] with time-marginal densities \(p_t^\vsla{}(\v{X})\), the time-marginals are equal in the sense that \(p_t^\vsra{} = p_{T-t}^\vsla{} \;\forall\; t\in \sbr{0,T}\).
+\end{theorem}
+\begin{proof}
+The Fokker-Plank equation for the forward stochastic differential equation is given by 
 \[\pd{p_t^\vsra{}(\v{X})}{t} = -\dive\del{{\v{b}(\v{X}, t)} p_t^\vsra{}(\v{X})} + \tfrac{1}{2}\sigma^2(t)\Delta p_t^\vsra{}(\v{X})\]
 % Therefore
 % \[-\pd{p_t(\v{X})}{t} = \dive\del{{\v{b}(\v{X}, t)} p_t(\v{X})} - \tfrac{1}{2}\sigma^2(t)\Delta p_t(\v{X})\]
 Looking at \(\Delta p_t^\vsra{}(\v{X})\) we see that
 \begin{align}
-	\Delta p_t^\vsra{}(\v{X}) &= \nabla \cdot \nabla p_t^\vsra{}(\v{X}) \\
-	&= \nabla \cdot \sbr{\frac{p_t^\vsra{}(\v{X})}{p_t^\vsra{}(\v{X})} \nabla p_t^\vsra{}(\v{X})} \\
-	&= \nabla \cdot \sbr{ p_t^\vsra{}(\v{X})\nabla \log p_t^\vsra{}(\v{X})} \\
+	\Delta p_t^\vsra{}(\v{X}) &= \dive \nabla p_t^\vsra{}(\v{X}) \\
+	&= \dive \sbr{\frac{p_t^\vsra{}(\v{X})}{p_t^\vsra{}(\v{X})} \nabla p_t^\vsra{}(\v{X})} \\
+	&= \dive \sbr{ p_t^\vsra{}(\v{X})\nabla \log p_t^\vsra{}(\v{X})} \\
 	&= \dive\del{p_t^\vsra{}(\v{X})\nabla \log p_t^\vsra{}(\v{X})}
 \end{align}
 Adding and subtracting this identity  we get
@@ -805,37 +845,38 @@ Adding and subtracting this identity  we get
 	&\pd{p_t^\vsra{}(\v{X})}{t}\\ &= \dive\del{{\v{b}(\v{X}, t)} p_t^\vsra{}(\v{X})} + \tfrac{1}{2}\sigma^2(t)\Delta p_t^\vsra{}(\v{X}) - \sigma(t)^2\dive\del{p_t^\vsra{}(\v{X})\nabla \log p_t^\vsra{}(\v{X})} \\
 	&= \dive\del{\sbr{\v{b}(\v{X}, t) - \sigma(t)^2\nabla {\log p_t^\vsra{}(\v{X})}} p_t^\vsra{}(\v{X})} - \tfrac{1}{2}\sigma^2(t)\Delta p_t^\vsra{}(\v{X})
 \end{align}
-Taking the negative of this term we see that the evolution of the time-maringal density of a stochasitc differenetial eqaution, but with the evolution happing in reverse, is given by
+Taking the negative of this term we see that the evolution of the time-maringal density of a stochastic differential equation, but with the evolution happing in reverse, is given by
 \[
 	\pd{p_t^\vsla{}(\v{X})}{t} = \dive\del{-\sbr{\v{b}(\v{X}, t) + \sigma(t)^2\nabla {\log p_t^\vsra{}(\v{X})}} p_t^\vsra{}(\v{X})} + \tfrac{1}{2}\sigma^2(t)\Delta p_t^\vsra{}(\v{X})
 \]
-which is exactly the Fokker-Plank equation of a stochasitc differential equation of the form
+which is exactly the Fokker-Plank equation of a stochastic differential equation of the form
 \[\d\Xb_t = \sbr{ -\v{b}(\Xb_t, t) + \sigma(t)^2\nabla {\log p_t^\vsra{}(\Xb_t)}}\d t + \sigma(t)\d \v{B}_t.\]
 The instantaneous change of the forward and reverse time-marginal densities are therefore equal.
 
-Since by assumption the time-marginal of the reverse stochastic differential equation at time \(0\) is exactly \(p_T^\vsra{}(\v{X})\), and the evolution of the time-marginals match, but in reverse by the form of the Fokker-Plank equation, it follows that \(p_t^{\vsra{}} = p_{T-t}^\vsla{}, \; t\in \sbr{0, T}\).
+Since by assumption \(p_0^\vsla{}\) is exactly \(p_T^\vsra{}\), and the evolution of the time-marginals match, but in reverse by the form of the Fokker-Plank equation, it follows that \(p_t^{\vsra{}} = p_{T-t}^\vsla{}, \; t\in \sbr{0, T}\).
 \end{proof}
 This proof is inspired by one found in \textcite[chapter 13]{nelson1967bm}.
 
 This theorem states only that the time-marginals the of the forward and reverse distributions match.
-For generative modelling this is all that matters as we only care that we can recover \(p_{\text{data}}\).
-More commonly cite in the score-based modelling literature are stronger results that guarantee the whole distribution on \emph{paths} of the forward and reverse stochastic differential equations match.
+For generative modelling this is all that matters as we only care that we can recover \(\pdata\).
+More commonly cited in the score-based modelling literature are stronger results that guarantee the whole distribution on \emph{paths} of the forward and reverse stochastic differential equations match.
 A discussion of commonly cited time reversal results can be found in \cref{sec:time-reversal}.
+See \cref{fig:diffusion_model_illustration} for the difference between the matching of time marginals and the path distributions.
 
 \subsubsection{Learning the score}
 
 The next step in producing a diffusion model is learning the score term that appears in the reverse stochastic differential equation, \(\nabla_{\v{X}_t} \log p_t(\v{X}_t)\).
 At first glance this may seem difficult, but a strong literature exists on learning this term, known as \emphmarginnote{score matching}.
-In order to approximate this score function, we will use an approximation taking inputs \(\v{X}_t\) and \(t\).
+In order to estimate this score function, we will use an approximation taking inputs \(\v{X}_t\) and \(t\).
 We will denote this \(\scorenet{}: \R^d \times \sbr{0, T} \to \R^d\).
 We will also use the notion \(\scorenett{} : \R^d \to \R^d\) to refer to this function partially evaluated at time \(t\), \(\scorenett{}(\cdot) = \scorenet(\cdot, t)\).
-Typically, we will make this a neural network of some kind, and look to optimise this via gradient-based learning.
+Typically, we will make this a neural network of some kind, and look to optimise it via gradient-based learning.
 
 % \emphmarginnote{Implicit score matching (ISM)} \parencite{hyvarinen05a} says that the following is true for a density \(p\) supported on \(\R^d\) relative to the Lebesgue measure;
-% \[\nabla_{\v{X}} \log p(\v{X}) = \argmin_{\phi} \int_{\R^d} \cbr{ \frac{1}{2} \norm{\phi\del{\v{X}}}^2 + \dive(\phi)(\v{X})} p(\v{X}) \d \v{X} .\]
-% We can apply this to our SDE setting to say that the score at a given time is given by \[\nabla_{\v{X}} \log p_t(\v{X}) = \argmin_{\scorenett{}} \int_{\R^d} \cbr{ \frac{1}{2} \norm{\scorenett{}(\v{X})}^2 + \dive(\scorenett{})(\v{X})} p_t(\v{X}) \d \v{X}.\]
-% We denote then this loss function as \(\ismlosst{}: \scorenett \mapsto \R\) such that \(\nabla_{\v{X}} \log p_t(\v{X}) = \argmin_{\scorenett{}} \ismlosst{}\).
-\textcite{hyvarinen05a} proves the following result
+% \[\nabla \log p(\v{X}) = \argmin_{\phi} \int_{\R^d} \cbr{ \frac{1}{2} \norm{\phi\del{\v{X}}}^2 + \dive(\phi)(\v{X})} p(\v{X}) \d \v{X} .\]
+% We can apply this to our SDE setting to say that the score at a given time is given by \[\nabla \log p_t(\v{X}) = \argmin_{\scorenett{}} \int_{\R^d} \cbr{ \frac{1}{2} \norm{\scorenett{}(\v{X})}^2 + \dive(\scorenett{})(\v{X})} p_t(\v{X}) \d \v{X}.\]
+% We denote then this loss function as \(\ismlosst{}: \scorenett \mapsto \R\) such that \(\nabla \log p_t(\v{X}) = \argmin_{\scorenett{}} \ismlosst{}\).
+\textcite{hyvarinen05a} proves the following result:
 \begin{theorem}[Implicit score matching (ISM)]
 	\label{def:ism}
 	Consider a density \(p_a(A)\) supported on \(\R^d\) relative to the Lebesgue measure.
@@ -848,10 +889,10 @@ We can apply this to our stochastic differential equation setting to say that th
 We denote then this loss function as \(\ismlosst{}\).
 
 In order to draw samples from \(p_t(\v{X}_t)\) we can utilise the fact that \[p_t(\v{X}_t) = \int p_{t|0}(\v{X}_t) p_0(\v{X}_0) \d \v{X}_0.\]
-We can sample then from this joint density as we have as our dataset samples from \(p_0 = p_{\text{data}}\), and we have access to sampling from the transition density \( p_{t|0}\) from the forward noising stochastic differential equation.
-We then throw away the samples from \(p_0\) to obtain samples from \(p_t\).
+We can sample then from this joint density as we have samples from \(p_0 = \pdata\), and we have access to sampling from the transition density \( p_{t|0}\) from the forward noising stochastic differential equation.
+We then discard the samples from \(p_0\) to obtain samples from \(p_t\).
 
-What is not so nice about this objective is that it requires computation of the divergence of the score.
+A limitation of this objective is that it requires computation of the divergence of the score.
 While this is achievable using automatic differentiation packages, it is expensive in high dimension, scaling in cost with \(\c{O}(d^2)\).
 
 It is possible to apply to this the Hutchinson trace trick estimator \parencite{hutchinson1989stochastic} to stochastically approximate the divergence to get a loss function that scales with \(\c{O}(d)\) at the cost of higher variance, as detailed in \textcite{song2020sliced}, where it is called \emphmarginnote{sliced score matching (SSM)}.
@@ -859,29 +900,39 @@ We denote this loss function \(\ssmlosst{}\).
 In practise this additional variance does not seem to be too important, as the variance of the Monte Carlo estimation of the integral over \(p_t\) is larger.
 
 \emphmarginnote{Denoising score matching (DSM) \label{def:dsm}} \parencite{vincent2011connection} is an alternative approach to implicit score matching that typically has lower variance.
-We do not get this for free, as we will need to know a little more information to apply this.
-Recall that the definition of the conditional distribution states that for \(L^2\)-integrable random variables \(A\) and \(B\), \[\argmin_{g\text{ measurable in }L^2} \E_{A, B}\sbr{\norm{A - g(B)}^2} = g: b\mapsto\E_{A}\sbrvert{A}{B=b},\] where \(\E_{A}\sbrvert{A}{B=b}\) is the conditional expectation of \(A\) given a value of \(B\).
+However, applying this objective requires additional tractability on the forward noising process.
+Recall that the definition of the conditional distribution states that for \(L^2\)-integrable random variables \(A\) and \(B\), the conditional expection map
+\[g^*: b\mapsto\E_{A}\sbrvert{A}{B=b}\]
+is given by the minimiser
+\[g^* = \argmin_{g\text{ measurable in }L^2} \E_{A, B}\sbr{\norm{A - g(B)}^2}\] where \(\E_{A}\sbrvert{A}{B=b}\) is the conditional expectation of \(A\) given a value of \(B\).
 We apply this by putting \(A = \nabla \log p_{c|d}\delvert{C}{D}\) and \(B = C\) for new random variables \(C\) and \(D\), assuming they have densities relative to the Lebesgue measure, and so \[g(C) = \E_{D}\sbrvert{ \nabla \log p_{c|d}\delvert{D}{C}}{C}.\]
 We can then apply the Tweedie identity.
 \begin{lemma}[The Tweedie identity]\label{lem:tweedie}
 	\[\E_{D}\sbrvert{\nabla_{C} \log p_{c|d}\delvert{C}{D}}{C} = \nabla_{C} \log p_c(C)\]
 \end{lemma}
 \begin{proof}
-	Delayed to \cref{sec:tweedie_proof}
+    \[
+		\E_D&\sbrvert{\nabla_{C} \log p_{c|d}\delvert{C}{D}}{C} \nonumber\\
+		&= \int_{\R^d} \nabla_{C} \log p_{c|d}\delvert{C}{D} p_{d|c}(D | C) \d D \nonumber\marginnote{By definition}\\
+		&= \int_{R^d} \frac{\nabla_{C} p_{c|d}\delvert{C}{D}}{p_{c|d}\delvert{C}{D}} \frac{p_{c|d}\delvert{C}{D}p_d(D)}{p_t(C)} \d D\nonumber\marginnote{By the gradient of log and Bayess rule}\\
+		&= \frac{1}{p_t\del{C}} \int_{\R^d} p_d\del{D} \nabla_{C} p_{c|d}\delvert{C}{D} \d D\nonumber\marginnote{Cancel terms and remove non-integrands}\\
+		&= \frac{1}{p_t\del{C}} \nabla_{C}\int_{\R^d} p_d\del{D}  p_{c|d}\delvert{C}{D} \d D\nonumber\marginnote{By linearity of integrals}\\
+		&= \frac{\nabla_{C}p_{t}\del{C}}{p_c\del{C}} = \nabla_{C}\log p_c\del{C}\nonumber\marginnote{By the gradient of log}
+ 	\]
 \end{proof}
-Combing this we see that \[ \argmin_{g\text{ measurable in }L^2} \E_{C,D}\sbr{\norm{\nabla_C \log p_{c|d}\delvert{C}{D} - g(C)}^2} &= \E_{D}\sbrvert{\nabla_{C} \log p_{c|d}\delvert{C}{D}}{C}\nonumber \\ &= \nabla_{C} \log p_c(C),\] and therefore can learn the score for \(\nabla_C \log p_c(C)\) if we have access to \1 samples from the joint distribution \(p_{c,d}(C, D)\) and \2 access to the analytic conditional score \(\nabla_C \log p_{c|d} \delvert{C}{D}\).\0
+Combining this we see that \[ \argmin_{g\text{ measurable in }L^2} \E_{C,D}\sbr{\norm{\nabla_C \log p_{c|d}\delvert{C}{D} - g(C)}^2} &= \E_{D}\sbrvert{\nabla_{C} \log p_{c|d}\delvert{C}{D}}{C}\nonumber \\ &= \nabla_{C} \log p_c(C),\] and therefore we can learn the score for \(\nabla_C \log p_c(C)\) if we have access to \1 samples from the joint distribution \(p_{c,d}(C, D)\) and \2 access to the analytic conditional score \(\nabla_C \log p_{c|d} \delvert{C}{D}\).\0
 
 To apply this to our stochastic differential equation setting, we pick \(C = \v{X}_t\) and \(D=\v{X}_s\), with \(s < t\). We have access to samples from \(p_{t,s}\del{\v{X}_t, \v{X}_s}\) by using the fact that 
 \[
 	p_{t,s}\del{\v{X}_t, \v{X}_s} &= \int_{\R^d} p_{t|s, 0}\delvert{\v{X}_t}{\v{X}_s, \v{X}_0} p_{s|0} \delvert{\v{X}_s}{\v{X}_0} p_0\del{\v{X}_0} \d \v{X}_0 \\
 	&= \int_{\R^d} p_{t|s}\delvert{\v{X}_t}{\v{X}_s} p_{s|0} \delvert{\v{X}_s}{\v{X}_0} p_0\del{\v{X}_0} \d \v{X}_0
-\] where the second line follows as stochastic differential equation transitions have the Markov property. We have access to samples from \(p_0\) from our data, and the stochastic differential equation tells us how to sample from the transitions.
+\] where the second line follows as stochastic differential equation transitions satisfy the Markov property. We have access to samples from \(p_0\) from our data, and the stochastic differential equation tells us how to sample from the transitions.
 We also need access to the analytic form of \(\nabla_{\v{X}_t} \log p_{t|s} \delvert{\v{X}_t}{\v{X}_s}\).
 For most stochastic differential equations used in the literature, such as the variance exploding and preserving, this is available.
 If it is not available, often good approximations are available over for short time steps between \(s\) and \(t\).
 
 The most common form of this loss in the literature is to set \(s=0\). 
-This simplifies the sampling as then we only need to sample the one transition.
+This simplifies the sampling as then we only need to sample a single transition.
 This is the denoising score matching described in \textcite{song2020score}.
 We describe the more general scheme here as it is useful when we only have access to an approximation of \(p_{t|s}\) over short times.
 
@@ -911,84 +962,101 @@ In order to match the score at all times, we integrate this objective over all t
 Notice there is a weighting function applied over all \(t\).
 While this weighting does not affect the minima of the objective, it does rebalance where a network will prioritise learning the score most.
 Many choices for \(\lambda(t)\) exist and can be tuned to optimise different objectives.
-In particular picking \(\lambda(t) = \sigma(t)^2\) can be shown to be equivalent to optimising the maximum likelihood objection on the dataset \cite{huang2021variational,durkan2021maximum}.
+% In particular picking \(\lambda(t) = \sigma(t)^2\) can be shown to be equivalent to optimising the maximum likelihood objection on the dataset .
 
 A common feature of all of these objectives is that they are
 \1 stable regression objectives and
 \2 require evaluation of the score network at a given time \(t\) only.
 \0
-Compare this to the objectives of normalsing flow models, VAE models, or GANs.
+Compare this to the objectives of normalising flow models, VAE models, or GANs.
 These objective functions require us to run a full generation of samples from the model in order to evaluate the objective.
 In contrast, the score matching objectives only need us to evaluate the generative model at one point in the generative process.
-Additionally, the score matching objectives at a given time is stable with respect to other times, the minima at a given time will not change as we optimise the score function at other times.
-This is in comparison to other objectives where changing the weights at one point in the network significantly changes what the optimum weight at other points in the network is.
+
+Additionally, the score matching objectives at a given time are stable with respect to other times.
+That is, the minima at a given time will not change as we optimise the score function at other times.
+This is in comparison to most objectives of other deep generative models where changing the weights at one point in the network changes the optimum weights at other points in the network are.
 This is exacerbated in GANs, as changing the discriminator function changes the objective the generator function is trying to learn, leading to well known instabilities.
-This property is down to the fact that in diffusion models we specify the path we wish the model to take from noise to data.
+This property ensured by the fact that in diffusion models we specify the path we wish the model to take from noise to data.
 In other models it is left to the model to find this path.
 
-There is one common draw back to these objectives however, and that is the Monte Carlo sampling required to evaluate these objectives makes them particularly noisy as objectives.
-This can be mitigated however by taking an average of the weights through training.
+There is one drawback to score-matching objectives however, and that is the Monte Carlo sampling required to evaluate them makes them particularly noisy.
+This can be mitigated however by taking an average of the weights throughout training.
 Typically, exponential moving averages have been used, and the smoothing rate requires tuning.
-Recently, \textcite{karras2023analyzing} proposed new averaging schemes, and importantly a method to perform hyperparameter optimisation of the smoothing rates post-hoc, requiring only a single training run of the model.
+Recently, \textcite{karras2023analyzing} proposed new averaging schemes, and importantly a method to perform hyperparameter optimisation of the smoothing rates post training, requiring only a single training run of the model.
+
+\subsubsection{Likelihood training of score-based models}
+\label{sec:likelihood_training}
+Typically, generative models are trained by minimising the forward Kullback-Leibler divergence between the data distribution and the model.
+That is they minimise the following objective \[\c{D}_{KL}\delvert{\pdata}{\pmodelt} &= \int \log \del{\frac{\pdata}{\pmodelt}} \d \pdata \\ &= \int \log \pdata \d \pdata - \int \log \pmodelt \d\pdata \\ &= - \E_{\pdata}\sbr{\log \pmodelt}+ \text{constant} \\& \geq - \E_{\pdata}\sbr{\pmodelt} \quad\quad \text{by Jensen's inequality}.\]
+This objective can therefore be seen also as maximising the average log-likelihood of the model under the data, or maximising a lower bound on the likelihood of the model under the data.
+It may be that we want to train a score-based model via maximum likelihood.
+It is not immediately obvious how to connect score-matching to this objective, however it is possible to do so.
 
 
-\subsubsection{Likelihood ODEs}
+Let us denote the measure placed on the space of diffusion paths defined by the data distribution and the forward noising stochastic differential equation as \(P_\text{data} = \pdata Q^\vsra{}_{\cdot| 0}\) where \(Q^\vsra{}_{\cdot|0}\) is the conditional path measure given an initial data point in the diffusion.
+Let us also denote \(Q^\theta = \pprior Q^\vsla{}_\theta(\cdot | T)\) as the measure on paths defined by initialising the parametrised reverse stochastic differential equation with the reference distribution the forward noising process converges to.
+Then we can write \[\c{D}_{KL}\delvert{\pdata}{\pmodelt} \leq \c{D}_{KL}\delvert{P_\text{data}}{Q_\theta}\] by the data-processing inequality.
+\textcite{huang2021variational,song2021maximum} show that by applying the chain rule for path measures \cite[theorem 2.4]{leonard2014some} and Girsanov's theorem \cite[section 8.6]{oksendal2003stochastic}, for a forward noising process with diffusion term \(\sigma(t)\),
+\[\c{D}_{KL}\delvert{P_\text{data}}{Q_\theta} =& \c{D}_{KL}\delvert{p_T}{\pprior} \\&+ \frac{1}{2}\int_0^T \sigma(t)^2 \E_{p_t}\sbr{\norm{\nabla_{\v{X}_t} \log p_t(\v{X}_t) - \v{s}^\theta_t(\v{X}_t)}}_2^2 \d t,\]
+showing that optimising any score-matching objective with time weighting \(\lambda(t) = \sigma(t)^2\) maximises the same lower bound on the maximum likelihood of the data as other generative models.
+
+\subsubsection{Likelihood ordinary differential equations}
 \label{sec:likelihood-ode}
-The final thing that we are missing now is the ability to compute the likelihood of a sample from a diffusion model.
-In order to do this we will leverage the \emphmarginnote{Fokker-Plank equation} (\cref{thm:fokker-plank}).
-Recall that for an stochastic differential equation of the form \[\d \v{X}_t = \v{b}(\v{X}_t, t) \d t + \m{\Sigma}(\v{X}_t, t) \d \v{B}_t ,\] in this case where \(\m{\Sigma}\) is a matrix of noise coefficients, the time-evolution of the density is given by
+The final aspect that we are missing is the ability to compute the likelihood of a sample from a diffusion model.
+In order to do this we will leverage the \emphmarginnote{Fokker-Plank equation} again (\cref{thm:fokker-plank}).
+Recall that for a stochastic differential equation of the form \[\d \v{X}_t = \v{b}(\v{X}_t, t) \d t + \m{\Sigma}(\v{X}_t, t) \d \v{B}_t ,\] the time-evolution of the density is given by
 \[ \pd{p_t(\v{X})}{t} = -\sum_{i=1}^d \pd{}{\v{X}_i}\sbr{\v{b}(\v{X}, t) p_t{\v{X}}} + \frac{1}{2} \sum_{i=1}^d \sum_{j=1}^d \frac{\partial^2}{\partial \v{X}_i \partial \v{X}_j} \sbr{\m{\Sigma}(\v{X}, t) \m{\Sigma}(\v{X}, t)^T p_t(\v{X})} .\]
-Using this, we can obtain the following result
-
-\begin{theorem}[The likelihood flow ODE]
+Using this, we can obtain the following result:
+\begin{theorem}[The likelihood flow ordinary differential equation]
 	\label{thm:likelihood_ode}
 	For an stochastic differential equation of the form 
 	\[\d \v{X}_t = \v{b}(\v{X}_t, t) \d t + \m{\Sigma}(\v{X}_t, t) \d \v{B}_t \]
-	initialised with \(\v{X}_0 \sim p_0\), the ODE
-	\[\d \v{X}_t = \sbr{\v{b}(\v{X}_t, t) - \frac{1}{2}\sbr{\nabla \cdot \sbr{\m{\Sigma}(\v{X}, t) \m{\Sigma}(\v{X}, t)^T}\nonumber +\m{\Sigma}(\v{X}, t) \m{\Sigma}(\v{X}, t)^T \nabla_{\v{X}_t}\log p_t(\v{X}_t)}} \d t\]
+	initialised with \(\v{X}_0 \sim p_0\), the ordinary differential equation
+	\[\d \v{X}_t = \sbr{\v{b}(\v{X}_t, t) - \frac{1}{2}\sbr{\dive \sbr{\m{\Sigma}(\v{X}, t) \m{\Sigma}(\v{X}, t)^T}\nonumber +\m{\Sigma}(\v{X}, t) \m{\Sigma}(\v{X}, t)^T \nabla_{\v{X}_t}\log p_t(\v{X}_t)}} \d t\]
 	initialised with \(\v{X}_0 \sim p_0\) has the same marginal density at all times \(t\in\sbr{0,T}\)
 \end{theorem}
 \begin{proof}
 	Due to \textcite{maoutsa2020interacting} and \textcite[appendix D]{song2020score}.
 \end{proof}
 In diffusion models we typically use \(\m{\Sigma}(\v{X}, t) = \sigma(\v{X}, t) I\), a simple time-dependant scalar noise.
-With this, the likelihood ODE simplifies to
+With this, the likelihood ordinary differential equation simplifies to
 \[\d \v{X}_t = \sbr{\v{b}(\v{X}_t, t) - \frac{1}{2}\sigma(\v{X}, t)^2 \log p_t(\v{X}_t)} \d t \label{eq:likelihood_ode_drift} .\]
-Fortunately there already exists tools to be able to compute the change in likelihood induced by an ODE trajectory, assuming the ODE describes the flow of a density.
-\begin{theorem}[Instantanious change of likelihood of an ODE]
-	Let \(\del{\v{X}_t}_{t\in\sbr{0,T}}\) be a stochastic process with marginal density at time \(t\) \(p_t(\v{X}_t)\).
-	Let \(\d \v{X}_t = \v{b}(\v{X}_t, t) \d t\) be an ODE describing the evolution of particles.
+Fortunately there already exist tools to allow us to compute the change in likelihood induced by an ordinary differential equation trajectory, assuming the ordinary differential equation describes the flow of a density.
+\begin{theorem}[Instantanious change of likelihood of an ordinary differential equation]
+	Let \(\del{\v{X}_t}_{t\in\sbr{0,T}}\) be an ordinary differential equation with governing equation
+	\[ \d \v{X}_t = \v{b}(\v{X}_t, t) \d t\]
+	and time marginal densities \(p_t(\v{X}_t)\).
 	Assume that \(\v{b}\) is uniformly Lipshitz continuous in \(\v{X}_t\) and continuous in \(t\).
 
 	Then, the instantaneous change in log probability is given by 
-	\[\pd{\log p_t(\v{X}_t)}{t} = -\tr\del{\eval{\od{\v{b}}{\v{X}_t}}{\del{\v{X}_t, t}}} = \nabla \cdot \v{b}\del{\v{X}_t, t}\]
+	\[\pd{\log p_t(\v{X}_t)}{t} = -\tr\del{\eval{\od{\v{b}}{\v{X}_t}}{\del{\v{X}_t, t}}} = -\dive \v{b}\del{\v{X}_t, t}\]
 \end{theorem}
 \begin{proof}
-	Proved in \textcite[appendix A]{chen2018neural}. Restated in \cref{sec:ode_likelihood_formula}.
+	Proved in \textcite[appendix A]{chen2018neural}.
 \end{proof}
 Using this, we can evaluate the likelihood of a point under our diffusion model at \(t=0\).
-For a given point \(v{X}_0\) is equal to the change in likelihood over the course of the ODE, plus the likelihood of the point at the other end, \[\log p_0(\v{X}_0) = \int_0^T \nabla \cdot \v{b}\del{\v{X}_t, t} \d t + \log p_T(\v{X}_T)\]
-where \(\v{X}_t\) is the path the point \(\v{X}_0\) follows under the ODE.
+For a given point \(\v{X}_0\) is equal to the change in likelihood over the course of the ordinary differential equation, plus the likelihood of the point at the other end, \[\log p_0(\v{X}_0) = \int_T^0 \dive \v{b}\del{\v{X}_t, t} \d t + \log p_T(\v{X}_T)\]
+where \(\v{X}_t\) is the path the point \(\v{X}_0\) follows under the ordinary differential equation and \(p_T\) is the reference distribution of the diffusion model.
 
-In practise, we solve these as a joint ODE to take advantage of error tolerant solvers on the joint system,
+In practice, we solve these as a joint ordinary differential equation to take advantage of error tolerant solvers on the joint system,
 \[
 	\d 
 	\begin{bmatrix}
 		\v{X}_t \\ \log p(\v{X}_t)
 	\end{bmatrix} = 
 	\begin{bmatrix}
-		\v{b}\del{\v{X}_t, t} \\ \nabla \cdot \v{b} \del{\v{X}_t, t}
+		\v{b}\del{\v{X}_t, t} \\ \dive \v{b} \del{\v{X}_t, t}
 	\end{bmatrix}
 \]
-This is in fact how \emphmarginnote{continuous noramlising flows (CNFs)} \parencite{chen2018neural} work. 
-The model is defined by a parametrised drift function \(\v{b}_\theta\), and is trained by maximum likelihood by backpropogating through the ode solver \parencite{chen2018neural}. 
-There exist a number of stratergies for backpropogating through ODE solvers.
-These are discussed well in \textcite{kidger2021on}, which has accompanying it the python library \verb|diffrax| \marginnote{\url{https://github.com/patrick-kidger/diffrax}} for handling ODEs and other DEs easily.
+This is in fact how \emphmarginnote{continuous normalising flows (CNFs)} \parencite{chen2018neural} work. 
+The model is defined by a parametrised drift function \(\v{b}_\theta\), and is trained by maximum likelihood by backpropagating through the ordinary differential equation solver \parencite{chen2018neural}. 
+There exist a number of strategies for backpropagating through ordinary differential equation solvers.
+These are discussed well in \textcite{kidger2021on}, which has accompanying it the python library \verb|diffrax| \marginnote{\url{https://github.com/patrick-kidger/diffrax}} for handling ordinary differential equations and other differential equations easily.
 
 To apply this scheme for computing the likelihood to diffusion models we simply use our modified drift function in \cref{eq:likelihood_ode_drift} and use the reference distribution from our diffusion model for \(p_T\).
 
 This also gives us an additional method to sample from our diffusion model. 
-Instead of solving the stochastic differential equation approximately (\cref{sec:approximate_sde_sampling}) we can sample from \(p_T\) and solve this ODE in reverse to draw samples from the model.
+Instead of solving the stochastic differential equation approximately (\cref{sec:approximate_sde_sampling}) we can sample from \(p_T\) and solve this ordinary differential equation in reverse to draw samples from the model.
 This can outperform sampling the stochastic differential equation in certain scenarios \parencite{karras2022Elucidating,song2019generative}.
 
 
@@ -997,7 +1065,8 @@ This can outperform sampling the stochastic differential equation in certain sce
 Finally, we discuss prior work on deep generative modelling on manifolds.
 
 We discuss two settings of generative modelling on manifolds.
-We discuss the setting of modelling a density on the manifold itself, and also the setting of modelling a density on \emph{signals} on the manifold.
+Namely, the setting of modelling a density on the manifold itself, and also the setting of modelling a density on \emph{signals} on the manifold.
+Here we cover methods for which the manifold structure is prescribed, in contrast with methods that jointly learn the manifold structure and density~\parencite[e.g.][]{brehmer2020flows,caterini2021Rectangular}.
 
 \subsubsection{Densities on a manifold}
 
@@ -1008,52 +1077,32 @@ A series of methods have been proposed that modelled densities on manifolds by d
 For this to work exactly we require a homeomorphism \(\phi: \R^n \to X\).
 This can only exist if the manifold is topologically homeomorphic to \(\R^n\), and so is quite limiting.
 \textcite{falorsi2019reparameterizing} propose a method of this form for reparametrising densities on Lie groups.
-\textcite{bose2020latent} propose a method for modelling densities on hyperbolic space using Euclidean normalsing flows pushed onto hyperbolic space.
+\textcite{bose2020latent} propose a method for modelling densities on hyperbolic space using Euclidean normalising flows pushed onto hyperbolic space.
 \textcite{gemici2016normalizing} propose a similar method for generic manifolds.
 In addition to the homeomorphism restriction, these methods do not respect the underlying geometry of the space well.
 In order to map Euclidean space onto these manifolds, a significant distortion of the metric is required.
 This can cause regions of the space that are significantly stretched or squashed by the homeomorphism to be difficult to model accurately.
 
-Methods using normalising flows have become popular choice for intrinsically modelling densities on manifolds.
+Methods based on normalising flows have become a popular choice for intrinsically modelling densities on manifolds.
 \textcite{rezende2020Normalizing} produce a method for discrete normalising flows that operate on tori and spheres directly.
 \textcite{cohen2021riemannian,rezende2021implicit} build normalising flows on manifolds via optimal transport concave potential maps.
 Schemes for general equivariant normalising flows on manifolds have also been developed \cite{katsman2021equivariant}.
 A significant line of work has been developed for normalising flows on products of the group \(\groupSU[3]\) \cite{abbott2022sampling, abbott2022gauge, abbott2023normalizing}, generic \(\groupSU\) \cite{boyda2021sampling} and \(\groupU[1]\) \cite{kanwar2020equivariant}.
-One draw back to normalising flow methods is the difficulty in designing invertible layers for normalising flows.
+One drawback to normalising flow methods is the difficulty in designing invertible layers for normalising flows.
 This makes designing transferable methods for generic manifolds difficult.
 
 Methods based on continuous normalising flows are much easier to design for generic manifolds.
 They remove the need to design specific invertible layers to build the flow models, and instead simply require the specification of a time-varying vector field.
 Methods extending continuous normalising flows to Riemannian manifolds have been developed by \textcite{falorsi2020neural, falorsi2021Continuous, mathieu2020riemannian, lou2020neural}.
-A significant drawback of continuous normalising flows is the need to solve an ordinary differential equation and back-propogate through it at each step of training since this is computationally expensive.
+A significant drawback of continuous normalising flows is the need to solve an ordinary differential equation and back-propagate through it at each step of training since this is computationally expensive.
 \textcite{rozen2021moser} develop an extension of Riemannian continuous normalising flows by placing a divergence free condition on the vector field. 
 This allows them to circumvent the need to compute the ordinary differential equation at the cost of enforcing the divergence free condition via a regulariser.
 
 \subsubsection{Signals on manifolds}
 
-While the literature for modelling densities on Riemannian manifolds is reasonably developed, and there exists significant literature on generative modelling of signals in Eucldiean space, there exists little work on generative modelling of signals on manifolds.
-\todo[inline]{I could expnad here on the Euclidean signal modelling and detail why it doesn't apply to the manifold setting?}
+While the literature for modelling densities on Riemannian manifolds is reasonably developed, and there exists significant literature on generative modelling of signals in Euclidean space \cite{goodfellow2014generative,kingma2013auto,rezende2014stochastic,rezende15variational,tabak2010density,tabak2013family,chen2018neural,grathwohl2019scalable,song2020score,sohl2015deep,ho2020denoising} there exists little work on generative modelling of signals on manifolds.
 
-There is a line of work in Gaussian process modelling that can model scalar fields on manifolds \cite{Borovitskiy2020,azangulov2022stationary,azangulov2023stationarykernelsgaussianprocesses} and vector fields \cite{hutchinson2021vector}.
+There is a line of work in Gaussian process modelling that can model scalar fields on manifolds \cite{Borovitskiy2020,azangulov2023stationary,azangulov2023stationary2} and vector fields \cite{hutchinson2021vector}.
 These are limited however in their expressive power and scalability due to the nature of Gaussian process models.
 
 \textcite{holderith2021equivariant} develop an equivariant neural process model on signals on Euclidean space, and could be extended to modelling signals on manifolds with the kernels defined in \cite{hutchinson2021vector}.
-
-\todo[inline]{I have not yet written about works that happened \emph{after} the publication of our papers. For example, there are other works that have followed up on the RSGM work, either with applications or with alternative perspectives. I also haven't written about flow matching. I was planning on putting these in the conclusion for the sake of a linear narrative - is this the right thing to do?}
-
-% \todo[inline]{
-% Discuss various ways that geometirc learning has been applied to generative modelling.
-
-
-% mention applications in \\
-% - GANs\\
-% - VAEs\\
-% - Flows\\
-
-% On domains\\
-% - Grids (images and text) - highly ubiquitous \\
-% - Graphs (and geometric graps) - molecule generation etc\\
-% - Manifolds \\
-
-% }
-

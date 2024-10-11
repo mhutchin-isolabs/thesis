@@ -325,7 +325,7 @@ This approach has been taken, for instance, by \textcite{falorsi2019reparameteri
 \textbf{Neural ODE on manifolds.}
 To avoid artifacts or numerical instabilities due to the manifold embedding, another line of work uses tools from Riemannian geometry to define flows directly on the manifold of interest \parencite{falorsi2020neural,mathieu2020riemannian,falorsi2021Continuous}.
 Since these methods do not require a specific embedding mapping, they are referred as \emph{Riemannian}.
-They extend continuous normalizing flows (CNFs) \parencite{grathwohl2019Scalable} to the manifold setting, by implicitly parametrizing flows as solutions of Ordinary Differential Equations (ODEs).
+They extend continuous normalizing flows (CNFs) \parencite{grathwohl2019scalable} to the manifold setting, by implicitly parametrizing flows as solutions of Ordinary Differential Equations (ODEs).
 As such, the parametric flow is a \emph{continuous} function of time.
 This approach has recently been extended by \textcite{rozen2021moser} introducing Moser flows, whose main appeal being that it circumvents the need to solve an ODE in the training process.
 We refer to \Cref{sec:comp-with-moser} for an in-depth discussion on the links between our work and Moser flows.
@@ -337,7 +337,7 @@ with $\psi^c_\theta$ a $c$-convex function and $c=d^2_{\c{M}}$ the squared
 geodesic distance.
 This approach is motivated by the fact that the optimal transport map takes such an expression \parencite{ambrosio2003Optimal}.
 These methods operate directly on the manifold, similarly to CNFs, yet in contrast they are \emph{discrete} in time.
-The benefits of this approach depend on the specific choice of parametric family of $c$-convex functions \parencite{rezende2021Implicit,cohen2021riemannian}, trading-off expressivity with scalability.
+The benefits of this approach depend on the specific choice of parametric family of $c$-convex functions \parencite{rezende2021implicit,cohen2021riemannian}, trading-off expressivity with scalability.
 
 \section{Experiments}
 

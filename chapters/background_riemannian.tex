@@ -10,13 +10,13 @@ This concept allows us to generalize the familiar notions of continuity and smoo
 \Cref{sec:smooth_manifolds} explores smooth manifolds, which equip topological manifolds with a differentiable structure, paving the way for the application of calculus and differential geometry.
 After this we explore this differential structure.
 \Cref{sec:tensors} reviews linear algebra and tensors, in preparation for the next section.
-\Cref{sec:tensor_spaces} introduces tangent, cotanget, and tensor spaces at each point on the manifold, key objects in the study of differentiation on manifolds at a point.
-\Cref{sec:tensor_bundle} intriduces tangent, cotanget, and tensor bundles, structures that attach elemnts of tangent, cotanget, and tensor spaces to each point on the manifold.
+\Cref{sec:tensor_spaces} introduces tangent, cotangent, and tensor spaces at each point on the manifold, key objects in the study of differentiation on manifolds at a point.
+\Cref{sec:tensor_bundle} introduces tangent, cotangent, and tensor bundles, structures that attach elements of tangent, cotangent, and tensor spaces to each point on the manifold.
 \Cref{sec:lie_groups}, explores Lie groups, symmetry groups that are also themselves manifolds.
 
-Fianlly, in \cref{sec:riemannian_manifolds}, we delve into Riemannian manifolds and metrics, which introduce a notion of distance and curvature, enabling us to explore the intrinsic geometry of the underlying data.
-\Cref{sec:integration} studies how to do integration on manifolds. We build up the notions of differnetial forms, the types of objects that we can integrate on manifolds, and orientations.
-\Cref{sec:connections} introduces connections, a way of differentiating tensors, how they lead to geodesics, straight paths on manifolds, and parallel transport, a method for comparing tanget vectors at different points on a manifold.
+Finally, in \cref{sec:riemannian_manifolds}, we delve into Riemannian manifolds and metrics, which introduce a notion of distance and curvature, enabling us to explore the intrinsic geometry of the underlying data.
+\Cref{sec:integration} studies how to do integration on manifolds. We build up the notions of differential forms, the types of objects that we can integrate on manifolds, and orientations.
+\Cref{sec:connections} introduces connections, a way of differentiating tensors, how they lead to geodesics, straight paths on manifolds, and parallel transport, a method for comparing tangent vectors at different points on a manifold.
 
 \section{Topological Spaces}
 \label{sec:topological_spaces}
@@ -41,10 +41,9 @@ On top of this we can create two notions.
 
 First is that of \emphmarginnote{open sets}. 
 
-\todo[inline]{Consider this intro via metric spaces - I think it is more intuitive but we shall wsee. Discuss w valentin}
+% \todo[inline]{Consider this intro via metric spaces - I think it is more intuitive but we shall wsee. Discuss w valentin}
 
-One motivation behind the modern definition of a topology comes from the "open set criterion", the observation that continuous functions between metric spaces (defined in the \(\del{\epsilon, \delta}\) sense \todo{cite?
-}) can be defined by knowing only the open sets of the metric spaces and throwing out the metrics that generated the open sets in the first place.
+One motivation behind the modern definition of a topology comes from the "open set criterion", the observation that continuous functions between metric spaces (defined in the \(\del{\epsilon, \delta}\) sense, \textcite[chapter 9]{tao2022analysisI}) can be defined by knowing only the open sets of the metric spaces and throwing out the metrics that generated the open sets in the first place.
 \begin{definition}[Topology]
 	A topological space \((X, \topo{X})\) is a set \(X\) along with a collection of subsets \(\topo{X}\) of \(X\), called the \emphmarginnote{open sets} of \(X\) that satisfy the following:
 	\begin{itemize}
@@ -111,7 +110,7 @@ Continuous functions between two topological spaces preserve in one direction on
 % \begin{definition}[Continuous functions]
 %     A function \(f: X\to Y\) between two topological spaces \(\del{X, \topo{X}}\) and \(\del{Y, \topo{Y}}\) is said to be continuous if for every open set \( V \in \topo{Y}\), its preimage is open in \(X\), \(f^{-1}(V) \in \topo{X}\).
 % \end{definition}
-\todo[inline]{consider the more formal defnition based style vs the text based style}
+\todo[inline]{consider the more formal definition based style vs the text based style}
 % A function \(f: X\to Y\) between two topological spaces \(\del{X, \topo{X}}\) and \(\del{Y, \topo{Y}}\) is said to be \emphmarginnote{continuous} if for every open set \( V \in \topo{Y}\), its preimage is open in \(X\), \(f^{-1}(V) \in \topo{X}\).
 \begin{definition}[Topological continuity]
 	A function \(f: X\to Y\) between two topological spaces \(\del{X, \topo{X}}\) and \(\del{Y, \topo{Y}}\) is \emph{continuous} if for every open set \( V \in \topo{Y}\), its preimage is open in \(X\), \(f^{-1}(V) \in \topo{X}\).
@@ -140,9 +139,9 @@ Alternatively we might say that \(\cbr{x_i}_{i=0}^\infty\) \emphmarginnote{conve
 	\caption{The sequence \(\cbr{\includegraphics{figures/diagrams/tab_blue_scatter.pdf}_i}\) converges to the point \(x\).
 		We see that on the neighbourhood \bluesquare{}, for \(i > N_{\bluesquare{}}\), \(\includegraphics{figures/diagrams/tab_blue_scatter.pdf}_i \in \bluesquare{}\)} \end{figure} 
 \todo{figure the symbols better}
-A set \(S\) is is said to be \emphmarginnote{sequentially closed} if it contains the limits of all sequences in \(S\).
+A set \(S\) is said to be \emphmarginnote{sequentially closed} if it contains the limits of all sequences in \(S\).
 % abc123def
-This notion is \emph{different} ot that of \emph{topologically closed} introduced earlier, and is different to the notion of containing all of its \emph{topological limit points}.
+This notion is \emph{different} to that of \emph{topologically closed} introduced earlier, and is different to the notion of containing all of its \emph{topological limit points}.
 Topological closure implies sequential closure, but not the converse.
 
 A useful combination of these notions is the convergence of sequences under continuous maps.
@@ -200,7 +199,7 @@ An \emphmarginnote{open cover\label{def:manifold_cover}} is a cover where all th
 A \emphmarginnote{subcover} is a subset of a cover that remains still a cover.
 In a second countable space, every open cover of the space has a \emph{countable} subcover.
 
-If we can further reduce every open cover to having a \emph{finite} sub-cover, then we say the sapce is \emphmarginnote{compact\label{def:compact}}. 
+If we can further reduce every open cover to having a \emph{finite} sub-cover, then we say the space is \emphmarginnote{compact\label{def:compact}}. 
 This generalise the notion of a set being closed and bounded in metrics spaces.
 % Most reasonable spaces we deal with are Hausdorff and second countable. Importantly these properties both hold of Euclidean space. For any two points \(x_1, x_2\) in \(\R^n\) separated by distance \(r\), the open ball neighbourhoods \(B_{\bar{r}}(x_1), B_{\bar{r}}(x_2)\), \(\bar{r} < r/2 \), and so it is Hausdorff. The topology can be generated by the basis of open balls \(\c{B} = \cbrcolon{B_r(x)}{r \text{ is rational and } x \text{ has rational coordinates}}\)
 
@@ -214,7 +213,7 @@ We will choose canonical ways to define these new topologies that preserve sensi
 \subsubsection{Subspaces}
 \label{sec:topo_subspaces}
 
-If we have \(S \subseteq X\), then the \emphmarginnote{subset topology} is the topology \(\topo{S} = \cbrcolon{U \^ S}{U \in \topo{X}} = S \^ \topo{X}\), i.e the intersection of the topology of \(X\) with \(S\).
+If we have \(S \subseteq X\), then the \emphmarginnote{subset topology} is the topology \(\topo{S} = \cbrcolon{U \^ S}{U \in \topo{X}} = S \^ \topo{X}\), i.e. the intersection of the topology of \(X\) with \(S\).
 We define the \emphmarginnote{inclusion map} \(\inclusion_S: S \hookrightarrow X\) as the restriction of the identity of \(X\) to \(S\), \(\eval{\id}_S\).
 
 A continuous, \emph{injective} map \(f: X\to Y\) is called a \emphmarginnote{topological embedding} if it is a homeomorphism onto its image in \(Y\), \(f(X) \subseteq Y\), endowed with the subspace topology.
@@ -240,7 +239,7 @@ Alternatively, we can \emphmarginnote{glue continues maps\label{lemma:continuous
 If we have a) \(B_1,.
 ..,B_n\), a finite collection of closed sets or b) \(\cbr{B_i}_{i\in A}\), any collection of open sets such that \(\u_{a\in A}
 B_a = X\), and a continuous function for each \(B\), \(f_i: B_i \to Y\), and these functions agree on intersections, \(f_i(B_i \^ B_j) = f_j(B_i \^ B_j)\), then there is a unique continuous function \(f: X\to Y\) such that \(\eval{f}_{B_i} = f_i\).
-A important corollary of this is that to check continuity it is sufficient to check continuity on a basis of \(X\).
+An important corollary of this is that to check continuity it is sufficient to check continuity on a basis of \(X\).
 
 \subsubsection{Product spaces}
 
@@ -277,7 +276,7 @@ This topology fails in a number of ways.
 The box topology fails to preserve compactness through products.
 For example, functions we expect to be continuous fail to be continuous, and topological convergence becomes a significantly strict condition under the box topology.
 
-Instead we introduce the concept of \emphmarginnote{cylinder sets}.
+Instead, we introduce the concept of \emphmarginnote{cylinder sets}.
 For collection of spaces, each with a collection of subsets, \((X_a, \c{S}_a)_{a\in A}\), we take the Cartesian product of these to give \(X = \prod_{a\in A}\).
 We get a canonical projection for each \(a\), \(\pi_a: X_a \to X\), that elements of \(X_a\) to its component in \(X\).
 A \emph{cylinder set} is then a set \[\Int_{i=1}^n \pi_{a_i}^{-1}(S_{a_i}), \quad\quad S_{a_i} \in \c{S}_{a_i}, a_i \in A .\]
@@ -378,14 +377,14 @@ Euclidean space of dimension n is clearly a topological manifold of dimension n,
 We may also be interested in manifolds that have \emph{edges}, aptly names manifolds with boundary.
 \begin{definition}[Topological manifold with boundary]
 	\label{def:manifold_with_boundary}
-	An n-dimension \emph{topological manifold with boundary} is a \emph{Hausdorff} and \emph{second-countable} topological space for which every point has a neighbourhood homeomorphic to an open subset of the n-dimension \(\mathbb{H}^n\).
+	An n-dimension \emph{topological manifold with boundary} is a \emph{Hausdorff} and \emph{second-countable} topological space for which every point has a neighbourhood homeomorphic to an open subset of the n-dimension \(\mathbb{H}^n\),
 \end{definition}
 where \(\mathbb{H}^n\) is the \emphmarginnote{upper half-space}, \(\mathbb{H}^n = \cbrcolon{\del{x_1, ..., x_n}\in\R^n}{x_n \geq 0}\).
 We call any point that has a neighbourhood homeomorphic to the upper half-space a \emphmarginnote{boundary point}, and denote the collection of these the \emphmarginnote{boundary}, denoted \(\partial X\).
 Points that are not boundary points are call \emphmarginnote{interior points}.
 
-The \emphmarginnote{interior of a manifold with boundary}, \(\inte X\), is an \(n\)-dimension topologicl manifold \emph{without boundary}.
-The \emphmarginnote{boundary of a manifold with boundary}, \(\partial X\), is an \(n-1\)-dimension topological manifold \emph{without boundary}, and typically properties of \(\partial X\) are \emph{induced} by corresponding properties on \(\inte X\).
+The \emphmarginnote{interior of a manifold with boundary}, \(\inte X\), is an \(n\)-dimension topological manifold \emph{without boundary}.
+The \emphmarginnote[\baselineskip]{boundary of a manifold with boundary}, \(\partial X\), is an \(n-1\)-dimension topological manifold \emph{without boundary}, and typically properties of \(\partial X\) are \emph{induced} by corresponding properties on \(\inte X\).
 
 The required structure of a manifold (with boundary) implies additional properties: all topological manifolds (with boundary) are locally path-connected, locally compact, and paracompact.
 
@@ -402,7 +401,7 @@ However, there exist a very useful class of manifold that we can study that whil
 
 We can make this notion more precise with the study of \emph{bundles}.
 \begin{definition}[Bundle]
-    A \emph{bundle} is a triple \((E, \pi, B)\) consisting of a topological space \(E\) the \emphmarginnote{total space}, \(p: E \to B\) the \emphmarginnote{projection}, a continuous surjective map, and a topological space \(B\) the \emphmarginnote{base space}.
+    A \emph{bundle} is a triple \((E, \pi, B)\) consisting of a topological space \(E\) the \emph{total space}, \(p: E \to B\) the \emph{projection}, a continuous surjective map, and a topological space \(B\) the \emph{base space}.
 \end{definition}
 The \emphmarginnote{fibre} at a point \(p\in B\), \(F_p\), is given by the preimage of the point under the projection, \(F_p = \pi^{-1}(p)\). In the other direction, the projection map will send all points in the fibre \(F_p\) to \(p\).
 
@@ -431,7 +430,7 @@ While we can view manifolds as their whole, it is useful to look at them only as
 We can formalise this notion via charts, where we map some part of the manifold onto a subset of \(R^n\).
 
 We call any open subset of \(X\) along with the homeomorphism \(\phi: U \to \underset{\text{open}}{\subset} \R^n\) a \emphmarginnote{chart} of \(X\).
-A collection of charts \(\cbrcolon{\del{U_a, \phi_a}}{a\in A}\) such that \(\underset{a\in A}{\u} U_a = X\) an \emphmarginnote{atlas} of \(X\), denoted \(\atlas{X}\).
+A collection of charts \(\cbrcolon{\del{U_a, \phi_a}}{a\in A}\) such that \(\underset{a\in A}{\u} U_a = X\) an \emphmarginnote[\baselineskip]{atlas} of \(X\), denoted \(\atlas{X}\).
 For any two charts \(\del{U, \phi_U}, \del{V, \phi_V}\) in an atlas where \(U\^ V \neq \emptyset\) we can define the \emphmarginnote{transition map} between them as the map \(\phi_{UV}: \phi_{U}(U\^V) \to \phi_V(U\^ V)\) as the composition \(\phi_{UV} = \phi_V \circ \phi_U^{-1}\).
 An atlas is called a \emphmarginnote{maximal atlas} if it is not a subset of some larger atlas.
 
@@ -451,7 +450,7 @@ While not required for the definition of a manifold, the concept of charts and a
 In addition, from a computational perspective they are incredibly useful as they give us one way of representing points on a manifold as a series of real numbers.
 
 \subsection{Partitions of unity}
-A very common strategy, both when defining properties and proving theorems, on manifolds, is to break apart the manifold into a \emphhyperref{open cover}{def:manifold_cover}, define or prove things locally, and then using for example the \emphhyperref{gluing lemma}{lemma:continuous_gluing}, patch the result back together.
+A very common strategy, both when defining properties and proving theorems, on manifolds, is to break apart the manifold into an \emphhyperref{open cover}{def:manifold_cover}, define or prove things locally, and then using for example the \emphhyperref{gluing lemma}{lemma:continuous_gluing}, patch the result back together.
 We run into issues when using any cover however, as at any given point we try to glue together an uncountable number of functions.
 A \emph{partition of unity} is the type of structure we need to reduce this problem.
 \begin{definition}[Partition of unity]
@@ -506,7 +505,7 @@ Hausdorff.
 We can define \emphmarginnote{smooth functions on manifolds}.
 \(f: X\to \R^k\) is a smooth function if for every point \(p \in X\) and chart \((U, \phi) \in \atlas{X}\) the function \(f \circ \phi^{-1}: \phi(U)\to \R^k\) is smooth.
 Typically, we denote the space of smooth function \(f: X\to \R^k\) as \(C^\infty(X, \R^k)\), and \(f: X\to \R\) \(C^\infty(X)\).
-Like continuity, smoothness is a local property, and it suffices to check that for a sub-atlas of the atlas on a smooth manifold that a function is smooth on the restriction ot each chart to show it is globally smooth.
+Like continuity, smoothness is a local property, and it suffices to check that for a sub-atlas of the atlas on a smooth manifold that a function is smooth on the restriction to each chart to show it is globally smooth.
 
 We can define \emphmarginnote{smooth functions between manifolds} as well.
 \(f: X \to Y\), where \(X, Y\) are smooth manifolds, is smooth if for each pair of charts \((\phi, U)\in \atlas{X}, (\psi, V) \in \atlas{Y}\) the composition \(\psi \circ f \circ \phi^{-1}: \phi(U)\to \psi(V)\) is smooth.
@@ -552,7 +551,7 @@ Briefly, we recall the definitions of a few algebraic structures.
 		\item \((F, +)\) is an Abelian group, with identity element \(0\).
 		\item \((F\backslash\cbr{0}, *)\) is an Abelian group with identity element \(1\).
 	\end{itemize}
-	In addition the operations \emph{distribute} in the following way, for \(a, b, c \in F\),
+	In addition, the operations \emph{distribute} in the following way, for \(a, b, c \in F\),
 	\[(a + b) * c = a*c + b*c\]
 \end{definition}
 
@@ -565,7 +564,7 @@ Also of use the weaker definition of a \emph{ring}.
 	A \emph{ring} is a set \(F\) equipped with two maps, \(+: F\times F\to F\) and \(*: F\times F\to F\) such that
 	\begin{itemize}
 		\item \((F, +)\) is an Abelian group, with identity element \(0\).
-		\item For \((F\takeaway\cbr{0}, *)\), the \(*\) operator only satisfies associativity, for \(a, b, c \in F\takeaway\cbr{0}\), \((a \cdot b) \cdot c = a \cdot (b\cdot c)\)
+		\item For \((F\takeaway\cbr{0}, *)\), the \(*\) operator only satisfies associativity, for \(a, b, c \in F\takeaway\cbr{0}\), \((a \cdot b) \cdot c = a \cdot (b\cdot c).\)
 	\end{itemize}
 \end{definition}
 
@@ -607,13 +606,13 @@ If \(V = \Span(S)\) then \(S\) \emph{spans} \(V\).
 A set \(S\) is said to be \emphmarginnote{linearly dependent} is there exist \(a_i\in \R\) such that the linear combination is \(0\in V\).
 Otherwise, they are \emphmarginnote{linearly independent}.
 
-\textcolor{red}{some inf dim one?}
+% \textcolor{red}{some inf dim one?}
 
 A \emphmarginnote{linear map} between vector spaces \(V\) and \(W\) are maps \(T: V \to W\) such that they preserve the structure of vector addition and scalar multiplication.
 I.e. \(T(av + bw) = aT(v) + bT(w)\).
 A map \(T: V \to \R\) is called a \emphmarginnote{linear functional}.
-The \emphmarginnote{image} of \(T\), \(\im T\) is the set \(\im T = \cbrcolon{w = T(v)}{v \in V}\).
-The \emphmarginnote{kernel} or \emphmarginnote{null space} of \(T\), \(\ker T\) is the preimage of \(0\) under \(T\), \(\ker T = \cbrcolon{v}{T(v) = 0, v\in V}\).
+The \emphmarginnote[\baselineskip]{image} of \(T\), \(\im T\) is the set \(\im T = \cbrcolon{w = T(v)}{v \in V}\).
+The \emphmarginnote[\baselineskip]{kernel} of \(T\), \(\ker T\) is the preimage of \(0\) under \(T\), \(\ker T = \cbrcolon{v}{T(v) = 0, v\in V}\).
 
 If \(V, W\) are vector spaces over the same field, a bijective linear map \(T: V \to W\) then \(T\) is called a \emphmarginnote{vector isomorphism}, \(T\) has an inverse, and \(V, W\) are said to be (vector) isomorphic, \(V \isomvec W\).
 
@@ -623,7 +622,7 @@ This space of homeomorphisms can in fact be itself turned into a vector space by
 	\boxplus: 	\Hom(V, W) \times \Hom(V, W) &\to \Hom(V, W) \\
 	(f \boxplus g)(v) &\mapsto f(v) + g(v) 
 \]
-and scalar mutliplication
+and scalar multiplication
 \[
 	\boxdot: K \times \Hom(V, W) &\to \Hom(V, W) \\	
 	(\lambda \boxdot f)(v) = \lambda f(v)
@@ -634,7 +633,7 @@ An \emphmarginnote{automorphism} of \(V\) is a linear isomorphism onto itself, a
 For any vector space \(V\), we can define a \emphmarginnote{covector} as a linear map \(\omega: V \to \R\).
 We call the space of covectors the \emphmarginnote{dual space} of \(V\), denoted \(V^*\), and it is equal to \(\Hom(V, K)\), where \(V\) is a vector space over the field \(K\).
 
-For any linear map \(A: V\to W\), we can define its \emphmarginnote{dual map}, \emph{transpose}, or \emphmarginnote{adjoint} \(A^*: W^* \to V^*\) as the map \[(A^*\omega)(v) = \omega(Av), \quad \omega \in W^*, v \in v.\]
+For any linear map \(A: V\to W\), we can define its \emphmarginnote{dual map}, \emph{transpose}, or \emph{adjoint} \(A^*: W^* \to V^*\) as the map \[(A^*\omega)(v) = \omega(Av), \quad \omega \in W^*, v \in v.\]
 This adjoint distributes over composition, but reverse terms, \((A\circ B)^* = B^* \circ A^*\), and preserves the identity, \((\id_V)^* = \id_{V^*}\).
 
 The \emphmarginnote{double dual} of \(V\), \(V^{**} = (V^*)^*\), the dual of the dual, for finite dimension vector spaces is isomorphic to the original space \(V\).
@@ -668,7 +667,7 @@ The "archaic" name refers to how the basis coefficients transform with the basis
 In the modern setting where we typically work basis-free these make less sense.
 By convention, and for sensible reasons, the a tensor in \(T^{(0,0)}\) is just a scalar.
 
-The \emphmarginnote{tensor product} is an operation \(\otimes: T^{(k,l)}(V) \x T^{(p,q)}(V)\to T^{(k+p, l+q)}(V)\).
+The \emphmarginnote{tensor product\label{def:tensor_product}} is an operation \(\otimes: T^{(k,l)}(V) \x T^{(p,q)}(V)\to T^{(k+p, l+q)}(V)\).
 It is defined by its evaluation \[\del{F\otimes G}(\omega^1, .
 	.., \omega^k, \omega^{k+1}, ..., \omega^{k+p}, v_1, ..., v_l, v_{l+1}, ..., v_{l+q})\\ = F(\omega^1, ..., \omega^k, v_1, ..., v_l) G(\omega^{k+1}, ..., \omega^{k+p}, v_{l+1}, ..., v_{l+q}).\]
 This is an associative but \emph{not} a commutative operation.
@@ -723,17 +722,58 @@ For a vector \(v\in V\) expressed in the basis, \(v = \sum_{i=1}^{n} v^i e_i^V\)
 A \emphmarginnote{change of basis} of a vector can be performed between two different bases \(e_1, ..., e_n\) and \(\tilde e_1, ..., \tilde e_n\).
 Each basis vector \(\tilde e_j\) can be expressed as a linear combination of the first basis, \(\tilde e_j = \lambda_j^i e_i\).
 Any vector expressed in the first basis, \(v = v^i e_i\) can then be re-expressed in the second basis via \(v = \tilde v^j \tilde e_j\) where \( \tilde v_j = \lambda^j_i v^i\).
-Similarly we can 
+% Similarly we can 
 As such we can see a change of basis as an automorphism of \(V\).
 
 We can classify bases into two equivalence classes, called an \emphmarginnote{orientation\label{def:vector_orientation}}.
 To do so, we pick a basis to be the reference.
-We called another basis \emphmarginnote{positively oriented} if the determinant of the transition matrix \(\lambda^j_i\) is positive, and \emphmarginnote{negativly oriented} if this is negative.
+We called another basis \emphmarginnote{positively oriented} if the determinant of the transition matrix \(\lambda^j_i\) is positive, and \emphmarginnote{negatively oriented} if this is negative.
 
 % \(n\)\emph{-dimension Euclidean space}\marginnote{\(n\)-dimension Euclidean space}, \(\R^n\) is the prototypical example of a finite-dimension real vector space with vector and scalar multiplication defined by\[(x_1, ..., x_n) + (y_1, ..., y_n) &= (x_1 + y_1, ..., x_n + y_n) \\ a(x_1, ..., x_n) &= (ax_1, ..., ax_n),\] with standard basis \((e_1, ..., e_n)\), \(e_i = (0,..., 1, ..., 0)\) with the \(1\) in the i'th position.
 
 \subsection{Einstein summation convention}
-\todo{...}
+\label{sec:einsum}
+Einstein summation convention is a notation method for reducing the notation overhead when dealing with vector spaces and linear maps.
+It consists of suppressing explicit summation signs and replacing them with the implicit assumption that repeated indices in an expression are summed over.
+Indices can appear in subscript or superscript, and can only appear in each position at most once in an expression.
+For example, we can write
+\[
+	{v} = \sum_{i=1}^n v^i {e}_i = v^i {e}_i
+\]
+for the expression of a vector in a basis, and 
+\[
+	T = \sum_{i=1}^d\sum_{j=1}^d\sum_{k=1}^d T^{ij}_k f^k e_i \otimes e_j = T^{ij}_k f^k e_i \otimes e_j	
+\]
+for the more complex construction of a \((2,0)-\)tensor.
+
+Indices that are summed over are called \emphmarginnote{dummy indices}.
+They appear in pairs and it is not important what letter we choose to label them with.
+Indices that appear once, and are therefore not summed, are called \emphmarginnote{free indices}, and must appear on both sides of an expression.
+For example
+\[
+	T^{ij}_k = T^{imj}_{km}
+\]
+represents a trace-like summation.
+
+There is an additional convention to which indices are superscript and which are subscript.
+\begin{itemize}
+	\item Basis vectors of a vector space are subscripted.
+	\item Basis vectors of dual vector spaces are superscripted.
+	\item Other placements are derived from the above two rules.
+\end{itemize}
+As an example of the last rule, coefficients of a vector in a basis must be in superscript so that they are correctly summed with the basis vectors, and the opposite for covector coefficients.
+
+When working with Einstein summation convention and maps, care should be taken to only apply the notation to \emph{linear} maps, or take additional care.
+For example, for the bilinear map \(\phi: V\x W\to \R\) we can write this as
+\[
+	\phi(v, w) = \phi(v^i e_i, w^j \tilde{e}_j) = v^i w^j \phi(e_i, \tilde{e}_j).
+\]
+We can then represent the map \(\phi\) via the set of coefficients \(\phi_{ij} = \phi(e_i, \tilde{e}_j)\), and write
+\[
+	\phi(v, w) = v^i w^j \phi_{ij}.
+\]
+This is only true however if \(\phi\) is bilinear.
+This makes Einstein summation convention very suitable in linear algebra, and by extension the study of tensor fields in geometry, as linear maps are omnipresent. 
 
 \subsection{Symmetric tensors}
 \label{sec:sym_alt}
@@ -787,7 +827,7 @@ If we express the vectors \(v_1, ..., v_k\) in the dual basis to \(\epsilon^1, .
 	v_1^{i^k} & \dots & v_k^{i^k}
 \end{bmatrix} 
 .\]
-Clearly this is an alternating tensor, as swapping any two columns in the determinant results in the change in a sign, and it is zero if any two vectors are colinear.
+Clearly this is an alternating tensor, as swapping any two columns in the determinant results in the change in a sign, and it is zero if any two vectors are co-linear.
 
 Evaluating an elementary alternating tensor on basis elements \(e_{j_1}, ... e_{j_k}\) gives 
 \[\epsilon^I(e_1, ..., e_k) = \begin{bmatrix}
@@ -797,12 +837,12 @@ Evaluating an elementary alternating tensor on basis elements \(e_{j_1}, ... e_{
 \end{bmatrix} = \delta_J^I,\] where \(J=(j_1, ..., j_k)\).
 
 By picking a subset of the elementary alternating tensors we can produce a basis on the space of alternating tensors.
-We need to exclude any that are zero (\(I\) with repeated indicies) and any \(I\) that is a permutation of another element of the basis set. 
+We need to exclude any that are zero (\(I\) with repeated indices) and any \(I\) that is a permutation of another element of the basis set. 
 For the space alternating tensors \(\Lambda^k(V^*)\) over an \(n\)-dimension vector space \(V^*\), we can therefore pick the basis
 \[  \bb{I} = \cbrcolon{\epsilon^I}{ I \text{ is a strictly increasing multiindex of size } k} .\]
 
 
-The \emphmarginnote{wedge product} of two alternating tensors, enoted by \(\wedge\), maps two alternating tensors to an alternating tensor of higher dimension, \[\wedge: \Lambda^k(V^*) \times \Lambda^l(V^*) \to \Lambda^{k+l}(V^*) .\]
+The \emphmarginnote{wedge product} of two alternating tensors, denoted by \(\wedge\), maps two alternating tensors to an alternating tensor of higher dimension, \[\wedge: \Lambda^k(V^*) \times \Lambda^l(V^*) \to \Lambda^{k+l}(V^*) .\]
 For \(F\in \Lambda^k(V^*), G\in \Lambda^l(V^*)\), is is defined as \[ F\wedge G = \frac{(k+l)!
 	}{k!l!} \alt (F\otimes G) ,\] \(F\wedge G \in  \Lambda^{k+l}(V^*)\).
 This is a \emph{bilinear, associative, anti-commutative} (\(F\wedge G = \del{-1}^{kl}G\wedge F\)) operation.
@@ -821,7 +861,7 @@ If the set of vectors are not linearly independent, this volume spanned will be 
 Intuitively this makes sense as then the vectors span a hyperplane in \(V\), which should have zero volume in the whole of \(V\).
 
 Using a particular choice of a \emphmarginnote{volume form defines an orientation\label{def:vol_form_gives_orientation}} of an ordered basis.
-If the volume form \(\omega\) applied to an ordered basis \(e_1, ..., e_n\) is positive then the basis is positivly oriented, otherwise it is negativly oriented.
+If the volume form \(\omega\) applied to an ordered basis \(e_1, ..., e_n\) is positive then the basis is positively oriented, otherwise it is negatively oriented.
 
 \section{Tangent, cotangent, and tensor spaces}
 \label{sec:tensor_spaces}
@@ -863,14 +903,14 @@ We recall a few more algebraic definitions.
 		\item and \(\bullet\) is \emph{bi-linear} product with respect to the field \(F\).
 	\end{itemize}
 \end{definition}
-Additionally this can be \emph{associative} if the product is associate, \emph{unital} if the product has an identity element, and \emph{commutative} if the product commutes.
+Additionally, this can be \emph{associative} if the product is associate, \emph{unital} if the product has an identity element, and \emph{commutative} if the product commutes.
 
 We can make the space of smooth functions \(C^\infty(\R^n)\) an associative, unital, commutative algebra over the field \(\R\) by setting 
 \begin{itemize}
 	\item[] \(+: C^\infty(\R^n)\times C^\infty(\R^n) \to C^\infty(\R^n)\) to be pointwise addition of functions.
 	\item[] \(\cdot: \R \times C^\infty(\R^n) \to C^\infty(\R^n) \) to be pointwise multiplication by a scalar.
 	\item[] \(\bullet:C^\infty(\R^n)\times C^\infty(\R^n) \to C^\infty(\R^n) \) to be pointwise multiplication of functions.
-\end{itemize}.
+\end{itemize}
 Often for this particular algebra, we will suppress the notation of \(f \bullet g\) to simply \(fg\) for \(f, g \in C^\infty(\R^n)\).
 
 \begin{definition}[Derivation on an algebra]
@@ -885,7 +925,7 @@ For our algebra of smooth functions \(C^\infty(\R^n)\), we can restrict these de
 	\[D(f \bullet g)(p) = (D(f)\bullet g)(p) + (f \bullet D(g))(p)\]	
 \end{definition}
 We denote the space of derivations as \(\Der_p C^\infty(\R^n)\).
-This space of derivations at a point form a \emph{vector space} over the \emph{field} \(\R\) by defining vector addition of derivations by 
+This space of derivations at a point from a \emph{vector space} over the \emph{field} \(\R\) by defining vector addition of derivations by 
 \[[(D + \tilde D)f](p) = [Df](p) + [\tilde Df](p), \quad D, \tilde D\in\Der_p C^\infty(\R^n), \; f \in C^\infty(\R^n),\; p\in \R^n \]
 and scalar multiplication as 
 \[[(\lambda D)f](p) = \lambda [D f](p), \quad D\in\Der_p C^\infty(\R^n), \; f \in C^\infty(\R^n),\; p\in \R^n, \; \lambda \in \R .\]
@@ -903,15 +943,15 @@ This therefore connects the intuitive idea of directional derivatives that we ar
 We call the space of derivations at a point the \emphmarginnote{tangent space}, and denote it \(T_p\R^n = \Der_p C^\infty(\R^n)\).
 
 This then give us a natural way to define the \emphmarginnote{tangent space at a point on a manifold}.
-For a manifold and a open set of the manifold \(U\subset X\), we say that a \emphmarginnote{deivation on \(C^\infty(U)\) at \(p\in U\)} is a linear map \(D:C^\infty(U) \to R\) satisfying
+For a manifold and an open set of the manifold \(U\subset X\), we say that a \emphmarginnote{deviation on \(C^\infty(U)\) at \(p\in U\)} is a linear map \(D:C^\infty(U) \to R\) satisfying
 \[
-	D(fg) = D(f)g(p) + f(p)D(g)
+	D(fg) = D(f)g(p) + f(p)D(g),
 \]
 and we denote this space of derivations as \(\Der_p C^\infty(U)\).
 
-We define the tangets space at a point on the manifold \(T_pX = \Der_p C^\infty(U)\).
-We can prove that the choice of chart is independant of the final object, and therefore is not notated.
-For an \(n\)-dimension manifold, the tangent space is \(n\)-dimension vector space, isomorphic (in the vector space sense) to \(\R^n\) using the same vector operations as for  Euclidean sapce.
+We define the tangents space at a point on the manifold \(T_pX = \Der_p C^\infty(U)\).
+We can prove that the choice of chart is independent of the final object, and therefore is not notated.
+For an \(n\)-dimension manifold, the tangent space is \(n\)-dimension vector space, isomorphic (in the vector space sense) to \(\R^n\) using the same vector operations as for  Euclidean space.
 
 Intuitively, this is the space of all possible directions one could move in from \(p\).
 \begin{figure}[h]
@@ -927,10 +967,10 @@ We call this the \emphmarginnote{differential} of \(F\) at \(p\), denoted \(\d F
 This is a \emph{linear} map that distributes over compositions of maps between manifolds, \(\d_p\del{F\circ G} = \d F_{G(p)} \circ \d G_p\), and preserves the identity map, \(\d(\id_X)_p = \id_{T_pX}\).
 Importantly if \(F\) is a \emph{diffeomorphism}, then \(\d F\) is an \emph{isomorphism} between tangent spaces and \(\del{\d F}^{-1} = \d \del{F^{-1}}\).
 
-It is worth thinking about what the differential means intuitivly.
+It is worth thinking about what the differential means intuitively.
 It says that if we have a smooth function \(f\) on \(Y\), we can take a derivation of this with respect to tangent vector  \(v\in T_pX\) by first transporting the function \(f\) from \(Y\) to \(X\) via \(F\), and then take the derivation of this new function with \(v\).
 
-Sometimes the differntial is refered to as the \emphmarginnote{pushforward} of a tangent vector by \(F\), and is denoted
+Sometimes the differential is referred to as the \emphmarginnote{pushforward} of a tangent vector by \(F\), and is denoted
 \[(F_*)_p: T_p X \to T_p Y\]
 
 \begin{figure}[h]
@@ -938,7 +978,7 @@ Sometimes the differntial is refered to as the \emphmarginnote{pushforward} of a
 	\caption{A smooth map between smooth manifolds \(F: X \to Y\) induces a natural map between the tangent spaces of \(p\) and \(F(p)\), the differential \(\d F_p\).}
 \end{figure}
 
-\subsection{Submersions, immersions and embeddings}
+\subsection{Submersions, immersions, and embeddings}
 
 The definition of the differential allows us to classify smooth maps between manifolds.
 If we have a map \(F: X\to Y\), at any point we can define the \emphmarginnote{rank of a map} \(F\) at a point \(p\in X\) to be the rank of the linear map \(\d F_p\).
@@ -953,14 +993,14 @@ The simplest example of this is the Euclidean inclusion of coordinates, \(F:\R^{
 Of most importance to us will be \emphmarginnote{smooth embeddings}.
 These are smooth immersions \(F:X \to Y\) that are also \emph{topological embeddings}(\cref{sec:topo_subspaces}), an immersion that is a homeomorphism when inheriting the subspace topology in its image \(F(X) \subseteq Y\).
 
-Smooth embeddings are particualrly useful when we can embed the manifold into Euclidean space.
-This is useful from a techincial perspective as it allows us to transfer tools from the simplified setting of Euclidean space onto the surface of the manifold easily, and from a computational point of view as it allows us to respresent points on the surface of the manifold in a global way.
+Smooth embeddings are particularly useful when we can embed the manifold into Euclidean space.
+This is useful from a technical perspective as it allows us to transfer tools from the simplified setting of Euclidean space onto the surface of the manifold easily, and from a computational point of view as it allows us to represent points on the surface of the manifold in a global way.
 Instead of having to pick a collection of charts to cover the manifold and represent, we can pick a global (but slightly redundant) coordinate system.
 In addition, from a deep learning perspective, embeddings make it much easier to define smooth maps between manifolds.
-Again if we were to use charts, we would need to pick more than one to cover most manifolds, and as such we would need to ensure that the function we define (usually a learable function) smoothly agrees on the overlap of the charts.
+Again if we were to use charts, we would need to pick more than one to cover most manifolds, and as such we would need to ensure that the function we define (usually a learnable function) smoothly agrees on the overlap of the charts.
 With a pair of embeddings for the input and output manifolds into Euclidean space, we can instead define a single smmoth function from Euclidean space to Euclidean space and restrict its inputs and outputs to the embedded manifolds.
 
-A question then remains, can we always embed a smmooth manifold smoothly into Euclidean space?
+A question then remains, can we always embed a smooth manifold smoothly into Euclidean space?
 The answer is yes.
 \begin{theorem}[Whitney Embedding Theorem]
 	\label{thm:whiteny_embedding}
@@ -980,7 +1020,7 @@ For the special case of \(\R^n\), we already know how to define a basis on the t
 We simply take the partial differentials with respect to each input at the given point, \(\eval{\pd{}{x_1}}_p, .
 .., \eval{\pd{}{x_n}}_p\).
 Any derivation can then be expressed as \[v = \sum_{i=1}^n v^i \eval{\pd{}{x_i}}_p \quad\quad v \in T_p\R^n ,\; v_i \in \R.\]
-Their action on a smooth function \(f\in C^\infty(\R^n)\) is simply \[\eval{\pd{}{x_i}}_p \del{f} = \pd{f}{x_i}\del{p}\] 
+Their action on a smooth function \(f\in C^\infty(\R^n)\) is simply \[\eval{\pd{}{x_i}}_p \del{f} = \pd{f}{x_i}\del{p}.\] 
 
 Using this basis on \(T_p\R^n\), we can place a basis on a tangent space of a manifold \(T_pX\) at point using a smooth chart \((U, \phi)\in \atlas{X}\) containing that point.
 Remember that a smooth chart \(\phi: U \to \R^n\) is a diffeomorphism onto its image.
@@ -994,7 +1034,7 @@ We can then express any tangent vector \(v \in T_pX\) as \[v = \sum_{i=1}^n v_i 
 	}
 \end{figure}
 \begin{figure}[h]
-	\includegraphics{figures/diagrams/coordinate_differential.pdf}
+	\includegraphics{figures/tex/coordinate_differential.tex}
 	\caption{Taking the differential of \(f\), a bump function, evaluated at \(p\) in the i'th direction.
 		Push the function \(f\) onto the chart \(U\) through \(\phi\) to give the function \(f\circ \phi^{-1}: \R^k\to \R\).
 		Then restrict this function to the i'th component to give \(\eval{f\circ \phi^{-1}}_i: \R \to \R\).
@@ -1024,13 +1064,10 @@ If we have \(p\) in two charts \((U, \phi)\), \((V, \psi)\) and a vector \(v\) a
 As a small abuse of notation I will write \(\pd{\psi \circ \phi^{-1}_j}{x_i} = \pd{\psi_j}{\phi_i}\).
 Since we know this differential is an isomorphism, so must its Jacobian, i.e. is it full rank, so \(\pd{\psi_j}{\phi_i}\in \groupGL\).
 
-\begin{figure}[h] \includegraphics{figures/diagrams/coordinate_chart.pdf} \caption{A coordinate chart of the sphere, \(\c{S}_2\).
-	}
-\end{figure}
-
-\begin{figure}[h]
-	\includegraphics{figures/diagrams/earth.pdf}
-\end{figure}
+% \begin{figure}[h] 
+% 	\includegraphics{figures/diagrams/coordinate_chart.pdf} 
+% 	\caption{A coordinate chart \((U, \phi)\) of the sphere, \(\c{S}_2\).}
+% \end{figure}
 
 \subsection{Cotangent and tensor spaces}
 
@@ -1049,9 +1086,9 @@ For \(v\in T_pX\), \(v = v^i \eval{\partial\phi_i}_p = \tilde v^i \eval{\partial
 This transform definition is equivalent to saying that \(\tilde \omega_j = \del{\pd{\psi^j}{\phi^i}(p)}^{-1} \omega_i\).
 Plugging this into the definition of the cotangent vectors and working it through in coordinates, we see that this leave the action of the cotangent vector on the tangent vector in coordinates invariant to the choice of coordinates, as we would expect.
 
-Previously we saw the defintion of the \emph{pushforward} of a tangent vector along a diffeomporphism \(F: X\to Y\) from \(T_pX\) to \(T_pY\).
+Previously we saw the definition of the \emph{pushforward} of a tangent vector along a diffeomorphism \(F: X\to Y\) from \(T_pX\) to \(T_pY\).
 We can instead \emphmarginnote{pullback} a covector from \(T_pY^*\) to \(T_pX^*\) via the pullback \((F^*)_p: T_pY^*\to T_pX^*\), defined by its action on a vector \(v\in T_pX\),
-\[((F^*)_p(\omega))(v) = \omega((F_*)_p(v))\]
+\[((F^*)_p(\omega))(v) = \omega((F_*)_p(v).)\]
 
 \section{Tensor Bundles}
 \label{sec:tensor_bundle}
@@ -1106,13 +1143,14 @@ In the sense of the direction derivative discussed earlier, this akin to attachi
 A \emphmarginnote{vector field on a smooth manifold} is then a section of the tangent bundle instead.
 
 A \emphmarginnote{smooth vector field} is one that is a smooth function between \(X\) and \(TX\).
-A \emphmarginnote[\baselineskip]{rough vector field} is one that is not.
+A \emphmarginnote{rough vector field} is one that is not.
 
 We will denote the space of vector fields as \(\Gamma(TX)\).
 Sometimes it is written as \(\mathfrak{X}(X)\).
 
 \subsubsection{Algebraic structure of the tangent bundle}
-In the previous section we saw that tanget spaces \emph{at a point} can be viewed as a specific algebraic structure, namely as the \emph{vector space} of \emph{derivations at a point} over the \emph{algebra} of smooth functions \((C^\infty(X), +, \cdot, \bullet)\). 
+\label{sec:tangent_bundle_structure}
+In the previous section we saw that tangent spaces \emph{at a point} can be viewed as a specific algebraic structure, namely as the \emph{vector space} of \emph{derivations at a point} over the \emph{algebra} of smooth functions \((C^\infty(X), +, \cdot, \bullet)\). 
 % Recall that we set \(+\) to be pointwise addition of functions, \(\cdot\) to be pointwise multiplication of functions, and \(\bullet\) to be multiplication of the function by a scalar.
 Recall that we had:
 \begin{itemize}
@@ -1120,19 +1158,19 @@ Recall that we had:
 	\item \(\cdot: \R \times C^\infty(X) \to C^\infty(X) \) to be pointwise multiplication by a scalar.
 	\item \(\bullet:C^\infty(X)\times C^\infty(X) \to C^\infty(X) \) to be pointwise multiplication of functions.
 \end{itemize}
-Lets then define:
+Let us then define:
 \begin{itemize}
 	\item \(\oplus: \Gamma(TX)\times \Gamma(TX)\to \Gamma(TX)\), \((\sigma\oplus \tau)(p) \mapsto \sigma(p) + \tau(p)\), pointwise vector addition of vector fields.
 	\item \(\odot: C^\infty(X) \times \Gamma(TX) \to \Gamma(TX)\), \((f\odot \sigma)(p) \mapsto f(p)\sigma(p)\), pointwise scaling of a vector field by a function.
 \end{itemize}
 
 We can construct a \emph{ring} (\cref{def:ring}) from the smooth functions on a manifold as \((C^\infty(X), +, \bullet)\).
-The triple \((\Gamma(TX), \oplus, \odot)\label{def:tanget_bundle_module}\) then satisfies the conditions of a \emph{vector space} with respect to this \emph{ring}.
+The triple \((\Gamma(TX), \oplus, \odot)\label{def:tangent_bundle_module}\) then satisfies the conditions of a \emph{vector space} with respect to this \emph{ring}.
 Vector spaces over rings are very different to vector spaces over fields, and are often called \emphmarginnote{modules}.
 
 It is possible to define \(\Gamma(TX)\) as a vector space over the field \(\R\) by using \emph{global} scaling of a vector field by a constant, but the \emph{basis} of this vector space nessicarily becomes uncountably infinite and difficult to work with.
-By contrast \(\Gamma(TX)\) as a vector space over the ring \(C^\infty(X)\) by using \emph{local} scaling of a vector field by a function is more natural and plesant to work with.
-See \cite{schuller2013lectures}. \todo{module theory?}
+By contrast \(\Gamma(TX)\) as a vector space over the ring \(C^\infty(X)\) by using \emph{local} scaling of a vector field by a function is more natural and pleasant to work with.
+See \cite{schuller2013lectures}.
 
 As a summary:\\
 \(T_pX\) is a \emph{vector space} over the \emph{field \(\R\)} of \emph{derivations at a point} of the \emph{algebra} \(C^\infty(X)\).\\
@@ -1154,7 +1192,7 @@ In addition to being a product, the Lie bracket is
 	\item and satisfies the \emphmarginnote{Jacobi identity}, \(\sbr{V, \sbr{W,X}} + \sbr{W, \sbr{X,V}} + \sbr{X, \sbr{V,W}} = 0\).
 \end{itemize}
 More general than this application to vector fields, any product which is also antisymmetric and satisfies the Jacobi identity is said to be a \emphmarginnote{Lie bracket}.
-An algebra whose prodcut is a Lie bracket is termed a \emphmarginnote{Lie algebra}.
+An algebra whose product is a Lie bracket is termed a \emphmarginnote{Lie algebra}.
 
 As it stands, \((\Gamma(TX), \oplus, \odot)\) is \emph{not} a vector space over a field, it is a vector space over a ring. 
 As such, the combination of the tangent bundle and the Lie bracket is \emph{not} a Lie algebra.
@@ -1167,9 +1205,8 @@ A vector field is smooth if and only if its component functions in each chart ar
 
 A chart induces \emphmarginnote{coordinate vector fields} on \(U\subseteq X\) by the assignment \(p\mapsto \eval{\pd{}{\phi_i}}_p\).
 These are denoted as \(\pd{}{\phi_i} = \partial\phi_i = \partial_i\) where the rest of the information is implicit.
-Together, the coordinate vector fields \(\partial\phi_1, .
-.. \partial \phi_n\) produce a \emph{smooth local frame} called a \emphmarginnote{coordinate frame\label{def:coordinate_frame}}.
-A \emphmarginnote{smooth local frame\label{def:smooth_local_frame}} a set of smooth (restricted to an open set \(U\)) vector fields that at each point span the tangent space.
+Together, the coordinate vector fields \(\partial\phi_1, ... \partial \phi_n\) produce a \emph{smooth local frame} called a \emphmarginnote{coordinate frame\label{def:coordinate_frame}}.
+A \emphmarginnote[\baselineskip]{smooth local frame\label{def:smooth_local_frame}} a set of smooth (restricted to an open set \(U\)) vector fields that at each point span the tangent space.
 We can similarly define \emphmarginnote{continuous local frames\label{def:continuous_local_frame}}, with the vector fields being only continuous.
 
 If \(U=X\), this is a global frame, and we can have a global choice of basis for the tangent space, although these do not exist for most manifolds.
@@ -1180,18 +1217,18 @@ For example,
 \end{theorem}
 Since there are no non-vanishing smooth vector fields, none of these can be a basis field globally, and so there is no smooth global basis.
 
-The lack of existence of a global basis for \(\Gamma(TX)\) innitially makes it difficult to see how to parametrise smooth vector fields on manifolds in a computer, as patching together local chart while maintaining smoothness without a basis is tricky.
+The lack of existence of a global basis for \(\Gamma(TX)\) initially makes it difficult to see how to parametrise smooth vector fields on manifolds in a computer, as patching together local chart while maintaining smoothness without a basis is tricky.
 
-The failure of the the existence of a smooth global basis is exactly due to \(\Gamma(TX)\) being a module rather than a vector space.
+The failure of the existence of a smooth global basis is exactly due to \(\Gamma(TX)\) being a module rather than a vector space.
 The solution to this lies in the study of modules.
 
 \begin{definition}[Generator of a module]
 	Let \((M, \oplus, \odot)\) be a module over the ring \((R, +, \cdot)\).
-	A \emph{generator} of the module is a subset \(G \subset M\) such that for any element \(m \in M\) there exsits coefficients \((r_g)_{g \in G}, \; r_g \in R\) such that 
+	A \emph{generator} of the module is a subset \(G \subset M\) such that for any element \(m \in M\) there exists coefficients \((r_g)_{g \in G}, \; r_g \in R\) such that 
 	\[
 		m = \sum_{g\in G} r_g g	
 	.\]
-	If there exists a generator of \(M\) that is finite we say that it is \emphmarginnote{finitely generated}
+	If there exists a generator of \(M\) that is finite we say that it is \emphmarginnote{finitely generated\label{def:finitely_generated}}
 \end{definition}
 The generator of a module is similar to the basis of a vector space, but we give up injectivity between coefficients in the ring and elements of the module.
 That is, there may be more than one set of coefficients in the ring that lead to the same element in the module.
@@ -1204,7 +1241,7 @@ Fortunately for working with vector fields on manifolds, we have the following r
 \begin{proof}
 	\textcite[see]{falorsi2020neural}.
 	The proof is an application of the fact that we can for a second countable manifold arrive finite size local trivialization of the manifold.\todo{local triv}
-	We can use these charts to create local bases for the tangent bundle, and a \emphhyperref{partition of unity}{} subbordinte to the trivialisation to smoothly glue together local vector fields represented in these local bases into a global vector field.
+	We can use these charts to create local bases for the tangent bundle, and a \emphhyperref{partition of unity}{} subordinate to the trivialisation to smoothly glue together local vector fields represented in these local bases into a global vector field.
 \end{proof}
 This gives us a strategy to parametrise smooth vector fields on manifolds.
 \begin{enumerate}
@@ -1212,16 +1249,16 @@ This gives us a strategy to parametrise smooth vector fields on manifolds.
 	\item Parametrise smooth functions \(f^i: X\to \R\).
 	\item Define the vector field as \[V = f^i V_i\]
 \end{enumerate}
-Using this result therefore, we will always be able to pick a finite set of fields from which we can paremetrise the space of vector fields.
+Using this result therefore, we will always be able to pick a finite set of fields from which we can parametrise the space of vector fields.
 
 
 \subsubsection{Tangent and non-tangent vector fields}
 Supposed we have \(X\), and a submanifold \(Y\subset X\), immersed or embedded, with inclusion map \(\inclusion: Y \to X\). 
 The differential of the inclusion map \(\d\inclusion: \Gamma\del{TY} \to \Gamma\del{TX}\) identifies \(\Gamma\del{TY}\) with a linear subspace of \(\Gamma\del{TX}\).
 We can then project any vector field \(V\in \Gamma\del{TX}\), restricted to the surface of \(Y\), into \(\Gamma\del{TY}\) by projecting onto this linear subspace.
-We say that a vector field is \(V\in \Gamma\del{TX}\) \emphmarginnote{tangent to a submanifold} if this projection leave the vector field unchanged, and that is it \emphmarginnote{normal to a submanifold} if the vector field is zero under this projection.
+We say that a vector field is \(V\in \Gamma\del{TX}\) \emphmarginnote{tangent to a submanifold} if this projection leave the vector field unchanged, and that is it \emph{normal to a submanifold} if the vector field is zero under this projection.
 
-For manifolds with boundary, \(X\), we say that an \emphmarginnote{inward-pointing vector field\label{def:inward_pointing}} is a vector field \(V\in \Gamma(TX)\) if at every point on its restriction to the boundary it is normal to the boundary and the tanget vectors point \emph{into} the interior. We define the converse for \emphmarginnote{outward-pointing vector fields\label{def:outward_pointing}}.
+For manifolds with boundary, \(X\), we say that an \emphmarginnote{inward-pointing vector field\label{def:inward_pointing}} is a vector field \(V\in \Gamma(TX)\) if at every point on its restriction to the boundary it is normal to the boundary and the tangent vectors point \emph{into} the interior. We define the converse for \emphmarginnote{outward-pointing vector fields\label{def:outward_pointing}}.
 
 
 % An important operation we can perform on vector fields is the \emphmarginnote{Lie bracket}.
@@ -1237,14 +1274,14 @@ For manifolds with boundary, \(X\), we say that an \emphmarginnote{inward-pointi
 \subsection{Tensor bundles and fields}
 \label{sec:tensor_bundles_fields}
 The tangent bundle is one of the most fundamental bundles we deal with in geometry.
-We can however introduce a wider range of bundles by bundling arbitray tensors over the manifold (\cref{sec:higher_order_tensors}).
+We can however introduce a wider range of bundles by bundling arbitrary tensors over the manifold (\cref{sec:higher_order_tensors}).
 All of these bundles will be examples of \emph{vector bundles}, which are fibre bundles where the typical fibre is isomorphic to \(\R^n\) with the usual vector structure.
 
 In constructing these bundles, it is very handy to have the following lemma.
 \begin{lemma}[Vector bundle chart lemma]
 	Let \(X\) be a smooth manifold (with boundary), and suppose that for each \(p\in X\) we have \(E_p\), a \(k\)-dimension vector space.
 	Let \(E = \coprod_{p\in X} E_p\), and \(\pi: E\to X\) be the map such that \(\pi: E_p \mapsto p\).
-	If have the following: \begin{enumerate}[noitemsep] \item an open cover of \(X\), \(\cbr{U_a}_{a\in A}\).
+	If we have the following: \begin{enumerate}[noitemsep] \item an open cover of \(X\), \(\cbr{U_a}_{a\in A}\).
 		\item for each \(a \in A\), a bijection \(\Phi: \pi^{-1}(U_a) \to U_a \times \R^k\).
 		\item for each \(a, b\in A\) with \(U_a \^ U_b \neq \emptyset\), a smooth map \(\tau_{ab}
 		      U_a\^ U_b \to \groupGL[k, \R]\) such that the map \(\Phi_a\circ \Phi_b^{-1}: (U_a\^ U_b) \times \R^k \to (U_a\^ U_b) \times \R^k\) is of the form \[ \Phi_a\circ \Phi_b^{-1}(p, v) = (p, \tau_{ab}(p)v)\] \end{enumerate} Then E has a unique topology and smooth structure making it into a smooth manifold with or without boundary and a smooth rank-k vector bundle over M; with \(\pi\) as projection and \(\cbr{(U_a, \Phi_a)}\) as smooth local trivializations.
@@ -1269,12 +1306,12 @@ We gain construct this using the vector bundle chart lemma, and use a basis ever
 There are a series of special cases.\\
 The \emph{tangent bundle} is denoted \(TX = T^1_0TX\)\\
 The \emph{cotangent bundle} is denoted \(T^*X = T^0_1TX\)\\
-The \emphmarginnote{bundle of covariant \(k\)-tensors} is denoted \(T^kT^*X = T^0_kTX\).\\
-The \emphmarginnote{bundle of contravariant \(k\)-tensors} is denoted \(T^kTX = T^k_0TX\).\\
-The \emphmarginnote{bundle of symmetric \(k\)-tensors} is denoted \(\Sigma^kT^*X = \sym T^0_kTX\).\\
-The \emphmarginnote{bundle of alternating \(k\)-tensors} is denoted \(\Lambda^kT^*X = \alt T^0_kTX\).
+The \emph{bundle of covariant \(k\)-tensors} is denoted \(T^kT^*X = T^0_kTX\).\\
+The \emph{bundle of contravariant \(k\)-tensors} is denoted \(T^kTX = T^k_0TX\).\\
+The \emph{bundle of symmetric \(k\)-tensors} is denoted \(\Sigma^kT^*X = \sym T^0_kTX\).\\
+The \emph{bundle of alternating \(k\)-tensors} is denoted \(\Lambda^kT^*X = \alt T^0_kTX\).
 
-A \emphmarginnote{tensor field} is then a \emph{smooth section} of a tensor bundle.
+A \emphmarginnote{tensor field\label{def:tensor_field}} is then a \emph{smooth section} of a tensor bundle.
 The space of smooth sections of a tensor bundle is denoted \(\Gamma\del{T^p_qT}\).
 \(\Gamma\del{T^0_0TX}\) is simply the space of smooth functions \(C^\infty(X)\).
 
@@ -1282,7 +1319,7 @@ The space of smooth sections of a tensor bundle is denoted \(\Gamma\del{T^p_qT}\
 
 For tensor bundles we can again define smooth local \emph{frames}.
 If we have a smooth local frame for the tangent bundle \(e_1, ..., e_n\), then we can define the local \emphmarginnote{dual coframe} as the vector fields \(\epsilon^1, ..., \epsilon^n\) such that \(\epsilon^i(e_j) = \delta^i_j\).
-If we have a chart \((\phi, U)\) and therefore tangent frames \(\partial \phi_i\), then the dual frames are the differenitals of the chart, \(\d\phi_i\).
+If we have a chart \((\phi, U)\) and therefore tangent frames \(\partial \phi_i\), then the dual frames are the differentials of the chart, \(\d\phi_i\).
 From this we can construct smooth local frames on any tensor bundle in terms of a local frame of the tangent bundle. 
 For a \(T^p_q TX\) bundle, the smooth local frames are given by 
 \[
@@ -1294,15 +1331,15 @@ For a given chart \((U, \phi)\), a tensor field \(F\) can be expressed locally a
 \]
 where the \(F_{j_1, ..., j_q}^{i_1, ..., i_p}: U \to \R\) are smooth functions.
 
-One of the most important intepretations of tensor fields is as \emphmarginnote{smooth multilinear maps over \(C^\infty(X)\)}.
+One of the most important interpretations of tensor fields is as \emphmarginnote{smooth multilinear maps over \(C^\infty(X)\)}.
 For a \(T^p_qTX\) tensor field \(F\in \Gamma\del{T^p_qTX}\), this can be seen as the map
 \[F: \underbrace{T^*X \times ... \times T^*m}_{p\text{ \emph{covector} fields}}\times\underbrace{TX \times ... \times Tm}_{p\text{ \emph{vector} fields}} \to C^\infty(X).\]
 This map is smooth, and multilinear. 
 In fact, all smooth multilinear maps of this form are induced by tensor fields (\cref[Lemma 12.24 extends naturally to mixed tensor fields]{lee2013smooth}).
 
-\subsubsection{Algebraic structure of tensor bundles}
-\todo{module structuressss}
-can do the multilinear maps this way
+% \subsubsection{Algebraic structure of tensor bundles}
+% \todo{module structuressss}
+% can do the multilinear maps this way
 
 \subsubsection{Pullbacks of tensor fields}
 
@@ -1394,7 +1431,7 @@ Instead of differentiating with respect to a single tangent vector, we will diff
 	\]	
 	where this limit exists.
 \end{definition}
-where \(\theta_t\) is the flow induced by \(V\)
+where \(\theta_t\) is the flow induced by \(V\).
 
 Unpacking this a little, this says we take a point \(p\in X\) and evolve it under the flow of the vector field \(V\) for time \(t\).
 At this new point we evaluate \(W\).
@@ -1406,12 +1443,12 @@ The limit of this operation as \(t\to 0\) defines the derivative.
 	Then the Lie derivative \((\c{L}_V W)_p\) exists for all \(p\), and \(\c{L}_V W\) is a smooth vector field.
 \end{lemma}
 Computing such a derivative however seems a tricky task. 
-Fortunatly however, this derivative is exactly given by the \emph{Lie bracket}, giving this a geometric interpretation.
+Fortunately however, this derivative is exactly given by the \emph{Lie bracket}, giving this a geometric interpretation.
 \begin{theorem}[The Lie derivite of vector fields is the Lie bracket]
 	Let \(X\) be a smooth manifold and \(V, W\in \Gamma{TX}\).
 	Then \[\c{L}_V W = \sbr{V, W}.\]
 \end{theorem}
-This gives the Lie derivative therefore all the structute of a \emph{Lie algebra}.
+This gives the Lie derivative therefore all the structure of a \emph{Lie algebra}.
 
 % \begin{figure*}
 % 	\printinunitsof{in}\prntlen{\textwidth}
@@ -1439,7 +1476,7 @@ This definition of the Lie derivative is compatible with a number of operations:
 	\item For \(f\in C^\infty(X)\), \[\c{L}_V f = Vf,\] since \(C^\infty(X) = \Gamma\del{ T^0T^*X}\).
 	\item For \(A\in \Gamma(T^kT^*X)\), \(B\in \Gamma(T^lT^*X)\), \[\c{L}_V(A\otimes B) = (\c{L}_V(A)) \otimes B + A \otimes (\c{L}_V B)\]
 	\item For smooth vector fields \(X_1, ..., X_n \in \Gamma(TX)\), \[
-		\c{L}_V	\del{A(X_1, ..., X_n)} = \c{L}_V(A)(X_1, ..., X_n) + A\del{\c{L}_VX_1, ...., X_1} + ... + A(X_1, ...., \c{L}_VX_n) \nonumber
+		\c{L}_V	\del{A(X_1, ..., X_n)} = \c{L}_V(A)(X_1, ..., X_n) + A\del{\c{L}_VX_1, ...., X_1} + ... + A(X_1, ...., \c{L}_VX_n) \nonumber.
 	\]
 \end{itemize}
 
@@ -1460,7 +1497,7 @@ Typically, the notation of \(\cdot\) is suppressed.
 A \emphmarginnote{subgroup} of a Lie group is a subset \(H\subset G\) of the group that is itself a group under \(\cdot\), and that has a topology and smooth structure that make it an \emph{immersed submanifold} of the parent group.
 
 The most important example of a Lie group for our purposes is the group \(\groupGL[v, \R]\) and its subgroups.
-There do exist Lie group that are subgroups of \(\groupGL[v, \C]\), but we ill not consider these.
+There do exist Lie group that are subgroups of \(\groupGL[v, \C]\), but we will not consider these.
 This is the group of \(n\x n\) invertible matrices with real entries, and this forms a group under matrix multiplication.
 As we have seen, this provides the space of possible change of basis transforms of a basis for a tangent space under a change in chart.
 
@@ -1475,18 +1512,18 @@ Important subgroups of \(\groupGL\) include
 For a subgroup \(H\) of a group \(G\), the set of elements \(gH = \cbrcolon{g \cdot h}{h\in H}\) is called the \emphmarginnote{left coset} of \(g\).
 The left cosets of \(G\) by \(H\) partition \(G\) into equivalence classes of \(G\), if two elements \(g_1, g_2\) have the same left coset \(g_1H = g_2H\). 
 
-The resulting \emph{quotient space}, \(X = G/H\) is called a \emphmarginnote{homogenous space}. The action of \(G\) on \(X\), \(\cdot: G \x X \to X\) is defined by mapping the original group action to the quotient space. For a point \(x\in X\) and a representative element \(g_x \in G\), \(g \cdot x = g g_x H = g_y H = y\). This action is independant of the choice of \(g_x\) made, and so is well-defined. This action is a  \emphmarginnote{transitive action} as using it the group \(G\) maps every point in \(X\) to every other point in \(X\).
+The resulting \emph{quotient space}, \(X = G/H\) is called a \emphmarginnote{homogeneous space}. The action of \(G\) on \(X\), \(\cdot: G \x X \to X\) is defined by mapping the original group action to the quotient space. For a point \(x\in X\) and a representative element \(g_x \in G\), \(g \cdot x = g g_x H = g_y H = y\). This action is independent of the choice of \(g_x\) made, and so is well-defined. This action is a  \emphmarginnote{transitive action} as using it the group \(G\) maps every point in \(X\) to every other point in \(X\).
 
-A common example of this is that the \(n\)-sphere is a homogenous space of \(\groupO\), \(\c{S}_n \sim \groupO{n+1} / \groupO\).
+A common example of this is that the \(n\)-sphere is a homogeneous space of \(\groupO\), \(\c{S}_n \sim \groupO{n+1} / \groupO\).
 
 \subsection{Group actions and equivariant maps}
 While the action of a group on a homogeneous space is a global symmetry, manifolds can have symmetries that don't map every point to every other point.
 A symmetry, or a \emphmarginnote{\(G\)-action}, is a map \(\cdot: G\x X\to X\) such that 
 \[g_1 \cdot(g_2 \cdot x) = (g_1 \cdot g_2) \cdot x \quad \text{for all } x\in X\; g_1, g_2 \in G\] and \[e \cdot x = x \quad \text{for all } x\in X \text{ and } e \text{ is the identity element of } G.\]
-If there is only one orbit, the action is transitive and the space a homegenous space.
+If there is only one orbit, the action is transitive and the space a homogeneous space.
 Such a symmetry partitions the manifold into a set of \emphmarginnote{orbits}, \[ G\cdot x = \cbrcolon{g\cdot x}{g\in G}.\]
-For each point, we can define the \emphmarginnote{stabaliser} as \[G_x = \cbrcolon{g\cdot x = x}{g\in G},\] the set of elements that leave \(x\) in place.
-An action is said to be a \emphmarginnote{free action} if the stabaliser of each point is the identity element only, i.e. that no non-identity group element leaves a point stationary.
+For each point, we can define the \emphmarginnote{stabiliser} as \[G_x = \cbrcolon{g\cdot x = x}{g\in G},\] the set of elements that leave \(x\) in place.
+An action is said to be a \emphmarginnote{free action} if the stabiliser of each point is the identity element only, i.e. that no non-identity group element leaves a point stationary.
 
 Suppose that we have two manifolds \(X, Y\), and a group \(G\), and each manifold has a left \(G\)-action.
 A map \(F: X\to Y\) is said to be \emphmarginnote{equivariant} with respect to \(G\) if \[F(g \cdot x) = g \cdot F(x) \quad \text{for all } x\in X, \; g\in G.\] Sometimes it is said that the function \(F\) \emphmarginnote{intertwines} the action of \(G\) on \(X\) and \(Y\).
@@ -1494,7 +1531,7 @@ A map \(F: X\to Y\) is said to be \emphmarginnote{equivariant} with respect to \
 \subsection{Semi-direct products}
 In addition to the typical direct product of group actions, there is a construction called the \emphmarginnote{semi-direct product} of two Lie groups.
 For Lie groups \(H\) and \(N\), supposed we have a left action of \(H\) on \(N\), \(\theta: H\x N \to N\).
-If for all \(h\in H\) \(\theta_h: N\to N\) is an isomorphism on \(N\), the we can define a joint group action of \(H\) and \(N\) together by
+If for all \(h\in H\) \(\theta_h: N\to N\) is an isomorphism on \(N\), then we can define a joint group action of \(H\) and \(N\) together by
 \[
 	(h, n) \cdot (h', n') = (h\cdot h', n \cdot \theta_h n)	
 .\]
@@ -1509,27 +1546,27 @@ The action of \(\groupO\) on \(\groupT\) is given by the usual rotation of vecto
 
 \subsection{Representations}
 Many Lie groups can be realised as subgroups of \(\groupGL[n]\).
-We can extend the analysis of groups in general by considering \emphmarginnote{(linear) representations} of a group, which is any \emph{group homeoporphism} \(\rho: G\to \groupGL[n]\), i.e. that
+We can extend the analysis of groups in general by considering \emphmarginnote{(linear) representations} of a group, which is any \emph{group homeomorphism} \(\rho: G\to \groupGL[n]\), i.e. that
 \[\rho(g)\rho(g') = \rho(g\cdot g')\]
 where the left hand side is matrix multiplication.
 It is also possible to have complex representations, but again we will not consider these.
 
-A \emphmarginnote{faithful} representaiton is one that is an injection into \(\groupGL\).
+A \emphmarginnote{faithful} representation is one that is an injection into \(\groupGL\).
 Many representations are not injections however, and will map multiple group elements of \(G\) to the same element of \(\groupGL\).
 
 The theory of representations if vast and spans harmonic analysis, differential equations, number theory, and has major applications in differential geometry also. \todo{some refs?}
-The thoery of representations if crucial to the development of equivariant nerual network architeturces, for example \todo{weiler, EMLP}.
+% The thoery of representations if crucial to the development of equivariant nerual network architeturces, for example \todo{weiler, EMLP}.
 
 
 % % \section{Frame bundles}
-% % Previously we saw how we can define a \emphhyperref{frame}{def:coordinate_frame} as the basis of a tangent space, and that under changes in charts the coefficients of a tanget vector expressed in those charts can be related by an element of \(\groupGL\), a \emphhyperref{change of coordinate}{def:change of coordinates}.
+% % Previously we saw how we can define a \emphhyperref{frame}{def:coordinate_frame} as the basis of a tangent space, and that under changes in charts the coefficients of a tangent vector expressed in those charts can be related by an element of \(\groupGL\), a \emphhyperref{change of coordinate}{def:change of coordinates}.
 
 % % One way to think of a frame \(f\) at a point \(p\in X\) is as a linear map \(f: \R^n \to T_pX\), taking coefficients of a vector in the framre and turning them into the vector itself. We can define the action of \(\groupGL\) on a frame by composition with the group action,
 % % \[
 % % 	(g \cdot f)(v) = f( g \cdot v), \quad g\in \groupGL ,\;\v\in\R^n
 % % .\]
 % % This action is \emphhyperref{free}{} and \emphhyperref{transitive}{}.
-% % This implies that the \emphmarginnote{space of frames at a point}, \(F_p\), is homeomorphic to \(\groupGL\), but is not itself a group as we have no prefered "identity" frame.
+% % This implies that the \emphmarginnote{space of frames at a point}, \(F_p\), is homeomorphic to \(\groupGL\), but is not itself a group as we have no preferred "identity" frame.
 
 % % We can define the \emphmarginnote{frame bundle of the tangent space} of a manifold as the disjoint union of the spaces of frames at each point,
 % % \[
@@ -1540,7 +1577,7 @@ The thoery of representations if crucial to the development of equivariant nerua
 % % \[g\cdot (p, f) = (p, g\cdot f),\] for which the orbits are clearly \(F_p\).
 % % The addition of this group action to the fibre bundle structure makes the frame bundle an example of a \emphmarginnote{principle \(G\) bundle}.
 
-% % It is very rare that smooth sections of the frame bundle exist, and is equivalent to the tangent bundle being \emphhyperref{parallisable}{}.
+% % It is very rare that smooth sections of the frame bundle exist, and is equivalent to the tangent bundle being \emphhyperref{parallelisable}{}.
 
 % % For general smooth manifolds, the frame bundle is a \(\groupGL\) bundle. 
 % % With the addition of additional structure we can sometimes restrict the space of frames in the frame bundle of manifold, and the result is a principle \(G\)-bundle where \(G \subset \groupGL\).
@@ -1570,9 +1607,9 @@ The thoery of representations if crucial to the development of equivariant nerua
 \section{Riemannian Metrics}
 \label{sec:riemannian_manifolds}
 We now turn our study to \emph{Riemannian} manifolds. 
-So far we have defined manifolds with notions of topology, smoothness and differentiation. 
-However we are yet to introduce geometry, in simple terms the studay of lengths and angles.
-In metic spaces such ideas are studied through the direct definition of a metric.
+So far we have defined manifolds with notions of topology, smoothness, and differentiation. 
+However, we are yet to introduce geometry, in simple terms the study of lengths and angles.
+In metric spaces such ideas are studied through the direct definition of a metric.
 On manifolds however the more natural object to study these concepts through is a \emph{Riemannian metric}.
 
 For the rest of this section, we assume that \(X\) is a smooth manifold with or without boundary.
@@ -1585,13 +1622,13 @@ The most important concept to transfer from Euclidean space is the notion of len
 	That is,
 	\[g\in \Sigma^2 T^*X \]
 \end{definition}
-\begin{definition}[Riemannain manifold]
+\begin{definition}[Riemannian manifold]
 	\label{def:riemannain_manifold}
-	A \emph{Riemannian manifold} (with or without boundary) \((X, g)\) is a smooth manifold (with or without boundary) \(X\) along with a Riemannain metric \(g\in \Sigma^2 TX\).
+	A \emph{Riemannian manifold} (with or without boundary) \((X, g)\) is a smooth manifold (with or without boundary) \(X\) along with a Riemannian metric \(g\in \Sigma^2 TX\).
 \end{definition}
 It should be noted a Riemannian metric is \emph{not} the same as a metric in the metric space sense and we will distinguish these by calling them \emphmarginnote{distance functions}.
 
-By looking at the metric restricted to a particualr point on the manifold, \(g_p: T_pX\times T_pX \to \R\), we see that this defines an inner product on the tangent space, as the metric is a symmetric tensor and therefore \(g_p(v, v) \geq 0\) for \(v \in T_pX\).
+By looking at the metric restricted to a particular point on the manifold, \(g_p: T_pX\times T_pX \to \R\), we see that this defines an inner product on the tangent space, as the metric is a symmetric tensor and therefore \(g_p(v, v) \geq 0\) for \(v \in T_pX\).
 
 We can express the metric in the coordinates of a chart \((U, \phi)\) as 
 \[g = g_{ij}\d\phi^i \otimes \d\phi^j = g_{ij} \d\phi^i\d\phi^j\]
@@ -1601,23 +1638,23 @@ The simplest metric is the \emph{Euclidean metric},
 and from this we recover all the usual notations of Euclidean space.
 In particular note that the inner product defined for two vectors \(v, w\in T_pX\) is given by
 \[g_p(v, w) = \delta_{ij} v^i w^j = \sum_{i=1}^n v^i w^i,\] the usual dot product.
-Note how the last expression violates the index convention of einsum notation, nessecitating the use of explicit sums, revealing how the usual definition of the dot product leave some inaacuracy in geometric terms.
+Note how the last expression violates the index convention of einsum notation, necessitating the use of explicit sums, revealing how the usual definition of the dot product leave some inaccuracy in geometric terms.
 Often an alternative notation is used, \(g_p(v, w) = \innerprod{v}{w}_g\).
 
-The metric natually extends to a map on vector fields, 
+The metric naturally extends to a map on vector fields, 
 \[
 	g: \Gamma(TX) \times \Gamma(TX) \to C^\infty(X), \quad V, W \in \Gamma(TX).	
 \] 
 
 Every smooth manifold admits a metric \parencite[proposition 13.3]{lee2013smooth}.
-Every smooth manifold admits a huge variety of metrics in fact, and as such there is no canonical choice of Riemanina metric. \todo{examples}
+Every smooth manifold admits a huge variety of metrics in fact, and as such there is no canonical choice of Riemannian metric. \todo{examples}
 
 We can define the \emphmarginnote{product metric} on a product of Riemannian manifolds by applying each metric to the components of the tangent vectors that cam from each manifold in the product, and so define \emphmarginnote{product Riemannian manifolds}.
 
-From the definition of a Riemannian metric, we can then define the \emphmarginnote{length} of a tanget vector as \[\norm{v}_g = \innerprod{v}{v}_g^{1/2} = g_p(v, v)^{1/2},\] and the \emphmarginnote{angle between tangent vectors} as \[\cos \theta = \frac{\innerprod{v}{w}}{|v|_g|w|_g}.\] 
+From the definition of a Riemannian metric, we can then define the \emphmarginnote{length} of a tangent vector as \[\norm{v}_g = \innerprod{v}{v}_g^{1/2} = g_p(v, v)^{1/2},\] called the \emphmarginnote{Riemannian norm\label{def:riemannian_norm}} and the \emphmarginnote[\baselineskip]{angle between tangent vectors} as \[\cos \theta = \frac{\innerprod{v}{w}}{|v|_g|w|_g}.\] 
 We can say that two tangent vectors are \emphmarginnote{orthonormal} if \(\innerprod{v}{w} = 0\).
-An \emphmarginnote{orthonormal frame} on a manifold is a frame for which at each point on the manifold, the basis on the tangent space is comprised of vectors orthonormal to each other.
-The existence of smooth \emphmarginnote{locally orthonormal frames} is guarenteed \parencite[corollary 13.8]{lee2013smooth}, but the existence of smooth \emphmarginnote{globally orthonormal frames} is not guarenteed, and in fact only exist for a very small class of manifolds, such as Euclidean space.
+An \emphmarginnote{orthonormal frame} on a manifold is a frame for which at each point on the manifold, the basis on the tangent space consists of vectors orthonormal to each other.
+The existence of smooth \emphmarginnote{locally orthonormal frames} is guaranteed \parencite[corollary 13.8]{lee2013smooth}, but the existence of smooth \emphmarginnote[\baselineskip]{globally orthonormal frames} is not guaranteed, and in fact only exist for a very small class of manifolds, such as Euclidean space.
 
 \subsection{Tanget-cotangent isomorphism}
 
@@ -1652,40 +1689,40 @@ The most important use of this isomorphism is to define the \emphmarginnote{grad
 \[
 	\grad_g f = \del{\d f}^\vsua, \quad f\in C^\infty(X)	
 .\]
-This makes the gradient the unique \emph{vector field} (not \emph{covector field}) satifying
+This makes the gradient the unique \emph{vector field} (not \emph{covector field}) satisfying
 \[
 	g\del{\grad_g f, X} = X f, \quad f\in C^\infty(X), \; X\in \Gamma(TX)	
 ,\] and in a chart \((U, \phi)\) it is given by
 \[
 	\grad_g f = g^{ij}	\pd{f}{\phi_i}\partial\phi_i
 \]
-
 \subsection{Pullback metrics and submanifolds}
 
 If we have a smooth map \(F: X\to Y\) and a Riemannian metric on \(Y\), then the \emphmarginnote{pullback of the Riemannian metric} \(F^*g\) is a Riemannian metric on \(X\) if and only if \(F\) is a smooth immersion \parencite[proposition 13.9]{lee2013smooth}.
 
-If we have two Riemannian manifolds \((X, g)\) and \((\tilde X, \tilde g)\), and a diffeomorphism \(F: X\to \tilde X\), then \(F\) is a \emphmarginnote{Riemannian isometry} if \(F^*\tilde g = g\).
+If we have two Riemannian manifolds \((X, g)\) and \((\tilde X, \tilde g)\), and a diffeomorphism \(F: X\to \tilde X\), then \(F\) is a \emphmarginnote{Riemannian isometry\label{def:riemannain_isometry}} if \(F^*\tilde g = g\).
 If there exists such an isometry between two manifolds, we say they are \emphmarginnote{isometric}.
 If this property only holds locally for two manifolds, but not globally, then they are said to be \emphmarginnote{locally isometric}.
 The study of properties that are invariant under global or local Riemannian isometries is called \emphmarginnote{Riemannian geometry}.
 One such property of a manifold is if it is \emphmarginnote{flat}.
-A manifold is flat if it is locally isometric to Euclidean space equipped with the Eucldiean metric.
+A manifold is flat if it is locally isometric to Euclidean space equipped with the Euclidean metric.
 
 
-\todo{fix the latex commented here}
-% In particalr, when the isometry is a map between the same manifold, \(F: X \to X\), this is an \emph{automorphism} of the manifold, a self-isomety.
-% We denote this set of isomorphisms % \(\iso(X)\).
-% These are the intrinsic isometries of the manifold.
-% For example for \emphhyperref{def:homogenous_space}{homogenous spaces} of Lie groups, this will be the original Lie group.
-% For most manifolds it will not be a global isometry group. 
+% \todo{fix the latex commented here}
+In particular, when the isometry is a map between the same manifold, \(F: X \to X\), this is an \emph{automorphism} of the manifold, a self-isomety.
+We denote this set of isomorphisms \(\isomg_g(X)\).
+These are the intrinsic isometries of the manifold.
+For example for \emphhyperref{homogeneous spaces}{def:homogeneous_space} of Lie groups, this will be the original Lie group.
+For most manifolds it will not be a global isometry group. 
 
 The most useful case for pullback metrics is for inducing metrics on submanifolds.
-If we have a Riemannain manifold \((X, g)\) and a submanifold \(S\subset X\), immersed or embedded, with or without a boundary, then this manifold automatically inherits a metric, \(\inclusion^* g\), the \emphmarginnote{induced Riemannain metric}, where \(\inclusion: S\to X\) is the inclusion map.
+If we have a Riemannian manifold \((X, g)\) and a submanifold \(S\subset X\), immersed or embedded, with or without a boundary, then this manifold automatically inherits a metric, \(\inclusion^* g\), the \emphmarginnote{induced Riemannian metric}, where \(\inclusion: S\to X\) is the inclusion map.
 
 Previously we saw that the \emphhyperref{Whitney embedding theorem}{thm:whiteny_embedding} allowed us to always find an embedding of a smooth \(n\)-dimension manifold in to at most \(2n+1\)-dimension Euclidean space, while preserving the smooth structure of the manifold.
-A cornerstone result of Riemannain geometry says that we can do one step better with Riemannian manifolds, and preserve the metric as well.
+A cornerstone result of Riemannian geometry says that we can do one step better with Riemannian manifolds, and preserve the metric as well.
 \begin{theorem}[Nash embedding theorem]
-	Let \((X, g)\) be an \(n\)-dimension Riemannain manifold.
+	\label{thm:nash_embedding}
+	Let \((X, g)\) be an \(n\)-dimension Riemannian manifold.
 	Then there exists a \(C^k\) isometric embededding of \(X\) into \(\R^m\), \(f \in C^k(X, \R^m)\), such that \(g = f^*g_e\), where \(g_e\) is the Euclidean metric on \(\R^m\), and \(m \geq n(n+1)(3n+11)/2\).
 \end{theorem}
 The bound on the dimension of Euclidean space needed to embed a manifold into is not strict.
@@ -1693,9 +1730,9 @@ For example, the \(n\)-torus can be embedded into \(2n\) Euclidean space, and th
 
 This theorem is incredibly useful.
 On the theoretical side, it allows us at any time to transfer the manifold into Euclidean space as an embedding.
-We can then (with care) use mathematical tools that apply to Eucldiean space and use them for analysis on manifolds.
+We can then (with care) use mathematical tools that apply to Euclidean space and use them for analysis on manifolds.
 
-On the practical side, this gives us a good way to represent Riemaninan manifolds in a computer.
+On the practical side, this gives us a good way to represent Riemannian manifolds in a computer.
 We can simply pick an isometric embedding of the manifold.
 Particularly, this means that if we are careful, computational geometric operations will be compatible.
 For example, if we have a function \(f: X\to \R\) and compose this with the inverse inclusion to get a function \( \inclusion^{-1}\circ f: \inclusion(X)\subset\R^m \to \R\), we can represent this in a computer, and we can then also apply operations such as automatic differentiation to the function.
@@ -1711,15 +1748,15 @@ This also applies to more complex operators, such at the divergence and Laplace-
 Using the metric, we can also define a sense of the length of a given curve on a manifold, and from this, a notion of a distance between two points on a manifold.
 Let a continuous function \(\gamma: I \to X\) be a \emphmarginnote{curve on \(X\)} where \(I \subset \R\) is an interval.
 A \emphmarginnote{smooth curve} is a one that is smooth as a function.
-A \emphmarginnote{regular curve} is a curve for which the velocity \(\gamma'(t) \neq 0\) everywhere, so that it has no "kinks".
+A \emphmarginnote[\baselineskip]{regular curve} is a curve for which the velocity \(\gamma'(t) \neq 0\) everywhere, so that it has no "kinks".
 An \emphmarginnote{admissible curve} is a curve that can be split into a partition of regular curves.
 A \emphmarginnote{reparametrisation of a curve} is a map \(\varphi: I'\to I\) such that \(\tilde \gamma = \gamma \circ \varphi\) is also a curve.
 
-We the define the \emphmarginnote{length of a curve} for any admissible curve \(\gamma: \sbr{a, b}\to X\)  as
+We then define the \emphmarginnote{length of a curve} for any admissible curve \(\gamma: \sbr{a, b}\to X\)  as
 \[L_g\del{\gamma} = \int_a^b \norm{\gamma'(t)}_g\d t.\]
-This definition obeys a few natural properties; it is additive if we split a curve into sections, it is independant of any reparametrisation of \(\sbr{a,b}\), and it is invariant under isometries.
+This definition obeys a few natural properties; it is additive if we split a curve into sections, it is independent of any reparametrisation of \(\sbr{a,b}\), and it is invariant under isometries.
 
-We define the \emphmarginnote{speed of a curve} as \(\norm{\gamma'(t)}_g\), and a \emphmarginnote{unit-speed curve} as one such that its speed is one everywhere.
+We define the \emphmarginnote{speed of a curve} as \(\norm{\gamma'(t)}_g\), and a \emphmarginnote[\baselineskip]{unit-speed curve} as one such that its speed is one everywhere.
 Any regular curve can be reparametrised to have unit speed.
 
 We have the important result
@@ -1727,7 +1764,7 @@ We have the important result
 	If \(X\) is a connected smooth manifold, then any two points on \(X\) can be connected by an admissible curve.
 \end{proposition}
 
-Using this, we can define the \emphmarginnote{Riemannian distance function} as
+Using this, we can define the \emphmarginnote{Riemannian distance function\label{def:riemannain_distance_function}} as
 \[
 	d_g(p, q) = \inf_{\gamma \text{ is an admissible curve}} L_g (\gamma), \quad p,q\in X
 .\] This definition is also invariant under isomorphisms.
@@ -1742,25 +1779,25 @@ In this section we will study a particular subset of tensor fields, namely secti
 These are typically called \emphmarginnote{differential \(k\)-forms}, or \(k\)-forms, and the space of them is denoted \(\Omega^k(X) = \Gamma\del{\Lambda^K T^* X}\).
 The integer \(k\) is called the \emphmarginnote{degree} of the \(k\)-form.
 
-While this may seem odd, it turns out that differntial forms are exactly the type of objects to which we can apply a coherent theory of integration to on smooth manifolds, and also differentiation, but in a different sense to that of Lie derivatives.
-This notion is called the \emph{exterior derivative} and it is a genrialisation of the notion of the gradient of a smooth function.
+While this may seem odd, it turns out that differential forms are exactly the type of objects to which we can apply a coherent theory of integration to on smooth manifolds, and also differentiation, but in a different sense to that of Lie derivatives.
+This notion is called the \emph{exterior derivative} and it is a generalisation of the notion of the gradient of a smooth function.
 This sense of derivative generalises the notions of divergence, cross products and curl.
 
-In \cref{sec:alternating_tensors} we saw two ways of mapping alternating tensors to alternating tensors of differnet degrees, the \emph{wedge product} and the \emph{interior product}.
-Both generalise immediatly to differntial forms by applying them pointwise.
+In \cref{sec:alternating_tensors} we saw two ways of mapping alternating tensors to alternating tensors of different degrees, the \emph{wedge product} and the \emph{interior product}.
+Both generalise immediately to differential forms by applying them pointwise.
 For \(\omega \in \Omega^k(X)\), \(\eta\in \Omega^l(X)\), the \emphmarginnote{wedge product} \(\^:\Omega^k(X) \times \Omega^l(X) \to \Omega^{k+l}(X)\) is defined as
-\[(\omega \wedge \eta)(p) = \omega(p) \wedge \eta(p)\]
-, as long as \(k+l \leq n\). 
+\[(\omega \wedge \eta)(p) = \omega(p) \wedge \eta(p),\]
+ as long as \(k+l \leq n\). 
 For \(\omega \in \Omega^k(X)\) and \(V\in \Gamma\del{TX}\) the \emphmarginnote{interior product} \(\iprod: \Omega^k(X) \times \Gamma\del{TX} \to \Omega^{k-1}(X)\) is defined as
 \[(\omega \iprod V)(p) = \omega(p) \iprod V(p),\] as long as \(1\leq k\leq n\).
 
-We can express a differntial form in a chart via basis functions.
+We can express a differential form in a chart via basis functions.
 1-forms are exactly the space of covector fields on a smooth manifold.
 For the chart \((U, \phi)\) the basis of 1-forms is given by the derivatives of the coordinate functions, \(\d\phi_1, ...,\d\phi_n\).
 For a \(k\)-form, we can produce the \emphmarginnote{elementary \(k\)-forms} similar to generating the basis for alternating tensors (see \cref{sec:alternating_tensors}) by taking wedge products of \(\d\phi_1, ...,\d\phi_n\).
 We can then write the \(k\)-form in coordinates as 
 \[\omega = \sum_{I\in \bb{I}} \omega_I \d\phi^I,\]
-remebering that \(\bb{I}\) is the set of strictly increasing multiindexes, and \(\d\phi^I = \d\phi^{i_i}\wedge ... \wedge\d\phi^{i_k}\), and \(\omega_I\) are smooth functions.
+remembering that \(\bb{I}\) is the set of strictly increasing multi-indexes, and \(\d\phi^I = \d\phi^{i_i}\wedge ... \wedge\d\phi^{i_k}\), and \(\omega_I\) are smooth functions.
 
 We can apply naturally the pullback of tensor fields to differential forms.
 One result that gives a hint as to how we will define coordinate free integration is by looking at the pullback of top forms in charts.
@@ -1784,17 +1821,17 @@ In particular, if we look at two charts of the same manifold, and set \(F = \id_
 \end{corollary}
 
 \subsection{Exterior derivatives}
-Exterior derivatives are a type of differnetial operator that we can apply to \(k\)-forms to turn then into \(k+1\)-forms.
+Exterior derivatives are a type of differential operator that we can apply to \(k\)-forms to turn then into \(k+1\)-forms.
 We have already met the start point for exterior derivative in the form of the gradient of a smooth function.
 A smooth function is a \(0\)-form, the \emphhyperref{differential}{sec:tensor_bundles_fields} maps it to a covector field, all of which are \(1\)-forms.
 
-More generally, we can build off of this to extend the differnetial to higher forms.
+More generally, we can build on of this to extend the differential to higher forms.
 The \emphmarginnote{exterior derivative} of a \(k\)-form is defined by its action in a chart.
-For \(\omega \in \Omega^l(X)\) in a chart \((U, \phi)\),,
+For \(\omega \in \Omega^l(X)\) in a chart \((U, \phi)\),
 \[
 	\d \omega &= \sum_{I\in\bb{I}}\d\omega_I \wedge \d\phi^I \\ &=\sum_{I\in\bb{I}} \sum_{i=1}^n \pd{\omega_I}{\phi^i} \d\phi^i \wedge \d\phi^I
 \]
-Where \(\d\omega^I\) is the differntial of the \(I\) coordinate function, and the second line is its expansion into basis covector fields.
+Where \(\d\omega^I\) is the differential of the \(I\) coordinate function, and the second line is its expansion into basis covector fields.
 The exterior derivative 
 \begin{itemize}
 	\item Is linear over \(\R\).
@@ -1817,9 +1854,9 @@ A \emphmarginnote{local orientation} is defined by a \emphhyperref{continuous lo
 	An \emph{orientation on a smooth manifold}, \(O_X\) is a continuous choice of orientation of each tangent space \(T_pX\) such that for every neighbourhood on \(X\) the orientation is defined by a continuous local frame.
 \end{definition}
 
-The existence of an orientation of a smooth manifold however is far from guaranteed, to the extend that we calssify manifolds as orientable or non-orientable.
-An \emphmarginnote{orientable manifold\label{def:orientable_manifold}} is a manifold for which an orientation exsits.
-An \emphmarginnote{oriented manifold} is a smooth manifold, along with a particualr choice of orientation.
+The existence of an orientation of a smooth manifold however is far from guaranteed, to the extent that we classify manifolds as orientable or non-orientable.
+An \emphmarginnote{orientable manifold\label{def:orientable_manifold}} is a manifold for which an orientation exists.
+An \emphmarginnote{oriented manifold} is a smooth manifold, along with a particular choice of orientation.
 
 Relative to an orientation \(O_X\), a chart of a smooth manifold \((U, \phi)\) is said to be positively oriented if the \emphhyperref{coordinate frame}{def:coordinate_frame} of the chart is positively oriented.
 An atlas of \(X\) is said to be \emphmarginnote{consistently oriented} if the \emph{determinant of the Jacobian} transition map between two charts, \(\det \pd{\phi^i}{\phi^j}\) is positive everywhere.
@@ -1833,22 +1870,22 @@ Similar to a vector space, we can also define an orientation by an \(n\)-form.
 \begin{definition}[Volume form]
 	\label{def:volume_form}
 	Let \(X\) be an \(n\)-dimension smooth manifold.
-	A \emph{volume form} \(\omega\in \Omega^n(X)\) is a \emph{non-vanising} \(n\)-form on \(X\).
+	A \emph{volume form} \(\omega\in \Omega^n(X)\) is a \emph{non-vanishing} \(n\)-form on \(X\).
 \end{definition}
-The \emph{non-vanising} part of this definition is key, it means our volume form is not allowed to assign zero volume to any point on the manifold.
+The \emph{non-vanishing} part of this definition is key, it means our volume form is not allowed to assign zero volume to any point on the manifold.
 \begin{proposition}[Orientation determined by an \(n\)-form]
 	Let \(X\) be an \(n\) dimension smooth manifold.
 	Any non-vanishing \(n\)-form \(\mu \in \Omega^n(X)\) determines an orientation on \(X\) by setting any ordered basis for a tangent space, \(e_1, ..., e_n \in T_pX\), to be positively oriented if \[\mu(e_1, ..., e_n) > 0.\]
 	If \(X\) is orientable, then such a form exists.
 \end{proposition}
 For a pair of oriented manifolds, \(X, Y\), a diffeomorphism \(F: X\to Y\) is \emphmarginnote{orientation-preserving} if the pullback of a positively oriented volume forms \(F^*\omega\) is also positively oriented, or \emphmarginnote{orientation-reversing} they are negatively oriented. 
-Note we can flip which maps preserve and reverse orientation reversing the orientation on one of \(X\) ands \(Y\).
+Note we can flip which maps preserve and reverse orientation reversing the orientation on one of \(X\) and \(Y\).
 
 One important property of manifolds \emph{with boundary} \(X\) is that the orientation on the boundary \(\partial X\) is entirely determined by the orientation on \(\inte M\).
 \begin{definition}[Induced orientation]
 	\label{def:induced_orientation}
 	Let \(X\) be an \(n\)-dimension manifold with boundary with non-vanishing volume form \(\omega\in \Omega^n(X)\), and let \(N\in \Gamma\del{TX}\) be an \emphhyperref{outward-pointing vector field}{def:outward_pointing}.
-	Then the \((n-1)\)-form \(\inclusion_{\partial X}^* (N \iprod \omega)\) is a volume form on \(\partial X\), and induces the same orientation for any choice of \(N\), where \(\inclusion_{\partial X}^*: \Gamma(TX)\to \Gamma(T\partial X)\) is the pullback of a differntial form from \(X\) to \(\partial X\).
+	Then the \((n-1)\)-form \(\inclusion_{\partial X}^* (N \iprod \omega)\) is a volume form on \(\partial X\), and induces the same orientation for any choice of \(N\), where \(\inclusion_{\partial X}^*: \Gamma(TX)\to \Gamma(T\partial X)\) is the pullback of a differential form from \(X\) to \(\partial X\).
 \end{definition}
 
 \todo[inline]{intuitive explinatio of parallelograms - consistent assignment of a volume accroos charts}
@@ -1856,7 +1893,7 @@ One important property of manifolds \emph{with boundary} \(X\) is that the orien
 \subsubsection{Riemannian volume form}
 The choice of volume form on an orientable manifold is not unique.
 We can however, make a unique choice on Riemannian orientable manifolds.
-On Riemannain manifolds, we are always able to pick smooth, \emph{orthonormal} local frames on the manifold.
+On Riemannian manifolds, we are always able to pick smooth, \emph{orthonormal} local frames on the manifold.
 \begin{proposition}[Riemannian volume form]
 	\label{prop:riemannian_volume_form}
 	Ley \(X\) be an \(n\)-dimension orientable Riemannian manifold (with or without boundary).
@@ -1870,7 +1907,7 @@ In a chart \((U, \phi)\), the Riemannian volume form has the form
 \[
 	\d\vol_g = \sqrt{\det(g_{ij})} \d\phi^1 \wedge ... \wedge \d\phi^n
 ,\] a very handy expression for being able to compute with.
-Our choice of notation \(\d\vol_g\) will be motivated shortly, but it does \emph{not} mean that the Riemannain volume form is the exterior derivative of an \((n-1)\)-form.
+Our choice of notation \(\d\vol_g\) will be motivated shortly, but it does \emph{not} mean that the Riemannian volume form is the exterior derivative of an \((n-1)\)-form.
 
 \todo{sub amnifodl vol forms pullback of ambient}
 
@@ -1914,14 +1951,14 @@ This integral obeys a number of properties
 	\[
 		\int_X \omega = - \int_{-X} \omega	
 	\]
-	\item Positive volume forms have \emph{positive integral}. If \(\omega\) is a positivly oriented volume form, then \(\int_X \omega > 0\).
+	\item Positive volume forms have \emph{positive integral}. If \(\omega\) is a positively oriented volume form, then \(\int_X \omega > 0\).
 	\item It is \emph{diffeomorphism invariant}. For oriented manifolds \(X, Y\), an \(n\)-form \(\omega \in \Omega^n(Y)\), and an orientation preserving diffeomorphism \(F: X\to Y\), \(\int_Y \omega = \int_X F^* \omega\). If \(F\) is orientation-reversing, then \(\int_Y \omega = -\int_X F^* \omega\).
 \end{enumerate}
 
 \subsubsection{Integrable forms on manifolds}
 
 The definition of integration in \cref{prop:integrate_n_compact_form} motivates our choice of notation for the Riemannian volume form by \(\d\vol_g\).
-This, or any other volume form\marginnote{volume forms define measures} \(\omega\), defines a \emphhyperref{measure in the measure-theoreic sense}{def:measure} of the \emphhyperref{Borel \(\sigma\)-algebra}{def:borel_sigma_algebra} of the open sets on the manifold.
+This, or any other volume form \marginnote{volume forms define measures} \(\omega\), defines a \emphhyperref{measure in the measure-theoreic sense}{def:measure} of the \emphhyperref{Borel \(\sigma\)-algebra}{def:borel_sigma_algebra} of the open sets on the manifold.
 On a chart \((U, \phi)\), for any open set \(V \subseteq U\), the local measure \(\mu_U\) is defined by
 \[
 	\mu_{\omega,U}(V) = \int_V \omega = \int_{\phi(V)} f_\omega \d\phi^1\wedge ... \wedge \phi^n
@@ -1970,13 +2007,14 @@ We see then that the integral of a smooth function on a Riemannian manifold in a
 	\int_U f \d\vol_g = \int_{\phi(U)} f \sqrt{g_{ij}} \d\phi^1 \wedge ... \wedge \d\phi^n.
 \]
 
-We use this correspondence to define the \emphmarginnote{divergence on a Riemannain manifold\label{def:riemannain_divergence}} \(\dive: \Gamma(TX) \to C^\infty(X)\) by
+We use this correspondence to define the \emphmarginnote{divergence on a Riemannian manifold\label{def:riemannain_divergence}} \(\dive: \Gamma(TX) \to C^\infty(X)\) by
 \[
 	\dive X = \star^{-1} \d \del{X\iprod \d\vol_g}
 \]
 and using Stoke's theorem we arrive at a generalisation of the divergence theorem,
 \begin{theorem}[Divergence theorem]
-	Let \((X, g)\) be an oriented Riemannain manifold with boundary, and \(V\in\Gamma(TX)\) with compact support.
+	\label{thm:divergence}
+	Let \((X, g)\) be an oriented Riemannian manifold with boundary, and \(V\in\Gamma(TX)\) with compact support.
 	Then
 	\[
 		\int_X (\dive V) \d\vol_g = \int_{\partial X} \innerprod{V}{N}_g \d\vol_{\tilde g}
@@ -2003,7 +2041,7 @@ We can also define it via the \emphhyperref{Lie derivative}{def:lie_derivaite} a
 \[
 	\frac{1}{2}\tr_g\del{\c{L}_X g}
 \]
-and also via the \emphhyperref{Levi-Civita connection}{}.
+and also via the \emphhyperref{Levi-Civita connection}{def:levi_civita_connection}.
 These three are equivalent definitions.
 
 In a particular chart \((\phi, U)\) the Riemannian divergence can be expressed as 
@@ -2011,12 +2049,13 @@ In a particular chart \((\phi, U)\) the Riemannian divergence can be expressed a
 where \(V_i\) are the components of \(V\) in the chart \(\phi\).
 
 \subsection{Measures induced by volume forms}
+\label{sec:riemannain_volume_measure}
 
-In order to work with measure theory on manifolds (\cref{sec:measure_theory}), and therefore deal with probability formally, we need to define a base measure on a Riemannian manifolds.
-We can construct this on a Riemannian manifold using the Reisz representaiton theorem and the integration defined by the volume form.
+In order to work with measure theory on manifolds (\cref{sec:measure_theory}), and therefore deal with probability formally, we need to define a base measure on a Riemannian manifold.
+We can construct this on a Riemannian manifold using the Reisz representation theorem and the integration defined by the volume form.
 
 \begin{theorem}[Riesz-Markov-Kakutani representaiton theorem]
-	Let \(X\) be a locally compact Haussdorff space, and let \(\Lambda\) be a positive linear functional on \(C(X)\). Then there exists a \(\sigma\)-algebra, \(\sigalg{X}\), on \(X\) continaing all open sets on \(X\), and there exists a unique positive measure \(\mu\) on \(\sigalg{X}\) which represents \(\Lambda\) in the sense that:
+	Let \(X\) be a locally compact Haussdorff space, and let \(\Lambda\) be a positive linear functional on \(C(X)\). Then there exists a \(\sigma\)-algebra, \(\sigalg{X}\), on \(X\) containing all open sets on \(X\), and there exists a unique positive measure \(\mu\) on \(\sigalg{X}\) which represents \(\Lambda\) in the sense that:
 	\begin{enumerate}
 		\item \(\Lambda f = \int_X f \d \mu\) for every \(f\in C(X)\), in the Lebesgue integration sense.
 		\item \(\mu(K) < \infty \) for every compact set \(K \subset X\).
@@ -2058,7 +2097,7 @@ To recover a notion of directional derivative then, we define a new type of obje
 	\[\nabla_X A, \quad X\in \Gamma(TX), \; A\in \Gamma\del{T^k_lX}\]
 	satisfying
 	\begin{enumerate}
-		\item \(\nabla\) is \emph{linear} in the first argument over \emphhyperref{the module \((\Gamma(TX), \oplus, \odot)\)}{def:tanget_bundle_module},
+		\item \(\nabla\) is \emph{linear} in the first argument over \emphhyperref{the module \((\Gamma(TX), \oplus, \odot)\)}{def:tangent_bundle_module},
 		\[\nabla_{f_1 V + f_2 W}A = f_1 \nabla_V A + f_2 \nabla_W A\]
 		for \(f_1, f_2 \in C^\infty(X), \;V,W\in\Gamma(TX),\; A\in \Gamma\del{T^k_l X}\)
 		\item \(\nabla\) is \emph{linear} in the second argument over \emph{the field \(\R\)},
@@ -2079,7 +2118,7 @@ Fortunately, if we make a choice of connection on the tangent bundle, we can ext
 
 If we have a connection on the tangent bundle \(\nabla: \Gamma(TX) \times \Gamma(TX) \to \Gamma(TX)\), then we can express it in a chart \((U, \phi)\) on coordinate fields by 
 \[\nabla_{\partial\phi_i} \partial\phi_j = \Gamma_{ij}^k \partial\phi_k.\]
-For two vector fields \(V, W\in \Gamma(TX)\), using the properties of the connection, then we have in the chart that\marginnote{Coordinate expression of a connection}
+For two vector fields \(V, W\in \Gamma(TX)\), using the properties of the connection, then we have in the chart that the \emphmarginnote{coordinate expression of a connection} is
 \[\nabla_V W = \del{V\del{W^k} + V^i W^j \Gamma_{ij}^k} \partial\phi_k .\]
 
 To extend this to any tensor bundles we note a few things.
@@ -2116,31 +2155,41 @@ For a vector field \(X\) and covector field \(\omega\), the \emphmarginnote{coor
 	\nabla V = \sbr{\partial\phi_j(V^i) + V^k\Gamma_{jk}^i} \partial \phi_i \otimes \d\phi^j \quad \quad \nabla \omega = \sbr{\partial\phi_j(\omega^i) - \omega^k\Gamma_{jk}^i} \d \phi^i \otimes \d\phi^j \nonumber
 \]
 
+The covariant derivative gives us a way to define the \emphmarginnote{Riemannian gradient of a tensor field}.
+We define it as 
+\[
+	\grad_g : \Gamma\del{T_q^p} \to \Gamma\del{T_q^{p+1}} \quad \grad_g: T\mapsto \del{\nabla T}^\vsua{}	
+\],
+i.e. the raising of an index of the covariant derivative of the tensor field.
+We can also use it to define the \emphmarginnote{divergence of a tensor field\label{def:tensor_field_divergence}} as
+\[
+	\dive_g: \Gamma{T^p_q} \to \Gamma{T^{p-1}_q}\quad \dive_g: T \mapsto \tr\del{\nabla T}	
+\] i.e. the trace of the covariant derivative of the tensor field.
+
 Having defined the covariant derivative, we can also define the \emphmarginnote{second covariant derivative\label{def:second_covariant_derivaite}} as
 \[\nabla^2 A = \Delta A = \nabla(\nabla A)\]
 for a tensor field \(A\). This can be evaluated on two vector fields \(V, W\) by inserting them into the last 2 slots of the resulting tensor.
 It should be noted though that
 \[\nabla^2_{V, W} A = [\nabla^2 A](..., V, W) \neq \nabla_V (\nabla_W A) \]
 instead
-\[\nabla^2_{V, W} A = \nabla_V (\nabla_W A) - \nabla_{\nabla_V W} A\]
+\[\nabla^2_{V, W} A = \nabla_V (\nabla_W A) - \nabla_{\nabla_V W} A.\]
 
 The most common example of the second covariant derivative is the second covariant derivative of a scalar function, which is a \((0,2)\)-tensor field, and is the \emphmarginnote{hessian of a smooth function}, encoding how it fast the gradient of a function varies in a particular direction.
 
 \subsection{Vector fields on curves}
-The most important application of connections is that they tell us how to transport tensors, and in particalr vectors, along a path on a manifold in a coherent way.
+The most important application of connections is that they tell us how to transport tensors, and in particular vectors, along a path on a manifold in a coherent way.
 To do so, let us consider a vector field on a curve.
 
-Let \(\gamma: I \to X\) be a smooth curve on the manifold, and let a \emphmarginnote{smooth vector field on a curve} be a smooth map \(V: I\to TX\) such that \(V(t) \in T_{\gamma(t)}X\). Such a vector field is said to be \emphmarginnote{extendable} if there exists a smooth vector field \(W \in \Gamma(TX)\) such that \(V(t) = W_{\gamma(t)}\). This definition is necessary as if our path crosses itself, we may assign two different vectors to the same location.
-We say that an \emphmarginnote{extentsion of an extendable vector field on a curve} is any vector field \(\tilde V\) such that \(V(t) = \tilde V_{\gamma(t)}\). 
-
-We can similarly define \emphmarginnote{extendable smooth tensor fields on a curve}.
+Let \(\gamma: I \to X\) be a smooth curve on the manifold, and let a \emphmarginnote{smooth vector field on a curve} be a smooth map \(V: I\to TX\) such that \(V(t) \in T_{\gamma(t)}X\). Such a vector field is said to be \emphmarginnote[\baselineskip]{extendable} if there exists a smooth vector field \(W \in \Gamma(TX)\) such that \(V(t) = W_{\gamma(t)}\). This definition is necessary as if our path crosses itself, we may assign two different vectors to the same location.
+We say that an \emph{extension of an extendable vector field on a curve} is any vector field \(\tilde V\) such that \(V(t) = \tilde V_{\gamma(t)}\). 
+We can similarly define \emph{extendable smooth tensor fields on a curve}.
 
 Using this concept, we can define the \emph{covariant derivative along a curve}.
 \begin{definition}[Covariant derivative along a curve]
 	Let \(X\) be a smooth manifold with a connection \(\nabla\).
 	Let \(\gamma: I \to X\) be a smooth curve on \(X\), and let \(V\) be a smooth extendable vector field on \(\gamma\).
-	Let \(\tilde V\) be an extentsion of \(V\).
-	The the \emph{covaraint derivative of \(V\) on \(\gamma\)} is given by
+	Let \(\tilde V\) be an extension of \(V\).
+	The \emph{covaraint derivative of \(V\) on \(\gamma\)} is given by
 	\[
 		[D_\gamma V](t) = [\nabla_{\gamma'} \tilde V](\gamma(t))
 	\]
@@ -2180,7 +2229,7 @@ as \emphmarginnote{the exponential map\label{def:exponential_map}}.
 
 The domain \(\c{E}\) is by no means guaranteed to cover the whole of \(TX\).
 Manifolds for which \(\c{E} = TX\) are said to be \emphmarginnote{geodesically complete\label{def:geodesically_complete}}.
-The \emphmarginnote{Hopf-Rinow theorem} is a cornerstone result that states for any connected Riemannian manifold, geodesic completeness and completeness in the metric sense (i.e. that all Cauchy sequences converge) are equivalent.
+The \emphmarginnote[\baselineskip]{Hopf-Rinow theorem} is a cornerstone result that states for any connected Riemannian manifold, geodesic completeness and completeness in the metric sense (i.e. that all Cauchy sequences converge) are equivalent.
 
 The inverse of the exponential map is \emphmarginnote{the logarithm map\label{def:logarithm_map}}, defined by
 \[
@@ -2209,7 +2258,11 @@ We can use this map to create a \emphmarginnote{parallel basis along a curve} by
 
 It should be noted that this parallel transport is strongly dependent on the path taken.
 A connection for which parallel transport is path independent is called a \emphmarginnote{flat connection}.
-The existence of a flat connection on a smooth manifold is equivalent to the tangent bundle being \emphhyperref{parallisable}{}, as we can define non-vanishing coordinate fields on the manifold by parallel transporting a frame at a given point around the manifold. 
+The existence of a flat connection on a smooth manifold is equivalent to the tangent bundle being \emphhyperref{parallelisable}{}, as we can define non-vanishing coordinate fields on the manifold by parallel transporting a frame at a given point around the manifold.
+
+\subsubsection{Parallel transport in coordinates}
+
+
 
 \subsection{The Levi-Civita connection}
 On Riemannian manifold, with the additional structure of the Riemannian metric, we can require a connection to be compatible with the metric on the manifold in the following way:
@@ -2225,12 +2278,12 @@ There are a few other properties that are equivalent to this definition:
 \begin{enumerate}
 	\item \(\nabla g = 0\), i.e. the metric is parallel under the connection.
 	\item The coefficients of the connection in a chart \((U, \phi)\) satisfy
-	\[\Gamma_{ki}^l g_{lj} + \Gamma_{kj}^lg_{il} = \partial\phi_i(g_{ij}) .\]
+	\[\Gamma_{ki}^l g_{lj} + \Gamma_{kj}^lg_{il} = \partial\phi_i(g_{ij}) .\] These are called the \emphmarginnote{Christoffel symbols\label{def:christoffel_symbols}}.
 	\item Parallel transport of a vector along a curve preserves their Riemannian norm.
-	\item Parallel transport of a pair of vectors along a curve preserves their Riemannain inner product.
+	\item Parallel transport of a pair of vectors along a curve preserves their Riemannian inner product.
 	\item Parallel transport of an orthonormal frame along a curve remains orthonormal.
 \end{enumerate}
-Unfortunatly, this does not uniquely specify a connection.
+Unfortunately, this does not uniquely specify a connection.
 There remains a degree of freedom in the choice of connection, described by its \emph{torsion}.
 The \emphmarginnote{torsion tensor} of a connection is given by
 \[
@@ -2241,25 +2294,25 @@ If a connection has zero torsion for all vector fields, it is said to be \emphma
 	\input{figures/tex/torsion.tex}
 	\hspace{2cm}
 	\input{figures/tex/torsion2.tex} 
-	\caption{\emph{Left: } We can understand torsion intuitivly, but not precisely, via the above diagram. For vectors \(\textcolor{tabblue}{v_p}\) and \(\textcolor{taborange}{u_p}\), we extend these to smooth vector fields on an infintessimal neighbourhood. If we take an infintessimal step in each direction, \(r=\exp_p{\epsilon \textcolor{tabblue}{v_p}}\) and \(q = \exp_p{\epsilon \textcolor{taborange}{u_p}}\), and parallel transport the step vectors along the opposite step vectors, \(\epsilon\textcolor{tabblue}{v_{||}} = P_{\epsilon \textcolor{taborange}{u_p}}(\epsilon \textcolor{tabblue}{v_p})\) and \(\epsilon\textcolor{taborange}{u_{||}} = P_{\epsilon \textcolor{tabblue}{v_p}}(\epsilon \textcolor{taborange}{u_p})\), then, ignoring the issues of adding vectors in different tangent spaces, the torsion, \(\epsilon^2 \textcolor{tabred}{\tau({v_p}, {u_p})}\), is the lack of agreement between \(\epsilon \textcolor{tabblue}{v_p} + \epsilon \textcolor{taborange}{u_{||}}\) and \(\epsilon \textcolor{taborange}{u_p} + \epsilon \textcolor{tabblue}{v_{||}}\). \emph{Right: } An example a connection with torsion on two dimension Euclidean space. On the left we see a basis frame trasported around the plane, twisting from point to point. On the right, the basis representation of the connection, and a diagram showing the non-zero torsion in red.}
+	\caption{\emph{Left: } We can understand torsion intuitivly, but not precisely, via the above diagram. For vectors \(\textcolor{tabblue}{v_p}\) and \(\textcolor{taborange}{u_p}\), we extend these to smooth vector fields on an infinitesimal neighbourhood. If we take an infinitesimal step in each direction, \(r=\exp_p{\epsilon \textcolor{tabblue}{v_p}}\) and \(q = \exp_p{\epsilon \textcolor{taborange}{u_p}}\), and parallel transport the step vectors along the opposite step vectors, \(\epsilon\textcolor{tabblue}{v_{||}} = P_{\epsilon \textcolor{taborange}{u_p}}(\epsilon \textcolor{tabblue}{v_p})\) and \(\epsilon\textcolor{taborange}{u_{||}} = P_{\epsilon \textcolor{tabblue}{v_p}}(\epsilon \textcolor{taborange}{u_p})\), then, ignoring the issues of adding vectors in different tangent spaces, the torsion, \(\epsilon^2 \textcolor{tabred}{\tau({v_p}, {u_p})}\), is the lack of agreement between \(\epsilon \textcolor{tabblue}{v_p} + \epsilon \textcolor{taborange}{u_{||}}\) and \(\epsilon \textcolor{taborange}{u_p} + \epsilon \textcolor{tabblue}{v_{||}}\). \emph{Right: } An example a connection with torsion on two dimension Euclidean space. On the left we see a basis frame transported around the plane, twisting from point to point. On the right, the basis representation of the connection, and a diagram showing the non-zero torsion in red.}
 \end{figure*}
 
 \begin{theorem}[Fundimental theorem of Riemannian Geometry]
-	Let \((X, g)\) be a Riemannain manifold.
+	Let \((X, g)\) be a Riemannian manifold.
 	Then there exists a unique connection \(\nabla\) that is both \emphhyperref{metric-compatible}{def:metric_compatible_connection} and \emphhyperref{torsion-free}{def:torsion_free_connection}.
 \end{theorem}
-We call this unique connection the \emphmarginnote{Levi-Civita conncection\label{def:levi_civita_connection}}, and when ambiguous we denote it \(\nabla_g\), however when we refer to a connection without specifying it, we always refer to the Levi-Civita connection as it is the canonical choice on a manifold.
-In addition, when we refer \emphhyperref{geodesics}{def:geodesic}, the \emphhyperref{exponential}{def:exponential_map} and \emphhyperref{logarithm}{def:logarithm_map} maps and \emphhyperref{parallel transport}{def:parallel_transport} on a Riemannain manifold, they are with respect to the Levi-Civita connection unless otherwise specified.
+We call this unique connection the \emphmarginnote{Levi-Civita connection\label{def:levi_civita_connection}}, and when ambiguous we denote it \(\nabla_g\), however when we refer to a connection without specifying it, we always refer to the Levi-Civita connection as it is the canonical choice on a manifold.
+In addition, when we refer \emphhyperref{geodesics}{def:geodesic}, the \emphhyperref{exponential}{def:exponential_map} and \emphhyperref{logarithm}{def:logarithm_map} maps and \emphhyperref{parallel transport}{def:parallel_transport} on a Riemannian manifold, they are with respect to the Levi-Civita connection unless otherwise specified.
 
 \subsection{The Laplace-Beltrami operator}
-One particualar operator that is of great use and is well studied is the \emphmarginnote{Laplace-Beltrami operator}.
+One particular operator that is of great use and is well studied is the \emphmarginnote{Laplace-Beltrami operator\label{def:laplace_beltrami_operator}}.
 This operator is the coordinate free generalisation of the \emph{Laplace operator}, a second order differential operator, given by
 \[
 	\Delta: C^\infty(\R^n)\to C^\infty(\R^n) \quad \quad \Delta f = \nabla\cdot(\nabla f) = \nabla^2 f = \sum_{i=1}^n \pd[2]{f}{x_i}	
 .\]
-On Riemannain manifolds we can define this in two ways,
+On Riemannian manifolds we can define this in two ways,
 \[
-	\Delta: C^\infty(X) \to C^\infty(X) \quad \quad \Delta f  = \dive(\nabla f) = \tr\del{\nabla^2 f}
+	\Delta: C^\infty(X) \to C^\infty(X) \quad \quad \Delta f  = \dive_g(\grad_g f) = \tr\del{\nabla^2 f} \label{eq:laplace_beltrami_identity}
 ,\]
 either the \emphhyperref{Riemannian divergence}{def:riemannain_divergence} of the \emphhyperref{Riemannian gradient}{def:riemannian_gradient} of a smooth function, or as the \emphhyperref{trace}{} of the \emphhyperref{second covariant derivative}{def:second_covariant_derivaite} of the \emphhyperref
 {Levi-Civita connection}{def:levi_civita_connection}.
@@ -2269,4 +2322,74 @@ In local coordinates, we can write this operator as
 	\Delta = \frac{1}{\sqrt{\det g}} \sum_{i=1}^n \partial\phi_i \del{g^{ij}\sqrt{\det g} \partial\phi_j}
 \]
 
+This can also be generalised to tensor bundles using the generalisations of the Riemannian gradient and divergence to tensor fields specified earlier.
 
+The operator self-adjoint in the sense that for \(f\in C^\infty(X)\) \[\innerprod{\nabla f}{\nabla f}_g = \innerprod{\Delta f}{f}_g = \innerprod{f}{\Delta f}_g.\]
+This can be extended further to \(L^2\)-integrable functions on the manifold, and also to \(L^2\)-integrable vector fields on the manifold where \(-\Delta\) is a self-adjoint unbounded positive-definite operator \cite[theorem 2.4]{strichartz1983analysis}.
+
+\subsection{Eigenspectrum of the Laplace-Beltrami operator}
+\label{sec:eigenf-eigenv-lapl}
+
+Since the space of \(L^2\)-integrable functions are Hilbert spaces, we can leverage spectral theory to decompose functions in the Hilbert space over eigenvalues and eigenfunctions of \(-\Delta\).
+In particular for compact manifolds, the spectrum of \(-\Delta\) is countable.
+\begin{theorem}[Strun-Liouville decomposition]
+	\label{thm:strum-liouville}
+	Let \((X, g)\) be a compact manifold.
+	Then there exists an orthonormal basis of \(L^2(X)\), \(f_n\in L^2(X)\), \(n\in \Z^+\), such that
+	\[-\Delta f_n = \lambda_n\]
+	and that the basis is ordered in the sense that \(0 \leq \lambda_0 \leq \lambda_1 \leq \lambda_2 \leq ...\), and \(\lambda_n\to \infty\) as \(n\to \infty\).
+\end{theorem}
+\begin{proof}
+	\textcite{chavel1984eigenvalues}
+\end{proof}
+This means we can write any function \(f\in L^2(X)\) on a compact manifold as the infinite sum
+\(f = \sum_{i=1}^\infty \innerprod{f}{f_n}_g f_n.\)
+This basis expansion can be truncated to a finite length
+\(f_N \approx \sum_{i=1}^N \innerprod{f}{f_n}_g f_n.\)
+The error of this basis truncation can be bounded.
+\begin{theorem}[Bounded error of the Strum-Liouville decomposition]
+	Let \((X, g)\) be a compact Riemannian manifold, and \((f_n, \lambda_n)_{n=0}^\infty\) be the eigen-spectrum of \(-\Delta_g\).
+	Let \(f \in L^2(X)\).
+	Let \(f_N\) be the truncated expansion of \(f\).
+	Then
+	\[
+		\norm{f - f_N}_g^2 \leq \frac{\norm{\nabla_g f}^2}{\lambda_{N+1}}.	
+	\]
+\end{theorem}
+\begin{proof}
+	\cite{aflalo2013spectral}
+\end{proof}
+It can also be shown that this approximation is optimal in the sense that no other basis will obtain a better error bound than the truncated Strum-Liouville approximation \cite{aflalo2015optimality}.
+
+Since they will be of use to us, we give example of these eigen-spectrum on the \(d\)-dimension torus and the \(d\)-dimensions sphere.
+
+\subsubsection{The \(d\)-torus}
+Let \(\{b_i\}_{i=1}^d\) be a basis of \(\R^d\).
+We consider the associated lattice on \(\R^d\), i.e. \(\Gamma = \cbrcolon{\sum_{i=1}^d \alpha_i b_i}{\{\alpha_i\}_{i=1}^d \in \Z^d}\).
+Finally, the associated \(d\)-dimensional torus is defined as the quotient \(\mathbb{T}_\Gamma = \R^d / \Gamma\).
+
+Denote \(\mathrm{B} = (b_1, \dots, b_d) \in \R^{d \times d}\).
+Let \(\{\bar{b}_i\}_{i=1}^d \in (\R^d)^d\) such that \((\mathrm{B}^{-1})^\top = (\bar{b}_1, \dots, \bar{b}_d)\).
+We define \(\Gamma^\star = \cbrcolon{\sum_{i=1}^d \alpha_i \bar{b}_i}{\{\alpha_i\}_{i=1}^d \in \Z^d}\) as the dual lattice.
+Note that for any \(x \in \Gamma\) and \(y \in \Gamma^\star\) we have that \(\langle x, y \rangle \in \Z\) and that if \(\{b_i\}_{i=1}^d\) is an orthonormal basis then \(\Gamma = \Gamma^\star\).
+
+As a result, the torus \(\R^d/\Gamma\) is a (flat) compact Riemannian manifold.
+The set of eigenvalues and functions of the Laplace--Beltrami operator are associated with the dual lattice \(\Gamma^*\).
+For each element of the dual lattice, \(y\in \Gamma^*\) the eigen-value is given by \[ \lambda_y = -4 \pi^2 \norm{y}^2.\]
+For each element of the dual lattic there are two eigenfunction, given by \[\phi_{1, \lambda}(x) = \sin(2 \pi \langle x, y \rangle)\] and \[\phi_{2, \lambda}(x) =  \cos(2 \pi \langle x, y \rangle).\]
+
+\subsubsection{The \(d\)-sphere}
+Next, we investigate the case of the \(d\)-dimensional sphere \parencite[see][]{saloff1994precise}.
+The set of eigenvalues of the Laplace--Beltrami operator is given by \[\cbrcolon{-k(k+d-1)}{k \in \N}.\]
+Note that \(\lambda_k = k(k+d-1)\) has multiplicity 
+\(d_k = (k+d-2)!/\{(d-1)!k\}(2k+d-1)\), i.e. that it has this many eignefunctions associated with it.
+
+The eigenfunctions of the Laplace--Beltrami operator are known as the spherical harmonics and can be defined in terms of Legendre polynomials.
+When investigating the heat kernel on the \(d\)-dimensional sphere, we are interested in the product \[(x,y) \mapsto \sum_{\phi \in \Phi_n} \phi(x)\phi(y)\], where \(\Phi_n\) is the set of eigenfunctions associated with the eigenvalue \(\lambda_n\) for \(n \in \N\).
+This function can be described using the Gegenbauer polynomials \cite[see][Theorem 2.9]{atkinson2012spherical}.
+More precisely, we have that for any \(n \in \N\) and \(x,y \in \mathbb{S}^d\) \begin{align}  & G_n(x,y) = { \sum_{\phi \in \Phi_n} \phi(x) \phi(y)} \\  & \quad = n!
+                 \Gamma((d-1)/2) \sum_{k=0}^{\floor{n/2}} \frac{(-1)^k (1- \langle x,y \rangle^2)\langle x,y \rangle^{n-2k}}{4^k k! (n -2k)! \Gamma(k + (d-1)/2)},
+\end{align}
+where here \(\Gamma: \ \R_+ \to \R\) is given for any \(v > 0\) by
+\(\Gamma(v) = \int_0^{+\infty} t^{v-1} \mathrm{e}^{-t} \mathrm{d} t\).
+In the special case where \(d=1\), then the heat kernel coincide with the wrapped Gaussian density and can be easily evaluated.

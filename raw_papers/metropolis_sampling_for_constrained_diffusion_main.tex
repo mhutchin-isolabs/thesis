@@ -4,8 +4,8 @@ In recent years, denoising diffusion models \parencite{sohl2015deep,song2019gene
 They work by progressively adding noise to data following a Stochastic Differential Equation (SDE)---the forward \emph{noising} process---until it is close to the invariant distribution of the SDE.
 The generative model is then given by an approximation of the associated time-reversed \emph{denoising} process, which is also an SDE whose drift depends on the gradient of the logarithmic densities of the forward process, referred to as the \emph{Stein score}.
 
-Building on the success of diffusion models for image generation tasks, \textcite{debortoli2022riemannian} and \textcite{huang2022riemannian} have recently extended this framework to a wide range of Riemannian manifolds, enabling the specification of inherent structural properties of the modelled domain.
-This has broadened the applicability of diffusion models to problems in the natural and engineering sciences, including the conformational modelling of small molecules \parencite{jing2022torsional, corso2022DiffDock}, proteins \parencite{trippe2022Diffusion,watson2022Broadly,yim2023se} and robotic platforms \parencite{urain2022se}.
+Building on the success of diffusion models for image generation tasks, \textcite{de2022riemannian} and \textcite{huang2022riemannian} have recently extended this framework to a wide range of Riemannian manifolds, enabling the specification of inherent structural properties of the modelled domain.
+This has broadened the applicability of diffusion models to problems in the natural and engineering sciences, including the conformational modelling of small molecules \parencite{jing2022torsional, corso2023diffdock}, proteins \parencite{trippe2022Diffusion,watson2022Broadly,yim2023se} and robotic platforms \parencite{urain2022se}.
 
 However, in many data-scarce or safety-critical settings, researchers may want to restrict the modelled domain further by specifying problem-informed constraints to make maximal use of limited experimental data or prevent unwanted behaviour \parencite{Morris2002,han2006inverse,Thiele2013,lukens2020practical}.
 As illustrated in~\Cref{fig:intro_figure}, such domain-informed constraints can be naturally represented as a \emph{Riemannian manifold with boundary}.
@@ -19,7 +19,7 @@ Their method exhibits robust scaling properties and impressive visual results in
 However, the introduced samplers suffer from the same limitations as \textcite{fishman2023diffusion} for more complex manifolds and constraints.
 
 Here, we propose a new method for generative modelling on constrained manifolds based on a Metropolis-based discretisation of the reflected Brownian motion.
-The Metropolised process' chief advantage is that it is lightweight: the only additional requirement over those outlined in \textcite{debortoli2022riemannian} that is needed to implement a constrained diffusion model is an efficient binary function that indicates whether any given point is within the constrained set.
+The Metropolised process' chief advantage is that it is lightweight: the only additional requirement over those outlined in \textcite{de2022riemannian} that is needed to implement a constrained diffusion model is an efficient binary function that indicates whether any given point is within the constrained set.
 The Metropolised approximation of the reflected Brownian motion is substantially easier to implement, faster to compute and more numerically stable than the previously considered sampling schemes.
 Our core theoretical contribution is to show that this new discretisation converges to the reflected SDE by using the invariance principle for SDEs with boundary \parencite{stroock1971diffusion}.
 To the best of our knowledge, this is the first time that such a process has been investigated.
@@ -93,13 +93,13 @@ Under conditions on $p_0$, for any $T > 0$, $(\v{Y}_t)_{t \in \cbr{0,T}} = (\v{X
 
 In practice, $\nabla \log p_t $ is approximated with a score network $(t,x) \mapsto s_\theta(t,x)$ trained by minimising either a denoising score matching ($\mathrm{dsm}$) loss or an implicit score matching ($\mathrm{ism}$) loss \parencite{vincent2011connection} \begin{equation} \label{eq:implicit_sm_dupref} \textstyle{ \ell(\theta) = \E_{t \sim \c{U}([0,T]), (\v{X}_0, \v{X}_t)}[ \lambda_t ( \frac{1}{2} \norm{ s_\theta(t, \v{X}_t) }^2 + \dive(s_\theta)(t, \v{X}_t))],} \end{equation} where $\lambda_t >0$.
 For a flexible score network, the global minimiser $\theta^\star = \mathrm{argmin}_{\theta}\c{L}(\theta)$ satisfies $s_{\theta^\star}(t, \cdot)=\nabla \log p_t$.
-\textcite{debortoli2022riemannian}
+\textcite{de2022riemannian}
 and \textcite{huang2022riemannian} have extended denoising diffusion models to the
 Riemannian setting.
 The time-reversal formula \eqref{eq:time_reversal_dupref2} remains the same, replacing the Euclidean gradient with its Riemannian equivalent.
 The \textrm{ism} loss can still be computed in that setting.
 However, the samplers used in the Riemannian setting differ from the classical Euler-Maruyama discretisation used in the Euclidean framework.
-\textcite{debortoli2022riemannian}
+\textcite{de2022riemannian}
 use Geodesic Random Walks \parencite{jorgensen1975central}, which ensure that the
 samples remain on the manifold at every step.
 In this paper, we propose a sampler with similar properties in the case of \emph{constrained} manifolds.
@@ -149,7 +149,7 @@ An overview of the samplers we cover in this section is presented in~\Cref{tab:g
 In the barrier approach, the constrained manifold is transformed into an unconstrained space via a barrier metric.
 This metric is defined by $\nabla^2 \phi(x)$ with $\phi(x) = \sum_{i\in \c{I}} \phi_i(d(x, f_i))$ where \(d(x, f_i)\) is the minimum distance from the point \(x\) to the set defined by \(f_i(x) = 0\) and $\phi_i$ is a monotone decreasing function such that $\lim_{z \rightarrow 0} \phi_i(z) = \infty$ .
 Under additional regularity assumptions, $\phi$ is called a \emph{barrier function} (see \cite{nesterov1994interior}).
-This definition ensures that the barrier function induces a well-defined exponential map on the manifold, making the Riemannian diffusion model frameworks of \textcite{debortoli2022riemannian} and \textcite{huang2022riemannian} applicable.
+This definition ensures that the barrier function induces a well-defined exponential map on the manifold, making the Riemannian diffusion model frameworks of \textcite{de2022riemannian} and \textcite{huang2022riemannian} applicable.
 In practice, evaluating $\phi$ requires computing \(d(x, \partial \c{M})\) (and its derivatives), which can be prohibitively expensive.
 
 Furthermore, since the exponential under the induced manifold is not easy to compute, the barrier methods in \cite{fishman2023diffusion} approximate it by projecting the exponential on the original manifold back into the constrained set, incurring additional bias and necessitating a projection, which can itself be computationally intractable, as we discuss in more detail below.

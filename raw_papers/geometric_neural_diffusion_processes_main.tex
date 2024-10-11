@@ -21,7 +21,7 @@ Examples include tracking the eye of cyclones moving on the surface of the Earth
 
 The lack of data or noisy measurements in the physical process of interest motivates a \emph{probabilistic} treatment of such phenomena, in addition to its functional nature.
 Arguably the most important framework for modelling stochastic processes are Gaussian Processes (GPs) ~\parencite{rasmussen2003gaussian}, as they allow for exact or approximate posterior prediction \parencite{titsias2009Variational,rahimi2007random,wilson2020efficiently}.
-In particular, when choosing equivariant mean and kernel functions, GPs are invariant (i.e.~stationary) \parencite{holderrieth2021equivariant, azangulov2022Stationary, azangulov2023Stationary}.
+In particular, when choosing equivariant mean and kernel functions, GPs are invariant (i.e.~stationary) \parencite{holderrieth2021equivariant, azangulov2023stationary, azangulov2023stationary2}.
 Their limited modelling capacity and the difficulty in designing complex, problem-specific kernels motivates the development of neural processes (NPs)~\cite{garnelo2018neural}, which learn to approximately model a conditional stochastic process directly from data.
 NPs have been extended to model translation invariant (scalar) processes \parencite{gordon2019Convolutional} and more generic \(\mathrm{E}(n)\)-invariant processes \parencite{holderrieth2021equivariant}.
 In this work, we develop geometric diffusion neural processes which incorporate geometrical prior knowledge into functional diffusion models.
@@ -225,7 +225,7 @@ Finally, \cite{dupont2022data} model weights of implicit neural representation u
 \paragraph{Stationary stochastic processes.}
 The most popular Gaussian process kernels (e.g.\ squared exponential, Mat\'ern) are stationary, that is, they are translation invariant.
 This idea can be extended to the entire isometry group of Euclidean spaces \parencite{holderrieth2021equivariant}, allowing for modelling higher order tensor fields, such as wind fields or incompressible fluid velocity \parencite{macedo2010learning}.
-Later, \textcite{azangulov2022Stationary, azangulov2023Stationary} extended stationary kernels and Gaussian processes to a large class of non-Euclidean spaces, in particular all compact spaces, and symmetric non compact spaces.
+Later, \textcite{azangulov2023stationary, azangulov2023stationary2} extended stationary kernels and Gaussian processes to a large class of non-Euclidean spaces, in particular all compact spaces, and symmetric non compact spaces.
 In the context of neural processes, \cite{gordon2019Convolutional} introduced \textsc{ConvCNP} so as to encode translation equivariance into the predictive process.
 They do so by embedding the context into a translation equivariant functional representation which is then decoded with a convolutional neural network.
 \textcite{holderrieth2021equivariant} later extended this idea to construct neural processes that are additionally equivariant w.r.t.\ rotations or subgroup thereof.

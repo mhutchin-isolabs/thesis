@@ -21,7 +21,7 @@ Indeed, this is equivalent to the Gaussianity of every linear combination $\alph
 
 We begin by showing that a Gaussian random vector in the sense of duality is characterized by a mean and a covariance, just like Gaussians in the standard, coordinate-dependent sense, starting with defining appropriate analogs of both notions in this setting.
 
-\begin{lemma}[Generlised Guassian momnets]
+\begin{lemma}[Generlised Gaussian momnets]
 	\label{thm:generalized_moments1}
 	For every Gaussian random vector $v$, there is a unique vector $\mu \in V$ and unique symmetric positive semi-definite bilinear form $k : V^* \x V^* \-> \R$ such that for all $\phi \in V^*$, we have $\E \dualprod{\phi}{v} = \dualprod{\phi}{\mu}$ and $k(\phi, \psi) = \Cov(\dualprod{\phi}{v},\dualprod{\psi}{v})$.
 	We say that $\mu$ is its \emph{mean} and $k$ is its \emph{covariance form}, and write $v \~[N](\mu, k)$.
@@ -123,7 +123,7 @@ We show in the following example that this definition of the cross-covariance ke
 
 We proceed to introduce the system of coordinate-free finite-dimensional marginals that will be used to construct the vector-valued GP.
 
-\begin{definition}[Guassian vector field finite-dimensional marginals]
+\begin{definition}[Gaussian vector field finite-dimensional marginals]
 	Let $\mu \in \Gamma_{\f{nns}}(TX)$ and $k : T^*X \x T^*X \-> \R$ be a cross-covariance kernel.
 	For any $x_1,\ldots,x_n \in X$, let $V_{x_1,\ldots,x_n} = T_{x_1} X \oplus \ldots \oplus T_{x_n} X$ and $V^*_{x_1,\ldots,x_n} = T^*_{x_1} X \oplus \ldots \oplus T^*_{x_n} X$.
 	Define $\mu_{x_1,\ldots,x_n} \in V_{x_1,\ldots,x_n}$ and $k_{x_1,\ldots,x_n} : V_{x_1,\ldots,x_n}^* \x V_{x_1,\ldots,x_n}^* \-> \R$ by \[ \mu_{x_1,\ldots,x_n} &= (\mu(x_1),\ldots,\mu(x_n)) & k_{x_1,\ldots,x_n}(\alpha,\beta) &= \sum_{i=1}^n\sum_{j=1}^n k(\alpha_{x_i}, \beta_{x_j}) \] for any $\alpha = (\alpha_{x_1}, \ldots, \alpha_{x_n})$, $\beta = (\beta_{x_1}, \ldots, \beta_{x_n}) \in V^*_{x_1, \ldots, x_n}$.
