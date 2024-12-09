@@ -16,18 +16,18 @@ Given the inherent symmetry in the laws of nature, these tensor fields can trans
 Leveraging this symmetry can drastically reduce the amount of data required to learn from and reduce training time \cite{elesedy2021provably,elesedy2021provably2,lyle2020benefits,NEURIPS2022_257b9a6a}.
 
 
-Secondly, we look at functions with manifold codomain, and in particular, at functions of the form \(f: \R \to \c{M}\).
+Secondly, we look at functions with manifold codomain, and in particular, at functions of the form \(f: \R \to \c{M}\), representing \emphmarginnote{paths on manifolds}.
 The challenge in dealing with manifold-valued output, arises from the lack of vector-space structure.
 In applications, these functions typically appear when modelling processes indexed by time that take values on a manifold.
 Examples include tracking the eye of cyclones moving on the surface of the Earth (\cref{sec:cyclone_tracking}), or modelling the joint angles of a robot as it performs tasks \cite{jaquier2021geometry}.
 
 The lack of data or noisy measurements in the physical process of interest motivates a \emph{probabilistic} treatment of such phenomena, in addition to its functional nature.
-Arguably the most important framework for modelling stochastic processes are Gaussian processes (GPs) ~\parencite{rasmussen2003gaussian}, as they allow for exact or approximate posterior prediction \parencite{titsias2009Variational,rahimi2007random,wilson2020efficiently}.
+Arguably the most important framework for modelling stochastic processes are \emphmarginnote{Gaussian processes} (GPs) ~\parencite{rasmussen2003gaussian}, as they allow for exact or approximate posterior prediction \parencite{titsias2009Variational,rahimi2007random,wilson2020efficiently}.
 These can be viewed as generalisations of the typical multivariate Gaussian distribution, specified by a mean and covariance kernel.
 In particular, when choosing equivariant mean and kernel functions, Gaussian processes are invariant to the symmetries their mean and kernel function encode (this is commonly referred to as `stationary') \parencite{terenin22, holderrieth2021equivariant, azangulov2023stationary, azangulov2023stationary2}.
-Their limited modelling capacity and the difficulty in designing complex, problem-specific kernels motivated the development of neural processes (NPs)~\cite{garnelo2018neural}, which learn to approximately model a conditional stochastic process directly from data.
+
+The limited modelling capacity of Gaussian processes and the difficulty in designing complex, problem-specific kernels motivated the development of \emphmarginnote{neural processes} (NPs)~\cite{garnelo2018neural}, which learn to approximately model a conditional stochastic process directly from data.
 Neural processes have been extended to model translation invariant (scalar) processes \parencite{gordon2019Convolutional} and more generic \(\groupE{}\)-invariant processes \parencite{holderrieth2021equivariant}.
-In this chapter, we develop geometric diffusion neural processes which incorporate non-Euclidean geometry prior into functional diffusion models.
 
 % Our contributions are three-fold: \begin{enumerate}[label=(\alph*)] \item We incorporate group invariance of the distribution of the generative model by enforcing the covariance kernel and the score network to be group equivariant.
 % 	\item We propose a novel Langevin dynamics scheme for efficient conditional sampling. This is independent of the geometric modelling contributions.
@@ -37,13 +37,13 @@ In this chapter we develop two sets of contributions.
 Firstly, we produce a framework for placing score-based generative models on the spaces of tensor fields on manifolds, and on the spaces of paths on manifolds.
 We accomplish this by considering the finite marginals of a noising process defined on the infinite dimension space of functions, targeting a Gaussian process as the reference distribution.
 We investigate a series of methods of parametrising the score function for such a process.
-Finally, we derive the constraints required on the score function to ensure that the modelled density is invariant, or if we are modelling a conditional distribution, equivariant.
+We also derive the constraints required on the score function to ensure that the modelled density is invariant, or if we are modelling a conditional distribution, equivariant.
 
 Secondly we design a new series of conditioning methods to sample the posterior distribution of a prior diffusion model, conditioned on a partial observation.
 This method relies on exploiting a decomposition of the score function and an application of Langevin dynamics.
 We explore a series of hyperparameter settings for this algorithm, trading off sampling cost with sample quality.
 
-Finally, we empirically evaluate these methods on a series of experimental tasks.
+At the end, we empirically evaluate these contributions on a series of experimental tasks.
 
 % \section{Background}
 % \label{sec:background}
@@ -90,7 +90,7 @@ Later we will generalise this to tensor fields on manifolds.
 \label{sec:euclidean_tensor_fields}
 \begin{figure}
 	\begin{center}
-		\includegraphics[width=.5\textwidth]{images/geomndp/2d/steerable_demo.pdf}
+		\includegraphics[width=.6\textwidth]{images/geomndp/2d/steerable_demo.pdf}
 	\end{center}
 	\caption{Illustration of a vector field \(f: \R^2 \rightarrow \R^2\) being steered by a group element \(g = uh \in \E(2) = \R^2 \rtimes \mathrm{O}(2)\).}
 	\label{fig:steerable_demo}
@@ -114,7 +114,7 @@ For an example of a vector field, see \cref{fig:steerable_demo}.
 
 \subsection{Continuous diffusion on function spaces}
 \label{sec:functional_diffusion}
-We construct a diffusion model on functions \(f: X \rightarrow Y\) by defining a diffusion model for every finite set of marginals.
+We construct a diffusion model on functions \(f: X \rightarrow Y\) by defining a diffusion model for every \emphmarginnote{finite set of marginals}.
 Most prior works on infinite-dimensional diffusions consider a noising process on the space of functions \parencite{kerrigan2022Diffusion,pidstrigach2023InfiniteDimensional,lim2023score}.
 In theory, this allows the model to define a consistent distribution over all the finite marginals of the process being modelled.
 In practice, however, only finite marginals can be modelled on a computer and the score function needs to be approximated, and at this step consistency over the marginals is lost.
@@ -124,9 +124,9 @@ With this in mind, we eschew the technically laborious process of defining diffu
 We find that in practice consistency can be well learned from data see, \cref{sec:experiments-gndp}, and this allows for more flexible choices of score network architecture and easier training.
 
 For the modelling problem, we assume that there exists an underlying distribution over tensor fields, \(f \sim \mu\), for \(\mu \in \mathcal{P}(\c{C}({X}, {Y}))\), where \(\mathcal{P}\) is the space of probability measure on the space of continuous functions \(f:X\to Y\).
-From this we we have a finite set of observations, observed on a random or static finite index set, that is a dataset
+From this we have a \emphmarginnote{finite set of observations}, observed on a random or static finite index set, that is a dataset
 \[
-	\del{\del{x_{i, j}, y_{i, j} = f_i(x_{i, j})}_{j=1}^{N_j}}_{i=1}^N, \quad x_{i,j}\in X, \; y_{i,j}\in Y	
+	\del{\del{x_{i, j}, y_{i, j} = f_i(x_{i, j})}_{j=1}^{N_j}}_{i=1}^N, \quad x_{i,j}\in X, \; y_{i,j}\in Y	, \; f_i \sim \mu
 \]
 for a dataset size \(N\) with \(N_j\) observations per function sample in the dataset.
 Examples of this sort of data might include wind observations at sparse weather stations, or pixels making up an image.
@@ -141,13 +141,13 @@ For a given datapoint \(\del{x_i, y_i}_{i=1}^n = \del{\v{x}, \v{y}}\) of \(n\) o
 	\d\v{Y}_t(\v{x}) = \tfrac{1}{2}\beta_t \sbr{\v{m}\del{\v{x}} - \v{Y}_t(\v{x})}\d t + \sqrt{\beta_t} \m{K}(\v{x}, \v{x})^\frac{1}{2} \d \v{B}_t,
 	\label{eq:forward_SDE_sp}
 \] 
-where \(\v{m}(\v{x})_i = m(x_i)\) with \(m: X\to \R\) a mean function and  \(\m{K}(\v{x}, \v{x})_{i, j} = k(x_i, x_j)\) with \(k:X \times X \to \R\) a kernel.
+where \(\v{m}(\v{x})_i = m(x_i)\) with \(m: X\to \R\) a \emphmarginnote{mean function} and  \(\m{K}(\v{x}, \v{x})_{i, j} = k(x_i, x_j)\) with \(k:X \times X \to \R\) a \emphmarginnote{kernel}.
 This will converge with geometric rate to \(\c{N}\del{\v{m}\del{\v{x}}, \m{K}\del{\v{x}, \v{x}}}\).
 Using the results of \textcite{phillips2022spectral}, this convergence extends to the diffusion on function space \(\v{Y}_t\), which will converge to a Gaussian process with mean function \(m\) and covariance kernel \(k\).
 We choose to noise towards a Gaussian process \cite{rasmussen2003gaussian} as they are the function-space generalisation of a multivariate Gaussian.
 We hypothesise that by introducing structure into the reference distribution of the diffusion model we can make the sampling process simpler.
 
-In the specific instance where \(k(x_i, x_j) = \delta_{x_i}(x_j)\), then the limiting process \(\v{Y}_\infty\) is simply \emph{white noise}, whilst other choices such as the squared-exponential or Mat\'ern kernel would lead to the associated Gaussian processes.
+In the specific instance where \(k(x_i, x_j) = \delta_{x_i}(x_j)\), then the limiting process \(\v{Y}_\infty\) is simply \emphmarginnote{white noise}, whilst other choices such as the squared-exponential or Mat\'ern kernel would lead to the associated Gaussian processes.
 Note that the \emph{white noise} setting is not covered by the existing theory of functional diffusion models, as a Hilbert space and a square integral kernel are required, see ~\textcite{kerrigan2022Diffusion} for instance.
 
 To draw a sample from \(p_{t|0}(\v{Y}_t(\v{x}) | \v{Y}_0(\v{x}))\) we can sample from the multivariate Gaussian
@@ -173,8 +173,8 @@ Using the results presented in \cref{sec:manifold_time_reversal}, the time-rever
 	\d\v{Y}_t^\vsla{}(\v{x}) = \beta_t \sbr{\tfrac{1}{2}\del{\v{m}\del{\v{x}} - \v{Y}_t(\v{x})} + \m{K}(\v{x}, \v{x}) \nabla\log p^{\v{x}}_{T-t}(\v{Y}_t^\vsla{}(\v{x}))}\d t + \sqrt{\beta_t} \m{K}(\v{x}, \v{x})^\frac{1}{2} \d \v{B}_t,
 	\label{eq:backward_SDE_dupref2}\nonumber
 \] 
-with \(p^{\v{x}}_t\) the density of \(\v{Y}_t(\v{x})\) w.r.t.~the Lebesgue measure.
-In practice, the Stein score \(\log p_{T-t}\) is not tractable and is approximated by a neural network.
+with \(p^{\v{x}}_t\) the density of \(\v{Y}_t(\v{x})\) with respect to.~the Lebesgue measure.
+In practice, the Stein score \(\nabla\log p_{T-t}\) is not tractable and is approximated by a neural network.
 We then consider the generative stochastic process model defined by first sampling with \(\v{Y}_0^\vsla{} \sim \c{N}\del{\v{m}\del{\v{x}}, \m{K}(\v{x}, \v{x})}\) and then simulating the reverse diffusion \eqref{eq:backward_SDE_dupref2} (e.g. via Euler-Maruyama discretisation).
 
 
@@ -190,7 +190,7 @@ Overall, we found the preconditioned score \(\v{K}(\v{x}, \v{x}) \nabla \log p_t
 \subsubsection{A discussion on model consistency}
 \label{sec:consistency}
 So far we have defined a generative model over functions via distributions over sets of finite marginals \(\v{Y}_0(\v{x})\).
-These finite marginals arise from a stochastic process if, as per the Kolmogorov extension theorem \parencite{oksendal2003stochastic}, they satisfy \emph{exchangeability} and \emph{consistency} conditions.
+These finite marginals arise from a stochastic process if, as per the Kolmogorov extension theorem \parencite{oksendal2003stochastic}, they satisfy \emphmarginnote{exchangeability} and \emphmarginnote[\baselineskip]{consistency} conditions.
 
 Exchangeability can be satisfied by parametrising the score network such that the score network is equivariant with respect to permutation, i.e. \(\mathbf{s}_\theta(t, \sigma \circ x, \sigma \circ {y}) = \sigma \circ \mathbf{s}_\theta(t, x, {y})\) for any \(\sigma \in \Sigma_n\).
 
@@ -213,7 +213,7 @@ Let \(\del{F, \sigalg{F}}\) be a measurable space, and let \(G\) be a group with
 Let \(\Lambda_F\) be the space of probability measures on \(F\).
 For \(\mu \in \Lambda_F\) we define the action of \(G\) on \(\mu\) via the measurable sets of \(\sigalg{F}\) as 
 \[
-	\sbr{g\cdot \mu}(\rm{F}) = \mu(g^{-1}\cdot \rm{F}) = \mu(\cbrcolon{g^{-1}\cdot f}{f\in \rm{F}})
+	\sbr{g\cdot \mu}(\rm{F}) = \mu(g^{-1}\cdot \rm{F}) = \mu\del{\cbrcolon{g^{-1}\cdot f}{f\in \rm{F}}}
 \]
 for \(g\in G\), \(\rm{F}\in \sigalg{F}\).
 This action implies
@@ -224,19 +224,21 @@ for \(g\in G\), \(\rm{F}\in \sigalg{F}\).
 
 A probability measure \(\mu\) on \(F\) is said to be \emphmarginnote{\(G\)-invariant measure} if
 \[
-	g\cdot \mu = \mu \as
+	g\cdot \mu = \mu
 \]
 This definition naturally covers stochastic processes of the form we are studying with \(F\) as a space of function.
 In the Gaussian process literature an invariant Gaussian process is often termed as a `stationary' stochastic process.
 
 Let \(\nu\) be a measure on sets of finite marginal, that is it a distribution on sets \((x_1, ..., x_n)\) for variable \(n\) and randomly generates sets of marginals to evaluate the stochastic process on.
 Assume this is invariant under the group action \(g \cdot (x_1, ..., x_n) = (g\cdot x_1, ..., g\cdot x_n)\).
+
 The invariances of \(\mu\) and \(\nu\) together mean that for a given set of observations of the stochastic process, \(\del{\v{x}, \v{y}} = \del{\cbr{x_i}_{i=1}^n, \cbr{y_i=f(x_i)}_{i=1}^n}\) for \(f\sim \mu\) and \(\v{x}\sim \nu\), we are as likely to see this observation as we are to see the transformed observations \(g \cdot \del{\v{x}, \v{y}}\).
 The transformation of observations is defined in the Euclidean tensor field case by \[g \cdot \del{\v{x}, \v{y}} = \del{\cbr{g \cdot x_i}_{i=1}^n, \cbr{\rho(h) y_i}_{i=1^n}}\label{eq:sample_transform_euclidean},\]
 where \(\rho\) is a representation of \(\groupO[d]{} \subset G\).
 We aim therefore to define a model that preserves this \(G\)-invariance.
 
 \subsubsection{Invariant diffusion processes}
+\label{sec:diffusion_sp}
 First, we recall such a necessary and sufficient condition for Euclidean Gaussian processes to be invariant.
 \begin{proposition}[Invariant (stationary) Gaussian process \parencite{holderrieth2021equivariant}]
 	\label{prop:inv_gp}
@@ -253,10 +255,12 @@ Building on \cref{prop:inv_gp}, we then state that our introduced neural diffusi
 	The score is approximated by a score network \[\mathbf{s}_\theta: \sbr{0, T} \times {X}^n \times {Y}^n \rightarrow T {Y}^n\], and the law of the limiting process is given by \[\mathcal{L}({\v{Y}}_0^\vsla{}) \sim \mathrm{GP}(m, k)(\v{x})\], a \(G\)-invariant Gaussian process evaluated on the marginals \(\v{x}\) (\cref{prop:inv_gp}).
 	If we additionally assume that the score network is \(G\)-equivariant vector field, i.e. \(\mathbf{s}_\theta(t, g\cdot x, \rho(g) {y}) = \rho(g) \mathbf{s}_\theta(t, x, {y})\) for all \(x \in {X}, g \in G\), then for any \({t \in [0, T]}\) the law of \(\del{\v{Y}_t^\vsla{}(\v{x})}_{\v{x}\in X^n}\) is \(G\)-invariant in the sense that
 	\[
-		g \cdot \c{L}({\v{Y}}_t^\vsla{}(\v{x})) = \c{L}(\rho(h) {\v{Y}}_t^\vsla{}(g\cdot\v{x})) = \c{L}({\v{Y}}_t^\vsla{}(\v{x}))
+		g \cdot \c{L}({\v{Y}}_t^\vsla{}(\v{x})) = \c{L}(\rho(h) {\v{Y}}_t^\vsla{}(g\cdot\v{x})) = \c{L}({\v{Y}}_t^\vsla{}(\v{x})).
 	\]
 \end{proposition}
-This result can be proved in two ways, from the probability flow ordinary differential equation perspective or directly in terms of stochastic differential equation via the Fokker-Planck, see \cref{sec:proof_inv_prior}.
+\begin{proof}
+	This result can be proved in two ways, from the probability flow ordinary differential equation perspective or directly in terms of stochastic differential equation via the Fokker-Planck, see \cref{sec:proof_inv_prior}.
+\end{proof}
 
 Suitable architectures to produce such equivariant score functions on points include the \(\groupE[n]{}\)-Equivariant Graph Neural Networks of \textcite{satorras2021en}.
 
@@ -264,11 +268,11 @@ Suitable architectures to produce such equivariant score functions on points inc
 \label{sec:equivariant_posterior}
 The invariant model in the previous section defines a model over a stochastic process.
 Often in generative modelling we wish to model the \emphmarginnote{conditional distribution} of a stochastic process.
-Explicitly learning the conditional distribution is known as \emphmarginnote{amortised conditioning}.
 That is, given a partial observation of a sample from \(\mu\), \(\c{C} = \del{\v{x}_c, \v{y}_c} = \del{\cbr{x_{c,i}, y_{c,i} = f(x_{c, i})}}_{i=1}^n, \; f\sim \mu, \; \v{x}_c \sim \nu\), we want to model the conditional measure of \(\mu\) given \(\c{C}\), \(\mu(\cdot | \c{C})\).
+Explicitly learning the conditional distribution is known as \emphmarginnote{amortised conditioning}.
 
 When the prior process \(\mu\) is \(G\)-invaraint, the map from the conditioning set to the posterior, \(P: C\mapsto\mu(\cdot | \c{C})\), inherits a symmetry from \(\mu\).
-It is \(G\)-equivariant in the sense that \[
+It is \emphmarginnote{\(G\)-equivariant} in the sense that \[
 P(g \cdot C) = g \cdot P(C) = g \cdot \mu(\cdot | C) \quad\forall\;C, \; g\in G.
 \]  
 This is equivalent to saying it satisfies \[\mu(g\cdot A | g \cdot \c{C}) = \mu( A | \c{C}) \quad \forall C\; g\in G\; A\in \sigalg{F},\]
@@ -299,17 +303,17 @@ The conditional model will be conditionally equivariant if the reference density
 In the previous section we described the construction of symmetry preserving diffusion models for Euclidean tensor fields.
 Here we preset how this can be generalised to tensor fields on manifolds.
 
-Significant work has been done on performing convolutions on feature fields on manifolds (a superset of tensor fields on manifolds), core references being \cite{cohen2021equivariant} for the case of homogeneous spaces and \cite{weiler2023equivariant} for more general Riemannian manifolds.
+Significant work has been done on performing convolutions on feature fields on manifolds (a superset of tensor fields on manifolds), core references being \textcite{cohen2021equivariant} for the case of homogeneous spaces and \textcite{weiler2023equivariant} for more general Riemannian manifolds.
 We recommend these as excellent mathematical introductions to the topic and build on them to describe how to formulate diffusion models over these spaces.
 
 \subsubsection{Tensor fields as sections of bundles}
-Formally the fields we are interested in modelling are sections \(\sigma\) of associated tensor bundles of the principle \(G\)-bundle on a Riemannian manifold \((M, g)\) for a given \(G\) structure on the manifold.
+Formally the fields we are interested in modelling are sections \(\sigma\) of \emphmarginnote{associated tensor bundles of the principle \(G\)-bundle} on a Riemannian manifold \((M, g)\) for a given \(G\) structure on the manifold.
 We shall denote such a bundle \(BM\) and the space of sections \(\Gamma(BM)\).
 The goal, therefore, is to model \textit{random elements} \(f\in \Gamma(BM)\) from this space of sections.
-For a clear understanding of this definition, please see \textcite[pages 73-95]{weiler2023equivariant} for an introduction suitable to ML audiences.
+For a clear understanding of this definition, please see \textcite[pages 73-95]{weiler2023equivariant}.
 
-The symmetries we shall want to preserve are the \emphhypermargin{Riemannian isometries}{} of the manifold, \(\mathsf{Isom}_{(M, g)}\).
-Unlike Euclidean symmetries these may not be global symmetries.
+The symmetries we shall want to preserve are the \emphhypermargin{Riemannian isometries}{def:riemannain_isometry} of the manifold, \(\mathsf{Isom}_{(M, g)}\).
+Unlike Euclidean symmetries these may not be global symmetries of the manifold.
 
 Prior work looking at this setting is \textcite{hutchinson2021vector} where they construct kernels for tensor fields on manifolds, allowing for the use of Gaussian processes in this setting.
 
@@ -340,7 +344,7 @@ This done, we can use the standard Euclidean score-based modelling framework to 
 A general recipe for encoding symmetries into this generalisation is unlikely to be available.
 The symmetry acting on sets of observations of sections of tensor bundles on manifolds are more complex than in the Euclidean case.
 The generalisation of \cref{eq:sample_transform_euclidean} is given by
-\[g \cdot \del{\v{x}, \v{y}} = \del{\cbr{g \cdot x_i}_{i=1}^n, \cbr{\rho(h(g, x_i)) y_i}_{i=1^n}}\label{eq:sample_transform},\]
+\[g \cdot \del{\v{x}, \v{y}} = \del{\cbr{g \cdot x_i}_{i=1}^n, \cbr{\rho(h(g, x_i)) \cdot y_i}_{i=1^n}}\label{eq:sample_transform},\]
 where \(i\in\mathsf{Isom}_{(M, g)}\) and \(h: \mathsf{Isom}{(M, g)}\x M \to G\) is a function of the global isometry and the specific point \(x_i\).
 
 One case where this simplifies is when there exists an isometric embedding of the manifold into Euclidean space that also preserve the symmetry of the manifold such that the symmetry in the embedding is a subgroup of the Euclidean group.
@@ -429,12 +433,12 @@ Our goal in this section is to produce an exact, performant, sampling scheme tha
 Instead, we base our method on Langevin dynamics.
 For the initial presentation in the section we consider a distribution over a fixed state space, \(\v{x}\in X^n\).
 We will adapt this to the setting of modelling the marginals of a stochastic process later.
-Consider the setting where we have partially observed \(\v{x}\), \(v{x}^c \in X^{n_c}\), and we wish to sample \(\v{x}^o\in X^{n_o}\), such that \(n_c + n_o = n\).
+Consider the setting where we have partially observed \(\v{x}\), \(\v{x}^c \in X^{n_c}\), and we wish to sample \(\v{x}^o\in X^{n_o}\), such that \(n_c + n_o = n\).
 If we have a score function trained over the state space \(\v{x} = [\v{x}^c, \v{x}^o]\) we exploit the following score breakdown: \[\nabla_{\v{x}^o} \log p(\v{x}^o|\v{x}^c) = \nabla_{\v{x}^o} \log p([\v{x}^o, \v{x}^c]) - \nabla_{\v{x}^o} \log p(\v{x}^c) = \nabla_{\v{x}^o} \log p(\v{x}).\] This means that if we have access to the score on the joint variables, we have access to the conditional score by simply taking the joint score and ignoring  the gradient for the variables we are conditioning on.
 
 In a score-based model we learn the time-dependent score function \(s_\theta(t, \v{x}) \approx \nabla_{\v{x}}\log p_t(\v{x})\).
 We could use this to perform Langevin dynamics at \(t=\epsilon\), some time very close to \(0\).
-Similar to \cite{song2019generative} however, this produces the twin issues of how to initialise the dynamics, given a random initialisation will start the sampler in a place where the score has been badly learnt, and very slow mixing times for complex distributions, producing inaccurate sampling.
+Similar to \textcite{song2019generative} however, this produces the twin issues of how to initialise the dynamics, given a random initialisation will start the sampler in a place where the score has been badly learnt, and very slow mixing times for complex distributions, producing inaccurate sampling.
 
 Instead, we follow a scheme of tempered Langevin sampling detailed in \cref{alg:conditioning_langevin}.
 Starting at \(t=T\) we sample an initialisation of \(\v{x}^o\) based on the reference distribution.
@@ -448,7 +452,7 @@ Consider that we have a set of conditioning observations, \((\v{x}^c, \v{y}^c)\)
 A score-based model on the marginals has learnt the distribution \(\nabla_{\v{y}^c, \v{y}^o}\log p_t^{\v{x}^c, \v{x}^o}(\v{y}^c_t, \v{y}^o_t)\).
 We can therefore compute the conditional score
 \[
-	\nabla_{\v{y}^o_t} \log p_t^{\v{x}^c | \v{x}^o}(\v{y}^c_t| \v{y}^o_t) = \nabla_{\v{y}^o_t} \log p_t^{\v{x}^c \v{x}^o}(\v{y}^c_t, \v{y}^o_t),
+	\nabla_{\v{y}^o_t} \log p_t^{\v{x}^c | \v{x}^o}(\v{y}^c_t| \v{y}^o_t) = \nabla_{\v{y}^o_t} \log p_t^{\sbr{\v{x}^c, \v{x}^o}}(\sbr{\v{y}^c_t, \v{y}^o_t}),
 \] again by ignoring the gradients of the conditioning variables from the learnt score function.
 The algorithm for doing this conditioning is laid out in \cref{alg:conditioning_langevin}.
 
@@ -531,8 +535,10 @@ Note the conditional sampling scheme other than the noise sampling is \(\c{O}(NI
 The likelihood ordinary differential equation formulation for computing likelihoods of the marginals in \cref{sec:euclidean_geom_ndp} applies immediately.
 
 For conditional samples using the Langevin sampling method however a similar formulation is not possible.
-Instead, we rely on the conditional probability rule to evaluate conditional likelihoods, \(p_{x^o|\v{x}^c}(y^o|\v{y}^c) = p_{x^o,\v{x}^c}(y^o,\v{y}^c) / p_{\v{x}^c}(\v{y}^c)\).
+Instead, we rely on the conditional probability rule to evaluate conditional likelihoods, \(p_{\v{x}^o|\v{x}^c}(\v{y}^o|\v{y}^c) = p_{\v{x}^o,\v{x}^c}(\v{y}^o,\v{y}^c) / p_{\v{x}^c}(\v{y}^c)\).
 This can be done by solving two probability flow ordinary differential equations on the joint evaluation and context set, and only on the context set.
+
+Given that our model does not enforce consisteny on the marginals this computation will not be exact, only up to the degree that the model has learnt consistency from the data.
 
 % \section{Geometric neural diffusion processes} \label{sec:diffusion_sp}
 
@@ -554,7 +560,7 @@ This can be done by solving two probability flow ordinary differential equations
 % Note that the \emph{white noise} setting is not covered by the existing theory of functional diffusion models, as a Hilbert space and a square integral kernel are required, see ~\textcite{kerrigan2022Diffusion} for instance.
 
 % \textbf{Denoising process.}
-% Under mild conditions on the distribution of \(\v{Y}_0(x)\), the time-reversal process \((\bar{\v{Y}}_t(x))_{t \geq 0}\) also satisfies an stochastic differential equation~\parencite{cattiaux2021time,haussmann1986time} given by \begin{equation}\label{eq:backward_SDE_dupref2} \textstyle \mathrm{d} \bar{\v{Y}}_t(x) = \{-\tfrac{1}{2} (m(x) - \bar{\v{Y}}_t(x)) + \mathrm{K}(x,x) \nabla \log p_{T-t}(\bar{\v{Y}}_t(x)) \} \beta_{T-t} \mathrm{d} t + \beta_{T-t}^{1/2} \mathrm{K}(x,x)^{1/2} \mathrm{d} \v{B}_t, \end{equation} with \(\bar{\v{Y}}_0 \sim \mathrm{GP} (m, k)\) and \(p_t\) the density of \(\mathbf{Y}_t(x)\) w.r.t.~the Lebesgue measure.
+% Under mild conditions on the distribution of \(\v{Y}_0(x)\), the time-reversal process \((\bar{\v{Y}}_t(x))_{t \geq 0}\) also satisfies an stochastic differential equation~\parencite{cattiaux2021time,haussmann1986time} given by \begin{equation}\label{eq:backward_SDE_dupref2} \textstyle \mathrm{d} \bar{\v{Y}}_t(x) = \{-\tfrac{1}{2} (m(x) - \bar{\v{Y}}_t(x)) + \mathrm{K}(x,x) \nabla \log p_{T-t}(\bar{\v{Y}}_t(x)) \} \beta_{T-t} \mathrm{d} t + \beta_{T-t}^{1/2} \mathrm{K}(x,x)^{1/2} \mathrm{d} \v{B}_t, \end{equation} with \(\bar{\v{Y}}_0 \sim \mathrm{GP} (m, k)\) and \(p_t\) the density of \(\mathbf{Y}_t(x)\) with respect to.~the Lebesgue measure.
 % In practice, the Stein score \(\log p_{T-t}\) is not tractable and must be approximated by a neural network.
 % We then consider the generative stochastic process model defined by first sampling \(\bar{\v{Y}}_0 \sim \mathrm{GP} (m, k)\) and then simulating the reverse diffusion \eqref{eq:backward_SDE_dupref2} (e.g.\ via Euler-Maruyama discretisation).
 
@@ -622,7 +628,7 @@ This can be done by solving two probability flow ordinary differential equations
 % \begin{proposition}{Equivariant conditional process.}{}
 % 	\label{prop:equiv_posterior}
 % \end{proposition}
-% Originally stated in \cite{holderrieth2021equivariant} in the case where the process is over functions of the form \(f: \R^n\to \R^d\) and marginals with density w.r.t.
+% Originally stated in \cite{holderrieth2021equivariant} in the case where the process is over functions of the form \(f: \R^n\to \R^d\) and marginals with density with respect to.
 % \ the Lebesgue measure, we prove \cref{prop:equiv_posterior} for SPs over generic fields on manifolds in terms only of the measure of the process (\cref{sec:equiv_posterior}).
 
 % \subsection{Conditional sampling}
@@ -740,7 +746,7 @@ This can be done by solving two probability flow ordinary differential equations
 % \begin{proposition}{Equivariant conditional process.}{}
 % 	\label{prop:equiv_posterior}
 % \end{proposition}
-% Originally stated in \cite{holderrieth2021equivariant} in the case where the process is over functions of the form \(f: \R^n\to \R^d\) and marginals with density w.r.t.
+% Originally stated in \cite{holderrieth2021equivariant} in the case where the process is over functions of the form \(f: \R^n\to \R^d\) and marginals with density with respect to.
 % \ the Lebesgue measure, we prove \cref{prop:equiv_posterior} for SPs over generic fields on manifolds in terms only of the measure of the process (\cref{sec:equiv_posterior}).
 
 % \subsection{Conditional sampling}
@@ -858,7 +864,7 @@ This can be done by solving two probability flow ordinary differential equations
 % \begin{proposition}{Equivariant conditional process.}{}
 % 	\label{prop:equiv_posterior}
 % \end{proposition}
-% Originally stated in \cite{holderrieth2021equivariant} in the case where the process is over functions of the form \(f: \R^n\to \R^d\) and marginals with density w.r.t.
+% Originally stated in \cite{holderrieth2021equivariant} in the case where the process is over functions of the form \(f: \R^n\to \R^d\) and marginals with density with respect to.
 % \ the Lebesgue measure, we prove \cref{prop:equiv_posterior} for SPs over generic fields on manifolds in terms only of the measure of the process (\cref{sec:equiv_posterior}).
 
 % \subsection{Conditional sampling}
@@ -932,7 +938,7 @@ This idea can be extended to the entire isometry group of Euclidean spaces \pare
 Later, \textcite{azangulov2023stationary, azangulov2023stationary2} extended stationary kernels and Gaussian processes to a large class of non-Euclidean spaces, in particular all compact spaces, and symmetric non-compact spaces.
 In the context of neural processes, \cite{gordon2019Convolutional} introduced \textsc{ConvCNP} to encode translation equivariance into the predictive process.
 They do so by embedding the context into a translation equivariant functional representation which is then decoded with a convolutional neural network.
-\textcite{holderrieth2021equivariant} later extended this idea to construct neural processes that are additionally equivariant w.r.t.\ rotations or subgroup thereof.
+\textcite{holderrieth2021equivariant} later extended this idea to construct neural processes that are additionally equivariant with respect to.\ rotations or subgroup thereof.
 
 \paragraph{Spatial structure in diffusion models.}
 A variety of approaches have also been proposed to incorporate spatial correlation in the noising process of finite-dimensional diffusion models leveraging the multiscale structure of data \parencite{jing2022subspace,guth2022wavelet,ho2022cascaded,saharia2021image,hoogeboom2022blurring,rissanen2022Generative}.
@@ -954,7 +960,7 @@ Several approaches have been considered for conditional sampling.
 \textcite{pidstrigach2023InfiniteDimensional,bond2023infty} modify the reverse diffusion to introduce a guidance term, while
 \textcite{dutordoir2022Neural,kerrigan2022Diffusion} use the replacement
 method.
-Finally, \textcite{phillips2022spectral} amortise the score function w.r.t.
+Finally, \textcite{phillips2022spectral} amortise the score function with respect to.
 \ the conditioning context.
 
 \section{Experimental results} \label{sec:experiments-gndp}
@@ -1050,6 +1056,7 @@ We employ the SE dataset to investigate various configurations of the conditiona
 In \cref{fig:app:conditional-ablation} we compute the Kullback-Leibler divergence between the samples generated by {\scshape GeomNDP } and the actual conditional distribution across different conditional sampling settings.
 Our results demonstrate the importance of performing multiple Langevin dynamics steps during the conditional sampling process.
 Additionally, we observe that the choice of noising scheme for the context values \(y_c\) has relatively less impact on the overall outcome.
+This is likely due to the use of the 
 
 \subsection{Regression over Gaussian process vector fields}
 \label{sec:vec_gp}
@@ -1086,7 +1093,7 @@ Additionally, we observe that the choice of noising scheme for the context value
 % \end{figure*}
 
 \begin{table}
-	\setlength{\tabcolsep}{2pt}
+	% \setlength{\tabcolsep}{2pt}
 	\begin{tabular}{lccc}
 		\toprule
 		\textsc{Model}                                         & \scshape SE            & \scshape Curl-free     & \scshape Div-free      \\
@@ -1106,7 +1113,7 @@ Additionally, we observe that the choice of noising scheme for the context value
 	\label{fig:vec_gp_results_normal}
 \end{table}
 \begin{figure}
-	\includegraphics[width=.6\textwidth]{images/geomndp/2d/ablation_training_samples.pdf}
+	\includegraphics[width=.5\textwidth]{images/geomndp/2d/ablation_training_samples.pdf}
 	\caption{
 	Quantitative results for an ablation study fitting models to samples from GP vector fields with varying numbers of training data samples.
 	Mean predictive log-likelihood (\(\uparrow\)) and confidence interval estimated over 5 random seeds.}
@@ -1118,9 +1125,9 @@ Additionally, we observe that the choice of noising scheme for the context value
 We now focus our attention to modelling equivariant vector fields.
 For this, we create datasets using samples from a two-dimensional zero-mean GP with one of the following \(\groupSE{2}\)-equivariant kernels: a diagonal Squared-Exponential ({\scshape SE}) kernel, a zero curl ({\scshape Curl-free}) kernel and a zero divergence ({\scshape Div-free}) kernel, as described in \cref{sec:en_equiv_kernels}.
 
-We equip our model, GeomNDP \!\!\!, with a \(\groupE{2}\)-equivariant score architecture, based on steerable CNNs~\parencite{thomas2018tensor,weiler2023equivariant}.
+We equip our model, GeomNDP \!\!\!, with a \(\groupE[2]{}\)-equivariant score architecture, based on steerable CNNs~\parencite{thomas2018tensor,weiler2023equivariant}.
 We compare to {\scshape NDP\textsuperscript{*}} with a non-equivariant attention-based network~\parencite{dutordoir2022Neural}.
-We also evaluate two neural processes, a translation equivariant {\scshape ConvCNP} \parencite{gordon2019Convolutional} and a \(\mathrm{C}4 \ltimes \R^2 \subset \groupE{2}\)-equivariant {\scshape SteerCNP} \parencite{holderrieth2021equivariant}.
+We also evaluate two neural processes, a translation equivariant {\scshape ConvCNP} \parencite{gordon2019Convolutional} and a \(\mathrm{C}4 \ltimes \R^2 \subset \groupE[2]{}\)-equivariant {\scshape SteerCNP} \parencite{holderrieth2021equivariant}.
 We also report the performance of the data-generating {\scshape GP}, and the same GP but with diagonal posterior covariance {\scshape GP (Diag.)
 	}.
 We measure the predictive log-likelihood of the data process samples under the model on a held-out test dataset.
@@ -1134,6 +1141,11 @@ To further explore gains brought by the built-in equivariance, we explore the da
 
 \subsection{Global tropical cyclone trajectory prediction}
 \label{sec:cyclone_tracking}
+
+Finally, we assess our model on a task where the domain of the stochastic process is a non-Euclidean manifold.
+We model the trajectories of cyclones over the earth, modelled as sample paths of the form \(\R \to \c{S}^2\) coming from a stochastic process.
+The data is drawn from the International Best Track Archive for Climate Stewardship (IBTrACS) Project, Version 4 \cite{IBTrACSv4paper,IBTrACSv4data} and preprocessed as per \cref{sec:cyclonedetail}, where details on the implementation of the score function, the ODE/SDE solvers used for the sampling, and baseline methods can be found.
+
 \begin{figure*}[t]
 	\centering
 	\begin{subfigure}{.49\textwidth}
@@ -1168,9 +1180,6 @@ To further explore gains brought by the built-in equivariance, we explore the da
 	}
 	\label{fig:interp_extrap_cyclone}
 \end{figure*}
-Finally, we assess our model on a task where the domain of the stochastic process is a non-Euclidean manifold.
-We model the trajectories of cyclones over the earth, modelled as sample paths of the form \(\R \to \c{S}^2\) coming from a stochastic process.
-The data is drawn from the International Best Track Archive for Climate Stewardship (IBTrACS) Project, Version 4 \cite{IBTrACSv4paper,IBTrACSv4data} and preprocessed as per \cref{sec:cyclonedetail}, where details on the implementation of the score function, the ODE/SDE solvers used for the sampling, and baseline methods can be found.
 
 \Cref{fig:cyclone_comparison} shows some cyclone trajectories samples from the data process and from a trained \textsc{GeomNDP } model.
 We also demonstrate how such trajectories can be interpolated or extrapolated using the conditional sampling method detailed in \cref{sec:conditional_sampling}.
@@ -1180,8 +1189,6 @@ Additionally, we report in \cref{tab:cyclone_results} the likelihood \footnote{W
 and MSE for a series of methods.
 We see that the GPs (modelled as \(f:\R\to\R^2\), one on latitude/longitude coordinates, the other via a stereographic projection, using a diagonal RBF kernel with hyperparameters fitted with maximum likelihood) fail drastically given the high non-Gaussianity of the data.
 In the interpolation task, the \textsc{NDP} performs as well as the \textsc{GeomNDP }, but the additional geometric structure of modelling the outputs living on the sphere appears to significantly help for extrapolation.
-See \cref{sec:cyclonedetail} for more fine-grained results.
-
 
 \begin{table*}[t]
 	\centering

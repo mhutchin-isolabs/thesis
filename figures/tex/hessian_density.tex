@@ -1,0 +1,23 @@
+\documentclass[tikz,10pt]{standalone}
+\usepackage[standalone,commands]{../../MJH}
+
+\graphicspath{/Users/mhutchin/Documents/thesis/figures/diagrams/}
+
+% \usepackage{tikz}
+% \usetikzlibrary{positioning}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+% \usepgfplotslibrary{external}
+% \usepgfplotslibrary{groupplots}
+% \usepgfplotslibrary{fillbetween}
+% \usetikzlibrary{fadings}
+
+\begin{document}
+    % \tikzsetnextfilename{directional_derivative}
+    \small
+    \begin{tikzpicture}
+        \node (simple) at (0,0) {\includegraphics{/Users/mhutchin/Documents/thesis/images/constrained_diffusion/hessian_density_no_text.pdf}};
+        \node[] (math) at (0,-1.4) { \(\d\v{X}_t = \tfrac{1}{2} \dive(g^{-1})(\v{X}_t) \d t + g(\v{X}_t)^{-1/2} \d \v{B}_t \)};
+    \end{tikzpicture}
+\end{document}

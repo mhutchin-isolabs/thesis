@@ -3,7 +3,7 @@
 \label{sec:organ_suppl}
 
 In this supplementary, we first introduce in \cref{sec:continuous_process} an Ornstein Uhlenbeck process on function space (via finite marginals) along with several score approximations.
-Then in \cref{sec:manifold_valued}, we show how this methodology extend to manifold-valued inputs or outputs.
+% Then in \cref{sec:manifold_valued}, we show how this methodology extend to manifold-valued inputs or outputs.
 Later in \cref{sec:inv_ndp}, we derive sufficient conditions for this introduced model to yield a group invariant process.
 What's more in \cref{sec:app_conditional_sampling}, we study some conditional sampling schemes.
 Finally in \cref{app:experimental_details}, we give a thorough description of experimental settings along with additional empirical results.
@@ -131,10 +131,10 @@ Once the score network is learnt, we can thus use it in conjunction with an ODE 
 % \label{sec:consistency}
 % So far we have defined a generative model over functions via its finite marginals $\bar{\v{Y}}^\theta_T(x)$.
 % These finite marginals were to arise from a stochastic process if, as per the Kolmogorov extension theorem \parencite{oksendal2003stochastic}, they satisfy \emph{exchangeability} and \emph{consistency} conditions.
-% Exchangeability can be satisfied by parametrising the score network such that the score network is equivariant w.r.t\ permutation, i.e.\ $\mathbf{s}_\theta(t, \sigma \circ x, \sigma \circ {y}) = \sigma \circ \mathbf{s}_\theta(t, x, {y})$ for any $\sigma \in \Sigma_n$.
+% Exchangeability can be satisfied by parametrising the score network such that the score network is equivariant with respect to\ permutation, i.e.\ $\mathbf{s}_\theta(t, \sigma \circ x, \sigma \circ {y}) = \sigma \circ \mathbf{s}_\theta(t, x, {y})$ for any $\sigma \in \Sigma_n$.
 % Additionally, we have that the noising process $({\v{Y}}_t(x))_{x \in \c{X}}$ is trivially consistent for any $t \in \R_+$ since it is a stochastic process as per \cref{prop:mOU}, and consequently so is the (true) time-reversal $(\bar{\v{Y}}_t(x))_{x \in \c{X}}$.
 % Yet, when approximating the score $\mathbf{s}_\theta \approx \nabla \log p_{t}$, we lose the consistency over the generative process $\bar{\v{Y}}^\theta_t(x)$ as the constraint on the score network is non trivial to satisfy.
-% This is actually a really strong constraint on the model class, and as soon as one goes beyond linearity (of the posterior w.r.t.
+% This is actually a really strong constraint on the model class, and as soon as one goes beyond linearity (of the posterior with respect to.
 % \ the context set), it is non trivial to enforce without directly parameterising a stochastic process, e.g.\ as extcite{phillips2022spectral}.
 % There thus seems to be a strong trade-off between satisfying consistency, and the model's ability to fit complex process and scale to large datasets.
 
@@ -585,7 +585,7 @@ We show that the family of measures $(\pi_{t_0})_{t_0 > 0}$ approximates the pos
 
 \begin{proposition}
 	Assume \textup{\Cref{assum:sde}}.
-	We have that $\lim_{t_0 \to 0} \pi_{t_0} = \pi_0$ where $\pi_0$ admits a density w.r.t.
+	We have that $\lim_{t_0 \to 0} \pi_{t_0} = \pi_0$ where $\pi_0$ admits a density with respect to.
 	the Lebesgue measure given by $x_0 \mapsto p(x_0|x_0^c)$.
 \end{proposition}
 
@@ -618,7 +618,7 @@ The input range for the training and interpolation datasets is $[-2, 2]$ for bot
 
 \paragraph{Architecture.}
 For all datasets, except {\scshape Sawtooth}, we use $5$ bi-dimensional attention layers \parencite{dutordoir2022Neural} with $64$ hidden dimensions and $8$ output heads.
-For {\scshape Sawtooth}, we obtained better performance with a wider and shallower model consisting of $2$ bi-dimensional attention layers with a hidden dimensionality of $128$.
+For {\scshape Sawtooth}, we obtained better performance with a wider and shallower model consisting of $2$ bi-dimensional attention layers with a hidden dimension of $128$.
 In all experiment, we train the NDP-based models over $300$ epochs using a batch size of $256$.
 Furthermore, we use the Adam optimiser for training with the following learning rate schedule: linear warm-up for 10 epochs followed by a cosine decay until the end of training.
 

@@ -39,7 +39,7 @@ We discuss their practical differences in \cref{sec:diff_methods}.
 % The metric \({g}\) induces key quantities on the manifold, such as an exponential map \(\exp_x: \mathrm{T}_x \c{M} \rightarrow \c{M}\), defining the notion of following straight lines on manifolds, a gradient operator \(\nabla\), the (Riemannian) gradient \(\nabla\) is defined s.t.
 % for any smooth \(f\in \mathrm{C}^\infty(\c{M})\), \(x \in \c{M}, v \in \mathrm{T}_x\c{M}\), \({g}(x)(f(x), v) = \mathrm{d} f(x) (v)\), and divergence operator \(\mathrm{div}\), the Riemannian divergence acts vector fields and can be defined using the volume form of \(\c{M}\).
 
-% It also induces the Laplace-Beltrami operator \(\Delta\) and consequently a Brownian motion with density (w.r.t.
+% It also induces the Laplace-Beltrami operator \(\Delta\) and consequently a Brownian motion with density (with respect to.
 % the volume form \footnote{We assume that \(\c{M}\) is orientable and therefore that a volume form exists })whose density is given by the heat equation \({\partial_t } p_t = \Delta p_t\).
 % We refer the reader to \cref{sec:riemannain_intro} for a brief introduction to differential geometry, to \textcite{lee2013smooth} for a thorough treatment and to \textcite{hsu2002stochastic} for details on stochastic analysis on manifolds.
 \begin{figure}
@@ -66,12 +66,12 @@ This setting naturally appears in many areas of engineering, biology, and physic
 
 This setting is very similar to that of a \emphhypermargin{manifold with boundary}{def:manifold_with_boundary}. 
 If the interior of the constraints form an open set on the manifold then we can consider this as exactly as a manifold with boundary.
-We consider the constraints in the way set out as it allows us to consider a slightly larger setting, and is computationally a little easier to deal with.
+We consider the constraints in the way set out as it allows us to consider a slightly larger setting of constraints.
 In light of this we term the set
 \[\partial \c{M} = \cbrcolon{x \in \c{M}}{f_i(x) = 0 \text{ for any } i \in I \text{ and } f_i(x) \not\geq 0 \text{ for any } i\in I}\]
 the boundary, although this slightly abuses the terminology of a manifold with boundary.
 
-While the two methods we introduced in this chapter can be applied to the general framework, in our applications, we focus on two specific settings: \begin{enumerate}[label=(\alph*)] \item \emphmarginnote{polytopes}---\(\c{N} = \R^d\) with linear boundaries forming a convex set, \item \emphmarginnote{symmetric positive definite matrices} (SPD) under maximum trace conditions---\(\c{N}=\mathcal{S}_{++}^{d}\), a quadratic boundary on the elements of the matrix.
+While the two methods we introduced in this chapter can be applied to arbitrary constraints, in our applications we focus on two specific settings: \begin{enumerate}[label=(\alph*)] \item \emphmarginnote{polytopes}---\(\c{N} = \R^d\) with linear boundaries forming a convex set, \item \emphmarginnote{symmetric positive definite matrices} (SPD) under maximum trace conditions---\(\c{N}=\mathcal{S}_{++}^{d}\), a quadratic boundary on the elements of the matrix.
 \end{enumerate}
 
 \section{Log-barrier diffusion models}
@@ -81,7 +81,7 @@ While the two methods we introduced in this chapter can be applied to the genera
 \begin{figure*}[h]
 	\begin{minipage}[b]{0.49\textwidth}
 		\centering
-		\includegraphics{images/constrained_diffusion/hessian_density.pdf}
+		\input{figures/tex/hessian_density.tex}
 		\caption{Convergence of the barrier Langevin dynamics on the unit interval to the uniform distribution.}
 		\label{fig:density}
 	\end{minipage}
@@ -153,11 +153,11 @@ We endow \(\c{M}\) with \(g = \nabla^2 \phi\) as a Riemannian metric, making it 
 It can be proved that for such a metric the resulting exponential map is defined on the whole tangent space for all points and therefore the manifold \((\c{M}, \nabla^2 \phi)\) is a manifold \emph{without} boundary \cite{lee2017Geodesic}.
 
 In the special case where the barrier is given by \cref{eq:log_barrier_polytope}, we get for any \(x \in \c{M}\) 
-\[ {g}(x) = \mathrm{A}^\top S^{-2}(x) \mathrm{A} \text{ with } S(x) = \text{diag}(b_i - \langle \mathrm{A}_i, x \rangle)_i. \]
+\[ {g}(x) = \mathrm{A}^\top S^{-2}(x) \mathrm{A} \;\text{ with }\; S(x) = \text{diag}(b_i - \langle \mathrm{A}_i, x \rangle)_i. \]
 While developed and most commonly used in optimisation, barrier methods can also be used for sampling \parencite{lee2017Geodesic}.
 
 \subsection{Forward noising process}
-Let us consider a compact set of Euclidean space equipped with a Euclidean metric, and a Hessian non-Euclidean metric described above.
+Let us consider a compact set of Euclidean space equipped with a Euclidean metric, a set of constraints, and a Hessian non-Euclidean metric described above.
 
 We consider the following Langevin dynamics, relative to the Euclidean metric, as a forward process \begin{equation} \label{eq:langevin_hessian_manifold} { \mathrm{d} \v{X}_t = \tfrac{1}{2} \mathrm{div}({g}^{-1})( \v{X}_t) \mathrm{d} t + {g}( \v{X}_t)^{-\frac{1}{2}} \mathrm{d} \v{B}_t, } \end{equation} where the divergence of the metric \(\dive g^{-1}\) is given by the \emphhyperref{generalisation of the divergence to tensor fields}{def:tensor_field_divergence}.
 On Euclidean space this is given by the column-wise divergence of \(g^{-1}\).
@@ -170,7 +170,7 @@ Hence, assuming that \(\c{M}\) is compact, the uniform distribution on \(\c{M}\)
 We refer the reader to \cref{sec:geod-brown-moti} for a proof of these results.
 
 This stochastic process was first proposed by \textcite{lee2017Geodesic} in the context of efficient sampling from the uniform distribution over a polytope.
-Under similar conditions, \( \v{X}_t\) admits a density \(p_t\) with respect to the Lebesgue measure, and we have that \(\partial_t p_t = \tfrac{1}{2} \mathrm{Tr}({g}^{-1} \nabla^2p_t)\).
+Under similar conditions, \( \v{X}_t\) admits a density \(p_t\) with respect to the Lebesgue measure, and we have that \[\partial_t p_t = \tfrac{1}{2} \mathrm{Tr}({g}^{-1} \nabla^2p_t).\]
 
 \subsection{Time-reversal}
 Assuming that \({g}^{-1}\) and its derivative are bounded on \(\c{M}\), the time-reversal of \cref{eq:langevin_hessian_manifold} is given by \cref{thm:fokker-plank_time_reversal_manifold}, in particular we have \begin{align} \mathrm{d} \v{X}_t^\vsla{} & = {\sbr{-\frac{1}{2} \mathrm{div}({g}^{-1}) + \mathrm{div}({g}^{-1}) { + {g}^{-1} \nabla \log p_{T-t}}(\v{X}_t^\vsla{}) }\mathrm{d} t + {g}(\v{X}_t^\vsla{})^{-\frac{1}{2}} \mathrm{d} \v{B}_t} \\  & = { \left[\frac{1}{2} \mathrm{div}( {g}^{-1}) + {g}^{-1} \nabla \log p_{T-t}\right](\v{X}_t^\vsla{}) \mathrm{d} t + {g}(\v{X}_t^\vsla{})^{-\frac{1}{2}} \mathrm{d} \v{B}_t.
@@ -200,7 +200,7 @@ We use \emphhypermargin{geodesic random walks}{sec:geodesic_random_walk} for thi
 However, contrary to the previous chapter, we will not have access explicitly to the exponential map of the Hessian manifold.
 Instead, we rely on an approximation, using a \emph{retraction} in place of the explicit exponential map.
 A retraction takes a step in a given direction with a first order approximation of the exponential map, and if the sample ends outside the constraints it is projected back inside the constraints. 
-See d for a deeper discussion and alternatives.
+See \textcite{absil2012projection,boumal2023introduction} for a deeper discussion and alternatives.
 
 \subsection{Extending the technical results}
 
@@ -248,7 +248,7 @@ A solution to the \emphmarginnote{Skorokhod problem}  \parencite{skorokhod1961st
 
 We say that \((\bar{ \v{B}}_t, \v{k}_t)_{t \geq 0}\) is a solution to a specific {Skorokhod problem} if \(( \v{k}_t)_{t \geq 0}\) and \((\bar{ \v{B}}_t)_{t \geq 0}\) are two processes satisfying mild conditions, see \cref{sec:refl-brown-moti}, such that for any \(t \geq 0\), \begin{equation} \label{eq:rbm} \bar{ \v{B}}_t = \bar{ \v{B}}_0 + \v{B}_t - \v{k}_t \in \c{M}, \end{equation} and 
 \begin{enumerate}
-	\item \({\abs{ \v{k}}_t = \int_0^t \mathbf{1}_{\bar{ \v{B}}_s \in \partial \c{M}} \mathrm{d} \abs{ \v{k}}_s}\), and
+	\item \({\abs{ \v{k}}_t = \int_0^t \mathbf{1}_{\bar{ \v{B}}_s \in \partial \c{M}} \mathrm{d} \abs{ \v{k}}_s}\), where \(\v{1}\) is the indicator function, and
 	\item \({ \v{k}_t = \int_0^t \v{n}(\bar{ \v{B}}_s) \mathrm{d} \abs{ \v{k}}_s ,}\)
 \end{enumerate} where \((\abs{ \v{k}}_t)_{t \geq 0}\) is the total variation of \(( \v{k}_t)_{t \geq 0}\) and \( \v{n}\) is the outward normal vector field to \(\c{M}\)\footnote{We extend the normal \( \v{n}\) to the whole space by letting \( \v{n}(x)=0\) if \(x \not \in \partial \c{M}\).
 }.
@@ -256,23 +256,24 @@ We say that \((\bar{ \v{B}}_t, \v{k}_t)_{t \geq 0}\) is a solution to a specific
 When \((\bar{ \v{B}}_t)_{t \geq 0}\) hits the boundary, the first condition,  \({ \v{k}_t = \int_0^t \v{n}(\bar{ \v{B}}_s) \mathrm{d} \abs{ \v{k}}_s }\), tells us that \(- \v{k}_t\) ``compensates'' for \(\bar{ \v{B}}_t\) by pushing the process back into \(\c{M}\) along the inward normal \(- \v{n}(\bar{\v{B}}_s)\).
 The second condition, \({\abs{ \v{k}}_t = \int_0^t \mathbf{1}_{\bar{ \v{B}}_s \in \partial \c{M}} \mathrm{d} \abs{ \v{k}}_s}\) can be interpreted as \( \v{k}_t\) being constant when \((\bar{ \v{B}}_t)_{t \geq 0}\) does not hit the boundary.
 As a result \((\bar{ \v{B}}_t)_{t \geq 0}\) can be understood as the continuous-time counterpart to a reflected Gaussian random walk.
-
 The process \(( \v{k}_t)_{t \geq 0}\) can be related to the notion of \emph{local time} \parencite{revuz2013continuous} and quantifies the amount of time \((\bar{ \v{B}}_t)_{t \geq 0}\) spends at the boundary \(\partial \c{M}\).
+
 \textcite[theorem
 	2.1]{lions1984stochastic} ensure the existence and uniqueness of a solution to
 the Skorokhod problem.
 One key observation is that the event \(\{ \bar{ \v{B}}_t \in \partial \c{M} \}\) has probability zero \parencite[Section 7, Lemma 7]{harrison1987brownian}.
+
 As in the \emph{unconstrained} setting, one can describe the dynamics of the density of \(\bar{ \v{B}}_t\).
 \begin{proposition}[Time evolution of the density of a Skorokhod problem]
 	\label{prop:skorokhod_time_evolution}
-	For any \(t > 0\), the distribution of \(\bar{ \v{B}}_t\) admits a density w.r.t.\
+	For any \(t > 0\), the distribution of \(\bar{ \v{B}}_t\) admits a density with respect to.\
 	the Lebesgue measure denoted \(p_t\).
 	In addition, we have for any \(x \in \mathrm{int}(\c{M})\) and \(x_0 \in \partial \c{M}\) \begin{equation} \label{eq:heat_eq_rbm} \partial_t p_t(x) = \tfrac{1}{2} \Delta p_t(x) , \quad \partial_{ \v{n}} p_t(x_0) = 0 , \end{equation} where we recall that \(\mathbf{n}\) is the outward normal to \(\c{M}\).
 \end{proposition}
 \begin{proof}
 	\textcite[theorem 2.2]{burdzy2004heat}
 \end{proof}
-Note that contrary to the unconstrained setting, the heat equation has \emph{Neumann} boundary conditions.
+Note that contrary to the unconstrained setting, the heat equation has \emphmarginnote{Neumann boundary conditions}, that the change in density on the boundary is tangential to the boundary.
 
 As a consequence of \cref{prop:skorokhod_time_evolution}, similar to the compact Riemannian setting \parencite{saloff1994precise}, it can be shown that the reflected Brownian motion converges to the uniform distribution on \(\c{M}\) exponentially fast \parencite{loper2020uniform,burdzy2006traps}, see \cref{fig:rbm}.
 Hence, \((\bar{ \v{B}}_t)_{t \geq 0}\) is a candidate for a forward noising process in the context of diffusion models.
@@ -284,10 +285,10 @@ It can be shown that the time-reversal of \((\bar{ \v{B}}_t)_{t \in \sbr{0,T}}\)
 
 \begin{theorem}[Time reversal of Brownian Shorokhod problems]
 	\label{sec:time-reversal-reflected}
-	There exist \((\v{k}_t^\vsla{})_{t \geq 0}\) a bounded variation process and a Brownian motion \(( \v{B}_t)_{t \geq0}\) such that \begin{equation} { \v{X}_t^\vsla{} = \v{X}_0^\vsla{} + \v{B}_t + \int_0^t \nabla \log p_{T-s}({ \v{X}}^\vsla{}_s) \mathrm{d} s - \v{k}_t^\vsla{} .
+	There exist \((\v{k}_t^\vsla{})_{t \geq 0}\) a bounded variation process and a Brownian motion \(( \v{B}_t)_{t \geq0}\) such that \begin{equation} { \v{X}_t^\vsla{} = \v{X}_0^\vsla{} + \v{B}_t + \int_0^t \nabla \log p_{T-s}({ \v{X}}_s^\vsla{}) \mathrm{d} s - \v{k}_t^\vsla{} .
 	} \label{eq:rbm}
 	\end{equation}
-	In addition, for any \(t \in \sbr{0,T}\) we have \begin{equation} \label{eq:skorokhod_reversal} {\abs{\v{k}}_t^\vsla{} = \int_0^t \mathbf{1}_{{ \v{X}}^\vsla{}_s \in \partial \c{M}} \mathrm{d} \abs{\v{k}}_s^\vsla{} , \quad \v{k}_t^\vsla{} = \int_0^t \v{n}({ \v{X}}_s^\vsla{}) \mathrm{d} \abs{\v{k}}_s^\vsla{} .
+	In addition, for any \(t \in \sbr{0,T}\) we have \begin{equation} \label{eq:skorokhod_reversal} {\abs{\v{k}}_t^\vsla{} = \int_0^t \mathbf{1}_{{ \v{X}}_s^\vsla{} \in \partial \c{M}} \mathrm{d} \abs{\v{k}}_s^\vsla{} , \quad \v{k}_t^\vsla{} = \int_0^t \v{n}({ \v{X}}_s^\vsla{}) \mathrm{d} \abs{\v{k}}_s^\vsla{} .
 		}
 	\end{equation}
 \end{theorem}
@@ -304,7 +305,7 @@ In practice, in order to sample from \((\v{X}_t^\vsla{})_{t \in \sbr{0,T}}\), on
 \subsection{Sampling}
 In practice, we approximately sample the reflected dynamics by considering the Markov chain given by \cref{alg:rrw}.
 We refer to \textcite{pacchiarotti1998numerical,bossy2004symmetrized} for weak convergence results on this numerical scheme in the Euclidean setting.
-This makes use of a discreted reflection step, detailed in \cref{alg:reflection}.
+This makes use of a discretised reflection step, detailed in \cref{alg:reflection}.
 
 \begin{algorithm}[t]
 	\caption[]{\protect\marginnote{Reflected random walk}Discretisation of the stochastic differential equation \(\mathrm{d} \v{X}_t = b(t, \v{X}_t) \mathrm{d} t + \mathrm{d} \v{B}_t - \mathrm{d} \v{k}_t\).
@@ -316,20 +317,21 @@ This makes use of a discreted reflection step, detailed in \cref{alg:reflection}
 		\For{\(k \in \{0, \dots, N-1\}\)}
 		\State \(Z_{k+1} \sim \mathrm{N}(0, \m{I})\)
 		\State \(X_{k+1}^\gamma = \text{ReflectedStep}[X_{k}^\gamma, \sqrt{\gamma}
-			Z_{k+1}, \{f_i\}_{i \in \mathcal{I}}]\) \EndFor \State { \bfseries return} \(\{ X_k^\gamma\}_{k=0}^{N}\) \end{algorithmic} \end{algorithm} 
+			Z_{k+1}, \{f_i\}_{i \in \mathcal{I}}]\) \Comment{See \cref{alg:reflection}.}
+		\EndFor \State { \bfseries return} \(\{ X_k^\gamma\}_{k=0}^{N}\) \end{algorithmic} \end{algorithm} 
 \begin{algorithm}[t]
 	\begin{algorithmic}
 		\Require \(x \in \c{M}\), \(\v{v} \in \mathrm{T}_x\c{M}\), \(\{f_i\}_{i \in \mathcal{I}}\)
 		\State \(\ell \gets \norm{\v{v}}_{g}\)
 		\State \(\v{s} \gets \v{v} / \norm{\v{v}}_{g}\)
 		\While{\(\ell \geq 0\)}
-		\State \(d_i = \arg \intersect_t\sbr{\exp_{g}(x, t\v{s}), f_i}\)
-		\State \(i \gets \argmin_i\; d_i \; s.t. \; d_i > 0\)
-		\State \(\alpha \gets \min\del{d_i, \ell} \)
-		\State \(x' \gets \exp_{g}\del{x, \alpha\v{s}}\)
-		\State \(\v{s} \gets \paralleltransport_{g}\del{x, \v{s}, x'} \)
-		\State \(\v{s} \gets \reflect\del{\v{s}, f_i}\)
-		\State \(\ell \gets \ell - \alpha\)
+		\State \(d_i = \arg\min_{t\in\R^+} \exp_p(t\v{v}) \in \partial f_i\) \Comment{Boundary intersection.}
+		\State \(i \gets \argmin_i\; d_i \; s.t. \; d_i > 0\) \Comment{Select minimum boundary distance.}
+		\State \(\alpha \gets \min\del{d_i, \ell} \) \Comment{Minimum distance to boundary or end of transport.}
+		\State \(x' \gets \exp_{g}\del{x, \alpha\v{s}}\) \Comment{Exponnetial map step.}
+		\State \(\v{s} \gets \paralleltransport_{g}\del{x, \v{s}, x'} \) \Comment{Transport tangent vector to the boundary.}
+		\State \(\v{s} \gets \reflect\del{\v{s}, f_i}\) \Comment{Reflect on the boundary.}
+		\State \(\ell \gets \ell - \alpha\) \Comment{Reduce step size by distance travelled.}
 		\State \(x \gets x'\)
 		\EndWhile
 		\State \textbf{return} \(x\)
@@ -339,32 +341,11 @@ This makes use of a discreted reflection step, detailed in \cref{alg:reflection}
 		Upon hitting the boundary we parallel transport the tangent vector to the boundary and then reflect it against the boundary.
 		We then start a new geodesic from this point in the new direction.
 		The \({\arg} \intersect_t\) function computes the distance one must travel along a geodesic in direction \(\v{s}\) until constraint \(f_i\) is intersected.
-		For a discussion of \(\paralleltransport\), \(\exp_{g}\) and \(\reflect\) please see \cref{def:boundary_intersection,def:manifold_reflection}.
+		For a discussion of boundary intersection, \(\paralleltransport\), \(\exp_{g}\) and \(\reflect\) please see \cref{def:boundary_intersection,def:manifold_reflection}.
 	}
 	\label{alg:reflection}
 \end{algorithm}
 
-\subsection{Extending the technical results}
-
-In this section we have made three strong assumptions: that the underlying manifold is a Euclidean space, and that the set of constrains form a compact, convex set, and that the boundary of the set is smooth.
-
-Relaxing the assumption that the underlying manifold is a Euclidean space seems possible as the definition of Skorokohd problems extends naturally to the Riemannian manifold setting.
-The main difficulty in analysing Skorokhod problems is careful analysis of the behaviour on the boundary, which should be possible on manifolds.
-There exists little literature on this topic at present, however.  
-
-Similar to the barrier methods, relaxing the compact assumption is possible if we can factorise the space into a compact set and an unconstrained set.
-
-Relaxing the convexity assumption is likely to be difficult, and would require significant new results on the convergence of reflected Brownian motion on non-convex sets.
-This may be possible with other assumptions on the set, such as being star-shaped.
-
-Relaxing the smoothness assumption is also likely to be very difficult as the technical complexity of dealing with such boundaries becomes high.
-We note however that this is not a significant practical limitation.
-For any non-smooth regions of a boundary, for example a corner, we can apply an \(\epsilon-\)smoothing to the corner to make the boundary smooth, resulting in extremely minor practical differences.
-
-\begin{figure}[h]
-	\input{figures/tex/epsilon_smooth.tex}
-	\caption{\emph{Left:} A square with non-smooth corners. \emph{Right:} A square with \(\epsilon-\)smoothed corners.}	
-\end{figure}
 
 \subsection{Likelihood evaluation}
 It is possible to extend the likelihood ordinary differential equation approach to computing the likelihood of a model sample in the reflected Brownian motion case, similar to \cref{sec:likel-comp}.
@@ -377,7 +358,7 @@ It is possible to extend the likelihood ordinary differential equation approach 
 	Assume that \((t,x) \mapsto \nabla \log p_t(x)\) is smooth on \(\cobr{0,+\infty} \times \partial \c{M}\).
 
 	Let \((\bar{\v{B}}_t)_{t \geq 0}\) be the reflected Brownian motion with \(\bar{\v{B}}_0 \sim p_0\) smooth and supported in \(\c{M}\).
-	Let \((\v{X}_t)_{t \geq 0}\) be given for any \(t \geq 0\) by \[\mathrm{d} \v{X}_t = \tfrac{1}{2} \nabla \log p_t(\v{X}_t) \mathrm{d} t\] and \(\v{X}_0 \sim p_0\), where \(p_t\) denotes the density of \(\bar{\v{B}}_t\) w.r.t.
+	Let \((\v{X}_t)_{t \geq 0}\) be given for any \(t \geq 0\) by \[\mathrm{d} \v{X}_t = \tfrac{1}{2} \nabla \log p_t(\v{X}_t) \mathrm{d} t\] and \(\v{X}_0 \sim p_0\), where \(p_t\) denotes the density of \(\bar{\v{B}}_t\) with respect to.
 	the Lebesgue measure for any \(t > 0\).
 	Then for any \(t \in \cbr{0,T}\), \(\bar{\mathbf{B}}_t\) and \(\mathbf{X}_t\) have the same distribution.
 \end{proposition}
@@ -407,6 +388,32 @@ The normal at the intersection can be computed as the unit vector in the directi
 \end{figure*}
 
 
+\subsection{Extending the technical results}
+
+In this section we have made three strong assumptions: that the underlying manifold is a Euclidean space, and that the set of constrains form a compact, convex set, and that the boundary of the set is smooth.
+
+Relaxing the assumption that the underlying manifold is a Euclidean space seems possible as the definition of Skorokohd problems extends naturally to the Riemannian manifold setting.
+The main difficulty in analysing Skorokhod problems is careful analysis of the behaviour on the boundary, which should be possible on manifolds.
+There exists little literature on this topic at present, however.  
+
+Similar to the barrier methods, relaxing the compact assumption is possible if we can factorise the space into a compact set and an unconstrained set.
+
+Relaxing the convexity assumption is likely to be difficult, and would require significant new results on the convergence of reflected Brownian motion on non-convex sets.
+This may be possible with other assumptions on the set, such as being star-shaped.
+
+\begin{figure}[b]
+	\input{figures/tex/epsilon_smooth.tex}
+	\caption{\emph{Left:} A square with non-smooth corners. \emph{Right:} A square with \(\epsilon-\)smoothed corners.}	
+	\label{fig:epsilon_smooth}
+\end{figure}
+
+
+Relaxing the smoothness assumption is also likely to be very difficult as the technical complexity of dealing with such boundaries becomes high.
+We note however that this is not a significant practical limitation.
+For any non-smooth regions of a boundary, for example a corner, we can apply an \(\epsilon-\)smoothing to the corner to make the boundary smooth, resulting in extremely minor practical differences, see \cref{fig:epsilon_smooth}.
+
+
+
 \section{Training and parametrising score functions for constrained diffusions}
 \label{sec:score-netw-param}
 
@@ -415,19 +422,20 @@ We will prove that the implicit score-matching loss can be extended to the const
 This proof holds for both the log-barrier and the reflected process.
 
 \begin{proposition}[Implicit score-matching on constrained domains]
-	Let \(s \in \mathrm{C}^\infty(\cbr{0,T} \times \R^d, \R^d)\) such that for any \(x \in \partial \c{M}\) and \(t \geq 0\), \(s_t(x) =0\).
+	Let \(s \in \mathrm{C}^\infty(\cbr{0,T} \times \R^d, \R^d)\) such that for any \(x \in \partial \c{M}\) and \(t \geq 0\), \(\innerprod{s_t(x)}{\v{n}(x)} = 0\).
 	Then, there exists \(C >0\) such that \begin{equation} {\E\sbr{\norm{\nabla \log p_t - s_t}^2} = \E\sbr{\norm{s_t}^2 + 2~ \mathrm{div}(s_t)}} + C , \end{equation} where \(\mathbb{E}\) is taken over \(\v{X}_t \sim p_t\) and \(t \sim \mathcal{U}([0,T])\).
 \end{proposition}
 \begin{proof}
 	\Cref{app:proof_for_ism}
 \end{proof}
 
-This result immediately implies we can optimise the score network approximate the score function using the implicit score matching loss function so long as we enforce a Neumann boundary condition.
+This result immediately implies we can optimise the score network approximate the score function using the implicit score matching loss function so long as we enforce a Neumann boundary condition, which naturally arises from \cref{thm:reflected_likelihood_ode} and so is a constraint on the score function that does not reduce the modelling capacity of the model.
 
 Following \textcite{liu2022estimating} we can accommodate this boundary condition in our score parameterisation by scaling the score output of the neural network by a monotone function \(h(d(x, \partial \c{M}))\) where \(d\) is the distance from \(x\) to the boundary, where \(h(0) = 0\).
 In particular, we use a clipped ReLU function: \(s_\theta(t, x) = \min(1, \textrm{ReLU}(d(x, \partial \c{M}) - \delta)) \cdot \textrm{NN}_\theta(t, x)\) with \(\delta>0\) a threshold so the model is forced to be zero ``close'' to the boundary as well as exactly on the boundary. %, see \Cref{sec:exp_details} for an illustration.
 The inclusion of this scaling function is necessary to produce reasonable results as we show in \cref{sec:boundary_score}.
-%  The weighting function in (\ref{eq:implicit_sm}) is set to \(\lambda_t = (t + 1)\).
+
+While this scheme eonforces a stonger condition on the score function then Neuman conditions, that it is zero on the boundary, not just tangent to the boundary, we find in practise that this works well, and is cheaper than enforcing Neuman conditions only.
 
 The forward processes (\cref{eq:langevin_hessian_manifold}) and (\cref{eq:rbm}) for the barrier and reflected methods cannot be sampled in closed form, so at training time samples from the conditional distributions \(p(\v{X}_t|\v{X}_0)\) are obtained by discretising these processes.
 To take the most of this computational overhead, we use several samples from the discretised forward trajectory \((\v{X}_{t_1}, \cdots, \v{X}_{t_k}|\v{X}_0)\) instead of only using the last sample.
@@ -503,19 +511,19 @@ The code used for the experiments in this chapter can be found at \url{https://g
 	\label{fig:polytope_synthetic}
 \end{figure}
 
-First, we aim to assess the empirical performance of our methods on constrained manifolds of increasing dimensionality.
+First, we aim to assess the empirical performance of our methods on constrained manifolds of increasing dimension.
 For this, we focus on polytopes and construct synthetic datasets that represent bimodal distributions.
 In particular, we investigate two specific instances of polytopes: hypercubes and simplices.
 In \cref{sec:app_synthetc_data} we also present results on the Birkhoff polytope.
 We quantify the performance of each model via the Maximum Mean Discrepancy (\textsc{MMD}) \parencite{gretton2012kernel}, which is a kernel-based metric between distributions.
-We present a qualitative comparison of the logarithmic barrier and reflected Brownian motion models in \cref{fig:polytope_synthetic}, and observe that both methods recover the data distribution on the two-dimensional hypercube and simplex, although the reflected method produces a better fit.
+We present a qualitative comparison of the log barrier and reflected Brownian motion models in \cref{fig:polytope_synthetic}, and observe that both methods recover the data distribution on the two-dimensional hypercube and simplex, although the reflected method produces a better fit.
 In \cref{tab:synthetic_polytope}, we report the \textsc{MMD} between the data distribution and the learnt diffusion models across a range of dimensions.
 Here, we similarly observe that the reflected method consistently yields better results than the log-barrier one.
 
 In addition, we compare both of these models to unconstrained Euclidean diffusion models.
 We note that they are outperformed by the constrained models in lower dimensions, but generate better results in higher dimensions.
 In contrast, however we do see that the unconstrained models do not keep their modelled density inside the boundary, and this gets worse with increasing dimension.
-There are a number of potential explanations for this: First, we note that the mixture of Normal distributions we use as a synthetic data-generating process places significantly less probability mass near the boundary as its dimensionality increases, more closely resembling an unconstrained mixture distribution that is easier for the Euclidean diffusion models to learn, while posing a challenge to the log-barrier and reflected diffusion models that initialise at the uniform distribution within the constraints.
+There are a number of potential explanations for this: First, we note that the mixture of Normal distributions we use as a synthetic data-generating process places significantly less probability mass near the boundary as its dimension increases, more closely resembling an unconstrained mixture distribution that is easier for the Euclidean diffusion models to learn, while posing a challenge to the log-barrier and reflected diffusion models that initialise at the uniform distribution within the constraints.
 Additionally, we note that the design space and hyperparameters used for all experiments were informed by best practices for Euclidean models that may be suboptimal for the more complex dynamics of constrained diffusion models.
 
 \subsection{Modelling robotic arms under force and velocity constraints}
@@ -578,7 +586,7 @@ We add a small amount of Gaussian noise to these trajectories.
 We visualise samples from this distribution as ellipsoids respecting the SPD matrix placed at a point in the plane.
 The dataset, samples from the trained log-barrier and reflected diffusion models, and the uniform distribution are shown in \cref{fig:spd_data}.
 We qualitatively observe that the reflected method is able to fit the joint data distribution better than the log-barrier method.
-Quantitatively, the reflected method achieves an MMD of 0.161 with respect to the dataset as opposed to 0.247 for the log-barrier method.
+Quantitatively, the reflected method achieves an MMD of \(0.161_{\pm 0.003}\) with respect to the dataset as opposed to \(0.247_{\pm 0.012}\)d for the log-barrier method.
 
 \subsection{Modelling protein loops with anchored endpoints}
 \label{subsec:protein_loops}
@@ -663,7 +671,7 @@ This means that the set of all valid polypeptide backbone conformations is defin
 
 As a proof-of-concept for the practicality of our methods, we chose to model the conformational distribution of the cyclic peptide \textsc{c-AAGAGG}.
 Cyclic peptides are an increasingly important drug modality with therapeutic uses ranging from antimicrobials to oncology, exhibiting circular polypeptide backbones (i.e. \(d_\text{anchor}=0\)) that confer a range of desirable pharmacodynamic and pharmacokinetic properties \parencite{dougherty2019understanding}.
-To reduce the dimensionality of the problem, we only consider the \(C_\alpha\) traces (with fixed \(C_\alpha\)-\(C_\alpha\) link distances of 3.6 \AA) instead of the full polypeptide backbone (see \cref{fig:peptide_trace}), although we note that our framework is applicable to both settings.
+To reduce the dimension of the problem, we only consider the \(C_\alpha\) traces (with fixed \(C_\alpha\)-\(C_\alpha\) link distances of 3.6 \AA) instead of the full polypeptide backbone (see \cref{fig:peptide_trace}), although we note that our framework is applicable to both settings.
 
 To derive a suitable dataset, the product manifold \(\mathbb{P}\times\mathbb{T}^3\) describing the conformations of cyclic \(C_\alpha\) traces of length \(N=6\) was constructed, see~\cref{fig:cyclic_peptide,fig:convex_polytope_loop_illustration} for an illustration, and used to generate \(10^7\) uniform samples satisfying the anchor point distance constraint \(d_\text{anchor}=0\).
 Subsequently, an estimate of the free energy \(E_i\) of each sample \(i\) was obtained by (1) reconstructing the full-atom peptide from each \(C_\alpha\) trace using the \textsc{PULCHRA} algorithm \parencite{rotkiewicz2008fast}, (2) relaxing all non-\(C_\alpha\) backbone and side-chain atoms (keeping the \(C_\alpha\) positions fixed), and (3) quantifying the potential energy of each of the resulting conformations using the \textsc{OpenMM} suite of molecular dynamics tools \parencite{eastman2017openmm}, and the \textsc{AMBER} force field \parencite{hornak2006comparison}.

@@ -78,7 +78,7 @@ We demonstrate that our method attains improved empirical results on manifolds w
 % All of these quantities can be defined in local coordinates in terms of the metric\footnote{if the connection chosen on the Riemannian manifold is the L\'{e}vi-Civita connection}.
 % The extension of the Laplace operator to \(\c{M}\) is called the Laplace-Beltrami operator, also denoted \(\Delta\) when there is no ambiguity.
 
-% Using \(\Delta\), we can define a Brownian motion on \(\c{M}\), denoted \((\v{B}_t)_{t \geq 0}\) and with density w.r.t.
+% Using \(\Delta\), we can define a Brownian motion on \(\c{M}\), denoted \((\v{B}_t)_{t \geq 0}\) and with density with respect to.
 % the volume form of \(\c{M}\) denoted \(p_t\) for any \( t > 0\).
 % We refer to \textcite{lee2013smooth} for a thorough treatment of Riemannian manifolds and to \textcite{hsu2002stochastic} for details on stochastic analysis on manifolds.
 
@@ -131,7 +131,7 @@ An overview of the samplers, and the various operations required to run them, we
 \Cref{tab:general_method_comparison2} compares the computational cost of training various instantiations of constrained diffusion models, and the geometric domains they cover.
 
 The technical setting we consider in this chapter is the same as in \cref{cpt:constrained_domains}.
-Briefly, that given a Riemannian manifold \((\c{N}, {h})\), we consider a family of real functions \(\{f_i: \c{N} \to \R\}_{i \in \mathcal{I}}\) indexed by \(\mathcal{I}\).
+Briefly, given a Riemannian manifold \((\c{N}, {h})\), we consider a family of real functions \(\{f_i: \c{N} \to \R\}_{i \in \mathcal{I}}\) indexed by \(\mathcal{I}\).
 We then define \begin{equation} \label{eq:constrained} \c{M} = \cbr{x \in \c{N} \; : \; f_i(x) < 0 , \ i \in \mathcal{I}},
 \end{equation}
 and derive models such that their densities are constrained to be in the set \(\c{M}\).
@@ -164,9 +164,9 @@ Under additional regularity assumptions, \(\phi\) is called a \emph{barrier func
 This metric replaces the original metric on the space, warping the geometry.
 This definition ensures that the barrier function induces a well-defined exponential map on the manifold, making the Riemannian diffusion model framework \cref{cpt:riemannian_score_based_models} apply.
 
-In practice, evaluating \(\phi\) requires computing \(d(x, \partial \c{M})\) (and its derivatives), which can be prohibitively expensive.
+In practice, evaluating \(\phi\) requires computing \(d(x, \partial f_i)\) (and its derivatives), which can be prohibitively expensive.
 Furthermore, since the exponential under the induced manifold is not easy to compute, in the barrier method it is approximated by projecting the exponential of the original metric back into the constrained set.
-This incurs additional bias and necessitating a step projecting samples back inside the constraints, which can itself be computationally intractable, see \textcite{absil2012projection, boumal2023introduction}
+This incurs additional bias and necessitating a step projecting samples back inside the constraints, which can itself be computationally intractable, see \textcite{absil2012projection, boumal2023introduction}.
 
 \emphmarginnote{Mirror diffusion models} \cite{tae2023mirror,liu2024mirror} work on similar principles to the barrier methods in \cref{sec:bsgm}.
 Instead of modelling on the original space, they project the data space under the map \(\nabla \phi: \c{M} \to \R^d\).
@@ -342,8 +342,8 @@ Hence, this method enables the principled extension of diffusion models to arbit
 % \end{proposition}
 
 % \Cref{lemma:lower_bound_prob_main} tells us that \emph{locally} the boundary
-% looks like a half-space when integrating w.r.t. a Gaussian measure.
-% A corollary is that, for \(\gamma > 0\) small enough and for any \(k \in \N\), the probability that \(X_{k+1}^\gamma = X_k^\gamma\) is upper bounded \emph{uniformly} w.r.t.
+% looks like a half-space when integrating with respect to. a Gaussian measure.
+% A corollary is that, for \(\gamma > 0\) small enough and for any \(k \in \N\), the probability that \(X_{k+1}^\gamma = X_k^\gamma\) is upper bounded \emph{uniformly} with respect to.
 % \(X_k^\gamma \in \c{M}\).
 % The proof of \Cref{lemma:lower_bound_prob_main} uses \Cref{thm:tubul-neighb} in~\Cref{sec:rejection-convergence}, whose proof relies on the concept of \emph{tubular neighborhoods} \parencite{lee2013smooth}.
 
@@ -377,7 +377,7 @@ These assumptions match those \textcite{stroock1971diffusion} use for their stud
 While it seems possible to relax the \emph{global} existence of \(\Phi\) to a \emph{local} one, i.e. local concavity, the global regularity assumption of the domain, \(\Phi \in \c{C}^2(\R^d, \R)\), is key.
 This regularity is essential to establish \cref{lemma:lower_bound_prob_main} and the associated geometrical result on tubular neighbourhoods.
 The smoothness of the domain boundary is central in the results of \textcite{kang2017submartingale} on the equivalence of two definitions of reflected Brownian motion which we rely on.
-As in \cref{cpt:constrained_domains}, we note it is possibly to infinitesimally smooth boundaries to match the technical setting with very minimal practical impact.
+As in \cref{cpt:constrained_domains}, we note it is possibly to infinitesimally smooth non-smooth boundaries to match the technical setting with very minimal practical impact.
 
 It also seems possible to extend these results to the more general manifold setting, but this is technically challenging and outside the scope of this work.
 
@@ -431,7 +431,7 @@ We call this process the \emph{rejection approximation of reflected Brownian mot
 	\end{algorithmic}
 \end{algorithm}
 The key difference between the rejection and Metropolis approaches is that where the Metropolis approach will leave the point stationary if the update falls outside the boundary, the rejection approach will resample the update until it lies inside the boundary.
-This leaves the transition measures of these two processes the same, except the metropolis version contains a dirac component at the initial point.
+This leaves the transition measures of these two processes the same, except the Metropolis version contains a Dirac component at the initial point.
 While it is possible to implement the rejection approach practically, it is less desirable as it results in loops of unknown length in the sampling.
 
 For any \(\gamma > 0\), we also consider \((\hat{\v{X}}_t^\gamma)_{t \geq 0}\), the linear interpolation of \((\hat{X}^\gamma_k)_{k \in \N}\) such that for any \(k \in \N\), \(\hat{\v{X}}_{k \gamma}^\gamma = \hat{X}_k^\gamma\).
@@ -473,9 +473,9 @@ This requires the following result.
 \end{proposition}
 
 \Cref{lemma:lower_bound_prob_main} tells us that \emph{locally} the boundary
-looks like a half-space when integrating w.r.t. a Gaussian measure.
+looks like a half-space when integrating with respect to. a Gaussian measure.
 The assumption on the smoothness of the boundary is key in proving this result.
-A corollary is that, for \(\gamma > 0\) small enough and for any \(k \in \N\), the probability that \(X_{k+1}^\gamma = X_k^\gamma\) is upper bounded \emph{uniformly} w.r.t.
+A corollary is that, for \(\gamma > 0\) small enough and for any \(k \in \N\), the probability that \(X_{k+1}^\gamma = X_k^\gamma\) is upper bounded \emph{uniformly} with respect to.
 \(X_k^\gamma \in \c{M}\).
 The proof of \cref{lemma:lower_bound_prob_main} uses \cref{thm:tubul-neighb} whose proof relies on the concept of \emph{tubular neighbourhoods} \parencite{lee2013smooth}.
 
@@ -509,7 +509,7 @@ investigated.
 
 To demonstrate the practical utility and empirical performance of the proposed Metropolis diffusion models, we conduct a comprehensive evaluation on a range of synthetic and real-world tasks.
 
-In~\cref{sec:exp_synthetic_tasks}, we assess the scalability of our method by applying it to synthetic distributions on hypercubes and simplices of increasing dimensionality, similar to \cref{subsec:synthetic_data}.
+In~\cref{sec:exp_synthetic_tasks}, we assess the scalability of our method by applying it to synthetic distributions on hypercubes and simplices of increasing dimension, similar to \cref{subsec:synthetic_data}.
 In~\cref{sec:exp_arms_and_backbones}, we extend the evaluation to real-world tasks on manifolds with convex constraints by applying our method to the robotics and protein design datasets presented in \cref{subsec:psd_matrices,subsec:protein_loops}.
 
 In~\cref{sec:exp_wildfires}, we additionally demonstrate that our method extends to constrained manifolds with highly \emph{non-convex} boundaries---a setting that is intractable with existing approaches.
@@ -623,9 +623,9 @@ A quantitative comparison of the log-likelihood of a held-out test set is presen
 
 We find that our Metropolis models outperform reflected approaches across all dimensions and constraint geometries by a substantial and statistically significant margin while training in one tenth of the time.
 
-The degree of improvement seems to scale with the dimensionality of the problem; the larger the dimension of the experiment, the larger the gain in performance from using our proposed Metropolis scheme.
+The degree of improvement seems to scale with the dimension of the problem; the larger the dimension of the experiment, the larger the gain in performance from using our proposed Metropolis scheme.
 
-We observe a similar difference in the scaling properties of reflected and Metropolis models when measuring the convergence times of the respective forward noising processes to the uniform distribution on hypercubes \([-1, 1]^d\) and simplices \(\Delta^{d}\) of increasing dimensionality. The results are presented in~\cref{fig:forward_process_timing} and show that the convergence time of the Metropolis process scales linearly in the dimension, while the reflected process scales quadratically.
+We observe a similar difference in the scaling properties of reflected and Metropolis models when measuring the convergence times of the respective forward noising processes to the uniform distribution on hypercubes \([-1, 1]^d\) and simplices \(\Delta^{d}\) of increasing dimension. The results are presented in~\cref{fig:forward_process_timing} and show that the convergence time of the Metropolis process scales linearly in the dimension, while the reflected process scales quadratically.
 
 \subsection{Modelling proteins and robotic arms under convex constraints}
 \label{sec:exp_arms_and_backbones}
@@ -756,13 +756,14 @@ A visualization of the resulting dataset is presented in~\cref{fig:wildfire_data
 \subsubsection{Point-in-spherical-polytope algorithms}
 \label{sec:wildfire_data_algo}
 
-The support of the data-generating distribution we aim to approximate is restricted to a highly non-convex spherical polytope \(\mathbb{P}\in\c{S}^2\) given by the country borders of the continental United States.
+The support of the data-generating distribution we aim to approximate is restricted to a highly non-convex set on the sphere, \(\mathbb{P}\in\c{S}^2\), given by the country borders of the continental United States.
 In order to apply our Metropolis method we need an efficient binary function to tell us if a point on the sphere lies inside this set.
 
 To do so we adapt an efficient reformulation of the point-in-spherical-polygon algorithm \parencite{bevis1989locating} presented in \cite{ketzner2022robust}.
 The algorithm requires the provision of a reference point \(r\in\c{S}^2\) known to be located in \(\mathbb{P}\) and determines whether \(q\) is inside or outside the polygon by checking whether the geodesic between \(r\) and \(q\) crosses the polygon an even or odd number of times.
 
-Letting \(\Hat{x}\in\mathbb{R}^3\) denote the Cartesian coordinates of a point \(x\in\c{S}^2\), \cite{ketzner2022robust} rely on a Cartesian reference coordinate system \(\Hat{Q}\) (with its \(z\)-axis given by \(\Hat{r}\)) and the corresponding spherical coordinate system \(Q\) to decompose the edge-crossing condition of \textcite{bevis1989locating} into two efficiently computable parts.
+Letting \(\Hat{x}\in\mathbb{R}^3\) denote the Cartesian coordinates of a point \(x\in\c{S}^2\) embedded in Euclidean space.
+\cite{ketzner2022robust} rely on a Cartesian reference coordinate system \(\Hat{Q}\) (with its \(z\)-axis given by \(\Hat{r}\)) and the corresponding spherical coordinate system \(Q\) to decompose the edge-crossing condition of \textcite{bevis1989locating} into two efficiently computable parts.
 That is, the geodesic between \(q\) and \(r\) crosses an edge \(e_i=(v_i, v_j)\) of the polygon if: \begin{enumerate}[label=(\roman*)] \item the longitude of \(q\) in \(Q\) is bounded by the longitudes of \(v_i\) and \(v_j\) in \(Q\), i.e. \[ \phi_{Q}(q)\in\cbr{\min\del{\phi_{Q}(v_i), \phi_{Q}(v_j)}, \max\del{\phi_{Q}(v_i), \phi_{Q}(v_j)}}, \] \item the plane specified by the normal vector \(\Hat{p}_i=\Hat{v}_i\times \Hat{v}_j\) represents an equator that separates \({q}\) and \({r}\) into two different hemispheres, i.e. $$ \operatorname{sign}(\langle \Hat{p}_i, \Hat{r} \rangle \cdot \langle \Hat{p}_i, \Hat{q} \rangle) = -1.
 	      $$
 \end{enumerate}
@@ -774,7 +775,7 @@ In order to discretise Brownian motion on the manifold we use modified geodesic 
 \subsubsection{Results}
 
 A qualitative visual comparison of samples from the true distribution, our model, and the uniform distribution is presented in~\cref{fig:wildfire_headline_plot} and a quantitative comparison to an unconstrained Riemannian score-based model from \cref{cpt:riemannian_score_based_models} is given in~\cref{tab:wildfire_riemann}.
-This demonstrates that our approach is able to successfully model challenging multimodal and sparse distributions on constrained manifolds with highly non-convex boundaries.
+This demonstrates that our approach is able to successfully model challenging multimodal and sparse distributions on non-flat constrained manifolds with highly non-convex boundaries.
 
 \begin{table}[h]
     \setlength{\tabcolsep}{8pt}

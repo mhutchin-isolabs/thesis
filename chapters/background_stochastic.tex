@@ -657,7 +657,7 @@ This is the operator that for any \(f\in C_0^2\) and \(g\in C^2\), \(\innerprod{
 \begin{proof}
 	Using the standard chain rule
 	\[ \v{b} \cdot \nabla a= \nabla\cdot(a\v{b}) - a \nabla \cdot \v{b}, \quad a:\R^d \to \R, \; \v{b}: \R^d\to \R^d\]
-	and setting \(a=f\) and \(\v{b} = g\v{b}\), and using the identity (\cref{sec:hessian_identity})
+	and setting \(a=f\) and \(\v{b} = g\v{b}\), and using the identity
 	\[\m{C}:\nabla^2 a = \nabla \cdot (\m{C} \cdot \nabla a) - \nabla \cdot (a \nabla \cdot \m{C}) + a\nabla^2:\m{B}, \quad a:\R^d\to \R, \; \m{C}:\R^d \to \R^{d\times d}\]
 	and by setting \(a = f\) and \(\m{C} =  \frac{1}{2} g \m{\Sigma}\m{\Sigma}^\top = g\m{D}\), we see that
 	\begin{align}
@@ -722,7 +722,7 @@ We now apply this to the evolution of a density \(p_t\) given some initial distr
 	Then 
 	\begin{align}
 		\pd{p}{t} &= L^* p \nonumber \\
-		p(0, x) &= p_0(x) \label{eg:kolmogorov_fwd_2}
+		p(0, x) &= p_0(x) \label{eq:kolmogorov_fwd_2}
 	\end{align}
 \end{theorem}
 \begin{proof}
@@ -909,7 +909,7 @@ Under the condition that the elements of \(\v{b}\) and \(\v{\Sigma}\) are \(C^\i
 	\E\sbr{f(\v{X}_T)} - \E \sbr{f(\v{X}_T^n)} = -A \Delta t + B (\Delta t)^2
 \]
 where the constants \(A, B\) depend on \(f, T\) \parencite[Theorem 3.1]{bally1996law}.
-As such, the Eular-Maruyama scheme \emphhyperref{def:distribution-converge-rv}{converges in distribution} to the solution to the original stochastic differential equation as we decrease step size of the solution.
+As such, the Eular-Maruyama scheme \emphhyperref{converges in distribution}{def:distribution-converge-rv} to the solution to the original stochastic differential equation as we decrease step size of the solution.
 
 
 % \section{Stochastic calculus on manifolds}

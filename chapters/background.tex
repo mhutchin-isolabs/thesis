@@ -229,7 +229,7 @@ This additional structure allows us to require \emphmarginnote{translation} equi
 
 In one dimension, recurrent neural networks exploit the grid structure to process each element in the grid in turn \cite{elman1990finding,jordan1997serial}, including extensions such as long-short term memory networks \cite{hochreiter1997long,rumelhart1986learning} and gated recurrent units \cite{cho2014learning}.
 
-This structure is also exploited in convolutional neural networks \cite{lecun1989handwritten,fukushima1980neocognitron} and residual networks \cite{he2016deep}, along with a multitude of other works.
+This structure is also exploited in convolutional neural networks \cite{fukushima1980neocognitron,waibel1989phoneme,lecun1989handwritten} and residual networks \cite{he2016deep}, along with a multitude of other works.
 
 Beyond the translation symmetry of grids \cite{cohen2016group, cohen2016steerable} extend the capabilities of two dimension convolutional neural networks to be equivariant to 90\(^o\) rotations and reflections of the grid as well.
 
@@ -689,9 +689,9 @@ The core of diffusion models are \emphmarginnote{stochastic differential equatio
 These are random variables, denoted for example \(\del{\v{X}_t}_{t\in \sbr{0, T}}\), that place a distribution on time-indexed paths through a state space.
 They are driven by an instantaneous change formula, in a common form given by
 \[
-	\d\v{X}_t = \v{b}(t, \v{X}_t) \d t + \v{\Sigma}(t, \v{X}_t) \v{B}_t	
+	\d\v{X}_t = \v{b}(t, \v{X}_t) \d t + \v{\Sigma}(t, \v{X}_t) \d\v{B}_t.	
 \]
-where \(\v{b}: \R\x\R^d \to \R^d\) is a \emphmarginnote{drift term}, like an ordinary differential equation, and \(\v{\Sigma}(t, \v{X}_t): \R\x\R^d \to \R^{d\x d}\) is a \emphmarginnote{diffusion term} controlling the instantaneous noise added into the stochastic differential equation.
+\(\v{b}: \R\x\R^d \to \R^d\) is a \emphmarginnote{drift term}, like an ordinary differential equation, and \(\v{\Sigma}(t, \v{X}_t): \R\x\R^d \to \R^{d\x d}\) is a \emphmarginnote{diffusion term} controlling the instantaneous noise added into the stochastic differential equation, and \(\v{B}_t\) is a Brownian motion.
 A technical introduction to measure theory, stochastic differential equations and various tools useful in the study of score-based models can be found in \cref{chp:sdes}.
 
 % Score-based models are strongly related to other classes of deep generative models.
@@ -707,6 +707,7 @@ A summary of the diffusion modelling strategy is:
 % We will from now denote this stochastic differential equation as \(\del{\Xf_t}_{t\in\sbr{0, T}}\), denoting the forward direction.
 % This stochastic differential equations is given by \[\d \Xf_t= \v{b}(\Xf_t, t) \d t + \v{\sigma}(\Xf_t, t) \d \v{B}_t \quad \Xf_0 \sim \pdata.\]
 We require that this stochastic differential equation converges to a known reference distribution, \(\pprior\) at large time scales.
+This gives us a path between the data distribution and the reference distribtion.
 % We will evolve this SDE up to a chosen time \(T\) which is large enough for such convergence to occur.
 % We denote the density of this stochastic differential equation at time \(t\) as \(p_t\).
 \2 Using a time reversal result, we can obtain a stochastic differential equation that has the same sample paths as our forward noising stochastic differential equation, but reversed in time.
@@ -737,7 +738,7 @@ The point of this step is to define a path between \(\pdata\) and \(\pprior\), w
 If we have access to a density of the form \(p(x) \propto \exp(-U(x))\), then the stochastic differential equation \[\d \v{X}_t = \nabla U(\v{X}) \d t + \sqrt{2} \d \v{B}_t\] will in the limit of infinite time converge to \(p\), regardless of the distribution we initialise the stochastic differential equation with.
 
 We can also rescale this stochastic differential equation by a time dependant noise factor, \(\beta({t})\), and obtain the same result, giving a stochastic differential equation of the form \[\d \v{X}_t = \beta(t) \nabla U(\v{X}) \d t + \sqrt{2 \beta(t)} \d \v{B}_t.\]
-This time rescaling can be very useful in diffusion models for optimising the efficiency of the discretised model rollouts and focusing the majority of the learning power of the score network on important regions of the stochastic differential equation.
+This time rescaling can be useful in diffusion models for optimising the efficiency of the discretised model rollouts and focusing the majority of the learning power of the score network on important regions of the stochastic differential equation.
 
 % While using Langevin dynamics to sample from complex distribution can be very slow to mix. 
 % Fourtunatly the convergence to a simple unimodel distribution is very fast.
@@ -749,25 +750,26 @@ A property that will be useful later is that the transition density in the forwa
 For a stochastic differential equation with noising schedule \(\beta(t)\) this is given by \[ p_{s|t}\delvert{\v{X}_s}{\v{X}_t} = \c{N}\delvert{\v{X}_s}{e^{-{\int_t^s \beta(\tau)\d\tau}} \v{X}_t, \del{1-e^{-2{\int_t^s \beta(\tau)\d\tau}}}\v{I}}\]
 
 Another other common alternative is the \emphmarginnote{variance exploding stochastic differential equation} or "VE-SDE".
-In this we simply apply Brownian motion as the noising stochastic differential equation.
+In this we simply apply Brownian motion as the noising stochastic differential equation,
+\[\d\v{X}_t = \d\v{B}_t.\]
 The transition density of this stochastic differential equation is given by \[\textstyle p_{s|t}\delvert{\v{X}_s}{\v{X}_t} = \c{N}\delvert{\v{X}_s}{\v{X}_t, {{\int_t^s} \beta(\tau)\d\tau}\v{I}}.\]
 The variance of this will continue to grow with time and eventually the variance of this transition density will dominate the variance of \(\pdata\).
 The distribution \[p_T(\v{X}_T) = \int p_{T|0}\delvert{\v{X}_T}{\v{X}_0} p(\v{X}_0) \d \v{X}_0\] will therefore be well approximated by \(\c{N}\delvert{\v{X}_T}{\v{0}, {{\int_t^s} \beta(\tau)\d\tau}\v{I}}\), and we can use this as the reference distribution.
 
-A final alternative way to choose the forward stochastic differential equation is to start with the forward transition density and work backwards to the coefficients which we will call the \emphmarginnote{\(\alpha-\sigma\) parametrisation}.
+A final alternative way to choose the forward stochastic differential equation is to start with the forward transition density and work backwards to the coefficients of the stochastic differential equation, which we will call the \emphmarginnote{\(\alpha-\sigma\) parametrisation}.
 We restrict ourselves to stochastic differential equations with transition densities of the form
 \[p_{t|0}(\v{X}_t | \v{X}_0) = \c{N}\del{\v{X}_t; \alpha_t \v{X}_0, \sigma^2_t}.\]
-Let \(\alpha_t:\R\to \R\) be some differentiable mean function, with the restriction that \(\alpha_0=1\).
-Let \(\sigma_t:\R\to\R\) be some differentiable noise function, with the restriction that \(\sigma_0=0\).
+Let \(\alpha_t:\R\to \R\) be a differentiable mean function, with the restriction that \(\alpha_0=1\).
+Let \(\sigma_t:\R\to\R\) be a differentiable noise function, with the restriction that \(\sigma_0=0\).
 Then the stochastic differential equation that has this forward transition density is
 \[\d\v{X}_t = \od{\log \alpha_t}{t}\d t +  \sbr{\od{\sigma_t^2}{t} - \od{\log \alpha_t}{t} \sigma_t^2}\d\m{B}_t.\]
 If we pick \(\alpha_t\) and \(\sigma_t\) such that as \(t\to T\), \(\alpha_t\to 0\), then the process will converge to the distribution \(\c{N}\del{0, \sigma_T^2}\), giving us a reference distribution to work with.
 
-The VP-SDE and VE-SDE can be fit into this framework, with \[\alpha_t &=  \exp\del{-\int_0^t \beta(\tau) \d\tau} \quad && \sigma_t = 1- \exp\del{-2\int_0^t \beta(\tau) \d\tau}\quad&&\text{VP-SDE}\\
+The VP-SDE and VE-SDE fit into this framework, with \[\alpha_t &=  \exp\del{-\int_0^t \beta(\tau) \d\tau} \quad && \sigma_t = 1- \exp\del{-2\int_0^t \beta(\tau) \d\tau}\quad&&\text{VP-SDE}\\
 \alpha_t &=  1 \quad && \sigma_t = \int_0^t \beta(\tau) \d\tau\quad&&\text{VE-SDE}.\]
 It also allows us to easily explore other schedules such as the cosine schedule where we set \(\alpha_t = \sin \del{\frac{t\pi}{2T}}\), \(\sigma_t = \cos \del{\frac{t\pi}{2T}}\), or even linear schedules where we set \(\alpha_t = \frac{T-t}{T}\), \(\sigma_t = \frac{t}{T}\).
 
-The choice of forward noising stochastic differential equation can have a significant impact on performance of a diffusion model. Interesting empirical studies can be seen for example in \textcite{karras2022Elucidating,karras2023analyzing,nichol2021improved}.
+The choice of forward noising stochastic differential equation can have a significant impact on performance of a diffusion model. Interesting empirical studies can be seen for example in \textcite{karras2022Elucidating,karras2023analyzing,nichol2021improved,hoogeboom2023simple}.
 
 % \begin{table}[h]
 % 	\centering
@@ -802,7 +804,7 @@ The choice of forward noising stochastic differential equation can have a signif
 
 The crucial step to be able to follow backwards the path defined by our forward noising stochastic differential equation is the application of a time reversal result.
 
-We  prove a simple result showing that we can indeed create such a stochastic differential equation in the following, leveraging the \emphhypermargin{Fokker-Plank equation}{thm:fokker-plank}.
+We  prove a simple result showing that we can indeed create such a stochastic differential equation in the following, leveraging the \emph{Fokker-Plank equation}.
 
 \begin{theorem}[The Fokker-Plank eqaution]
 	\label{thm:fokker-plank_background}
@@ -823,10 +825,13 @@ The crux of these results is that for a stochastic differential equation, we can
 
 \begin{theorem}[Fokker-Plank time reversal]
 \label{thm:fokker-plank_time_reversal_background}
-For a forward-time stochastic differential equation 
+Let a stochastic differential equation, \(\del{\v{X}_t^\vsra{}}_{t\in\sbr{0, T}}\), called the forward noising stochastic differential equation, be given by
 \[ \d\Xf_t = \v{b}(\Xf_t, t)\d t + \sigma(t)\d \v{B}_t, \quad \Xf_0 \sim \pdata\]
-with time-marginal densities \(p_t^\vsra{}(\v{X})\), the reverse-time stochastic differential equation
-\[\d\Xb_t = \sbr{-\v{b}(\Xb_t, t) + \sigma(t)^2\nabla\log p_t(\Xb_t)}\d t + \sigma(t)\d \v{B}_t, \quad \Xb_0 \sim p_T^\vsra{},\] with time-marginal densities \(p_t^\vsla{}(\v{X})\), the time-marginals are equal in the sense that \(p_t^\vsra{} = p_{T-t}^\vsla{} \;\forall\; t\in \sbr{0,T}\).
+with time-marginal densities \(p_t^\vsra{}(\v{X})\).
+Let another stochastic differential equation, \(\del{\v{X}_t^\vsla{}}_{t\in\sbr{0, T}}\), called the reverse-time stochastic differential equation, be given by
+\[\d\Xb_t = \sbr{-\v{b}(\Xb_t, t) + \sigma(t)^2\nabla\log p_t(\Xb_t)}\d t + \sigma(t)\d \v{B}_t, \quad \Xb_0 \sim p_T^\vsra{},\] with time-marginal densities \(p_t^\vsla{}(\v{X})\).
+
+Then the time-marginals are equal but reversed in time,  in the sense that \(p_t^\vsra{} = p_{T-t}^\vsla{} \;\forall\; t\in \sbr{0,T}\).
 \end{theorem}
 \begin{proof}
 The Fokker-Plank equation for the forward stochastic differential equation is given by 
@@ -842,23 +847,25 @@ Looking at \(\Delta p_t^\vsra{}(\v{X})\) we see that
 \end{align}
 Adding and subtracting this identity  we get
 \begin{align}
-	&\pd{p_t^\vsra{}(\v{X})}{t}\\ &= \dive\del{{\v{b}(\v{X}, t)} p_t^\vsra{}(\v{X})} + \tfrac{1}{2}\sigma^2(t)\Delta p_t^\vsra{}(\v{X}) - \sigma(t)^2\dive\del{p_t^\vsra{}(\v{X})\nabla \log p_t^\vsra{}(\v{X})} \\
-	&= \dive\del{\sbr{\v{b}(\v{X}, t) - \sigma(t)^2\nabla {\log p_t^\vsra{}(\v{X})}} p_t^\vsra{}(\v{X})} - \tfrac{1}{2}\sigma^2(t)\Delta p_t^\vsra{}(\v{X})
+	&\pd{p_t^\vsra{}(\v{X})}{t}\\ &= -\dive\del{{\v{b}(\v{X}, t)} p_t^\vsra{}(\v{X})} + \tfrac{1}{2}\sigma^2(t)\Delta p_t^\vsra{}(\v{X}) - \sigma(t)^2\dive\del{p_t^\vsra{}(\v{X})\nabla \log p_t^\vsra{}(\v{X})} \\
+	&= -\dive\del{\sbr{\v{b}(\v{X}, t) - \sigma(t)^2\nabla {\log p_t^\vsra{}(\v{X})}} p_t^\vsra{}(\v{X})} - \tfrac{1}{2}\sigma^2(t)\Delta p_t^\vsra{}(\v{X})
 \end{align}
-Taking the negative of this term we see that the evolution of the time-maringal density of a stochastic differential equation, but with the evolution happing in reverse, is given by
+Taking the negative of this last expression we define
 \[
-	\pd{p_t^\vsla{}(\v{X})}{t} = \dive\del{-\sbr{\v{b}(\v{X}, t) + \sigma(t)^2\nabla {\log p_t^\vsra{}(\v{X})}} p_t^\vsra{}(\v{X})} + \tfrac{1}{2}\sigma^2(t)\Delta p_t^\vsra{}(\v{X})
+	\pd{p_t^\vsla{}(\v{X})}{t} = \dive\del{-\sbr{- \v{b}(\v{X}, t) + \sigma(t)^2\nabla {\log p_t^\vsra{}(\v{X})}} p_t^\vsra{}(\v{X})} + \tfrac{1}{2}\sigma^2(t)\Delta p_t^\vsra{}(\v{X})
 \]
-which is exactly the Fokker-Plank equation of a stochastic differential equation of the form
-\[\d\Xb_t = \sbr{ -\v{b}(\Xb_t, t) + \sigma(t)^2\nabla {\log p_t^\vsra{}(\Xb_t)}}\d t + \sigma(t)\d \v{B}_t.\]
-The instantaneous change of the forward and reverse time-marginal densities are therefore equal.
-
-Since by assumption \(p_0^\vsla{}\) is exactly \(p_T^\vsra{}\), and the evolution of the time-marginals match, but in reverse by the form of the Fokker-Plank equation, it follows that \(p_t^{\vsra{}} = p_{T-t}^\vsla{}, \; t\in \sbr{0, T}\).
+By definition then
+\[
+	\pd{p_t^\vsla{}(\v{X})}{t} = -\pd{p_t^\vsra{}(\v{X})}{t}.
+\]
+If we assume that for some \(t\in \sbr{0, t}\) \(p_t^\vsra{} = p_{T-t}^\vsla{}\), then by the \emphhyperref{Picard–Lindelöf theorem}{thm:picard-lindelof} we have that \(p_t^\vsra{} = p_{T-t}^\vsla{}\) for all \(t\in \sbr{0, T}\).
+Since \cref{eq:rev_ode_form} is the form of the Fokker-Plank equation of the reverse stochastic differential equation specified, the claim follows.
 \end{proof}
 This proof is inspired by one found in \textcite[chapter 13]{nelson1967bm}.
 
 This theorem states only that the time-marginals the of the forward and reverse distributions match.
 For generative modelling this is all that matters as we only care that we can recover \(\pdata\).
+
 More commonly cited in the score-based modelling literature are stronger results that guarantee the whole distribution on \emph{paths} of the forward and reverse stochastic differential equations match.
 A discussion of commonly cited time reversal results can be found in \cref{sec:time-reversal}.
 See \cref{fig:diffusion_model_illustration} for the difference between the matching of time marginals and the path distributions.
@@ -974,7 +981,7 @@ In contrast, the score matching objectives only need us to evaluate the generati
 
 Additionally, the score matching objectives at a given time are stable with respect to other times.
 That is, the minima at a given time will not change as we optimise the score function at other times.
-This is in comparison to most objectives of other deep generative models where changing the weights at one point in the network changes the optimum weights at other points in the network are.
+This is in comparison to most objectives of other deep generative models, where changing the weights at one point in the network changes the optimum weights at other points in the network are.
 This is exacerbated in GANs, as changing the discriminator function changes the objective the generator function is trying to learn, leading to well known instabilities.
 This property ensured by the fact that in diffusion models we specify the path we wish the model to take from noise to data.
 In other models it is left to the model to find this path.
@@ -1018,9 +1025,9 @@ Using this, we can obtain the following result:
 \begin{proof}
 	Due to \textcite{maoutsa2020interacting} and \textcite[appendix D]{song2020score}.
 \end{proof}
-In diffusion models we typically use \(\m{\Sigma}(\v{X}, t) = \sigma(\v{X}, t) I\), a simple time-dependant scalar noise.
+In diffusion models we typically use \(\m{\Sigma}(\v{X}, t) = \sigma(t) I\), a simple time-dependant scalar noise.
 With this, the likelihood ordinary differential equation simplifies to
-\[\d \v{X}_t = \sbr{\v{b}(\v{X}_t, t) - \frac{1}{2}\sigma(\v{X}, t)^2 \log p_t(\v{X}_t)} \d t \label{eq:likelihood_ode_drift} .\]
+\[\d \v{X}_t = \sbr{\v{b}(\v{X}_t, t) - \frac{1}{2}\sigma(t)^2 \nabla_{\v{X}_t}\log p_t(\v{X}_t)} \d t \label{eq:likelihood_ode_drift} .\]
 Fortunately there already exist tools to allow us to compute the change in likelihood induced by an ordinary differential equation trajectory, assuming the ordinary differential equation describes the flow of a density.
 \begin{theorem}[Instantanious change of likelihood of an ordinary differential equation]
 	Let \(\del{\v{X}_t}_{t\in\sbr{0,T}}\) be an ordinary differential equation with governing equation
@@ -1105,4 +1112,4 @@ While the literature for modelling densities on Riemannian manifolds is reasonab
 There is a line of work in Gaussian process modelling that can model scalar fields on manifolds \cite{Borovitskiy2020,azangulov2023stationary,azangulov2023stationary2} and vector fields \cite{hutchinson2021vector}.
 These are limited however in their expressive power and scalability due to the nature of Gaussian process models.
 
-\textcite{holderith2021equivariant} develop an equivariant neural process model on signals on Euclidean space, and could be extended to modelling signals on manifolds with the kernels defined in \cite{hutchinson2021vector}.
+\textcite{holderith2021equivariant} develop an equivariant neural process model on signals on Euclidean space, and could be extended to modelling signals on manifolds with the kernels defined in \textcite{hutchinson2021vector}.

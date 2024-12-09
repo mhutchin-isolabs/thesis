@@ -52,7 +52,7 @@ Notation are gathered in \Cref{sec:notation-1}.
 \label{sec:non-compact}
 
 The first necessary component is a suitable generic noising process on manifolds that will converge to a convenient stationary distribution.
-A simple choice is to use \emphmarginnote{Langevin dynamics} described by \begin{equation} \label{eq:langevin} \mathrm{d} \v{X}_t = - \tfrac{1}{2}~\nabla_{\v{X}_t} U(\v{X}_t) \mathrm{d} t + \mathrm{d} \v{B}_t^\c{M}, \end{equation} which admits the invariant density (w.r.t. \ the volume form) given by $\mathrm{d} p_{\textup{inv}}/ \mathrm{d} \textrm{Vol}_\c{M}(x) \propto \mathrm{e}^{-U(x)}$ \parencite[Section 2.4]{durmus2016high}, where $\nabla$ is the Riemannian gradient\footnote{The (Riemannian) gradient $\nabla$ is defined s.t.
+A simple choice is to use \emphmarginnote{Langevin dynamics} described by \begin{equation} \label{eq:langevin} \mathrm{d} \v{X}_t = - \tfrac{1}{2}~\nabla_{\v{X}_t} U(\v{X}_t) \mathrm{d} t + \mathrm{d} \v{B}_t^\c{M}, \end{equation} which admits the invariant density (with respect to. \ the volume form) given by $\mathrm{d} p_{\textup{inv}}/ \mathrm{d} \textrm{Vol}_\c{M}(x) \propto \mathrm{e}^{-U(x)}$ \parencite[Section 2.4]{durmus2016high}, where $\nabla$ is the Riemannian gradient\footnote{The (Riemannian) gradient $\nabla$ is defined s.t.
 	\ for any $f:\c{M} \rightarrow \R$, $x \in \c{M}, v \in \mathrm{T}_x\c{M}$, $\langle \nabla f, v \rangle_g = \mathrm{d} f (v)$.}.
 
 Two simple choices for $U(x)$ present themselves.
@@ -75,7 +75,7 @@ In this case, $\nabla_{\v{X}_t} U(\v{X}_t) = 0$ and the noising process is simpl
 In order to use these noising processes we prove the time-reversal formula for manifolds, a generalisation of the results in the Euclidean case, e.g.\ see \textcite[Theorem 4.9]{cattiaux2021time}.
 Consider an SDE of the form $\mathrm{d} \v{X}_t = b(\v{X}_t) \mathrm{d} t + \mathrm{d} \v{B}_t^\c{M}$ where $\v{B}_t^\c{M}$ is a Brownian motion on $\c{M}$.
 We refer to \Cref{sec:brown-moti-manif} for an introduction to Brownian motions on manifolds.
-This result shows that if $(\v{X}_t)_{t \in \sbr{0,T}}$ is a diffusion process then $(\v{X}_{T-t})_{t \in \sbr{0,T}}$ is also a diffusion process w.r.t. the backward filtration whose coefficients can be computed, and are shown in \cref{eq:time_reversal_manifold}.
+This result shows that if $(\v{X}_t)_{t \in \sbr{0,T}}$ is a diffusion process then $(\v{X}_{T-t})_{t \in \sbr{0,T}}$ is also a diffusion process with respect to. the backward filtration whose coefficients can be computed, and are shown in \cref{eq:time_reversal_manifold}.
 The proof relies on an extension of \textcite[Theorem 4.9]{cattiaux2021time} to the Riemannian manifold case and is postponed to \cref{sec:time-reversal}.
 
 \begin{theorem}[Manifold time-reversed process]

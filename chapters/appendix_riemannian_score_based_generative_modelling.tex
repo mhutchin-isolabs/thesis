@@ -10,7 +10,7 @@ In \cref{sec:likel-comp}, we introduce an extension to the Riemannian setting of
 We present an extension of \Cref{alg:rsgm} using predictor-corrector schemes in \Cref{sec:predictor-corrector}.
 In \cref{sec:time-reversal}, we prove the extension of the time-reversal formula to manifold in \Cref{thm:time_reversal_manifold}.
 We prove the convergence of RSGM, i.e. \Cref{thm:weak_qualitative}, in \Cref{sec:convergence-rsgm}.
-The proof of \cref{prop:implicit_der} drawing links between the denoising score matching loss and the implicit score matching loss is presented \cref{sec:manifold_ism_proof}.
+The proof of the manifold implicit score matching loaas, drawing links between the denoising score matching loss and the implicit score matching loss, is presented \cref{sec:manifold_ism_proof}.
 % We provide a thorough comparison between our approach and the one of \textcite{rozen2021moser} in \Cref{sec:comp-with-moser}.
 % We show how our method can be adapted to perform density estimation in \Cref{sec:dens-estim-with}.
 % Extensions to conditional SGM and Schr\"odinger Bridges are discussed in \Cref{sec:extensions}.
@@ -65,7 +65,7 @@ In local coordinates we define \(G = \{g_{i,j}\}_{1 \leq i,j \leq d} = \{g(X_i, 
 In what follows we consider that \(\c{M}\) is equipped with a metric \(g\) and for any \(X, Y \in \c{X}(\c{M})\) we denote \(\langle X,Y \rangle_{\c{M}} = g(X,Y)\).
 
 \paragraph{Connection}
-A connection \(\nabla\) is a mapping which allows one to differentiate vector fields w.r.t other vector fields.
+A connection \(\nabla\) is a mapping which allows one to differentiate vector fields with respect to other vector fields.
 \(\nabla\) is a linear map
 \(\nabla: \ \c{X}(\c{M}) \times \c{X}(\c{M}) \to \c{X}(\c{M})\).
 In addition, we assume that \begin{enumerate*}[label=\roman*)] \item for any \(f \in \mathrm{C}^\infty(\c{M})\), \(X, Y \in \c{X}(\c{M})\), \(\nabla_{f X}(Y) = f \nabla_X Y\), \item for any \(f \in \mathrm{C}^\infty(\c{M})\), \(X, Y \in \c{X}(\c{M})\), \(\nabla_{X}(fY) = f \nabla_X Y + X(f) Y\).
@@ -135,7 +135,7 @@ Note that for any \(x \in \c{M}\), \(P(x)\) is the orthogonal projection \(\math
 \label{sec:stoch-diff-equat}
 
 \paragraph{Stratanovitch integral}
-For reasons that will become clear in the next paragraph, it is easier to define Stochastic Differential Equations (SDEs) on manifolds w.r.t the Stratanovitch integral \cite[Part II, Chapter 3]{kloeden:platen:2011}.
+For reasons that will become clear in the next paragraph, it is easier to define Stochastic Differential Equations (SDEs) on manifolds with respect to the Stratanovitch integral \cite[Part II, Chapter 3]{kloeden:platen:2011}.
 We consider a filtered probability space \((\Omega, (\c{F}_t)_{t \geq 0}, \bb{P})\).
 Let \((\v{X}_t)_{t \geq 0}\) and \((\v{Y}_t)_{t \geq 0}\) be two real continuous semimartingales.
 We define the quadratic covariation \(([\v{X},\v{Y}]_t)_{t \geq 0}\) such that for any \(t \geq 0\) \begin{equation} {[\v{X},\v{Y}]_t = \v{X}_t \v{Y}_t - \v{X}_0\v{Y}_0 - \int_0^t \v{X}_s \mathrm{d} \v{Y}_s - \int_0^t \v{Y}_s \mathrm{d} \v{X}_s .
@@ -173,7 +173,7 @@ Let \(\ell \in \N\), \(V^{1:\ell} = \{ V_i\}_{i=1}^\ell \in \c{X}(\c{M})^\ell\) 
 A \(\c{M}\)-valued semimartingale \((\v{X}_t)_{t \geq 0}\) is said to be the solution of \(\mathrm{SDE}(V^{1:\ell}, Z^{1:\ell}, \v{X}_0)\) up to a stopping \(\tau\) with \(\v{X}_0\) a \(\c{M}\)-valued random variable if for all \(f \in \mathrm{C}^\infty(\c{M})\) and \(t \in \sbr{0, \tau}\) we have \begin{equation} {f(\v{X}_t) = f(\v{X}_0) + \sum_{i=1}^\ell \int_0^t V_i(f)(\v{X}_s) \circ \mathrm{d} \v{Z}^i_s .
 	}
 \end{equation}
-Since the previous SDE is defined w.r.t the Stratanovitch integral we have that if \((\v{X}_t)_{t \geq 0}\) is a solution of \(\mathrm{SDE}(V^{1:\ell}, Z^{1:\ell}, \v{X}_0)\) and \(\v{\Phi}: \c{M} \to \mathcal{N}\) is a diffeomorphism then \((\v{\Phi}(\v{X}_t))_{t \geq 0}\) is a solution of \(\mathrm{SDE}(\v{\Phi}_\star V^{1:\ell}, Z^{1:\ell}, \v{\Phi}(\v{X}_0))\), where \(\v{\Phi}_\star\) is the pushforward operation \cite[see][Proposition 1.2.4]{hsu2002stochastic}.
+Since the previous SDE is defined with respect to the Stratanovitch integral we have that if \((\v{X}_t)_{t \geq 0}\) is a solution of \(\mathrm{SDE}(V^{1:\ell}, Z^{1:\ell}, \v{X}_0)\) and \(\v{\Phi}: \c{M} \to \mathcal{N}\) is a diffeomorphism then \((\v{\Phi}(\v{X}_t))_{t \geq 0}\) is a solution of \(\mathrm{SDE}(\v{\Phi}_\star V^{1:\ell}, Z^{1:\ell}, \v{\Phi}(\v{X}_0))\), where \(\v{\Phi}_\star\) is the pushforward operation \cite[see][Proposition 1.2.4]{hsu2002stochastic}.
 Because the vector fields \(\{V_i\}_{i=1}^\ell\) are smooth we have that for any \(\ell \in \N\), \(V^{1:\ell} = \{ V_i\}_{i=1}^\ell \in \c{X}(\c{M})^\ell\) and \(Z^{1:\ell} = \{Z^i\}_{i=1}^\ell\) a collection of \(\ell\) real-valued semimartingales, there exists a unique solution to \(\mathrm{SDE}(V^{1:\ell}, Z^{1:\ell}, \v{X}_0)\) \cite[see][Theorem 1.2.9]{hsu2002stochastic}.
 
 \subsection{Brownian motion on manifolds}
@@ -308,7 +308,7 @@ We also have the following result \cite[see][Proposition 2.6]{urakawa2006converg
 
 \begin{proposition}[Convergence of Brownian motion]
 	\label{prop:brownian_conv_repeat}
-	For any \(t > 0\), \(\mathrm{Pker}_t\) admits a density \(p_{t|0}\) w.r.t \(p_{\textup{ref}}\) and \(p_{\textup{ref}} \mathrm{Pker}_t = p_{\textup{ref}}\), i.e. \ \(p_{\textup{ref}}\) is an invariant measure for \((\mathrm{Pker}_t)_{t \geq 0}\).
+	For any \(t > 0\), \(\mathrm{Pker}_t\) admits a density \(p_{t|0}\) with respect to \(p_{\textup{ref}}\) and \(p_{\textup{ref}} \mathrm{Pker}_t = p_{\textup{ref}}\), i.e. \ \(p_{\textup{ref}}\) is an invariant measure for \((\mathrm{Pker}_t)_{t \geq 0}\).
 	In addition, if there exists \(C, \alpha \geq 0\) such that for any \(t \in \sbr{0,1}\), \(p_{t|0}(x|x) \leq C t^{-\alpha /2}\) then for any \(p_0 \in \c{P}(\c{M})\) and for any \(t \geq 1/2\) we have \begin{equation} {\tvnorm{p_0 \mathrm{Pker}_t - p_{\textup{ref}}} \leq C^{1/2} \mathrm{e}^{\lambda_1 /2} \mathrm{e}^{-\lambda_1 t} ,} \end{equation} where \(\lambda_1\) is the first non-negative eigenvalue of \(-\Delta_\c{M}\) in \(\mathrm{L}^2(p_{\textup{ref}})\) and we recall that \((\mathrm{Pker}_t)_{t \geq 0}\) is the semi-group of the Brownian motion.
 \end{proposition}
 A review on lower bounds on the first positive eigenvalue of the Laplace--Beltrami operator can be found in \parencite{he2013lower}.
@@ -487,7 +487,7 @@ Let \((\v{Y}_t)_{t \in \sbr{0,T}} = (\v{X}_{T-t})_{t \in \sbr{0,T}}\).
 Our goal is to show that for any \(f \in \mathrm{C}^2(\c{M})\), \((\v{M}_t^{\v{Y}, f})_{t \in \sbr{0,T}}\) is a \(\v{Y}\)-martingale where for any \(t \in \sbr{0,T}\) \begin{equation} { \v{M}_t^{\v{Y}, f} = f(\v{Y}_t) - \int_0^t \{ \langle - b(\v{Y}_s) + \nabla \log p_{T-s}(\v{Y}_s), \nabla f(\v{Y}_s) \rangle + \tfrac{1}{2} \Delta_\c{M} f(\v{Y}_s) \} \mathrm{d} s .
 	}
 \end{equation}
-Note that here we implicitly assume that for any \(t \in \sbr{0,T}\), \(\v{X}_t\) admits a smooth positive density w.r.t.
+Note that here we implicitly assume that for any \(t \in \sbr{0,T}\), \(\v{X}_t\) admits a smooth positive density with respect to.
 \(p_{\t{ref}}\) denoted \(p_t\).
 In other words, we want to show that for any \(g \in \mathrm{C}^2(\c{M})\) and \(s, t \in \sbr{0,T}\) with \(t \geq s\) we have \begin{align} \label{eq:time_reversal_manifold_haussman} & {\E\sbr{g(\v{Y}_s)(f(\v{Y}_t) - f(\v{Y}_s))}} \\  & \qquad {= \E\sbr{g(\v{Y}_s)\int_s^t \{ \langle - b(\v{Y}_u) + \nabla \log p_{T-u}(\v{Y}_u), \nabla f(\v{Y}_u) \rangle + \tfrac{1}{2} \Delta_\c{M} f(\v{Y}_u) \} \mathrm{d} u} .
                  }
@@ -544,9 +544,9 @@ We say that \(\bb{P}\) is a path measure if \(\bb{P} \in \c{P}(\mathrm{C}(\sbr{0
 Let \((\v{X}_t)_{t \in \sbr{0,T}}\) with distribution \(\bb{P}\).
 We denote \((\c{F}_t)_{t \in \sbr{0,T}}\) the filtration such that for any \(t \in \sbr{0,T}\), \(\c{F}_t = \sigma(\v{X}_s, \ s \in \sbr{0,t})\).
 Let \((\v{M}_t)_{t \in \sbr{0,T}}\) be a Polish-valued stochastic process.
-We say that \((\v{M}_t)_{t \in \sbr{0,T}}\) is a \(\bb{P}\)-local martingale if it is a local martingale w.r.t.
+We say that \((\v{M}_t)_{t \in \sbr{0,T}}\) is a \(\bb{P}\)-local martingale if it is a local martingale with respect to.
 the filtration \((\c{F}_t)_{t \in \sbr{0,T}}\).
-A function \(u: \sbr{0,T} \times \sf{X} \to \R\) is said to be in the domain of the extended generator of \(\bb{P}\) if there exists a process \((\c{A} b_{\bb{P}} u(t, \v{X}_{\sbr{0,t}}))_{t \in \sbr{0,T}}\) such that: \begin{enumerate}[label= (\alph*), wide, labelindent=0pt] \item \((\c{A}b_{\bb{P}} u(t, \v{X}_{\sbr{0,t}}))_{t \in \sbr{0,T}}\) is adapted w.r.t.
+A function \(u: \sbr{0,T} \times \sf{X} \to \R\) is said to be in the domain of the extended generator of \(\bb{P}\) if there exists a process \((\c{A} b_{\bb{P}} u(t, \v{X}_{\sbr{0,t}}))_{t \in \sbr{0,T}}\) such that: \begin{enumerate}[label= (\alph*), wide, labelindent=0pt] \item \((\c{A}b_{\bb{P}} u(t, \v{X}_{\sbr{0,t}}))_{t \in \sbr{0,T}}\) is adapted with respect to.
 	      \((\c{F}_t)_{t \in \sbr{0,T}}\).
 	\item \(\int_0^T \abs{\c{A}b_{\bb{P}} u(t, \v{X}_{\sbr{0,t}})} \mathrm{d} t < +\infty\), \(\bb{P}\)-a.s.
 	\item The process \((\v{M}_t)_{t \in \sbr{0,T}}\) is a \(\bb{P}\)-local martingale,
@@ -736,7 +736,7 @@ Using \cref{prop:cattiaux_spec} we can now conclude the proof of \Cref{thm:time_
 First, remark that we can identify \(\beta_{\bb{P}} = b\).
 Let \(u, v \in \mathrm{C}^\infty(\c{M})\), we have that \begin{equation} \label{eq:equality_fin} \E\sbr{v(\v{X}_t) \langle b(\v{X}_t) + \beta_{R(\bb{P})}(T-t, \v{X}_t), \nabla u(\v{X}_t) \rangle + \Delta_\c{M} u(\v{X}_t) v(\v{X}_t)+ \langle \nabla u(\v{X}_t) , \nabla v(\v{X}_t) \rangle } = 0 .
 \end{equation}
-Using that for any \(t \in \sbr{0,T}\), \(\bb{P}_t\) admits a smooth positive density w.r.t.
+Using that for any \(t \in \sbr{0,T}\), \(\bb{P}_t\) admits a smooth positive density with respect to.
 \(p_{\t{ref}}\) denoted \(p_t\) and the divergence theorem, see \parencite[p.51]{lee2018introduction}, we have that for any \(t \in \sbr{0,T}\), \begin{align}   & {\int_{\c{M}} \{ \langle \beta_{R(\bb{P})}(T-t, x), \nabla u(x) \rangle + \langle b(x), \nabla u(x) \rangle \} v(x) p_t(x) \mathrm{d} p_{\t{ref}}(x)} \\ & \qquad \qquad \qquad \qquad = - {\int_\c{M} \langle \nabla u(x) p_t(x), \nabla v(x) \rangle \mathrm{d} p_{\t{ref}}(x) - \int_\c{M} \Delta_\c{M} u (x) v(x) p_t(x) \mathrm{d} p_{\t{ref}}(x) } \\ & \qquad \qquad \qquad \qquad = {\int_\c{M} \langle \nabla \log p_t(x), \nabla u(x) v(x) p_t(x)\mathrm{d} p_{\t{ref}}(x) } .
 \end{align}
 Therefore, we get that for any \(t \in \sbr{0,T}\) and \(x \in \c{M}\), \(\langle \beta_{R(\bb{P})}(T-t, x), \nabla u(x) \rangle = \langle -b(x) + \nabla\log p_t(x), \nabla u(x) \rangle\), which concludes the proof.
@@ -767,9 +767,9 @@ For ease of reading, we restate \Cref{thm:weak_qualitative}.
 	\end{equation}
 	Define for any \(k_0, k_1 \in \{1, \dots, N\}\) with \(k_1 \geq k_0\) \(Q_{k_0, k_1} = \prod_{\ell = k_0}^{k_1} \mathrm{R}_{k_1 + k_0 - \ell}\).
 	Finally, for ease of notation, we also define for any \(k \in \{1, \dots, N\}\), \(Q_k = Q_{k+1,N}\).
-	Note that for any \(k \in \{1, \dots, N\}\), \(Y_k\) has distribution \(\pi_{\infty} Q_k\), where \(\pi_{\infty}\in \c{P}(\c{M})\) with density w.r.t.
+	Note that for any \(k \in \{1, \dots, N\}\), \(Y_k\) has distribution \(\pi_{\infty} Q_k\), where \(\pi_{\infty}\in \c{P}(\c{M})\) with density with respect to.
 	the Hausdorff measure \(p_{\mathrm{ref}}\).
-	Let \(\bb{P} \in \c{P}(\c{C})\) be the probability measure associated with \((\v{b}_t)_{t \in \sbr{0,T}}\) with \(\v{b}_0 \sim \pi_0\), where \(\pi_0 \in \c{P}(\c{M})\) admits a density w.r.t.
+	Let \(\bb{P} \in \c{P}(\c{C})\) be the probability measure associated with \((\v{b}_t)_{t \in \sbr{0,T}}\) with \(\v{b}_0 \sim \pi_0\), where \(\pi_0 \in \c{P}(\c{M})\) admits a density with respect to.
 	the Hausdorff measure given by \(p_0\).
 	We denote \((\hat{\v{Y}}_t)_{t \in \sbr{0,T}}\) the process defined by the diffusion \(\mathrm{d} \hat{\v{Y}}_t = \mathbf{s}_{\theta^\star}(T-t, \hat{\v{Y}}_t) \mathrm{d} t + \mathrm{d} \v{b}_t\) and \(\hat{\v{Y}}_0 \sim \pi_\infty\).
 	We also denote \(\hat{\bb{P}}^R \in \c{P}(\c{C})\) the probability measure associated with \((\hat{\v{Y}}_t)_{t \in \sbr{0,T}}\).
@@ -1152,14 +1152,14 @@ Under these conditions we can prove the statement.
 
 % In what follows, we propose an extension for modelling probability distributions which known invariance.
 % That is, we assume that \(p_0\left(\rho(g) x\right) = p_0(x)\) for all \(g \in G\), with \(G\) a group and \(\rho: G \rightarrow \text{GL}_n(\R)\) a representation.
-% Following \textcite{kohler2020equivariant}, we have that if \(p_{\t{ref}}\) is invariant w.r.t.
-% \ \(G\) and \(\phi: \c{M} \rightarrow \c{M}\) is equivariant w.r.t.\ to \(G\), then the pushforward probability density \(p=p_{\t{ref}}\circ\phi^{-1}\) is invariant w.r.t.\ \(G\).
+% Following \textcite{kohler2020equivariant}, we have that if \(p_{\t{ref}}\) is invariant with respect to.
+% \ \(G\) and \(\phi: \c{M} \rightarrow \c{M}\) is equivariant with respect to.\ to \(G\), then the pushforward probability density \(p=p_{\t{ref}}\circ\phi^{-1}\) is invariant with respect to.\ \(G\).
 
 % Let's consider the probability flow \(\phi\) associated with the reverse diffusion \eqref{eq:time_reversal_manifold}---given by \(\mathrm{d} \v{Y}_t = \{-b(\v{Y}_t) + \nabla \log p_{T-t}(\v{Y}_t)\} \mathrm{d} t + \mathrm{d} \v{b}_t^\c{M}\)--- i.e.\ the solution of the following ODE (see \cref{sec:likel-comp}) \begin{equation} \mathrm{d} \v{Y}_t = \{-b(\v{Y}_t) +\tfrac{1}{2}~ \nabla \log p_{T-t}(\v{Y}_t)\} \mathrm{d} t.
 % \end{equation}
 
 % In practice, the Stein score \(\nabla \log p_{t}\) is approximated with the score network \(\v{s}_\theta(t, \cdot)\).
-% It is sufficient to parametrize the score network so that it is equivariant w.r.t.
+% It is sufficient to parametrize the score network so that it is equivariant with respect to.
 % its second argument ---assuming that \(\rho(g)\) and the drift \(b\) commute (e.g.\ which is true for a linear drift)---since we then have \begin{align} \left[- b + \tfrac{1}{2}~ \v{s}_\theta\left(T - t, \cdot \right) \right] \left(\rho(g) \v{Y}_t \right) = \rho(g) \left[- b + \tfrac{1}{2}~ \v{s}_\theta\left(T - t, \cdot\right)\right] (\v{Y}_t).
 % \end{align}
 

@@ -167,14 +167,14 @@ While the methods we introduce in \Cref{sec:bsgm,sec:reflected_diffusion_model} 
 \subsection{Barrier Langevin Dynamics.}
 Barrier methods work by constructing a smooth potential \(\phi: \c{M} \rightarrow \R\) such that it blows up on the boundary of a desired set, see \textcite{nesterov2018lectures}.
 Such potentials are at the basis of interior methods in optimisation \parencite{boyd2004convex}.
-Among these functions, the \emph{logarithmic barrier} is the most popular among practitioners ~\parencite{lee2017Geodesic}.
+Among these functions, the \emph{log barrier} is the most popular among practitioners ~\parencite{lee2017Geodesic}.
 
 Generically we can define for any \(x \in \c{M}\) \begin{equation} \label{eq:log_barrier_manifold} { \phi(x) = - \sum_{i=1}^m \log(d(x, \partial \c{M}_i)) } \end{equation} 
 where \(d(x, \partial \c{M}_i)\) computes the minimum geodesic distance from \(x\) to the boundary \(\partial \c{M}\), made up of the constraints.
 In general this is a highly non-trivial optimisation problem, however.
 
 In special cases we can exploit the constraints at hand to compute this distance function.
-For a convex polytope \(\c{M}\) defined by the constraints \(\mathrm{A} x < b\), with \(\mathrm{A} \in \R^{m \times d}\) and \(b \in \R^m\), the logarithmic barrier \(\phi: \ \c{M} \to \R_+\) is given for any \(x \in \c{M}\) by \begin{equation} \label{eq:log_barrier_polytope} { \phi(x) = - \sum_{i=1}^m \log(\langle \mathrm{A}_i, x\rangle-b_i).
+For a convex polytope \(\c{M}\) defined by the constraints \(\mathrm{A} x < b\), with \(\mathrm{A} \in \R^{m \times d}\) and \(b \in \R^m\), the log barrier \(\phi: \ \c{M} \to \R_+\) is given for any \(x \in \c{M}\) by \begin{equation} \label{eq:log_barrier_polytope} { \phi(x) = - \sum_{i=1}^m \log(\langle \mathrm{A}_i, x\rangle-b_i).
 	}
 \end{equation}
 Assuming that \(\| \mathrm{A}_i \| =1\), we have that for any \(x \in \c{M}\), \(\phi(x) = - \sum_{i=1}^m \log(d(x, \partial \c{M}_i))\), where \(\partial \c{M}_i = \cbr{x \in \R^d \; : \; \langle \mathrm{A}_i, x\rangle =b}\).
@@ -276,7 +276,7 @@ the Skorokhod problem.
 One key observation is that the event \(\{ \bar{ \v{B}}_t \in \partial \c{M} \}\) has probability zero \parencite[Section 7, Lemma 7]{harrison1987brownian}.
 As in the \emph{unconstrained} setting, one can describe the dynamics of the density of \(\bar{ \v{B}}_t\).
 \begin{proposition}[Reflected Brownian motion Fokker-Plank equation]
-	For any \(t > 0\), the distribution of \(\bar{ \v{B}}_t\) admits a density w.r.t.\
+	For any \(t > 0\), the distribution of \(\bar{ \v{B}}_t\) admits a density with respect to.\
 	the Lebesgue measure denoted \(p_t\).
 	In addition, we have for any \(x \in \mathrm{int}(\c{M})\) and \(x_0 \in \partial \c{M}\) \begin{equation} \label{eq:heat_eq_rbm} \partial_t p_t(x) = \tfrac{1}{2} \Delta p_t(x) , \quad \partial_{ \v{n}} p_t(x_0) = 0 , \end{equation} where we recall that \(\mathbf{n}\) is the outward normal to \(\c{M}\).
 \end{proposition}
@@ -501,8 +501,8 @@ While the upper-bound is easy to derive, the lower-bound requires the following 
 \end{proposition}
 
 \Cref{lemma:lower_bound_prob_main} tells us that \emph{locally} the boundary
-looks like a half-space when integrating w.r.t. a Gaussian measure.
-A corollary is that, for \(\gamma > 0\) small enough and for any \(k \in \N\), the probability that \(X_{k+1}^\gamma = X_k^\gamma\) is upper bounded \emph{uniformly} w.r.t.
+looks like a half-space when integrating with respect to. a Gaussian measure.
+A corollary is that, for \(\gamma > 0\) small enough and for any \(k \in \N\), the probability that \(X_{k+1}^\gamma = X_k^\gamma\) is upper bounded \emph{uniformly} with respect to.
 \(X_k^\gamma \in \c{M}\).
 The proof of \cref{lemma:lower_bound_prob_main} uses \cref{thm:tubul-neighb} in~\Cref{sec:rejection-convergence}, whose proof relies on the concept of \emph{tubular neighborhoods} \parencite{lee2013smooth}.\todo{background tubular neighbourhoods}
 
@@ -640,7 +640,7 @@ We observe that all the proposed methods recover the data distribution on the tw
 We also observe that the reflected method consistently yields better results than the log-barrier one as we scale with dimension.
 
 We also note that the Euclidean models are outperformed by the constrained models in lower dimensions, but generate better results in higher dimensions.
-There are a number of potential explanations for this: First, we note that the mixture of Normal distributions we use as a synthetic data-generating process places significantly less probability mass near the boundary as its dimensionality increases, more closely resembling an unconstrained mixture distribution that is easier for the Euclidean diffusion models to learn, while posing a challenge to the log-barrier and reflected diffusion models that initialise at the uniform distribution within the constraints.
+There are a number of potential explanations for this: First, we note that the mixture of Normal distributions we use as a synthetic data-generating process places significantly less probability mass near the boundary as its dimension increases, more closely resembling an unconstrained mixture distribution that is easier for the Euclidean diffusion models to learn, while posing a challenge to the log-barrier and reflected diffusion models that initialise at the uniform distribution within the constraints.
 Additionally, we note that the design space and hyperparameters used for all experiments were informed by best practices for Euclidean models that may be suboptimal for the more complex dynamics of constrained diffusion models.
 We do however observe that the Euclidean models place less of their samples within the constraints as dimension increases, defeating the purpose of constrained modelling.
 

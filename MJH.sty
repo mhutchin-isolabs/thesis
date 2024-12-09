@@ -648,7 +648,8 @@
 		\dottedcontents{subsection}[3.8em]{}{2.3em}{1pc}
 	}
 	\@ifpackageloaded{hyperref}{\hypersetup{linktoc=all}}{}
-	\newcommand{\emphhyperref}[2]{\hyperref[#2]{\emph{#1}}}
+	% \newcommand{\emphhyperref}[2]{\hyperref[#2]{\emph{#1}}}
+	\newcommand{\emphhyperref}[2]{{\emph{#1}} (see \cref{#2})}
 	\renewcommand{\contentsname}{Table of Contents}
 
 	% caption format
@@ -664,7 +665,9 @@
 	\renewcommand{\raggedleftmarginnote}{\raggedright}
 
 	% doubled up commands
-	\newcommand{\emphhypermargin}[3][0em]{{\marginnote{\MakeUppercase#2}[#1]\hyperref[#3]{\emph{#2}}}}
+	% \newcommand{\emphhypermargin}[3][0em]{{\hyperref[#3]{\emph{#2}}\marginnote{\MakeUppercase#2}[#1]}}
+	\newcommand{\emphhypermargin}[3][0em]{{\emph{#2} (see \cref{#3})\marginnote{\MakeUppercase#2}[#1]}}
+
 
 	% full width starred figures and tables
 	\RequirePackage{ifoddpage}
@@ -738,6 +741,8 @@
 	\crefname{assumption}{assumption}{assumptions}
 	\Crefname{assumption}{Assumption}{Assumptions}
 
+	\crefname{figure}{figure}{figures}
+	\Crefname{figure}{Figure}{Figures}
 \fi
 
 % poster styles

@@ -101,7 +101,7 @@ Note that by letting \(f = \det(\mathfrak{g})^{1/2}\) we get that \(\mathcal{A}^
 We know that the Brownian motion targets \( \det(\mathfrak{g})^{1/2}\).
 Therefore in order to correct and sample from the uniform distribution we consider the Langevin dynamics \begin{equation} \mathrm{d} \v{X}_t = -\mathrm{grad} \log (\det(\mathfrak{g})^{1/2})(\v{X}_t) \mathrm{d} t + \sqrt{2} \mathrm{d} \v{B}_t^\c{M} .
 \end{equation}
-Note that in the previous equation \(\mathrm{grad}\) and \(\v{B}_t^{\c{M}}\) are defined w.r.t.
+Note that in the previous equation \(\mathrm{grad}\) and \(\v{B}_t^{\c{M}}\) are defined with respect to.
 the metric of the manifold.
 In local coordinates we have \begin{equation} \label{eq:forward_process} \mathrm{d} \v{X}_t = \{b -\mathrm{grad} \log (\det(\mathfrak{g})^{1/2})\}(\v{X}_t) \mathrm{d} t + \sqrt{2} \mathfrak{g}(\v{X}_t)^{-1/2} \mathrm{d} \v{B}_t .
 \end{equation}
@@ -172,12 +172,12 @@ We recall that the total variation of a finite (not necessarily non-negative) me
 
 Note that the convergence result in total variation could be improved.
 In particular, quantitative geometric results could be derived.
-We finish this section, by applying results from the Malliavin calculus to show that for any \(t > 0\), \(\v{X}_t\) admits a density w.r.t.
+We finish this section, by applying results from the Malliavin calculus to show that for any \(t > 0\), \(\v{X}_t\) admits a density with respect to.
 the Lebesgue measure.
 
 \begin{proposition}
 	Assume \textup{\Cref{assum:log_barrier_method}}.
-	Then, for any \(t \geq 0\), \(\v{X}_t\) admits a smooth density \(p_t\) w.r.t.
+	Then, for any \(t \geq 0\), \(\v{X}_t\) admits a smooth density \(p_t\) with respect to.
 	the Lebesgue measure.
 \end{proposition}
 
@@ -276,16 +276,16 @@ In particular, there is no martingale problem associated with weak solutions of 
 
 Using the divergence theorem, we have 
 \begin{align} \label{eq:score_matching_app} 
-		& {(1/2) \int_\c{M} \| \mathbf{s}_\theta(x) - \nabla \log p_t(x) \|^2 p_t(x) \mathrm{d} \mu(x)} \\ 
-		& = (1/2) \int_\c{M} \| \mathbf{s}_\theta(x) \|^2 p_t(x) \mathrm{d} \mu(x)  - \int_\c{M} \langle \mathbf{s}_\theta(x), \nabla \log p_t(x) \rangle p_t(x) \mathrm{d} \mu(x) \\
+		& {(1/2) \int_\c{M} \| \mathbf{s}_{t, \theta}(x) - \nabla \log p_t(x) \|^2 p_t(x) \mathrm{d} \mu(x)} \\ 
+		& = (1/2) \int_\c{M} \| \mathbf{s}_{t, \theta}(x) \|^2 p_t(x) \mathrm{d} \mu(x)  - \int_\c{M} \langle \mathbf{s}_{t, \theta}(x), \nabla \log p_t(x) \rangle p_t(x) \mathrm{d} \mu(x) \\
 		&\qquad + (1/2) \int_\c{M} \| \nabla \log p_t(x) \|^2 p_t(x) \mathrm{d} \mu(x) \\
-		& = {(1/2) \int_\c{M} \| \mathbf{s}_\theta(x) \|^2 p_t(x) \mathrm{d} \mu(x) -\int_{\partial \c{M}} \langle \mathbf{s}_\theta(x), \mathbf{n} \rangle p_t(x) \mathrm{d} \nu(x)} \\
-		& \qquad + \int_\c{M} \mathrm{div}(\mathbf{s}_\theta)(x) p_t(x) \mathrm{d} \mu(x) + (1/2) \int_\c{M} \| \nabla \log p_t(x) \|^2 p_t(x) \mathrm{d} \mu(x).
+		& = {(1/2) \int_\c{M} \| \mathbf{s}_{t, \theta}(x) \|^2 p_t(x) \mathrm{d} \mu(x) -\int_{\partial \c{M}} \langle \mathbf{s}_{t, \theta}(x), \mathbf{n} \rangle p_t(x) \mathrm{d} \nu(x)} \\
+		& \qquad + \int_\c{M} \mathrm{div}(\mathbf{s}_{t, \theta})(x) p_t(x) \mathrm{d} \mu(x) + (1/2) \int_\c{M} \| \nabla \log p_t(x) \|^2 p_t(x) \mathrm{d} \mu(x).
 \end{align}
-Using that \(\mathbf{s}_\theta(x) = 0\) for all \(x \in \partial\c{M}\), we get that 
-\begin{align} & {(1/2) \int_\c{M} \| \mathbf{s}_\theta(x) - \nabla \log p_t(x) \|^2 p_t(x) \mathrm{d} \mu(x)} \\ 
-	& \qquad = {(1/2) \int_\c{M} \| \mathbf{s}_\theta(x) \|^2 p_t(x) \mathrm{d} \mu(x)}  \\ 
-	&\qquad \qquad + \int_\c{M} \mathrm{div}(\mathbf{s}_\theta)(x) p_t(x) \mathrm{d} \mu(x) + (1/2) \int_\c{M} \| \nabla \log p_t(x) \|^2 p_t(x) \mathrm{d} \mu(x), 
+Using that \(\innerprod{\mathbf{s}_{t, \theta}(x)}{\v{n}(x)} = 0\) for all \(x \in \partial\c{M}\), we get that 
+\begin{align} & {(1/2) \int_\c{M} \| \mathbf{s}_{t, \theta}(x) - \nabla \log p_t(x) \|^2 p_t(x) \mathrm{d} \mu(x)} \\ 
+	& \qquad = {(1/2) \int_\c{M} \| \mathbf{s}_{t, \theta}(x) \|^2 p_t(x) \mathrm{d} \mu(x)}  \\ 
+	&\qquad \qquad + \int_\c{M} \mathrm{div}(\mathbf{s}_{t, \theta})(x) p_t(x) \mathrm{d} \mu(x) + (1/2) \int_\c{M} \| \nabla \log p_t(x) \|^2 p_t(x) \mathrm{d} \mu(x), 
 \end{align} which concludes the proof.
 
 \subsection{Importance of scaling function}\label{sec:boundary_score}
@@ -323,7 +323,7 @@ Interestingly, we found that these issues early on in the sampling are smoothed 
 
 % We conclude this section with a derivation of the equivalent ODE.
 % We highlight that the ODE representation for reflected diffusion models was first derived in \cite{lou2023reflected}.
-% We recall that if \(\c{M} \subset \R^d\) is a bounded open set with smooth boundary then \cite[Theorem 2.2]{burdzy2004heat} ensures that the reflected Brownian motion admits a density w.r.t.
+% We recall that if \(\c{M} \subset \R^d\) is a bounded open set with smooth boundary then \cite[Theorem 2.2]{burdzy2004heat} ensures that the reflected Brownian motion admits a density with respect to.
 % the Lebesgue measure.
 % We denote \(p_t\) this smooth density.
 
@@ -536,7 +536,7 @@ Using \eqref{eq:skorokhod_app}, we have for any \(t \in \cbr{0,T}\) \begin{equat
 
 % As a proof-of-concept for the practicality of our methods, we chose to model the conformational distribution of the cyclic peptide \textsc{c-AAGAGG}.
 % Cyclic peptides are an increasingly important drug modality with therapeutic uses ranging from antimicrobials to oncology, exhibiting circular polypeptide backbones (i.e. \(d_\text{anchor}=0\)) that confer a range of desirable pharmacodynamic and pharmacokinetic properties \parencite{dougherty2019understanding}.
-% To reduce the dimensionality of the problem, we only consider the \(C_\alpha\) traces (with fixed \(C_\alpha\)-\(C_\alpha\) link distances of 3.6 \AA) instead of the full polypeptide backbone (see \cref{fig:peptide_trace}), although we note that our framework is fully applicable to both settings.
+% To reduce the dimension of the problem, we only consider the \(C_\alpha\) traces (with fixed \(C_\alpha\)-\(C_\alpha\) link distances of 3.6 \AA) instead of the full polypeptide backbone (see \cref{fig:peptide_trace}), although we note that our framework is fully applicable to both settings.
 
 % To derive a suitable dataset, the product manifold \(\mathbb{P}\times\mathbb{T}^3\) describing the conformations of cyclic \(C_\alpha\) traces of length \(N=6\) was constructed (see~\Cref{fig:cyclic_peptide,fig:convex_polytope_loop_illustration} for an illustration) and used to generate \(10^7\) uniform samples satisfying the anchor point distance constraint \(d_\text{anchor}=0\).
 % Subsequently, an estimate of the free energy \(E_i\) of each sample \(i\) was obtained by (1) reconstructing the full-atom peptide from each \(C_\alpha\) trace using the \textsc{PULCHRA} algorithm \parencite{rotkiewicz2008fast}, (2) relaxing all non-\(C_\alpha\) backbone and side-chain atoms (keeping the \(C_\alpha\) positions fixed), and (3) quantifying the potential energy of each of the resulting conformations using the \textsc{OpenMM} suite of molecular dynamics tools \parencite{eastman2017openmm}, and the \textsc{AMBER} force field \parencite{hornak2006comparison}.

@@ -16,7 +16,7 @@ Game-playing agents have matched or beaten top-ranked humans in 49 Atari games \
 Machine learning algorithms have made breakthrough progress on scientific problems, such the protein structure prediction \parencite{abramson2024accurate}, and have started to show progress on algorithm finding \cite{fawzi2022discovering} and controlling plasma instabilities in fusion reactors \cite{degrave2022magnetic}.
 Machine learning models are producing realistic images and videos \cite{saharia2022photorealistic,betker2023improving}, and answering complex questions about text, images, and videos from users \cite{openai2024gpt4technicalreport,geminiteam2024gemini}.
 
-Early efforts in deep learning focused on for the most part \emphmarginnote{classification} and \emphmarginnote[\baselineskip]{regression} problems, where we attempt to associate with some input \(\v{x}\) some output \(y\).
+Early efforts in deep learning focused on for the most part \emphmarginnote{classification} and \emphmarginnote[\baselineskip]{regression} problems, where we attempt to associate with some input \({x}\) some output \(y\).
 Examples include sorting images into categories or predicting the price of a house given information about its location and features.
 In these tasks, from a probabilistic point of view, we are aiming to learn the distribution \(p(y | X=x)\) from a dataset of examples drawn randomly from \(p(x, y)\).
 
@@ -25,18 +25,18 @@ In addition, the distribution of \(p(y | X=x)\) often either takes a single poin
 We do not then need particularly complex methods to specify the output of the model we learn since the function we need to learn is relatively simple.
 
 Beyond the supervised tasks of classification and regression, \emphmarginnote{deep generative modelling} has become a mainstay of deep learning.
-The fundamental task of generative modelling is similar to that of \emphmarginnote[\baselineskip]{density estimation}.
+The core task of generative modelling is similar to that of \emphmarginnote[\baselineskip]{density estimation}.
 Both focus on fitting a mode to samples we have obtained from a distribution \(p\), \(\cbr{x_i}_{i=1}^N, \; x_i \sim p\), and both aim to generate new samples \({x} \sim p({x})\), or to extract information about this distribution.
-Where they differ is that deep generative models use the flexibility of deep learning to specify complex distributions, leveraging the generalisation capabilities of deep learning.
+Where they differ is that deep generative models use the flexibility and generalisation capabilities of deep learning to learn complex distributions.
 This leads to models of complex data, such as images or structured text, that have remained out of reach for non-deep learning approaches.
 
 Deep generative modelling often aims to be able to sample the reverse of the distribution learnt in the classification or regression setting, \(p(x | Y=y)\).
-While this seems like a semantic point, it flips the complexity of the problem. It goes from predicting a low-dimension summary of a high-dimension object to predicting a distribution of high-dimension objects given a low-dimension summary.
+While this seems like a semantic point, it flips the complexity of the problem. It takes us from predicting a low-dimension summary of a high-dimension object to predicting a distribution of high-dimension objects given a low-dimension summary.
 This allows generative modelling to answer some incredibly powerful questions.
 We can learn to generate images given a class or text prompt, to generate structured text that answers a question provided by a user, or to generate the three-dimensional structure of a protein given the DNA sequence that specifies it.
-Cornerstone approaches in deep generative modelling include generative adversarial networks \cite{goodfellow2020generative}, variational auto-encoders \cite{kingma2013auto}, normalising flows \cite{rezende15variational}, and continuous normalising flows \cite{chen2018neural}.
+Cornerstone approaches in deep generative modelling include generative adversarial networks \cite{goodfellow2020generative}, variational auto-encoders \cite{kingma2013auto,rezende2014stochastic}, normalising flows \cite{rezende15variational,tabak2010density, tabak2013family}, and continuous normalising flows \cite{chen2018neural}.
 
-The high dimensionality of the prediction targets and complexity and diversity of outputs corresponding to the same input to a model however makes the task of generative modelling significantly more difficult. 
+The high dimension of the prediction targets and complexity and diversity of outputs corresponding to the same input to a model however makes the task of generative modelling significantly more difficult. 
 This is a common feature of many problems, known as the \emphmarginnote{curse of dimensionality} \parencite[page ix]{bellman1957dynamic}.
 As the dimension of the problem scales, even with large amounts of data available to the practitioner, the volume of the problem space grows exponentially.
 These large datasets can end up still being sparse in the observation space of the problem.
@@ -46,7 +46,7 @@ Typically, the space of possible solutions to a problem can be reduced significa
 
 Firstly we may consider certain symmetries that a problem possesses.
 In many image recognition problems, the output of a model should not change if we translate an image.
-Respecting this structure results in convolutional neural networks \parencite{lecun1989handwritten}.
+Respecting this structure results in convolutional neural networks \parencite{fukushima1980neocognitron,waibel1989phoneme,lecun1989handwritten}.
 In time series problems temporal shift invariance leads to recurrent neural networks \parencite{hochreiter1997long,rumelhart1986learning}.
 On set-like inputs, for which the order in which elements are presented is not important, we arrive at transformers \parencite{vaswani2017attention}, graph neural networks \parencite{sperduti1993encoding} and other order invariant architectures.
 
@@ -72,12 +72,12 @@ The rest of this thesis is in the following format:
 
 \Cref{cpt:background} introduces the topics of geometric machine learning, with a focus on learning on manifolds, and deep generative modelling, with a focus on score-based generative models.
 We provide both a brief technical introduction to the areas and a literature review of the state of the field relevant to this thesis.
-In addition, \cref{chp:manifolds,chp:sdes} contain more in-depth background material on the topics of Riemannian manifolds and stochastic differential equations, aimed to make the thesis self-contained and give a non-expert a gentle introduction to the mathematics.
+In addition, \cref{chp:manifolds,chp:sdes} contain more in-depth background material on the topics of Riemannian manifolds and stochastic differential equations, aimed to make the thesis self-contained and give a gentle introduction to the mathematics.
 
 \Cref{cpt:riemannian_score_based_models} investigates how one can define a score-based generative model for distributions supported on a Riemannian manifold.
 There are several motivating problems for this extension.
 For example, modelling data that lives on Lie groups, such as the poses of objects, states of quantum systems, and internal angles of molecules and proteins covers a wide range of scientific problems.
-On more general manifolds, modelling geospatial data such as the distribution of natural disasters and weather patterns on the surface of the earth, and modelling tree-like hierarchies in hyperbolic space are other interesting applications of this extension.
+On more general manifolds, modelling geospatial data such as the distribution of natural disasters and weather patterns on the surface of the earth, and modelling tree-like hierarchies in hyperbolic space are other interesting applications.
 The core contributions of this chapter are extending the theoretical framework of score-based models to Riemannian manifolds by proving new score-matching loss and time-reversal results extended to the case of manifolds.
 We also provide practical choices for the various components of score-based models on manifolds and demonstrate the applicability of these methods on a series of problems.
 
@@ -88,10 +88,10 @@ Alternatively, the manifold that the data lives on may come with a natural bound
 Motiving modelling problems include modelling data that lives inside a bounded range, such as pixel intensity, modelling data that lives on the simplex, the manifold containing categorical distributions, modelling paths of robotic movements with constraints on the speed of their movement, and modelling rigid link loops, such as cyclic peptides. 
 The core contributions of this chapter are the proposal of two new noising processes for score-based models that remain contained inside a boundary specified, namely reflected Brownian motion and log-barrier diffusion processes.
 We prove new score-matching results and time reversal results applicable to these new noising processes, and provide practical methods for learning score functions near boundaries.
-Furthermore, we demonstrate the capabilities of these methods on a series of problems.
+Finally, we demonstrate the capabilities of these methods on a series of problems.
 
 \Cref{cpt:efficient_constrained_domains} revisits the reflected Brownian motion scheme of \cref{cpt:constrained_domains}.
-The discretisation schemes originally used in the methods proposed proved to be computationally expensive.
+The discretisation schemes typically used in discretising reflected Brownian motion are computationally expensive, and limit the speed of diffusion model training.
 In this chapter we propose a new discretisation scheme for reflected Brownian motion, a Metropolised scheme, that significantly speeds up the discrete approximation of reflected stochastic differential equations.
 We prove that this Metropolised scheme is a valid discretisation of the reflected Brownian motion and demonstrate its practical performance relative to the regular discretisation of reflected stochastic differential equations when used in diffusion models on constrained domains.
 
