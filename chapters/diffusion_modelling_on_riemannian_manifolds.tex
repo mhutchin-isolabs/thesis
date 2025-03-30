@@ -817,8 +817,8 @@ Using the previously defined score-matching losses for generic manifolds and the
 \subsubsection{Mixture of approxiations}
 
 One final improvement we can make to these approximations is to use a suitable mixture of approximations.
-As demonstrated in \cref{fig:heat_kernel}, at small diffusion times Varadhan's asymptotics are significantly more accurate than the Strum--Louiville decomposition with a small truncation.
-At larger times, the Strum--Louiville decomposition is accurate even with a small truncation, but Varadhan's asymptotics are quite inaccurate.
+As demonstrated in \cref{fig:heat_kernel}, at small diffusion times Varadhan's asymptotics are significantly more accurate than the Sturm--Liouville decomposition with a small truncation.
+At larger times, the Sturm--Liouville decomposition is accurate even with a small truncation, but Varadhan's asymptotics are quite inaccurate.
 Using these opposing accuracies, we can first choose a number of basis functions we wish to use to truncate the heat kernel with, and then numerically find the diffusion time where Varadhan's asymptotics becomes more accurate than the expansion.
 We can then choose during each training step the more accurate expression of the heat kernel for the given time step of the diffusion.
 

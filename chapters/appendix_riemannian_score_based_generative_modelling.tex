@@ -10,7 +10,7 @@ In \cref{sec:likel-comp}, we introduce an extension to the Riemannian setting of
 We present an extension of \Cref{alg:rsgm} using predictor-corrector schemes in \Cref{sec:predictor-corrector}.
 In \cref{sec:time-reversal}, we prove the extension of the time-reversal formula to manifold in \Cref{thm:time_reversal_manifold}.
 We prove the convergence of RSGM, i.e. \Cref{thm:weak_qualitative}, in \Cref{sec:convergence-rsgm}.
-The proof of the manifold implicit score matching loaas, drawing links between the denoising score matching loss and the implicit score matching loss, is presented \cref{sec:manifold_ism_proof}.
+The proof of the manifold implicit score matching loss, drawing links between the denoising score matching loss and the implicit score matching loss, is presented \cref{sec:manifold_ism_proof}.
 % We provide a thorough comparison between our approach and the one of \textcite{rozen2021moser} in \Cref{sec:comp-with-moser}.
 % We show how our method can be adapted to perform density estimation in \Cref{sec:dens-estim-with}.
 % Extensions to conditional SGM and Schr\"odinger Bridges are discussed in \Cref{sec:extensions}.
@@ -30,7 +30,7 @@ We focus on the case of Riemannian manifolds, namely manifolds equipped with a m
 Metrics \(g\) are smooth scalar product on the manifold allowing us to define the notion of \emph{distance} on a manifold.
 We refer to \Cref{sec:prel-stoch-riem} for a precise definition and a discussion on metrics.
 Given a smooth map \(f \in \mathrm{C}^\infty(\c{M}, \R)\), the gradient \(\nabla f\) is defined for any \(f:\c{M} \rightarrow \R\), \(x \in \c{M}, v \in \mathrm{T}_x\c{M}\), \(\langle \nabla f, v \rangle_g = \mathrm{d} f (v)\).
-The distane \(d_\c{M}(x,y)\) is defined as the infimum of the length of all the curves on \(\c{M}\) joining \(x\) and \(y\).
+The distance \(d_\c{M}(x,y)\) is defined as the infimum of the length of all the curves on \(\c{M}\) joining \(x\) and \(y\).
 Geodesics are path defined on \(\c{M}\) by a second order equation (and a starting point and speed).
 This second order equation corresponds to the first order minimization of an \emph{energy} functional whose minimizers also minimize the length.
 In \Cref{sec:prel-stoch-riem}, we introduce the notion of geodesics using parallel transport.
@@ -44,7 +44,7 @@ In this paper, we abuse notation and denote by the volume form this natural volu
 
 In this section, we recall some basic facts on Riemannian geometry and stochastic Riemannian geometry.
 We follow \textcite{hsu2002stochastic,lee2018introduction,lee2006riemannian} and refer to \textcite{lee2010introduction,lee2013smooth} for a general introduction to topological and smooth manifolds.
-Throughout this section \(\c{M}\) is a \(d\)-dimensional smooth manifold, \(\TM\) its tangent bundle and \(\TM^*\) it cotangent bundle.
+Throughout this section \(\c{M}\) is a \(d\)-dimensional smooth manifold, \(\TM\) its tangent bundle and \(\TM^*\) its cotangent bundle.
 We denote \(\mathrm{C}^\infty(\c{M})\) the set of real-valued smooth functions on \(\c{M}\) and \(\c{X}(\c{M})\) the set of vector fields on \(\c{M}\).
 
 \subsection{Tensor field, metric, connection and transport}
@@ -95,7 +95,7 @@ We say that \(X \in \mathcal{X}(\gamma)\) is parallel to \(\gamma\) if for any \
 In local coordinates, let \(X \in \mathcal{X}(\gamma)\) be given for any \(t \in \sbr{0,1}\) by \(X = \sum_{i=1}^d a_i(t) E_i(t)\) (assuming that \(\gamma([0,1])\) is entirely contained in a local chart), then we have that for any \(t \in \sbr{0,1}\) and \(k \in \{1, \dots, d\}\) \begin{equation} \label{eq:parallel_transport} {\dot{a}_k(t) + \sum_{i,j=1}^d \Gamma_{i,j}^k(x(t)) \dot{x}_i(t) a_j(t) = 0 .
 	}
 \end{equation}
-A curve \(\gamma\) on \(\c{M}\) is said to be a geodesics if \(\dot{\gamma}\) is parallel to \(\gamma\).
+A curve \(\gamma\) on \(\c{M}\) is said to be a geodesic if \(\dot{\gamma}\) is parallel to \(\gamma\).
 Using \cref{eq:parallel_transport} we get that \begin{equation} \label{eq:geodesics} {\ddot{x}_k(t) + \sum_{i,j=1}^d \Gamma_{i,j}^k(x(t)) \dot{x}_i(t) \dot{x}_j(t) = 0 .
 	}
 \end{equation}
@@ -168,7 +168,7 @@ In particular, note that if for \(x_0 \in \R^d\), \(\sigma(x_0)\) is an orthogon
 
 \paragraph{SDEs on manifolds}
 We define semimartingales and SDEs on manifold through the lens of their actions on functions.
-A continuous \(\c{M}\)-valued stochastic process \((\v{X}_t)_{t \geq 0}\) is called a \(\c{M}\)-valued semimartingale if for any \(f \in \mathrm{C}^\infty(\c{M})\) we have that \((f(\v{X}_t))_{t \geq 0}\) is a real valued semimartingale.
+A continuous \(\c{M}\)-valued stochastic process \((\v{X}_t)_{t \geq 0}\) is called an \(\c{M}\)-valued semimartingale if for any \(f \in \mathrm{C}^\infty(\c{M})\) we have that \((f(\v{X}_t))_{t \geq 0}\) is a real valued semimartingale.
 Let \(\ell \in \N\), \(V^{1:\ell} = \{ V_i\}_{i=1}^\ell \in \c{X}(\c{M})^\ell\) and \(Z^{1:\ell} = \{Z^i\}_{i=1}^\ell\) a collection of \(\ell\) real-valued semimartingales.
 A \(\c{M}\)-valued semimartingale \((\v{X}_t)_{t \geq 0}\) is said to be the solution of \(\mathrm{SDE}(V^{1:\ell}, Z^{1:\ell}, \v{X}_0)\) up to a stopping \(\tau\) with \(\v{X}_0\) a \(\c{M}\)-valued random variable if for all \(f \in \mathrm{C}^\infty(\c{M})\) and \(t \in \sbr{0, \tau}\) we have \begin{equation} {f(\v{X}_t) = f(\v{X}_0) + \sum_{i=1}^\ell \int_0^t V_i(f)(\v{X}_s) \circ \mathrm{d} \v{Z}^i_s .
 	}
@@ -209,7 +209,7 @@ We are now ready to define a Brownian motion on the manifold \(\c{M}\).
 Using the Laplace--Beltrami operator, we can introduce the Brownian motion through the lens of diffusion processes.
 
 \begin{definition}[Brownian motion]
-	Let \((\v{b}_t^\c{M})_{t \geq 0}\) be a \(\c{M}\)-valued semimartingale.
+	Let \((\v{b}_t^\c{M})_{t \geq 0}\) be an \(\c{M}\)-valued semimartingale.
 	\((\v{b}_t^\c{M})_{t \geq 0}\) is a Brownian motion on \(\c{M}\) if for any
 	\(f \in \mathrm{C}^\infty(\c{M})\), \((\v{M}_t^f)_{t \geq 0}\) is a local martingale where
 	for any \(t \geq 0\)
@@ -224,7 +224,7 @@ The proof of the following result can be found in \textcite[Propositions 3.2.1 a
 
 \begin{proposition}[Intrinsic view of Brownian motion]
 	\label{prop:intrinsic_brownian}
-	Let \((\v{b}_t^\c{M})_{t \geq 0}\) be a \(\c{M}\)-valued semimartingales.
+	Let \((\v{b}_t^\c{M})_{t \geq 0}\) be an \(\c{M}\)-valued semimartingales.
 	Then \((\v{b}_t^\c{M})_{t \geq 0}\) is a Brownian motion on \(\c{M}\) if and only on the following conditions hold: \begin{enumerate}[label=\alph*)] \item The horizontal lift \((\v{U}_t)_{t \geq 0}\) is a \(\Delta_{\OM}/2\) diffusion process, i.e. \ for any \(f \in \mathrm{C}^\infty(\OM)\), we have that \((\v{M}_t^f)_{t \geq 0}\) is a local martingale where for any \(t \geq 0\) \begin{equation} {\v{M}_t^f = f(\v{U}_t) - f(\v{U}_0) - \tfrac{1}{2}\int_0^t \Delta_{\OM}f(\v{U}_s) \mathrm{d} s .
 			      }
 		      \end{equation}

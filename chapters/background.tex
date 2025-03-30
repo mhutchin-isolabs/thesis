@@ -50,7 +50,7 @@ Firstly it may come with a \emphmarginnote{geometric structure}, a set of relati
 Secondly it may come with a \emphmarginnote{set of symmetries}, telling us how the elements can be permuted while preserving the geometric structure the space.
 
 Two modelling scenarios arise in geometric deep learning.
-Firstly, for geometric spaces \(X\) and \(Y\) each with their own geometric structure we may be interested in learning \emphmarginnote{functions between geometirc spaces} of the form \(f: X \to Y\).
+Firstly, for geometric spaces \(X\) and \(Y\) each with their own geometric structure we may be interested in learning \emphmarginnote{functions between geometric spaces} of the form \(f: X \to Y\).
 For example, consider a two dimension grid, \(X= \Z_n  \x \Z_n\).
 The grid has a natural structure of points and their neighbours.
 The structure is preserved if we translate the grid up/down or left/right, if we rotate the grid, or if we mirror the grid through an axis.
@@ -73,7 +73,7 @@ Formally this can be summarised as
 	\begin{itemize}[leftmargin=1in]
 		\item[\emph{Associativity}] For element \(f,g,h, \in G\), \( f\cdot \del{g \cdot h} = \del{f \cdot g} \cdot h\).
 		\item[\emph{Identity}] There exists an element \(e \in G\) such that for every element \(g\in G\), \(e \cdot g = g \cdot e = g\). 
-		\item[\emph{Invertability}] There exists for every element \(g\in G\) and element \(g'\in G\) such that \(g \cdot g' = g' \cdot g = e\). This is typically denoted as \(G^{-1}\). 
+		\item[\emph{Invertibility}] There exists for every element \(g\in G\) and element \(g'\in G\) such that \(g \cdot g' = g' \cdot g = e\). This is typically denoted as \(G^{-1}\). 
 		\item[\emph{Closure}] For every \(g, h\in G\), \(g \cdot h \in G\).
 	\end{itemize}
 \end{definition}
@@ -515,7 +515,7 @@ This means we can write any function \(f\in L^2(X)\) on a compact manifold as th
 This basis expansion can be truncated to a finite length
 \(f_N \approx \sum_{i=1}^N \innerprod{f}{f_n}_g f_n.\)
 The error of this basis truncation can be bounded.
-\begin{theorem}[Bounded error of the Strum-Liouville decomposition]
+\begin{theorem}[Bounded error of the Sturm-Liouville decomposition]
 	Let \((X, g)\) be a compact Riemannian manifold, and \((f_n, \lambda_n)_{n=0}^\infty\) be the eigen-spectrum of \(-\Delta_g\).
 	Let \(f \in L^2(X)\).
 	Let \(f_N\) be the truncated expansion of \(f\).
@@ -527,7 +527,7 @@ The error of this basis truncation can be bounded.
 \begin{proof}
 	\cite{aflalo2013spectral}
 \end{proof}
-It can also be shown that this approximation is optimal in the sense that no other basis will obtain a better error bound than the truncated Strum-Liouville approximation \cite{aflalo2015optimality}.
+It can also be shown that this approximation is optimal in the sense that no other basis will obtain a better error bound than the truncated Sturm-Liouville approximation \cite{aflalo2015optimality}.
 
 \subsubsection{Riemannian isometries}
 
@@ -707,7 +707,7 @@ A summary of the diffusion modelling strategy is:
 % We will from now denote this stochastic differential equation as \(\del{\Xf_t}_{t\in\sbr{0, T}}\), denoting the forward direction.
 % This stochastic differential equations is given by \[\d \Xf_t= \v{b}(\Xf_t, t) \d t + \v{\sigma}(\Xf_t, t) \d \v{B}_t \quad \Xf_0 \sim \pdata.\]
 We require that this stochastic differential equation converges to a known reference distribution, \(\pprior\) at large time scales.
-This gives us a path between the data distribution and the reference distribtion.
+This gives us a path between the data distribution and the reference distribution.
 % We will evolve this SDE up to a chosen time \(T\) which is large enough for such convergence to occur.
 % We denote the density of this stochastic differential equation at time \(t\) as \(p_t\).
 \2 Using a time reversal result, we can obtain a stochastic differential equation that has the same sample paths as our forward noising stochastic differential equation, but reversed in time.
