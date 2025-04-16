@@ -5,17 +5,10 @@ In this supplementary we first introduce notation in \Cref{sec:notation-1}.
 We gather the proof of \Cref{thm:time_reversal_manifold} as well as additional derivations on score-based generative models and Riemannian manifolds.
 In \cref{sec:prel-stoch-riem}, we recall basics on stochastic Riemannian geometry following \textcite{hsu2002stochastic}.
 In \cref{sec:likel-comp}, we introduce an extension to the Riemannian setting of the likelihood computation techniques in diffusion models.
-% Details about parametric vector fields are given in \Cref{sec:vector_field}.
-% In \cref{sec:eigenf-eigenv-lapl}, we recall some basic facts about eigenvalues and eigenfunctions of the Laplace--Beltrami operator on the \(d\)-dimensional sphere and torus.
 We present an extension of \Cref{alg:rsgm} using predictor-corrector schemes in \Cref{sec:predictor-corrector}.
 In \cref{sec:time-reversal}, we prove the extension of the time-reversal formula to manifold in \Cref{thm:time_reversal_manifold}.
 We prove the convergence of RSGM, i.e. \Cref{thm:weak_qualitative}, in \Cref{sec:convergence-rsgm}.
 The proof of the manifold implicit score matching loss, drawing links between the denoising score matching loss and the implicit score matching loss, is presented \cref{sec:manifold_ism_proof}.
-% We provide a thorough comparison between our approach and the one of \textcite{rozen2021moser} in \Cref{sec:comp-with-moser}.
-% We show how our method can be adapted to perform density estimation in \Cref{sec:dens-estim-with}.
-% Extensions to conditional SGM and Schr\"odinger Bridges are discussed in \Cref{sec:extensions}.
-% In \Cref{sec:non-compact}, we briefly discuss the non compact setting.
-% Details on the stereographic SGM are given in \Cref{sec:stereo_exp}.
 Experimental details are given in \cref{sec:exp_detail_rsgm}
 
 \section{Notation}
@@ -134,8 +127,8 @@ Note that for any \(x \in \c{M}\), \(P(x)\) is the orthogonal projection \(\math
 \subsection{Stochastic Differential Equations on manifolds}
 \label{sec:stoch-diff-equat}
 
-\paragraph{Stratanovitch integral}
-For reasons that will become clear in the next paragraph, it is easier to define Stochastic Differential Equations (SDEs) on manifolds with respect to the Stratanovitch integral \cite[Part II, Chapter 3]{kloeden:platen:2011}.
+\paragraph{Stratonovich integral}
+For reasons that will become clear in the next paragraph, it is easier to define Stochastic Differential Equations (SDEs) on manifolds with respect to the Stratonovich integral \cite[Part II, Chapter 3]{kloeden:platen:2011}.
 We consider a filtered probability space \((\Omega, (\c{F}_t)_{t \geq 0}, \bb{P})\).
 Let \((\v{X}_t)_{t \geq 0}\) and \((\v{Y}_t)_{t \geq 0}\) be two real continuous semimartingales.
 We define the quadratic covariation \(([\v{X},\v{Y}]_t)_{t \geq 0}\) such that for any \(t \geq 0\) \begin{equation} {[\v{X},\v{Y}]_t = \v{X}_t \v{Y}_t - \v{X}_0\v{Y}_0 - \int_0^t \v{X}_s \mathrm{d} \v{Y}_s - \int_0^t \v{Y}_s \mathrm{d} \v{X}_s .
@@ -144,19 +137,19 @@ We define the quadratic covariation \(([\v{X},\v{Y}]_t)_{t \geq 0}\) such that f
 We refer to \textcite[Chapter IV]{revuz1999continuous} for more details on semimartingales and quadratic variations.
 We denote \([\v{X}] = [\v{X}, \v{X}]\).
 In particular, we have that \(([\v{X}, \v{Y}]_t)_{t \geq 0}\) is an adapted continuous process with finite-variation and therefore \([[\v{X}, \v{Y}]] = 0\).
-Let \((\v{X}_t)_{t \geq 0}\) and \((\v{Y}_t)_{t \geq 0}\) be two real continuous semimartingales, then we define the Stratanovitch integral as follows for any \(t \geq 0\) \begin{equation} { \int_0^t \v{X}_s \circ \mathrm{d} \v{Y}_s = \int_0^t \v{X}_s \mathrm{d} \v{Y}_s + \tfrac{1}{2} [\v{X}, \v{Y}]_t .
+Let \((\v{X}_t)_{t \geq 0}\) and \((\v{Y}_t)_{t \geq 0}\) be two real continuous semimartingales, then we define the Stratonovich integral as follows for any \(t \geq 0\) \begin{equation} { \int_0^t \v{X}_s \circ \mathrm{d} \v{Y}_s = \int_0^t \v{X}_s \mathrm{d} \v{Y}_s + \tfrac{1}{2} [\v{X}, \v{Y}]_t .
 	}
 \end{equation}
 In particular, denoting \((\v{Z}_t^1)_{t \geq 0}\) and \((\v{Z}_t^2)_{t \geq 0}\) the processes such that for any \(t \geq 0\), \(\v{Z}_t^1 = \int_0^t \v{X}_s \circ \mathrm{d} \v{Y}_s\) and \(\v{Z}_t^2 = \int_0^t \v{X}_s \mathrm{d} \v{Y}_s\), we have that \([\v{Z}^1] = [\v{Z}^2]\).
-We refer to \textcite{kurtz1995stratonovich} for more details on Stratanovitch integrals.
+We refer to \textcite{kurtz1995stratonovich} for more details on Stratonovich integrals.
 Note that if for any \(t \geq 0\), \(\v{X}_t = \int_0^t f(\v{X}_s) \circ \mathrm{d} \v{Y}_s\) with \(\mathrm{C}^1(\R, \R)\), then \([\v{X}, \v{Y}]_t = \int_0^t f(\v{X}_s) f'(\v{X}_s) \mathrm{d} \v{Y}_s\).
 Assuming that \(f \in \mathrm{C}^3(\R, \R)\) we have that \cite[Chapter IV, Exercise 3.15]{revuz1999continuous} \begin{equation} \label{eq:stratanovitch_lemma} { f(\v{X}_t) = f(\v{X}_0) + \int_0^t f'(\v{X}_s) \circ \mathrm{d} \v{X}_s .
 	}
 \end{equation}
 The proof relies on the fact that for any \(t \geq 0\), \(\mathrm{d} [\v{X}, f'(\v{X})]_t = f''(\v{X}_t) \mathrm{d} [\v{X}]_t\).
 This result should be compared with It\^o's lemma.
-In particular, Stratanovitch calculus satisfies the ordinary chain rule making it a useful tool in differential geometry which makes a heavy use of diffeomorphism.
-Finally, we have the following correspondence between Stratanovitch and It\^o SDEs.
+In particular, Stratonovich calculus satisfies the ordinary chain rule making it a useful tool in differential geometry which makes a heavy use of diffeomorphism.
+Finally, we have the following correspondence between Stratonovich and It\^o SDEs.
 Assume that \((\v{X}_t)_{t \in \sbr{0,T}}\) is a strong solution to \(\mathrm{d} \v{X}_t = b(t, \v{X}_t) \mathrm{d} t + \sigma(t, \v{X}_t) \circ \mathrm{d} \v{b}_t\), with \(b \in \mathrm{C}^\infty(\R^d, \R^d)\) and \(\sigma \in \mathrm{C}^\infty(\R^d, \R^{d \times d})\).
 Then, we have that \begin{equation} \label{eq:strata_ito_transfo_sde} \mathrm{d} \v{X}_t = \{ b(t, \v{X}_t) + \bar{b}(\v{X}_t)\}\mathrm{d} t + \sigma(t, \v{X}_t) \mathrm{d} \v{b}_t , \qquad \bar{b} = (-1/2) [\mathrm{div}(\sigma \sigma^\top) - \sigma \mathrm{div}(\sigma^\top)] .
 \end{equation}
@@ -173,7 +166,7 @@ Let \(\ell \in \N\), \(V^{1:\ell} = \{ V_i\}_{i=1}^\ell \in \c{X}(\c{M})^\ell\) 
 A \(\c{M}\)-valued semimartingale \((\v{X}_t)_{t \geq 0}\) is said to be the solution of \(\mathrm{SDE}(V^{1:\ell}, Z^{1:\ell}, \v{X}_0)\) up to a stopping \(\tau\) with \(\v{X}_0\) a \(\c{M}\)-valued random variable if for all \(f \in \mathrm{C}^\infty(\c{M})\) and \(t \in \sbr{0, \tau}\) we have \begin{equation} {f(\v{X}_t) = f(\v{X}_0) + \sum_{i=1}^\ell \int_0^t V_i(f)(\v{X}_s) \circ \mathrm{d} \v{Z}^i_s .
 	}
 \end{equation}
-Since the previous SDE is defined with respect to the Stratanovitch integral we have that if \((\v{X}_t)_{t \geq 0}\) is a solution of \(\mathrm{SDE}(V^{1:\ell}, Z^{1:\ell}, \v{X}_0)\) and \(\v{\Phi}: \c{M} \to \mathcal{N}\) is a diffeomorphism then \((\v{\Phi}(\v{X}_t))_{t \geq 0}\) is a solution of \(\mathrm{SDE}(\v{\Phi}_\star V^{1:\ell}, Z^{1:\ell}, \v{\Phi}(\v{X}_0))\), where \(\v{\Phi}_\star\) is the pushforward operation \cite[see][Proposition 1.2.4]{hsu2002stochastic}.
+Since the previous SDE is defined with respect to the Stratonovich integral we have that if \((\v{X}_t)_{t \geq 0}\) is a solution of \(\mathrm{SDE}(V^{1:\ell}, Z^{1:\ell}, \v{X}_0)\) and \(\v{\Phi}: \c{M} \to \mathcal{N}\) is a diffeomorphism then \((\v{\Phi}(\v{X}_t))_{t \geq 0}\) is a solution of \(\mathrm{SDE}(\v{\Phi}_\star V^{1:\ell}, Z^{1:\ell}, \v{\Phi}(\v{X}_0))\), where \(\v{\Phi}_\star\) is the pushforward operation \cite[see][Proposition 1.2.4]{hsu2002stochastic}.
 Because the vector fields \(\{V_i\}_{i=1}^\ell\) are smooth we have that for any \(\ell \in \N\), \(V^{1:\ell} = \{ V_i\}_{i=1}^\ell \in \c{X}(\c{M})^\ell\) and \(Z^{1:\ell} = \{Z^i\}_{i=1}^\ell\) a collection of \(\ell\) real-valued semimartingales, there exists a unique solution to \(\mathrm{SDE}(V^{1:\ell}, Z^{1:\ell}, \v{X}_0)\) \cite[see][Theorem 1.2.9]{hsu2002stochastic}.
 
 \subsection{Brownian motion on manifolds}
@@ -183,7 +176,7 @@ In this section, we introduce the notion of Brownian motion on manifolds.
 We derive some of its basic convergence properties and provide alternative definitions (stochastic development, isometric embedding, random walk limit).
 These alternative definitions are the basis for our alternative methodologies to sample from the time-reversal.
 To simplify our discussion, we assume that \(\c{M}\) is a connected compact orientable Riemannian manifold equipped with the Levi--Civita connection \(\nabla\).
-We denote \(p_{\textup{ref}}^m\) the Haussdorff measure of the manifold (which coincides with the measure associated with the Riemannian volume form \parencite[see][Theorem 2.10.10]{federer2014geometric} and \(p_{\textup{ref}} = p_{\textup{ref}}^m / p_{\textup{ref}}(\c{M})\) the associated probability measure.
+We denote \(p_{\textup{ref}}^m\) the Hausdorff measure of the manifold (which coincides with the measure associated with the Riemannian volume form \parencite[see][Theorem 2.10.10]{federer2014geometric} and \(p_{\textup{ref}} = p_{\textup{ref}}^m / p_{\textup{ref}}(\c{M})\) the associated probability measure.
 
 \paragraph{Gradient, divergence and Laplace operators}
 Let \(f \in \mathrm{C}^{\infty}(\c{M})\).
@@ -233,7 +226,7 @@ The proof of the following result can be found in \textcite[Propositions 3.2.1 a
 	\end{enumerate}
 \end{proposition}
 
-In particular the previous proposition provides us with an \emph{intrisic} way to sample the Brownian motion on \(\c{M}\) with initial condition \(\v{b}_0^\c{M}\).
+In particular the previous proposition provides us with an \emph{intrinsic} way to sample the Brownian motion on \(\c{M}\) with initial condition \(\v{b}_0^\c{M}\).
 First sample \((\v{U}_t)_{t \geq 0}\) solution of \(\mathrm{SDE}(H^{1:d}, \v{b}^{1:d}, \v{U}_0)\) with \(H^{1:d} = \{H_i\}_{i=1}^d\) and \(\pi(\v{U}_0) = \v{b}_0^\c{M}\) and \(\v{b}^{1:d}\) the Euclidean \(d\)-dimensional Brownian motion.
 Then, we recover the \(\c{M}\)-valued Brownian motion \((\v{b}_t^\c{M})_{t \geq 0}\) upon letting \((\v{b}_t^\c{M})_{t \geq 0} = (\pi(\v{U}_t))_{t \geq 0}\).
 
@@ -257,7 +250,7 @@ In the case where the coordinates are strictly local then we refer to \textcite[
 We denote \(\{X_k, X_{i,j}\}_{1 \leq i,j,k \leq d}\) such that for any \(u \in \FM\), \(\{X_k(u), X_{i,j}(u)\}_{1 \leq i,j,k \leq d}\) is a basis of \(\mathrm{T}_u \FM\), Using properties of the horizontal lift, see \cite[Chapter 2]{hsu2002stochastic}, we get that \((\v{U}_t)_{t \geq 0} = (\{\v{X}^k_t, \v{E}_t^{i,j}\}_{1 \leq i,j,k \leq d})\) obtained in \cref{prop:intrinsic_brownian} is given in the global coordinates for any \(i,j,k \in \{1, \dots, d\}\) by \begin{equation} { \mathrm{d} \v{X}_t^k = \sum_{j=1}^d \v{E}_t^{k,j} \circ \mathrm{d} \v{b}_t^k , \qquad \mathrm{d} \v{E}_t^{i,j} = - \sum_{n=1}^d \{\sum_{\ell, m=1}^d \v{E}_t^{\ell,n}\v{E}_t^{m,j} \Gamma_{\ell,m}^{i}(\v{X}_t)\} \circ \mathrm{d} \v{b}_t^n .
 	}
 \end{equation}
-By definition of the Stratanovitch integral we have that for any \(k \in \{1, \dots, d\}\) \begin{equation} { \mathrm{d} \v{X}_t^k = \sum_{j=1}^d \{ \v{E}_t^{k,j} \mathrm{d} \v{b}_t^k +\tfrac{1}{2} \mathrm{d} [\v{E}_t^{k,j}, \v{b}_t^j]_t \} .
+By definition of the Stratonovich integral we have that for any \(k \in \{1, \dots, d\}\) \begin{equation} { \mathrm{d} \v{X}_t^k = \sum_{j=1}^d \{ \v{E}_t^{k,j} \mathrm{d} \v{b}_t^k +\tfrac{1}{2} \mathrm{d} [\v{E}_t^{k,j}, \v{b}_t^j]_t \} .
 	}
 \end{equation}
 Let \((\v{M}_t)_{t \geq 0} = (\{\v{M}_t^k\}_{k=1}^d)_{t \geq 0}\) such that for any \(t \geq 0\) and \(k \in \{1, \dots, d\}\) \(\v{M}_t^k = \sum_{j=1}^d \int_0^t \v{E}_t^{k,j} \mathrm{d} \v{b}_t^k\).
@@ -270,7 +263,7 @@ Note that this result could also have been obtained using the expression of the 
 \paragraph{Brownian motion and random walks}
 
 In the previous paragraph we consider three SDEs to obtain a Brownian motion on \(\c{M}\) (stochastic development, isometric embedding and local coordinates).
-In this section, we summarize results from \textcite{jorgensen1975central} establishing the limiting behaviour of Geodesic Random Walks (GRWs) when the stepsize of the random walk goes to \(0\).
+In this section, we summarize results from \textcite{jorgensen1975central} establishing the limiting behaviour of Geodesic Random Walks (GRWs) when the step size of the random walk goes to \(0\).
 This will be of particular interest when considering the time-reversal process.
 We start by defining the geodesic random walk on \(\c{M}\), following \textcite[Section 2]{jorgensen1975central}.
 
@@ -303,7 +296,7 @@ For any \(x \in \c{M}\) in local coordinates we have that \(\Phi_\# \nu_x\) has 
 
 We finish this section with a few considerations regarding the convergence of the Brownian motion on \(\c{M}\).
 Since we have assumed that \(\c{M}\) is compact we have that there exist \((\Phi_k)_{k \in \N}\) an orthonormal basis of \(-\Delta_\c{M}\) in \(\mathrm{L}^2(p_{\textup{ref}})\), \((\lambda_k)_{k \in \N}\) such that for any \(i, j \in \N\), \(i \leq j\), \(\lambda_i \leq \lambda_j\) and \(\lambda_0 = 0\), \(\Phi_0=1\) and for any \(k \in \N\), \(\Delta_\c{M} \Phi_k = -\lambda_k \Phi_k\).
-For any \(t \geq 0\) and \(x,y \in \c{M}\), \(p_{t|0}(y|x) = \sum_{k \in \N} \mathrm{e}^{-\lambda_k t} \Phi_k(x) \Phi_k(y)\) where for any \(f \in \mathrm{C}^\infty\) we have \begin{equation} {\E\sbr{f(\v{b}_t^{\c{M},x})} = \int_\c{M} p_{t|0}(x,y) f(y) \mathrm{d} p_{\textup{ref}}(y) , } \end{equation} where \((\v{b}_t^{\c{M},x})_{t \geq 0}\) is the Brownian motion on \(\c{M}\) with \(\v{b}_0^{\c{M},x} = x\) and \(p_{\textup{ref}}\) is the probability measure associated with the Haussdorff measure on \(\c{M}\).
+For any \(t \geq 0\) and \(x,y \in \c{M}\), \(p_{t|0}(y|x) = \sum_{k \in \N} \mathrm{e}^{-\lambda_k t} \Phi_k(x) \Phi_k(y)\) where for any \(f \in \mathrm{C}^\infty\) we have \begin{equation} {\E\sbr{f(\v{b}_t^{\c{M},x})} = \int_\c{M} p_{t|0}(x,y) f(y) \mathrm{d} p_{\textup{ref}}(y) , } \end{equation} where \((\v{b}_t^{\c{M},x})_{t \geq 0}\) is the Brownian motion on \(\c{M}\) with \(\v{b}_0^{\c{M},x} = x\) and \(p_{\textup{ref}}\) is the probability measure associated with the Hausdorff measure on \(\c{M}\).
 We also have the following result \cite[see][Proposition 2.6]{urakawa2006convergence}.
 
 \begin{proposition}[Convergence of Brownian motion]
@@ -314,156 +307,6 @@ We also have the following result \cite[see][Proposition 2.6]{urakawa2006converg
 A review on lower bounds on the first positive eigenvalue of the Laplace--Beltrami operator can be found in \parencite{he2013lower}.
 These lower bounds usually depend on the Ricci curvature of the manifold or its diameter.
 We conclude this section by noting that in the non-compact case \parencite{li1986large} establishes similar estimates in the case of a manifold with non-negative Ricci curvature and maximal volume growth.
-
-% \section{Eigensystems of the Laplace--Beltrami operator and heat kernels}
-% \label{sec:eigenf-eigenv-lapl}
-
-% In this section, we recall the eigenfunctions and eigenvalues of the Laplace--Beltrami operator in two specific cases: the \(d\)-dimensional torus and the \(d\)-dimensional sphere.
-% We also highlight that the heat kernel on compact manifold can be written as an infinite series using the Sturm--Liouville decomposition.
-
-% \paragraph{The case of the torus}
-% Let \(\{b_i\}_{i=1}^d\) be a basis of \(\R^d\).
-% We consider the associated lattice on \(\R^d\), i.e. \(\Gamma = \cbrcolon{\sum_{i=1}^d \alpha_i b_i}{\{\alpha_i\}_{i=1}^d \in \Z^d}\).
-% Finally, the associated \(d\)-dimensional torus is defined as \(\mathbb{T}_\Gamma = \R^d / \Gamma\).
-% Denote \(\mathrm{B} = (b_1, \dots, b_d) \in \R^{d \times d}\).
-% Let \(\{\bar{b}_i\}_{i=1}^d \in (\R^d)^d\) such that \((\mathrm{B}^{-1})^\top = (\bar{b}_1, \dots, \bar{b}_d)\).
-% We define \(\Gamma^\star = \cbrcolon{\sum_{i=1}^d \alpha_i \bar{b}_i}{\{\alpha_i\}_{i=1}^d \in \Z^d}\), the dual lattice.
-% Note that for any \(x \in \Gamma\) and \(y \in \Gamma^\star\) we have that \(\langle x, y \rangle \in \Z\) and that if \(\{b_i\}_{i=1}^d\) is an orthonormal basis then \(\Gamma = \Gamma^\star\).
-% The torus \(\R^d/\Gamma\) is a (flat) compact Riemannian manifold.
-% The set of eigenvalues of the Laplace--Beltrami operator is given by \(\cbrcolon{-4 \pi^2 \norm{y}^2}{y \in \Gamma^\star}\).
-% The eigenfunctions of the Laplace--Beltrami operator are given by \(\cbrcolon{x \mapsto \sin(2 \pi \langle x, y \rangle)}{y \in \Gamma^\star}\) and \(\cbrcolon{x \mapsto \cos(2 \pi \langle x, y \rangle)}{y \in \Gamma^\star}\).
-
-% \paragraph{The case of the sphere}
-% Next, we investigate the case of the \(d\)-dimensional sphere \parencite[see][]{saloff1994precise}.
-% The set of eigenvalues of the Laplace--Beltrami operator is given by \(\cbrcolon{-k(k+d-1)}{k \in \N}\).
-% Note that \(\lambda_k = k(k+d-1)\) has multiplicity $d_k = (k+d-2)!
-% 	/\{(d-1)!k\}(2k+d-1)$.
-% The eigenfunctions of the Laplace--Beltrami operator are known as the spherical harmonics and can be defined in terms of Legendre polynomials.
-% When investigating the heat kernel on the \(d\)-dimensional sphere, we are interested in the product \((x,y) \mapsto \sum_{\phi \in \Phi_n} \phi(x)\phi(y)\), where \(\Phi_n\) is the set of eigenfunctions associated with the eigenvalue \(\lambda_n\) for \(n \in \N\).
-% This function can be described using the Gegenbauer polynomials \cite[see][Theorem 2.9]{atkinson2012spherical}.
-% More precisely, we have that for any \(n \in \N\) and \(x,y \in \mathbb{S}^d\) \begin{align}  & G_n(x,y) = { \sum_{\phi \in \Phi_n} \phi(x) \phi(y)} \\  & \quad = {n!
-%                  \Gamma((d-1)/2) \sum_{k=0}^{\floor{n/2}} (-1)^k (1- \langle x,y \rangle^2)\langle x,y \rangle^{n-2k} / (4^k k! (n -2k)! \Gamma(k + (d-1)/2) ) ,}
-% \end{align}
-% where here \(\Gamma: \ \R_+ \to \R\) is given for any \(v > 0\) by
-% \(\Gamma(v) = \int_0^{+\infty} t^{v-1} \mathrm{e}^{-t} \mathrm{d} t\).
-% In the special case where \(d=1\), then the heat kernel coincide with the wrapped Gaussian density and can be easily evaluated.
-
-% \paragraph{Heat kernel on compact Riemannian manifolds.}
-
-% \begin{figure}[t]
-% 	\centering
-% 	\includegraphics[width=\linewidth]{images/rsgm/s2_heat_kernel.pdf}
-% 	\caption{
-% 		Slice of heat kernel \(p_{t|0}(x_t|x_0)\) on \(\mathbb{S}^2\) for different approximations.
-% 	}
-% 	\label{fig:heat_kernel}
-% \end{figure}
-
-% We recall that in the case of compact manifolds the heat kernel is given by the Sturm--Liouville decomposition \cite{chavel1984eigenvalues} given for any \(t > 0\) and \(x, y \in \c{M}\) by \begin{equation} \label{eq:infinite_sum2} {p_{t|0}(y|x) = \sum_{j \in \N} \mathrm{e}^{-\lambda_j t} \phi_j(x)\phi_j(y),} \end{equation} where the convergence occurs in \(\mathrm{L}^2(p_{\t{ref}} \otimes p_{\t{ref}})\), \((\lambda_j)_{j \in \N}\) and \((\phi_j)_{j \in \N}\) are the eigenvalues, respectively the eigenvectors, of \(-\Delta_\c{M}\) in \(\mathrm{L}^2(p_{\t{ref}})\) \cite[see][Section 2]{saloff1994precise}.
-% When the eigenvalues and eigenvectors are known, we approximate the logarithmic gradient of \(p_{t|0}\) by truncating the sum in \eqref{eq:infinite_sum2} with \(J \in \N\) terms.
-
-% Another possibility to approximate \(\nabla \log p_{t|0}\) is to rely on the so-called Varadhan approximation, see \Cref{sec:riem-score-appr}, which is valid for small \(t >0\) .
-% \Cref{fig:heat_kernel} illustrates these different
-% approximations of the heat kernel and \Cref{tab:sm_losses_bis} compares the
-% different loss functions.
-
-% \begin{table}[ht]
-% 	\centering
-% 	\small
-% 	\setlength{\tabcolsep}{0.3em}
-% 	\renewcommand*{\arraystretch}{1.4}
-% 	\begin{tabular}{cc|c|ccc}
-% 		Loss & Approximation & Loss function & Unbiased & Consistent & Variance \\ \midrule \multirow{2}{4.5em}{\(\ell_{t|0}\) (DSM)} & Truncation~\eqref{eq:heat_kernel_trunc} & \(\frac{1}{2} \E \left[ \| s(\v{X}_t) - S_{J,t}(\v{X}_0,\v{X}_t) \|^2 \right]\) & \xmark & \cmark (\(J \rightarrow \infty\)) & 0 \\ & Varhadan~\eqref{eq:varadhan} & \(\frac{1}{2} \E \left[ \| s(\v{X}_t) - \log_{\v{X}_t}(\v{X}_0) / t \|^2 \right]\) & \xmark & \cmark (\(t \rightarrow 0\)) & 0 \\ \midrule \(\ell_{t|s}\) (DSM) & Varhadan~\eqref{eq:varadhan} & \(\frac{1}{2} \E \left[ \| s(\v{X}_t) - \log_{\v{X}_t}(\v{X}_s) / (t-s) \|^2 \right]\) & \xmark & \cmark(\(t \rightarrow s\)) & 0 \\ \midrule \multirow{2}{4.5em}{\(\ell^{\mathrm{im}}_t\) (ISM)} & Deterministic & \(\E \left[\frac{1}{2} \| s(\v{X}_t) \|^2 + \mathrm{div}( s)(\v{X}_t) \right]\) & \cmark & \cmark & 0 \\ & Stochastic & \(\E \left[\frac{1}{2} \| s(\v{X}_t) \|^2 + \varepsilon^\top \partial s(\v{X}_t) \varepsilon \right]\) & \cmark & \cmark & \(2 \| \partial s \|_F\)\\ \bottomrule\end{tabular} \caption{\small Riemannian score matching losses.
-% 	}
-% 	\label{tab:sm_losses_bis}
-% \end{table}
-
-% \section{Predictor-corrector schemes}
-% \label{sec:predictor-corrector}
-
-% In this section, we present a predictor-corrector scheme, adapting the techniques of \textcite{allgower2012numerical,song2020score} to the manifold setting.
-% Changes between \Cref{alg:grw_rsgm}, \Cref{alg:rsgm} and \Cref{alg:grw-c}, \Cref{alg:rsgm-c} are highlighted in red.
-% Let \(t \in \sbr{0,T}\), \(\gamma >0\) and \(k = \floor{t / \gamma}\).
-% We remark that \Cref{alg:grw-c} (\Cref{line:dete}) corresponds to the recursion associated with \((X_j^{t,\gamma})_{j \in \N}\) such that for any \(j \in \N\) \begin{equation} X_{j+1}^{t,\gamma} = \exp_{X_j^{t,\gamma}}[\tfrac{\gamma}{2} \nabla \log p_{T-k\gamma}(X_j^{t,\gamma}) + \sqrt{\gamma} Z_{j+1}] , \end{equation} where \(\{\bar{Z}_j\}_{j \in \N}\) is a family of i.i.d Gaussian random variables with zero mean and identity covariances matrix in \(\R^p\) and for any \(j \in \N\), \(Z_j = \mathrm{P}(X_j^{t,\gamma}) \bar{Z}_j\).
-% Note that here \(k \in \{0, N-1\}\) is fixed.
-% Letting \(\gamma \to 0\), we obtain that under mild assumptions, see \cite[Theorem 3.1]{kuwada2012convergence}, \((X_j^{t, \gamma})_{j \in \N}\) converges to \((\v{X}_s^t)_{s \geq 0}\) such that \begin{equation} \mathrm{d} \v{X}_s^t = \tfrac{1}{2} \nabla \log p_{T-t}(\v{X}_s^t) \mathrm{d} s + \mathrm{d} \v{b}_s^\c{M} .
-% \end{equation}
-% We have that \(p_{T-t}\) is the invariant measure of \((\v{X}_s^t)_{s \geq 0}\).
-% Hence, the role of the corrector step is to project the distribution back onto \(p_{T-t}\) for all times \(t \in \sbr{0,T}\), see \Cref{fig:illustration_pred_correc}.
-% \begin{figure}[htb]
-% 	\centering
-% 	\begin{tikzpicture}
-% 		\draw [stealth-, line width = .05cm] (0,0) .. controls  (2,-4) and (4,4) .. (6,0);
-% 		\draw [-stealth, line width = .05cm, blue!50!black, dashed] (0,0) -- (1.3,-2.3);
-% 		\draw [-stealth, line width = .05cm, red!50!black, dashed] (1.3,-2.3) -- (1.3,-1.2);
-% 		\draw [-stealth, line width = .05cm, blue!50!black, dashed] (1.3,-1.2) -- (2.8,-0.7);
-% 		\draw [-stealth, line width = .05cm, red!50!black, dashed] (2.8,-0.7) -- (2.6, -0.5);
-% 		\node [below=0.2cm] at (6,0) {\(p_{\textrm{data}}\)};
-% 		\node [left=0.3cm] at (0,0) {\(\mathcal{L}(X_0^\gamma) = p_T\)};
-% 		\node [below=0.2cm] at (1.3,-2.3) {\(\mathcal{L}(X_{1/2}^\gamma)\)};
-% 		\node [below right=0.1cm] at (1.3,-1.2) {\(\mathcal{L}(X_{1}^\gamma)\)};
-% 		\node [right=0.2cm] at (2.8,-0.7) {\(\mathcal{L}(X_{3/2}^\gamma)\)};
-% 		\node [above left=0.1cm] at (2.6, -0.5) {\(\mathcal{L}(X_{2}^\gamma)\)};
-% 	\end{tikzpicture}
-% 	\caption{Illustration of the effect of the corrector step on RSGM.
-% 		The black line corresponds to the dynamics of the noising process \((p_t)_{t \in \sbr{0,T}}\).
-% 		The blue dashed lines correspond to the predictor step (going backward in time) and the red dashed lines correspond to the corrector step (projecting back onto the initial dynamics).
-% 		Note that \(\mathcal{L}(X_1^\gamma) \approx p_{T- \gamma}\) and \(\mathcal{L}(X_2^\gamma) \approx p_{T- 2\gamma}\).
-% 	}
-% 	\label{fig:illustration_pred_correc}
-% \end{figure}
-
-% \begin{algorithm}[!ht]
-% 	\caption{\small GRW-c (Geodesic Random Walk with corrector)}
-% 	\label{alg:grw-c}
-% 	\begin{algorithmic}[1]
-% 		\small
-% 		\Require \(T, N, X_0^\gamma, b, \sigma, \mathrm{P}\)
-% 		\State \(\gamma = T / N\) \Comment Step-size
-% 		\For{\(k \in \{0, \dots, N-1\}\)}
-% 		\State \textcolor{blue!50!black}{/// PREDICTOR STEP}
-% 		\State \textcolor{blue!50!black}{\(\bar{Z}_{k+1/2} \sim \mathrm{N}(0, \mathrm{I}_p)\)} \Comment Standard Gaussian in ambient space \(\R^p\)
-% 		\State \textcolor{blue!50!black}{\(Z_{k+1/2} = \mathrm{P}(X_k^\gamma) \bar{Z}_{k+1/2}\)} \Comment Projection in the tangent space \(\mathrm{T}_x \c{M}\)
-% 		\State \textcolor{blue!50!black}{\(W_{k+1/2} = \gamma b(k \gamma, X_k^\gamma) + \sqrt{\gamma} \sigma(k \gamma, X_k^\gamma) Z_{k+1/2}\)} \Comment Euler--Maruyama step on tangent space
-% 		\State \textcolor{blue!50!black}{\(X_{k+1/2}^\gamma = \exp_{X_k^\gamma}[W_{k+1/2}]\)} \Comment Geodesic projection onto \(\c{M}\)
-% 		\State \textcolor{red!50!black}{/// CORRECTOR STEP}
-% 		\State \textcolor{red!50!black}{\(\bar{Z}_{k+1} \sim \mathrm{N}(0, \mathrm{I}_p)\)} \Comment Standard Gaussian in ambient space \(\R^p\)
-% 		\State \textcolor{red!50!black}{\(Z_{k+1} = \mathrm{P}(X_{k+1/2}^\gamma) \bar{Z}_{k+1}\)} \Comment Projection in the tangent space \(\mathrm{T}_x \c{M}\)
-% 		\State \textcolor{red!50!black}{\(W_{k+1} = \tfrac{\gamma}{2} b(k \gamma, X_{k+1/2}^\gamma) + \sqrt{\gamma} \sigma(k \gamma, X_{k+1/2}^\gamma) Z_{k+1}\)} \Comment Euler--Maruyama step on tangent space \label{line:dete}
-% 		\State \textcolor{red!50!black}{\(X_{k+1}^\gamma = \exp_{X_{k+1/2}^\gamma}[W_{k+1}]\)} \Comment Geodesic projection onto \(\c{M}\)
-% 		\EndFor
-% 		\State {\bfseries return} \(\{ X_k^\gamma\}_{k=0}^{N}\)
-% 	\end{algorithmic}
-% \end{algorithm}
-
-% \begin{algorithm}[!t]
-% 	\caption{\small RSGM-c (Riemannian Score-Based Generative Model with corrector)}
-% 	\label{alg:rsgm-c}
-% 	\begin{algorithmic}[1]
-% 		\small
-% 		\Require \(\varepsilon, T, N, \{X_0^m\}_{m=1}^M, \mathrm{loss}, \mathbf{s}, \theta_0, N_{\textrm{iter}}, p_{\t{ref}}, \mathrm{P}\)
-% 		\State{{/// TRAINING ///}}
-
-% 		\For{\(n \in \{0, \dots, N_{\textrm{iter}}-1\}\)}
-% 		\State \(X_0 \sim (1/M) \sum_{m=1}^M \delta_{X_0^m}\) \Comment Random mini-batch from dataset
-% 		\State \(t \sim U(\sbr{\varepsilon, T})\) \Comment Uniform sampling between \(\varepsilon\) and \(T\)
-% 		\State \(\v{X}_t = \textrm{GRW}(t, N, X_0, 0, \m{I}, \mathrm{P})\) \Comment Approximate forward diffusion with \cref{alg:grw_rsgm}
-
-% 		\State
-% 		\(\ell(\theta_n) = \ell_t(T, N, X_0, \v{X}_t, \mathrm{loss}, \mathbf{s}_{\theta_n})\)
-% 		\Comment Compute score matching loss from \cref{tab:sm_losses} \State
-% 		\(\theta_{n+1} = \verb|optimizer_update|(\theta_n, \ell(\theta_n))\) \Comment ADAM
-% 		optimizer step
-% 		\EndFor \State \(\theta^\star = \theta_{N_{\textrm{epoch}}}\)
-% 		\State{{/// SAMPLING ///}} \State \(Y_0 \sim p_{\t{ref}}\) \Comment
-% 		Sample from uniform distribution \State
-% 		\(b_\theta^\star(t, x) = \mathbf{s}_{\theta^\star}(T-t, x)\) for any
-% 		\(t \in \sbr{0,T}\), \(x \in \c{M}\) \Comment Reverse process drift \State
-% 		$\{Y_k\}_{k=0}^{N} = \textrm{GRW-c}(T, N, Y_0, b_{\theta^\star}, \m{I},
-% 			\mathrm{P})$ \Comment Approximate reverse diffusion with \Cref{alg:grw-c} \State
-% 		{\bfseries return} \(\theta^\star, \{Y_k\}_{k=0}^{N}\)
-% 	\end{algorithmic}
-% \end{algorithm}
 
 \section{Time-reversal formula: extension to  Riemannian manifolds}
 \label{sec:time-reversal-manifold-proof}
@@ -522,7 +365,7 @@ Combining this result and \eqref{eq:martingale_forward} and that for any \(u \in
 Using this result, \eqref{eq:first_der} and the change of variable \(u \mapsto T-u\) we obtain \begin{align} \E\sbr{g(\v{Y}_s)(f(\v{Y}_t) - f(\v{Y}_s))} &= {\E\sbr{g(\v{X}_{T-s})\int_{T-t}^{T-s} \c{A}t(T-u, \v{X}_u) \mathrm{d} u } } \\ &= {\E\sbr{g(\v{Y}_{s})\int_{s}^{t} \c{A}t(u, \v{Y}_u) \mathrm{d} u } } .
 \end{align}
 Hence, \eqref{eq:time_reversal_manifold_haussman} holds and we have proved \Cref{thm:time_reversal_manifold}.
-Again, we emphasize that in order to make the proof completely rigourous one needs to derive regularity properties of \(v\).
+Again, we emphasize that in order to make the proof completely rigorous one needs to derive regularity properties of \(v\).
 
 \subsection{Proof of \Cref{thm:time_reversal_manifold}}
 \label{sec:proof-crefthm:t}
@@ -596,7 +439,7 @@ We are now ready to state the integration by part formula, \parencite[Theorem 3.
 
 Note that this theorem is a simplified version of \textcite[Theorem 3.17]{cattiaux2021time} where we restrict ourselves to the case of Markov path measures.
 In what follows, we wish to apply \Cref{thm:ibp_cattiaux} to diffusion processes on manifolds.
-To do so, we will verify that under a finite entropy assumption, the conditions \(u \in \rm{dom}(\c{A}_{R(\bb{P})})\) and \(\c{A}_{R(\bb{P})}u \in \mathrm{L}^1(\bb{P})\) are fullfilled for a class of regular functions \(u\).
+To do so, we will verify that under a finite entropy assumption, the conditions \(u \in \rm{dom}(\c{A}_{R(\bb{P})})\) and \(\c{A}_{R(\bb{P})}u \in \mathrm{L}^1(\bb{P})\) are fulfilled for a class of regular functions \(u\).
 These integrability results are obtained using Girsanov theory.
 
 \subsubsection{Girsanov theory on compact Riemannian manifolds}
@@ -634,7 +477,7 @@ We now prove the following theorem.
 	\(\mathrm{P}_i = \mathrm{P} e_i\) where \(\{e_j\}_{j=1}^p\) is the canonical basis of
 	\(\R^p\).
 	We refer to \Cref{sec:metr-conn-tens} for more details on the projection operator and its extension to \(\R^p\).
-	Using the link between Stratanovitch and It\^o integral, there exists \(\bar{b} \in \mathrm{C}^\infty(\R^p, \R^p)\) such that \((\v{b}_t^\c{M})_{t \in \sbr{0,T}}\) can be seen as a process on \(\R^p\) which satisfies in a weak sense \begin{equation} { \mathrm{d} \v{b}_t^\c{M} = \bar{b}(\v{b}_t^\c{M}) \mathrm{d} t + \mathrm{P}(\v{b}_t^\c{M}) \mathrm{d} \v{b}_t , } \end{equation} where \(\bar{b}\) is given in \eqref{eq:strata_ito_transfo_sde} and satisfies \(\mathrm{P}\bar{b}(x) = 0\) for any \(x \in \c{M}\), see the remark following \eqref{eq:strata_ito_transfo_sde}.
+	Using the link between Stratonovich and It\^o integral, there exists \(\bar{b} \in \mathrm{C}^\infty(\R^p, \R^p)\) such that \((\v{b}_t^\c{M})_{t \in \sbr{0,T}}\) can be seen as a process on \(\R^p\) which satisfies in a weak sense \begin{equation} { \mathrm{d} \v{b}_t^\c{M} = \bar{b}(\v{b}_t^\c{M}) \mathrm{d} t + \mathrm{P}(\v{b}_t^\c{M}) \mathrm{d} \v{b}_t , } \end{equation} where \(\bar{b}\) is given in \eqref{eq:strata_ito_transfo_sde} and satisfies \(\mathrm{P}\bar{b}(x) = 0\) for any \(x \in \c{M}\), see the remark following \eqref{eq:strata_ito_transfo_sde}.
 	For any \(u, v \in \mathrm{C}^2_c(\c{M})\), we consider \(\bar{u}, \bar{v}\) extensions to \(\mathrm{C}^2_c(\R^p)\) and we have for any \(s, t \in \sbr{0,T}\) \begin{align}  & {\E\sbr{\bar{v}(\v{b}_s^\c{M}) \int_s^t \tfrac{1}{2} \Delta_\c{M} u(\v{b}_u^\c{M}) \mathrm{d} u}} \\  & \qquad = {\E\sbr{\bar{v}(\v{b}_s^\c{M}) \int_s^t \{ \langle \nabla \bar{u}(\v{b}_w^\c{M}), \bar{b}(\v{b}_w^\c{M}) \rangle + \tfrac{1}{2} \langle \mathrm{P}(\v{b}_w^\c{M}), \nabla^2 \bar{u}(\v{b}_w^\c{M}) \rangle \} \mathrm{d} w} .
                  }
 	\end{align}
@@ -1052,117 +895,6 @@ Under these conditions we can prove the statement.
 	Using a divergence theorem for non-compact manifolds \cite[see][p.2]{gaffney1954}, we have \begin{align} \ell_{t|s}(s_t) &{= \int_{\c{M} \times \c{M}} \norm{\nabla \log p_{t|s}(x_t|x_s)}^2 \mathrm{d} \bb{P}_{s,t}(x_s,x_t) + \int_\c{M} \norm{s_t(x_t)}^2 \mathrm{d} \bb{P}_{t}(x_t)} \\ & \qquad \qquad {- 2 \int_{\c{M} \times \c{M}} \langle \nabla \log p_{t|s}(x_t|x_s), s_t(x_t) \rangle_\c{M} \mathrm{d} \bb{P}_{s,t}(x_s,x_t)} \end{align} Looking at the last term \begin{align} &\int_{\c{M} \times \c{M}} \langle \nabla \log p_{t|s}(x_t|x_s), s_t(x_t) \rangle_\c{M} \mathrm{d} \bb{P}_{s,t}(x_s,x_t)\\ &= \int_{\c{M} \times \c{M}} \langle \nabla \log p_{t|s}(x_t|x_s), s_t(x_t) \rangle_\c{M} p_{t|s}(x_t|x_s)p_s(x_s) \mathrm{d} (p_{\t{ref}} \otimes p_{\t{ref}}) (x_s, x_t) \\ &=\int_{\c{M} } \left\{\int_\c{M} \langle \nabla p_{t|s}(x_t|x_s), s_t(x_t) \rangle_\c{M} \mathrm{d} p_{\t{ref}}(x_t)\right\} p_s(x_s) \mathrm{d} p_{\t{ref}}(x_s) \\ &= -\int_{\c{M} } \left\{\int_\c{M} \mathrm{div}(s_t)(x_t)p_{t|s}(x_t|x_s) \mathrm{d} p_{\t{ref}}(x_t)\right\} p_s(x_s) \mathrm{d} p_{\t{ref}}(x_s) \quad \text{by the divergence theorem} \\ &=- \int_{\c{M} \times \c{M}} \mathrm{div}(s_t)(x_t)\mathrm{d} \bb{P}_{s,t}(x_s,x_t) =- \int_{\c{M} \times \c{M}} \mathrm{div}(s_t)(x_t)\mathrm{d} \bb{P}_{t}(x_t) \end{align} Therefore \begin{align} \ell_{t|s}(s_t) &={\int_{\c{M} \times \c{M}} \norm{\nabla \log p_{t|s}(x_t|x_s)}^2 \mathrm{d} \bb{P}_{s,t}(x_s,x_t) + \int_\c{M} \norm{s_t(x_t)}^2 \mathrm{d} \bb{P}_{t}(x_t)} \\ & \qquad \qquad { +2 \int_{\c{M}} \mathrm{div}(s_t)(x_t)\mathrm{d} \bb{P}_{t}(x_t)} , \end{align} which concludes the proof.
 \end{proof}
 
-% \section{Density estimation with Fisher score}
-% \label{sec:dens-estim-with}
-
-% In this section, we show how we can adapt ideas from \textcite{choi2021density} for density estimation on \(\c{M}\) using the Fisher score.
-% The main idea of using Fisher score is to leverage the following decomposition for any \(x \in \c{M}\) \begin{equation} { \log p_0(x) = \log p_T(x) - \int_0^T \partial_t \log p_t(x) \mathrm{d} t .
-% 	}
-% \end{equation}
-% Assume that an approximation \(\hat{\mathbf{s}}_\theta\) of \(\partial_t \log p_t\) (the Fisher score) is available then we have that for any \(x \in \c{M}\) \begin{equation} { \log p_0(x) \approx \log p_{\t{ref}} (x) - \int_0^T \hat{\mathbf{s}}_\theta(x) \mathrm{d} t .
-% 	}
-% \end{equation}
-% Before turning to our main result, we state the following lemma.
-
-% \begin{lemma}
-% 	\label{lemma:bound_unif_lemma}
-% 	Assume \Cref{assum:manifold}.
-% 	Then, there exists \(C, T_0 \geq 0\) such that for any \(x \in \c{M}\) and \(T \geq T_0\), \(\abs{p_T(x) - 1} \leq C \exp[-\lambda_1 T / 2]\), where \(\lambda_1\) is the first non-negative eigenvalue of \(-\Delta_\c{M}\) in \(\mathrm{L}^2(p_{\textup{ref}})\).
-% \end{lemma}
-
-% \begin{proof}
-% 	First, using \Cref{prop:brownian_conv_repeat}, there exists \(C_0 \geq 0\) such that for any \(T \geq 1/2\) we have \begin{equation} {\int_\c{M} \abs{p_T(x) - 1} \mathrm{d} p_{\t{ref}}(x)}\leq C_0 \mathrm{e}^{-\lambda_1 T} .
-% 	\end{equation}
-
-% 	Using \cite[Corollary 5.5]{grigor1999estimates}, \cite[Theorem 1.2]{hsu1999estimates}and the fact that \(\c{M}\) is compact, there exists \(C_1, \beta \geq 0\) such that for any \(T \geq 1/2\) and \(x_0, x_T \in \c{M}\) \begin{equation} \label{eq:bound_grad} \norm{\nabla p_{T|0}(x_T|x_0) } \leq C_1(1 + T^\beta) .
-% 	\end{equation}
-% 	In addition, using \cite[Proposition 14]{croke1980some} we have that there exists \(C_2, r_0 > 0\) such that for any \(x_0 \in \c{M}\) and \(r \in \del{0, r_0}\) \begin{equation} \label{eq:lower_bound_volume} {\int_{\cball{x_0}{r}} \mathrm{d} p_{\t{ref}}(x) \geq C_2 r^d .
-% 		}
-% 	\end{equation}
-% 	Assume that that \({\int_\c{M} \abs{p_T(x) - 1} \mathrm{d} p_{\t{ref}}(x)} \leq \varepsilon\) and that there exists \(x_0 \in \c{M}\) such that \(\abs{p_T(x) - 1} > \kappa \varepsilon\) with \(\kappa > 0\) and let \(T \geq T_0\) with \(T_0 = (\kappa \varepsilon/(2C_1))^{1/\beta}\).
-% 	Then, using \eqref{eq:bound_grad} and \eqref{eq:lower_bound_volume}, we have for any \(r \in \del{0,r_0}\) \begin{equation} {\varepsilon \geq \int_{\cball{0}{r}} \abs{p_T(x) - 1} \geq C_2r^{d}(\kappa \varepsilon - C_1(1 + T^\beta) r).
-% 		}
-% 	\end{equation}
-% 	Since \(\kappa \varepsilon / (2C_1(1+T^\beta)) \in \del{0,r_0}\) we have \begin{equation} {\varepsilon \geq C_2(\kappa \varepsilon)^{d+1}/(4C_1(1+T^\beta)).
-% 		}
-% 	\end{equation}
-% 	Therefore, we get that \begin{equation} \label{eq:8} {\varepsilon \geq C_2(\kappa \varepsilon)^{d+1}/(4C_1(1+T^\beta)).
-% 		}
-% 	\end{equation}
-% 	Therefore, we get that \(\kappa \leq (4 C_1 (1 + T^\beta)/ C_2)^{1/(d+1)} \varepsilon^{-1/(d+1)}\).
-% 	Therefore, we have that for any \(x \in \c{M}\) \begin{equation} \label{eq:bound_unfi1} \abs{p_T(x) - 1} \leq (8 C_1 (1 + T^\beta)/ C_2)^{1/(d+1)} \varepsilon^{1 - 1/(d+1)} .
-% 	\end{equation}
-% 	Let \(T_0 \geq 0\) such that for any \(T \geq T_0\) we have \begin{equation} (8 C_1 (1 + T^\beta)/ C_2)^{1/(d+1)} C_0^{1 - 1/(d+1)} \mathrm{e}^{-(1 - 1/(d+1)) \lambda_1 T} \leq 2^{1-\beta} C_1 .
-% 	\end{equation}
-% 	Combining this result and \eqref{eq:bound_unfi1}, we get that for any \(x \in \c{M}\) and \(T \geq 0\) \begin{equation} \label{eq:bound_unfi2} \abs{p_T(x) - 1} \leq (8 C_1 (1 + T^\beta)/ C_2)^{1/(d+1)} C_0^{1 - 1/(d+1)} \mathrm{e}^{-(1 - 1/(d+1)) \lambda_1 T} , \end{equation} which concludes the proof.
-% \end{proof}
-
-% The following proposition quantifies this approximation.
-
-% \begin{proposition}
-% 	Assume \Cref{assum:manifold} and that \(p_0 \in \mathrm{C}^\infty(\c{M}, \del{0,+\infty})\).
-% 	Let \(x_0 \in \c{M}\) and assume that for any \(t \in \sbr{0,T}\), \(\abs{\hat{\mathbf{s}}_\theta(t, x_0) - \partial_t \log p_t(x_0)} \leq \c{M}tt\) with \(\c{M}tt \geq 0\).
-% 	Then, there exists \(C, T_0 \geq 0\) such that for any \(T \geq 0\) \begin{equation} { \abs{\log p_0(x_0) - \int_0^T \hat{\mathbf{s}}_\theta(t, x_0) \mathrm{d} t } \leq C \exp[-\lambda_1 T/2 ] + \c{M}tt T ., } \end{equation} where \(\lambda_1\) is the first non-negative eigenvalue of \(-\Delta_\c{M}\) in \(\mathrm{L}^2(p_{\textup{ref}})\).
-% \end{proposition}
-
-% \begin{proof}
-% 	First using, \Cref{lemma:bound_unif_lemma}, there exists \(C_0, T_0^{(a)} \geq 0\) such that for any \(T \geq T_0^{(a)}\) \begin{equation} \abs{p_T(x_0) - 1} \leq C_0 \exp[-\lambda_1 T / 2].
-% 	\end{equation}
-% 	Let \(T_0^{(b)} = \abs{\log(C_0)} / \lambda_1\).
-% 	Using that for any \(s \in \cobr{1/2, +\infty}\) we have that \(\abs{\log(1 +s)} \leq 2 \log(2) \abs{s}\) we get that for any \(T \geq \max(T_0^{(a)}, T_0^{(b)})\) \begin{equation} \abs{\log p_T(x_0)} \leq 2 \log(2) C_0 \exp[-\lambda_1 T / 2], \end{equation} which concludes the proof.
-% \end{proof}
-
-% In practice, we do not have access to \(\partial_t \log p_t\).
-% However, following \cite[Proposition 2]{choi2021density}, we have the following property.
-
-% \begin{proposition}
-% 	\label{prop:loss-function_fisher}
-% 	Let \(\hat{\mathbf{s}}\) such that for any \(t \in \sbr{0,T}\) and \(x \in \c{M}\), \(\hat{\mathbf{s}}(t,x) = \partial_t \log p_t(x)\).
-% 	Then, we have that \(\hat{\mathbf{s}} = \argmin \cbrcolon{L(\mathbf{s})}{\mathbf{s} \in \mathrm{C}^\infty(\sbr{0,T} \times \c{M}, \R)}\), where for any \(\mathbf{s} \in \mathrm{C}^\infty(\sbr{0,T} \times \c{M}, \R)\) we have \begin{align} L(\mathbf{s}) &= {(1/2) \E\sbr{\int_0^T \lambda(t) \mathbf{s}(t, \v{X}_t) \mathrm{d} t } + \E\sbr{\int_0^T \lambda(t) \partial_t \mathbf{s}(t, \v{X}_t) \mathrm{d} t}} \\ & \qquad { + \E\sbr{\int_0^T \partial_t \lambda(t) \partial_t \mathbf{s}(t, \v{X}_t) \mathrm{d} t} + \E\sbr{\lambda(0)\mathbf{s}(0, \v{X}_0)} - \E\sbr{\lambda(T)\mathbf{s}(T, \v{X}_T)} ,} \end{align} where \(\lambda \in \mathrm{C}^\infty(\sbr{0,T}, \R)\) is a weighting function.
-% \end{proposition}
-
-% \begin{proof}
-% 	For any \(t \in \sbr{0,T}\) and \(x_t \in \c{M}\) we have \begin{equation} { \hat{\mathbf{s}}(x_t) = \int_\c{M} \partial_t \log p_{t|0}(x_t|x_0) p_{0|t}(x_0|x_t) \mathrm{d} x_0 .
-% 		}
-% 	\end{equation}
-% 	Hence, since \(\c{M}\) is compact and \(\hat{\mathbf{s}} \in \mathrm{C}^\infty(\sbr{0,T} \times \c{M}, \R)\), we have that \(\hat{\mathbf{s}} = \argmin \cbrcolon{L_0(\mathbf{s})}{\mathbf{s} \in \mathrm{C}^\infty(\sbr{0,T} \times \c{M}, \R)}\) where for any \(\mathbf{s} \in \mathrm{C}^\infty(\sbr{0,T} \times \c{M}, \R)\) we have \begin{align} L_0(\mathbf{s}) &= {\int_0^T \lambda(t) \int_{\c{M} \times \c{M}} (\mathbf{s}(t, x_t) - \partial_t \log p_{t|0}(x_t|x_0))^2 \mathrm{d} p_{0,t}(x_0, x_t) \mathrm{d} t} \\ &= {\int_0^T \lambda(t) \int_{\c{M}} \mathbf{s}(t, x_t)^2 \mathrm{d} p_t(x_t) \mathrm{d} t } \\ & \qquad \qquad{ - 2 \int_0^T \lambda(t) \int_{\c{M} \times \c{M}} \mathbf{s}(t, x_t) \partial_t \log p_{t|0}(x_0, x_t) \mathrm{d} p_{0,t}(x_0,x_t) \mathrm{d} t } \\ & \qquad \qquad {+ \int_0^T \lambda(t) \int_{\c{M}} \mathrm{d} p_t(x_t) \mathrm{d} t} \label{eq:loss_L0} \end{align} In addition, we have that \begin{align}  & {\int_0^T \lambda(t) \int_{\c{M}\times\c{M}} \mathbf{s}(t, x_t) \partial_t \log p_{t|0}(x_t|x_0) \mathrm{d} p_{0,t}(x_0, x_t) \mathrm{d} t} \\ &\qquad \qquad = {\int_0^T \int_{\c{M}\times\c{M}} \lambda(t) \mathbf{s}(t, x_t) \partial_t p_{t|0}(x_t)\mathrm{d} p_0(x_0) \mathrm{d} p_{\t{ref}}(x_t) \mathrm{d} t} .
-% 	\end{align}
-% 	By integration by parts we get \begin{align} &{\int_0^T \int_{\c{M}\times\c{M}} \lambda(t) \mathbf{s}(t, x_t) \partial_t p_{t|0}(x_t)\mathrm{d} p_0(x_0) \mathrm{d} p_{\t{ref}}(x_t) \mathrm{d} t} \\ & \qquad = - {\int_0^T \int_{\c{M}\times\c{M}} \partial_t (\lambda(t) \mathbf{s}(\cdot, x_t))(t) \mathrm{d} p_{0,t}(x_0, x_t) \mathrm{d} t}\\ & \qquad \qquad \qquad {+ \lambda(T) \int_\c{M} \mathbf{s}(T, x_T) \mathrm{d} p_T(x_T) - \int_\c{M} \mathbf{s}(0, x_0) \mathrm{d} p_0(x_0)} \\ & \qquad = - {\int_0^T \int_{\c{M}\times\c{M}} \partial_t \lambda(t) \mathbf{s}(t, x_t) \mathrm{d} p_{t}(x_t) \mathrm{d} t} - {\int_0^T \int_{\c{M}\times\c{M}} \lambda(t) \partial_t \mathbf{s}(t, x_t) \mathrm{d} p_{t}(x_t) \mathrm{d} t}\\ & \qquad \qquad \qquad {+ \lambda(T) \int_\c{M} \mathbf{s}(T, x_T) \mathrm{d} p_T(x_T) - \lambda(0) \int_\c{M} \mathbf{s}(0, x_0) \mathrm{d} p_0(x_0)} \end{align} Combining this result and \eqref{eq:loss_L0} we get that \begin{align} L_0(\mathbf{s}) &= {\int_0^T \lambda(t) \int_{\c{M} \times \c{M}} (\mathbf{s}(t, x_t) - \partial_t \log p_{t|0}(x_t|x_0))^2 \mathrm{d} p_{0,t}(x_0, x_t) \mathrm{d} t} \\ &= {\int_0^T \lambda(t) \int_{\c{M}} \mathbf{s}(t, x_t)^2 \mathrm{d} p_t(x_t) \mathrm{d} t} + 2 {\int_0^T \int_{\c{M}\times\c{M}} \partial_t \lambda(t) \mathbf{s}(t, x_t) \mathrm{d} p_{t}(x_t) \mathrm{d} t} \\ & \qquad +2 {\int_0^T \int_{\c{M}\times\c{M}} \lambda(t) \partial_t \mathbf{s}(t, x_t) \mathrm{d} p_{t}(x_t) \mathrm{d} t} {- \lambda(T) \int_\c{M} \mathbf{s}(T, x_T) \mathrm{d} p_T(x_T)} \\ & \qquad + {\lambda(0) \int_\c{M} \mathbf{s}(0, x_0) \mathrm{d} p_0(x_0)} {+ \int_0^T \lambda(t) \int_{\c{M}} ^2 \mathrm{d} p_t(x_t) \mathrm{d} t}, \end{align} which concludes the proof.
-% \end{proof}
-
-% Hence, using \Cref{prop:loss-function_fisher}, we could estimate jointly the spatial (or Stein) score used in RSGM and the Fisher score considered in this section, see \textcite{choi2021density}.
-
-% \section{Extensions} \label{sec:extensions}
-% \subsection{Schr\"odinger bridge.}
-% For Euclidean SGM, the generative model is given by an approximation of the time-reversal of the noising dynamics \((\v{X}_t)_{t \in \sbr{0,T}}\) while the backward dynamics \((\v{Y}_t)_{t \in \sbr{0,T}}\) is initialized with the invariant distribution of the noising dynamics (the uniform distribution \(p_{\t{ref}}\) in case of RSGM).
-% However, in order for the method to yield good results we need \(\mathcal{L}(\v{Y}_0) \approx \mathcal{L}(\v{X}_T)\) \cite[see][Theorem 1]{debortoli2021neurips}.
-% Usually, this requires the number of steps in the backward process to be large in order to keep \(T\) large and \(\gamma\) small (where \(\gamma > 0\) is the stepsize in the GRW).
-% Another limitation of SGM is that existing methods target an easy-to-sample reference distribution.
-% Hence, classical SGM cannot interpolate between two distributions defined by datasets.
-% To circumvent this problem, one can consider a process whose initial and terminal distribution are pinned down using Schr\"odinger bridges \parencite{schrodinger1932theorie,leonard2012schrodinger,chen2016entropic,debortoli2021neurips,vargas2021solving}.
-
-% \subsection{Conditional RSGM.}
-% Another extension of interest is conditional sampling.
-% By amortizing SGM with respect to an observation \(y\) it is possible to approximately sample from a given posterior distribution.
-% In the Euclidean setting this idea has been successfully applied for several image processing problems such as deblurring, denoising or inpainting \parencite[see for instance][]{kawar2021snips,kawar2021stochastic,lee2021priorgrad,sinha2021d2c,batzolis2021conditional,chung2021come}.
-% Similarly, RSGM can be amortized to handle such situations in the case where the underlying posterior distribution is supported on a manifold.
-% Practically, this requires for the score network takes an additional input, i.e\ \(\mathbf{s}_\theta\left(t,x;y\right)\).
-
-% \subsection{Invariant distributions}
-
-% In what follows, we propose an extension for modelling probability distributions which known invariance.
-% That is, we assume that \(p_0\left(\rho(g) x\right) = p_0(x)\) for all \(g \in G\), with \(G\) a group and \(\rho: G \rightarrow \text{GL}_n(\R)\) a representation.
-% Following \textcite{kohler2020equivariant}, we have that if \(p_{\t{ref}}\) is invariant with respect to.
-% \ \(G\) and \(\phi: \c{M} \rightarrow \c{M}\) is equivariant with respect to.\ to \(G\), then the pushforward probability density \(p=p_{\t{ref}}\circ\phi^{-1}\) is invariant with respect to.\ \(G\).
-
-% Let's consider the probability flow \(\phi\) associated with the reverse diffusion \eqref{eq:time_reversal_manifold}---given by \(\mathrm{d} \v{Y}_t = \{-b(\v{Y}_t) + \nabla \log p_{T-t}(\v{Y}_t)\} \mathrm{d} t + \mathrm{d} \v{b}_t^\c{M}\)--- i.e.\ the solution of the following ODE (see \cref{sec:likel-comp}) \begin{equation} \mathrm{d} \v{Y}_t = \{-b(\v{Y}_t) +\tfrac{1}{2}~ \nabla \log p_{T-t}(\v{Y}_t)\} \mathrm{d} t.
-% \end{equation}
-
-% In practice, the Stein score \(\nabla \log p_{t}\) is approximated with the score network \(\v{s}_\theta(t, \cdot)\).
-% It is sufficient to parametrize the score network so that it is equivariant with respect to.
-% its second argument ---assuming that \(\rho(g)\) and the drift \(b\) commute (e.g.\ which is true for a linear drift)---since we then have \begin{align} \left[- b + \tfrac{1}{2}~ \v{s}_\theta\left(T - t, \cdot \right) \right] \left(\rho(g) \v{Y}_t \right) = \rho(g) \left[- b + \tfrac{1}{2}~ \v{s}_\theta\left(T - t, \cdot\right)\right] (\v{Y}_t).
-% \end{align}
-
 \section{Experimental details}
 \label{sec:exp_detail_rsgm}
 
@@ -1208,10 +940,8 @@ For the stereographic SGM--which is a standard SGM with an Ornstein–Uhlenbeck 
 \paragraph{Optimization}
 The score-based models are trained for \(600k\) iterations for all datasets but `Flood' where \(300k\) performed best.
 
-% \paragraph{Additional experimental results}
-
 \paragraph{Approximate forward sampling}
-Standard Euclidean SGMs rely on a Ornstein--Ulhenbeck (OU) forward process which can easily be simulated since \(\v{X}_t | \v{X}_0\) is Gaussian.
+Standard Euclidean SGMs rely on a Ornstein--Uhlenbeck (OU) forward process which can easily be simulated since \(\v{X}_t | \v{X}_0\) is Gaussian.
 In contrast, for most manifolds one has to rely on an approximate sampling scheme---see \cref{sec:geodesic_random_walk}.
 First, we directly assess the quality of the approximate samples \(\hat{\v{X}}_t | \v{X}_0\) obtained via geodesic random walk (GRW), against `exact' samples \({\v{X}}_t | \v{X}_0\) which are obtained by using a high number of discretization steps (\(N=1000\)).
 We report on \cref{fig:approx_forward_mmd} the discrepancy between these distributions for different values of discretization steps \(N\), as measured by maximum mean discrepancy (MMD)~\parencite{gretton2012kernel}.

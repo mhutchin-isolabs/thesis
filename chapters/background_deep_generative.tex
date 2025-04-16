@@ -121,18 +121,6 @@ The choice of forward noising stochastic differential equation can have a signif
 	\label{tab:loass_comparison}
 \end{table}
 
-% Typically in generate models such as VAEs and normalising flows the transformation we ask the model a model to turn random noise in to interesting data through a series of intermediate steps. The intermediate steps, and the path on should take between each of these however remain unspecified, and the model must learn to pick one possible solution from a typically infinite set of choices. By contrast \emphmarginnote{diffusion models} specify the whole generative process process from the simple noise distribution to the data distribution. This specification of the mapping is a key element in their success. It significantly reduces the task we ask the model to learn from that of exploring the infinite space of possible mappings between data and noise, to a simple regression problem of matching the pre-specific path. The innovation in these models is being able to specify this mapping, and train the resulting model in an efficient way.
-
-% In the following I consider the continuous time formulation of diffusion models introduced in \textcite{song2020score}, which defines the corruption of noise into data via an SDE. There also exists the discrete view of diffusion modelling \textcite{sohl2015deep,ho2020denoising} where the corruption of data is done in a series of discrete step. Since the links between the two are very clear, and the discrete view can be seen as a discretisation of the continuous time version, I will not develop this.
-
-% The recipe for producing a diffusion model has two key steps:
-% \1 Specify a way of corrupting data into noise via a diffusion equations.
-% \2 Reverse this process of corruption to be able to turn noise into data, giving us a generative model. 
-% \0
-% This recipe as it turns out can be applied much more general than diffusion models, and this will be discussed later, but for now we will consider the case of modelling distributions supported on \(\R^n\) using diffusions as the corrupting process.
-
-% The main tool for this corruption is a \emphmarginnote{stochastic differential equation} (SDE). Typically we use \emphmarginnote{linear SDEs}. These have the form \[\d \v{X}_t = b(\v{X}_t, t) \d t + \Sigma(\v{X}_t, t) \d \v{B}_t\] where \(b : \R^n \times \R \to \R^n\) and \(\Sigma : \R^n \times \R \to \R^{(n\times n)}\).
-
 \subsubsection{Applying a time reversal result}
 
 The crucial step to be able to follow backwards the path defined by our forward noising SDE is the application of a time reversal result.
@@ -152,10 +140,6 @@ We will denote this \(\scorenet{}: \R^d \times \sbr{0, T} \to \R^d\).
 We will also use the notion \(\scorenett{} : \R^d \to \R^d\) to refer to this function partially evaluated at time \(t\), \(\scorenett{}(\cdot) = \scorenet(\cdot, t)\).
 Typically, we will make this a neural network of some kind, and look to optimise this via gradient-based learning.
 
-% \emphmarginnote{Implicit score matching (ISM)} \parencite{hyvarinen05a} says that the following is true for a density \(\pi\) supported on \(\R^d\) relative to the Lebesgue measure;
-% \[\nabla_{\v{X}} \log \pi(\v{X}) = \argmin_{\phi} \int_{\R^d} \cbr{ \frac{1}{2} \norm{\phi\del{\v{X}}}^2 + \dive(\phi)(\v{X})} \pi(\v{X}) \d \v{X} .\]
-% We can apply this to our SDE setting to say that the score at a given time is given by \[\nabla_{\v{X}} \log \pi_t(\v{X}) = \argmin_{\scorenett{}} \int_{\R^d} \cbr{ \frac{1}{2} \norm{\scorenett{}(\v{X})}^2 + \dive(\scorenett{})(\v{X})} \pi_t(\v{X}) \d \v{X}.\]
-% We denote then this loss function as \(\ismlosst{}: \scorenett \mapsto \R\) such that \(\nabla_{\v{X}} \log \pi_t(\v{X}) = \argmin_{\scorenett{}} \ismlosst{}\).
 \textcite{hyvarinen05a} proves the following result
 \begin{theorem}[Implicit score matching (ISM)]
 	\label{def:ism}

@@ -2,7 +2,6 @@
 The majority of this progress has been driven by the rise of \emphmarginnote{deep learning} as an effective tool to learn to approximate very complex functions from data via gradient-based optimisation.
 Although the roots of deep learning are much older, the beginning of the modern rise can be traced to the period 2010-2012.
 Existing algorithms were made significantly cheaper to run by reducing hardware costs and investing in engineering efforts to have them run on \emphmarginnote{graphics processing units} (GPUs).
-% GPUs are more appropriate devices for large liner algebra computations than CPUs, and these are the core computations used in deep learning. 
 
 This enabled a significant rise in the number of training iterations and data points that could be used in deep learning models.
 The increase in computation power, along with the flexibility of deep learning models, allowed them to surpass other classes of models.
@@ -58,9 +57,9 @@ While these two goals might seem initially disparate, they have significant over
 
 The field of \emphmarginnote{geometric deep learning} \cite{bronstein2017geometric,bronstein2021geometric} aims to tackle these two problems.
 Firstly it aims to unify these seemingly disparate architectures that each encode some property of the data into a single framework, understanding the invariances in terms of group theory, and providing tools for building new architectures with the desired invariances.
-Secondly it considers these architectures in the light of non-Eucldiean data, either on continuous spaces that have differentiable and geometric structures, but are not “flat” like Euclidean space, or on discrete spaces such as grids and graphs.
+Secondly it considers these architectures in the light of non-Euclidean data, either on continuous spaces that have differentiable and geometric structures, but are not “flat” like Euclidean space, or on discrete spaces such as grids and graphs.
 
-The intersection of generative modelling and geometric machine learning has been of significant interest as it provides a tool to tackle complex problems in various scientific domains, for example, protein structure prediction \parencite{jumper2021highly}, lattice quantum chromo-dynamics modelling \parencite{abbott2024applications} and material discovery \parencite{merchant2023scaling}. All of these methods exploit the symmetry of the physical problem at hand to drastically reduce the space of solutions, making the problem tractable.
+The intersection of generative modelling and geometric machine learning has been of significant interest as it provides a tool to tackle complex problems in various scientific domains, for example, protein structure prediction \parencite{jumper2021highly}, lattice quantum chromodynamics modelling \parencite{abbott2024applications} and material discovery \parencite{merchant2023scaling}. All of these methods exploit the symmetry of the physical problem at hand to drastically reduce the space of solutions, making the problem tractable.
 
 Recently the development of \emphmarginnote{diffusion models} or \emphmarginnote[\baselineskip]{score-based generative models} \parencite{sohl2015deep,song2019generative,ho2020denoising} have shown to be an extraordinarily powerful class of deep generative models.
 They are however limited in their application to Euclidean data as the diffusion processes used in their construction are inherently Euclidean objects.
@@ -102,7 +101,7 @@ Motivating problems in this case include modelling weather data, such as tempera
 Secondly, we model distributions on paths on manifolds.
 Motivating problems in this case include modelling the trajectory of storms over the surface of the earth, and modelling path planning for robots with rotating joints.
 Core contributions of this chapter are providing a framework to model these complex data types, and introducing methods to incorporate symmetries of distributions into the models.
-We also propose a new Langevin-sampling based conditional sampling scheme for score-based models to provide an alternative existing methods.
+We also propose a new Langevin sampling based conditional sampling scheme for score-based models to provide an alternative existing methods.
 Unlike most other conditional sampling schemes for score-based models, we show that this method in a limit will sample the correct conditional distribution of the score-based model.
 We finally demonstrate the empirical performance of the method on a number of tasks. 
 

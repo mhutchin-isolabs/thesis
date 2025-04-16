@@ -1,59 +1,24 @@
 \documentclass[11pt]{book}
 \PassOptionsToPackage{table,dvipsnames,x11names,svgnames}{xcolor}
-% \usepackage{tikz}
-% \usetikzlibrary{positioning}
 \pdfminorversion=7
 
 \usepackage{standalone}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.17}
-% \usepgfplotslibrary{positioning}
-% \usetikzlibrary{positioning}
 \usetikzlibrary{fit,calc,trees,positioning,arrows,shapes,calc}
 \usepgfplotslibrary{external}
-% \usepgfplotslibrary{groupplots}
-% \usepgfplotslibrary{fillbetween}
-% \usetikzlibrary{fadings}
-
-% \tikzexternalize[prefix=figures/tex/]
-% \tikzset{external/force remake}
-% \usepackage{imakeidx}
-% \makeindex
-
 \usepackage{hyperref}
 \usepackage{microtype}
 \usepackage{lettrine}
 
-% \PassOptionsToPackage{table,dvipsnames,x11names,svgnames}{xcolor}
-% \usepackage[table,dvipsnames,x11names,svgnames]{xcolor}
 \usepackage[commands,environments,enumerate,theorems,citations,authoryear,notes,a4paper,oxfordcolors]{MJH}
 \newcommand{\selfnote}[1]{\marginnote{\textcolor{red}{#1}}}
 \bibliography{bibliography}
-% \bibliography{bibliography}
 
-%%% GLOSSARY
-% \usepackage[nomain,section,sort=def]{glossaries}
-% \usepackage{glossary-mcols}
-% % (Pre glossaries v4.0 requires \glossarystyle rather than
-% % \setglossarystyle)
-% \setglossarystyle{mcolindex}
-% \renewcommand{\glspostdescription}{\dotfill}
-
-% % \newglossary[op-glg]{operators}{op-gls}{op-glo}{Operators}
-% % \newglossary[cn-glg]{constants}{cn-gls}{cn-glo}{Constants}
-% \newglossary[not-glg]{notation}{not-gls}{not-glo}{notation}
-% \makeglossaries
-% \input{glossary.tex}
-%%%%
 
 \usepackage{booktabs} % nice tables
 \usepackage{multirow} % multirow cells
-% \usepackage{minitoc} % per chapter ToC
 
-% TODO: Maybe remove?
-% \usepackage{bm}
-% \usepackage{bbm} % blackboard bold numbers
-% \usepackage{amssymb} % http://ctan.org/pkg/amssymb
 \usepackage{pifont} % http://ctan.org/pkg/pifont
 \newcommand{\cmark}{\ding{51}} % check mark
 \newcommand{\xmark}{\ding{55}} % cross mark
@@ -229,7 +194,6 @@ This dissertation and all research contained in it are a product of my original 
 	\item Mathematical results: The simplified time-reversal result on manifolds, \cref{thm:fokker-plank_time_reversal_manifold}, and the implicit score matching on Riemannian manifolds, \cref{prop:manifold_ism}.
 	\item Original manuscript writing with Emile and Valentin.
 \end{enumerate} 
-% \vspace{4em}
 \input{chapters/diffusion_modelling_on_riemannian_manifolds.tex}
 
 \chapter{Score-based modelling on constrained domains}
@@ -282,19 +246,13 @@ This dissertation and all research contained in it are a product of my original 
 \chapter{Conclusion}
 \input{chapters/conclusion.tex}
 
-% % \printindex
-
 \printbibliography
 
 \appendix
-% \part*{Appendix}
 
 \chapter{Manifolds} \label{chp:manifolds} \input{chapters/background_riemannian.tex} 
 
 \chapter{Stochastic Differential Equations} \label{chp:sdes} \input{chapters/background_stochastic.tex} 
-
-% \chapter{Proofs}
-% \input{chapters/proofs_appendix.tex}
 
 \chapter{Score-based modelling on Riemannian manifolds}
 \input{chapters/appendix_riemannian_score_based_generative_modelling.tex}
@@ -308,7 +266,6 @@ This dissertation and all research contained in it are a product of my original 
 \chapter{Score-based modelling on geometric structures on Riemannian manifolds}
 \input{chapters/geometric_neural_diffusion_processes_appendix.tex}
 
-% % \printglossaries
 
 
 \end{document}

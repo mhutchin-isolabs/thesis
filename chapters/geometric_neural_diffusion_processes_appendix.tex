@@ -3,9 +3,8 @@
 \label{sec:organ_suppl}
 
 In this supplementary, we first introduce in \cref{sec:continuous_process} an Ornstein Uhlenbeck process on function space (via finite marginals) along with several score approximations.
-% Then in \cref{sec:manifold_valued}, we show how this methodology extend to manifold-valued inputs or outputs.
+
 Later in \cref{sec:inv_ndp}, we derive sufficient conditions for this introduced model to yield a group invariant process.
-What's more in \cref{sec:app_conditional_sampling}, we study some conditional sampling schemes.
 Finally in \cref{app:experimental_details}, we give a thorough description of experimental settings along with additional empirical results.
 
 \section{Ornstein Uhlenbeck on function space} \label{sec:continuous_process}
@@ -17,7 +16,7 @@ First, we aim to show that we can define a stochastic process on an infinite dim
 In particular, for any set of input $x = (x_1, \cdots, x_k) \in \c{X}^k$, we define the joint marginal as the solution of the following SDE \begin{equation}\label{eq:app_forward_SDE_sp} 
 	\d\v{Y}_t = \frac{1}{2}\beta_t({m}(x) - \v{Y}_t) \d t + \sqrt{\beta_t K(x, x)}
 \end{equation}
-where \(m\) is a mean function and \(K\) a covaraince kernel.
+where \(m\) is a mean function and \(K\) a covariance kernel.
 
 \begin{proposition}{\parencite{phillips2022spectral}}{} \label{prop:mOU} We assume we are given a data process $(\v{Y_}0(x))_{x \in \c{X}}$ and we denote by $\mathbf{G} \sim \mathrm{GP}(0, k)$ a Gaussian process with zero mean and covariance.
 	Then let's define $$\v{Y_t} \triangleq e^{-\frac{1}{2}\cdot \int_{s=0}^t \beta_s ds} ~\v{Y_}0 + \left(1 - e^{-\frac{1}{2}\cdot \int_{s=0}^t \beta_s ds} \right) m + \left(1 - e^{-\int_{s=0}^t \beta_s ds} \right)^{1/2} \mathbf{G}.
@@ -64,7 +63,7 @@ Then we can plugin our learnt (preconditioned) score into the backward SDE \ref{
 In this section, we discuss several parametrisations of the neural network and the objective.
 
 For the sake of versatility, we opt to employ the symbol $D_\theta$ for the network instead of $s_\theta$ as mentioned in the primary text, as it allows us to approximate not only the score but also other quantities from which the score can be derived.
-In full generality, we use a residual connection, weighted by ${c}_{\text{out}}, {c}_{\text{skip}}: \R \rightarrow \R$, to parameterise the network \begin{align} D_\theta(t, \v{Y}_t) = c_{\text{skip}}(t) \v{Y}_t + c_{\text{out}}(t) F_\theta(t, \v{Y}_t).
+In full generality, we use a residual connection, weighted by ${c}_{\text{out}}, {c}_{\text{skip}}: \R \rightarrow \R$, to parametrise the network \begin{align} D_\theta(t, \v{Y}_t) = c_{\text{skip}}(t) \v{Y}_t + c_{\text{out}}(t) F_\theta(t, \v{Y}_t).
 \end{align}
 We recall that the input to the network is time $t$, and the noised vector $\v{Y}_t = \v{\mu}_{t|0} + \v{n}$, where $\v{\mu}_{t|0} = \textrm{e}^{-B(t)/2} \v{Y}_0$ and $\v{n} \sim \c{N}(0, \Sigma_{t|0})$ with $\Sigma_{t|0} = (1 - \textrm{e}^{-B(t)}) K$.
 The gram matrix $K$ corresponds to $k(X, X)$ with $k$ the limiting kernel.
@@ -127,83 +126,22 @@ Similarly to \textcite{song2020score}, we can derive a deterministic process whi
 
 Once the score network is learnt, we can thus use it in conjunction with an ODE solver to compute the likelihood of the model.
 
-% \subsection{Discussion consistency}
-% \label{sec:consistency}
-% So far we have defined a generative model over functions via its finite marginals $\bar{\v{Y}}^\theta_T(x)$.
-% These finite marginals were to arise from a stochastic process if, as per the Kolmogorov extension theorem \parencite{oksendal2003stochastic}, they satisfy \emph{exchangeability} and \emph{consistency} conditions.
-% Exchangeability can be satisfied by parametrising the score network such that the score network is equivariant with respect to\ permutation, i.e.\ $\mathbf{s}_\theta(t, \sigma \circ x, \sigma \circ {y}) = \sigma \circ \mathbf{s}_\theta(t, x, {y})$ for any $\sigma \in \Sigma_n$.
-% Additionally, we have that the noising process $({\v{Y}}_t(x))_{x \in \c{X}}$ is trivially consistent for any $t \in \R_+$ since it is a stochastic process as per \cref{prop:mOU}, and consequently so is the (true) time-reversal $(\bar{\v{Y}}_t(x))_{x \in \c{X}}$.
-% Yet, when approximating the score $\mathbf{s}_\theta \approx \nabla \log p_{t}$, we lose the consistency over the generative process $\bar{\v{Y}}^\theta_t(x)$ as the constraint on the score network is non trivial to satisfy.
-% This is actually a really strong constraint on the model class, and as soon as one goes beyond linearity (of the posterior with respect to.
-% \ the context set), it is non trivial to enforce without directly parameterising a stochastic process, e.g.\ as extcite{phillips2022spectral}.
-% There thus seems to be a strong trade-off between satisfying consistency, and the model's ability to fit complex process and scale to large datasets.
-
-% \section{Manifold-valued diffusion process}
-% \label{sec:manifold_valued}
-
-% \subsection{Manifold-valued inputs}
-% \label{sec:manifold_valued_input}
-
-% In the main text we dealt with a simplified case of tensor fields where the tensor fields are over Euclidean space.
-% Nevertheless, it is certainly possible to apply our methods to these settings.
-% Significant work has been done on performing convolutions on feature fields on generic manifolds (a superset of tensor fields on generic manifolds), core references being \cite{cohen2021equivariant} for the case of homogeneous spaces and \cite{weiler2023equivariant} for more general Riemannian manifolds.
-% We recommend these as excellent mathematical introductions to the topic and build on them to describe how to formulate diffusion models over these spaces.
-
-% \textbf{Tensor fields as sections of bundles.}
-% Formally the fields we are interested in modelling are sections $\sigma$ of associated tensor bundles of the principle $G$-bundle on a manifold $M$.
-% We shall denote such a bundle $BM$ and the space of sections $\Gamma(BM)$.
-% The goal, therefore, is to model \textit{random elements} from this space of sections.
-% For a clear understanding of this definition, please see \textcite[pages 73-95]{weiler2023equivariant} for an introduction suitable to ML audiences.
-% Prior work looking at this setting is \cite{hutchinson2021vector} where they construct Gaussian Processes over tensor fields on manifolds.
-
-% \textbf{Stochastic processes on spaces of sections.}
-% Given we can see sections as maps $\sigma: M \to BM$, where an element in $BM$ is a tuple $(m, b)$, $m$ in the base manifold and $b$ in the typical fibre, alongside the condition that the composition of the projection $\operatorname{proj}_i: (m, b)\mapsto m$ with the section is the identity, $\operatorname{proj}_i \circ \sigma = \operatorname{Id}$ it is clear we can see distribution over sections as stochastic processes with index set the manifold $M$, and output space a point in the bundle $BM$, with the projection condition satisfied.
-% The projection onto finite marginals, i.e.\ a finite set of points in the manifold, is defined as $\pi_{m_1, .
-% 		.., m_n}(\sigma) = (\sigma(m_1), ..., \sigma(m_n))$.
-
-% \textbf{Noising process.}
-% To define a noising process over these marginals, we can use Gaussian Processes defined in \cite{hutchinson2021vector} over the tensor fields.
-% The convergence results of \textcite{phillips2022spectral} hold still, and so using these Gaussian Processes as noising processes on the marginals also defines a noising process on the whole section.
-
-% \textbf{Reverse process.}
-% The results of \cite{cattiaux2021time} are extremely general and continue to hold in this case of SDEs on the space of sections.
-% Note we don't actually need this to be the case, we can just work with the reverse process on the marginals themselves, which are much simpler objects.
-% It is good to know that it is a valid process on full sections though should one want to try and parameterise a score function on the whole section akin to some other infinite-dimension diffusion models.
-
-% \textbf{Score function.}
-% The last thing to do therefore is parameterise the score function on the marginals.
-% If we were trying to parameterise the score function over the \textit{whole} section at once (akin to a number of other works on infinite dimension diffusions), this could present some problems in enforcing the smoothness of the score function.
-% As we only deal with the score function on a finite set of marginals, however, we need not deal with this issue and this presents a distinct advantage in simplicity for our approach.
-% All we need to do is pick a way of numerically representing points on the manifold and b) pick a basis for the tangent space of each point on the manifold.
-% This lets us represent elements from the tangent space numerically, and therefore also elements from tensor space at each point numerically as well.
-% This done, we can feed these to a neural network to learn to output a numerical representation of the score on the same basis at each point.
-
-% \subsection{Manifold-valued outputs}
-% \label{sec:manifold_valued_output}
-% In the setting, where one aim to model a stochastic process with manifold codomain ${\v{Y}}_t(x) = ({\v{Y}}_t(x_1), \cdots, {\v{Y}}_t(x_n)) \in \c{M}^n$, things are less trivial as manifolds do not have a vector space structure which is necessary to define Gaussian processes.
-% Fortunately, We can still target a know distribution marginally independently on each marginal, since this is well defined, and as such revert to the Riemannian diffusion models introduced in \textcite{debortoli2021neurips} with $n$ independent Langevin noising processes \begin{equation} \label{eq:forward_SDE_manifold} \mathrm{d} {\v{Y}}_t(x_k) = - \tfrac{1}{2} \nabla U({\v{Y}}_t(x_k))~\beta_t \mathrm{d} t + \sqrt{\beta_t } \mathrm{d} \v{B}_t^\c{M} .
-% \end{equation}
-% are applied to each marginal.
-% Hence in the limit $t \rightarrow \infty$, ${\v{Y}}_t(x)$ has density (assuming it exists) which factors as $dp / d \mathrm{Vol}_\c{M}((y(x_1), \cdots, y(x_n))) \propto \prod_k e^{-U(y(x_n)))}$.
-% For compact manifolds, we can target the uniform distribution by setting $U(x)=0$.
-% The reverse time process will have correlation between different marginals, and so the score function still needs to be a function of all the points in the marginal of interest.
-
 \section{Invariant neural diffusion processes}
 \label{sec:inv_ndp}
 
 \subsection{$\mathrm{E}(n)$-equivariant kernels}
 \label{sec:en_equiv_kernels}
 
-A kernel $k: \R^d \times \R^d \rightarrow \R^{d\times d}$ is equivariant if it satisfies the following constraints: (a) $k$ is \emph{stationnary}, that is if for all $x, x' \in \R^n$ 
+A kernel $k: \R^d \times \R^d \rightarrow \R^{d\times d}$ is equivariant if it satisfies the following constraints: (a) $k$ is \emph{stationary}, that is if for all $x, x' \in \R^n$ 
 
 \begin{align} k(x, x') = k(x - x') \triangleq \tilde{k}(x - x') \end{align} and if (b) it satisfies the \emph{angular constraint} for any $h \in H$ \begin{align} k(h x, h x') = \rho(h) k(x, x') \rho(h)^\top.
 \end{align}
 
-A trivial example of such an equivariant kernel is the diagonal kernel $k(x,x') = k_0(x, x') \mathrm{I}$ \parencite{holderrieth2021equivariant}, with $k_0$ stationnary.
+A trivial example of such an equivariant kernel is the diagonal kernel $k(x,x') = k_0(x, x') \mathrm{I}$ \parencite{holderrieth2021equivariant}, with $k_0$ stationary.
 This kernel can be understood has having $d$ independent Gaussian process uni-dimensional output, that is, there is no inter-dimensional correlation.
 
 Less trivial examples, are the $\mathrm{E}(n)$ equivariant kernels proposed in \textcite{macedo2010learning}.
-Namely curl-free and divergence-free kernels, allowing for instance to model electric or magnetic ﬁelds.
+Namely curl-free and divergence-free kernels, allowing for instance to model electric or magnetic fields.
 Formally we have $k_\mathrm{curl} = k_0 A$ and $k_\mathrm{div} = k_0 B$ with $k_0$ stationary, e.g.\ squared exponential kernel $k_0(x, x') = \sigma^2 \exp\left(\frac{\| x - x' \|^2}{2 l^2} \right)$, and $A$ and $B$ given by \begin{align} A(x, x') = \mathrm{I} - \frac{(x - x')(x - x')^\top}{l^2} \end{align} \begin{align} B(x, x') = \frac{(x - x')(x - x')^\top}{l^2} + \left( n -1 - \frac{\|x - x' \|^2}{l^2} \right) \mathrm{I}.
 \end{align}
 See \textcite[Appendix C, ][]{holderrieth2021equivariant} for a proof.
@@ -262,174 +200,6 @@ Below we give two proofs for the group invariance of the generative process, one
 	So \begin{align} \phi \triangleright \mu_{x}^{x', f(x')} = \mu_x^{\phi\triangleright (x', y)} \end{align} as desired.
 \end{proof}
 
-% \begin{theorem}
-% 	Let \(\del{X, \sigalg{X}}\) and \(\del{Y, \sigalg{Y}}\) be measurable spaces.
-% 	Let \(\del{F, \sigalg{F}}\) be a measurable space of measurable function \(f:X\to Y\) with suitable regularity.
-% 	Let \(G\) be a group and \(\triangleright_X: G\x X \to X\) a measurable action on \(X\).
-% 	Assume that \(G\) has a measurable action \(\triangleright_F: G\x F \to F\) on \(F\) and a measurable action on \(Y\)dependent on \(X\) also \(\triangleright_Y: G\x X \x Y\to Y\).
-% 	Assume that these actions are compatible in the sense that
-% 	\[
-% 		[g\triangleright_F f](x) = (g, x) \triangleright_Y f(g^{-1} \triangleright_X x).
-% 	\]
-
-% 	Define the function \(\eta: X^n \x F \to Y^n\) as \[
-% 		\eta(\v{x}, f) = \eta(\sbr{x_1, ..., x_n}, f) = \sbr{f(x_1), ..., f(x_n)},
-% 	\] with the shorthand \(\eta_{\v{x}}: F\to Y^n = \eta(\v{x}, \cdot)\) as the measurement of a function at a finite set of locations.
-% 	Let \(\v{x} = \sbr{x_1, ..., x_n} \in X^n\), and let \(\v{y} = \sbr{y_1, ..., y_n} = \sbr{f(x_1), ..., f(x_n)}\).
-% 	We can define a group action on this set of finite observations, \(\triangleright_{?}: G\x X^n\x Y^n \to X^n \x Y^n\) as
-% 	\[
-% 		g \triangleright_{?} (\v{x}, \v{y}) &= \del{\del{g \triangleright_X x_1, ..., g \triangleright_X x_n}, \del{(g, x_1)\triangleright_Y f(x_1), ..., (g, x_1)\triangleright_Y f(x_n)}} \\ &= \del{\del{g \triangleright_X x_1, ..., g \triangleright_X x_n}, \del{(g, x_1)\triangleright_Y y_1, ..., (g, x_1)\triangleright_Y y_n}}.
-% 	\]
-
-% 	Let the space of probability measures on \(F\) be denoted \(\Lambda_F\)
-% 	Let \(\mu \in \Lambda_F\) be a probability measure on \(F\).
-% 	Define the action of \(G\) on \(\Lambda_F\) via its action on measurable sets of \(F\),
-% 	\[
-% 		\sbr{g \triangleright_{\Lambda_F} \mu}(\c{F}) = \mu(g^{-1} \triangleright_F \c{F}) = \mu\del{\cbrcolon{g^{-1} \triangleright_F f}{f\in \c{F}}} \quad \text{ for } \; \c{F} \in \sigalg{F}, \; g\in G.
-% 	\]
-
-% 	Let \(\mu_{\v{x}} = \eta_{\v{x}}^* \mu\), the projection of the measure on \(F\) to measurement at a finite set of locations.
-% 	Let \(\mu^{(\v{x}, \v{y})}\) be the unique measure satisfying
-% 	\[
-% 		\int_{Y^n} \int_F \phi(f) \d\mu^{(\v{x}, \v{y})}(f) \d \mu_{\v{x}}(\v{y})
-% 	\] by disintegration, see \textcite{chang1997conditioning}.
-% 	We shall term this the \emph{posterior measure}.
-% 	Define the \emph{posterior map}, \(P: X^n \x Y^n \to \Lambda_F\), as
-% 	\[
-% 		P(\del{\v{x}, \v{y}}) = \mu^{\del{\v{x}, \v{y}}}.
-% 	\]
-
-% 	Assume \(\mu\) is invariant to the action of \(G\) in the sense that 
-% 	\[
-% 		g \cdot \mu = \mu.
-% 	\]
-% 	Then the posterior map is equivarant in the sense that
-% 	\[
-% 		P(g\triangleright_{?}\del{\v{x}, \v{y}}) = g \triangleright_{\Lambda_F} P(\del{\v{x}, \v{y}}).
-% 	\]
-% 	Equivalently
-% 	\[
-% 		\mu^{\del{\v{x}, \v{y}}}(\c{F}) = \mu^{g \triangleright_{?} \del{\v{x}, \v{y}}}(g\triangleright_F \c{F})\quad\forall g\in G \;, \c{F} \in \sigalg{F}.
-% 	\]
-% \end{theorem}
-% \begin{proof}
-% 	For a test function \(\phi\) we have that
-% 	\[
-% 		\int_F \phi(f) \d\mu(f) &= \int_{\cbrcolon{g \triangleright_F f'}{f \in F}} \phi(g \triangleright_F f') \d\mu(g \triangleright_F f') \marginnote{ by subsituting \(f = g \triangleright_F f'\)} \\
-% 		&=\int_{F} \phi(g \triangleright_F f') \d\mu(g \triangleright_F f') \marginnote{by the closure of group actions} \\
-% 		&=\int_{F} \phi(g \triangleright_F f') \d\mu(f') \marginnote{by the invariance assumption}.
-% 	\]
-
-% 	For all test functions \(\phi\) we have that
-% 	\[
-% 		\int_F \phi(f) \d\mu(f) = \int_{\eta_{\v{x}}F} \int_F \phi(f) \d\mu^{(\v{x}, \v{y})}(f) \d \mu_{\v{x}}(\v{y})
-% 	\]
-% \end{proof}
-
-% We prove a few techincal lemmas first. 
-
-% \begin{lemma}
-% 	For a test function \(\phi\) we have that 
-% 	\[
-% 		\int_F \phi(f) \d \mu(f) = \int_F \phi(g \cdot f) \d \mu(f).
-% 	\]
-% \end{lemma}
-% \begin{proof}
-% 	\[
-% 		\int_F \phi(f) \d \mu(f) &= \int_{g \cdot F} \phi(g \cdot f) \d \mu (g \cdot f) \\
-% 		&= \int_F \phi(g \cdot f) \d \mu(f)
-% 	\]
-% 	due to the closure of the group action on 
-% \end{proof}
-
-\section{Langevin corrector and the iterative procedure of \textsc{RePaint}~\parencite{lugmayr2022repaint}}
-\label{sec:app_conditional_sampling}
-
-% \subsection{Langevin sampling scheme}
-
-% Several previous schemes exist for conditional sampling from Diffusion models.
-% Two different types of conditional sampling exist.
-% Those that try to sample conditional on some part of the state space over which the diffusion model has been trained, such as in-painting or extrapolation tasks, and those that post-hoc attempt to condition on something outside the state space that the model has been trained on.
-
-% This first category is the one we are interested in, and in it we have: \begin{itemize} \item Replacement sampling \cite{song2020score}, where the reverse ODE or SDE is evolved but by fixing the conditioning data during the rollout.
-% 	      This method does produce visually coherent sampling in some cases, but is not an exact conditional sampling method.
-% 	\item SMC-based methods \cite{trippe2022Diffusion}, which are an exact method up to the particle filter assumption.
-% 	      These can produce good results but can suffer from the usual SMC methods downsides on highly multi-model data such as particle diversity collapse.
-% 	\item The {\textsc RePaint} scheme of \cite{lugmayr2022repaint}.
-% 	      While not originally proposed as an exact sampling scheme, we will show later that it can in fact be shown that this method is doing a specific instantiation of our newly proposed method, and is therefore exact.
-% 	\item Amortisation methods, e.g. \textcite{phillips2022spectral}.
-% 	      While they can be effective, these methods can never perform exact conditional sampling, by definition.
-% \end{itemize}
-
-% Our goal is to produce an exact sampling scheme that does not rely on SMC-based methods.
-% Instead, we base our method on Langevin dynamics.
-% If we have a score function trained over the state space $\v{x} = [\v{x}^c, \v{x}^*]$, where $\v{x}^c$ are the points we wish to condition on and $\v{x}_s$ points we wish to sample, we exploit the following score breakdown: \[\nabla_{\v{x}^*} \log p(\v{x}^*|\v{x}^c) = \nabla_{\v{x}^*} \log p([\v{x}^*, \v{x}^c]) - \nabla_{\v{x}^*} \log p(\v{x}^c) = \nabla_{\v{x}^*} \log p(\v{x})\] If we have access to the score on the joint variables, we, therefore, have access to the conditional score by simply only taking the gradient of the joint score for the variable we are not conditioning on.
-
-% Given we have learnt $s_\theta(t, \v{x}) \approx \nabla_{\v{x}}\log p_t(\v{x})$, we could use this to perform Langevin dynamics at $t=\epsilon$, some time very close to $0$.
-% Similar to \cite{song2019generative} however, this produces the twin issues of how to initialise the dynamics, given a random initialisation will start the sampler in a place where the score has been badly learnt, producing slow and inaccurate sampling.
-
-% Instead, we follow a scheme of tempered Langevin sampling detailed in \cref{alg:conditioning_langevin}.
-% Starting at $t=T$ we sample an initialisation of $\v{y}^*$ based on the reference distribution.
-% Progressing from $t=T$ towards $t=\epsilon$ we alternate between running a series of Lavgevin corrector steps to sample from the distribution $p_{t, \v{x}^*}(\v{y}^* | \v{y}^c)$, and a single backwards SDE step to sample from $p_{\v{x}}(\v{y}_{t-\gamma} | \v{y}_t)$ with a step size $\gamma$.
-% At each inner and outer step, we sample a noised version of the conditioning points $\v{y}^c$ based forward SDE applying noise to these context points, $p_{t, \v{x}^c}(\v{y}_t^c | \v{y}^c)$.
-% For the exactness of this scheme, all that matters is that at the end of the sampling scheme, we are sampling from $p_{\v{x}^*}(\v{y}^* | \v{y}^c)$ (up to the $\epsilon$ away from zero clipping of the SDE).
-% The rest of the scheme is designed to map from the initial sample at $t=T$ of $\v{y}^*$ to a viable sample through \textit{regions where the score has been learnt well}.
-
-% Given the noising scheme applied to the context points does not actually play into the theoretical exactness of the scheme, only the practical difficulty of staying near regions of well-learnt score, we could make a series of different choices for how to noise the context set at each step.
-
-% The choices that present themselves are \begin{enumerate} \item The initial scheme of sampling context noise from the SDE every inner and outer step.
-% 	\item Only re-sampling the context noise every outer step, and keeping it fixed to this for each inner step associated with the outer step.
-% 	\item Instead of sampling independent marginal noise at each outer step, sampling a single noising trajectory of the context set from the forward SDE and use this as the noise at each time.
-% 	\item Perform no noising at all.
-% 	      Effectively the replacement method with added Langevin sampling.
-% \end{enumerate}
-% These are illustrated in \cref{fig:noise_schemes}.
-% \begin{figure}
-% 	\centering
-% 	\includegraphics{images/geomndp/compare_noising_schemes.pdf}
-% 	\caption{Comparison of different context noising schemes for the conditional sampling.}
-% 	\label{fig:noise_schemes}
-% \end{figure}
-% The main trade-off of different schemes is the speed at which the noise can be sampled vs sample diversity.
-% In the Euclidean case, we have a closed form for the evolution of the marginal density of the context point under the forward SDE.
-% In this case sampling the noise at a given time is $\c{O}(1)$ cost.
-% On the other hand, in some instances such as nosing SDEs on general manifolds, we have to simulate this noise by discretising the forward SDE.
-% In this case, it is $\c{O}(n)$ cost, where $n$ is the number of discretisation steps in the SDE.
-% For $N$ outer steps and $I$ inner steps, the complexity of the different noising schemes is compared in \cref{tab:noise_comp}.
-% Note the conditional sampling scheme other than the noise sampling is $\c{O}(NI)$ complexity.
-
-% \begin{table}[]
-% 	\centering
-% 	\begin{tabular}{lrr}
-% 		\toprule
-% 		{\textsc Scheme}                              & {\textsc Closed-form noise} & {\textsc Simulated noise} \\
-% 		\midrule
-% 		{\textsc Re-sample noise at every inner step} & $\c{O}(NI)$                 & $\c{O}(N^2I^2)$           \\
-% 		{\textsc Re-sample noise at every outer step} & $\c{O}(N)$                  & $\c{O}(N^2)$              \\
-% 		{\textsc Sampling an SDE path on the context} & $\c{O}(N)$                  & $\c{O}(N)$                \\
-% 		{\textsc No noise applied}                    & -                           & -                         \\
-% 		\bottomrule
-% 	\end{tabular}
-% 	\caption{Comparison of complexity of different noise sampling schemes for the context set.}
-% 	\label{tab:noise_comp}
-% \end{table}
-
-% \label{app:conditional_sampling}
-% \begin{algorithm}
-% 	\caption{Conditional sampling with Langevin dynamics.
-% 	}
-% 	\label{alg:conditioning_langevin}
-% 	\small
-% 	\begin{algorithmic}
-% 		\State {\bfseries Require:}
-% 		Score network \(\mathbf{s}_\theta(t, \v{x}, \v{y}) \), \textcolor{algcol}{conditioning points \((\v{x}^c, \v{y}^c)\)}, query locations \(\v{x}^*\) \State $\bar{\v{x}} = \sbr{\textcolor{algcol}{\v{x}^c}, \v{x}^*}$ \Comment{Augmented inputs set} \State \(\tilde{\v{y}}_T^* \sim \mathrm{N}(m(\v{x}^*), k(\v{x}^*,\v{x}^*))\) \Comment{Sample initial noise} \For{$t \in \cbr{T, T- \gamma, .
-% 					.., \epsilon}$}
-% 		\State $Z \sim \c{N}(0, \m{I})$ \Comment{Sample tangent noise}
-% 		\State \( \sbr{\textunderscore, \tilde{\v{y}}_{t-\gamma}^*} = \sbr{\textcolor{algcol}{\v{y}^c_t}, {\v{y}}_t^*} + \gamma \left\{ -\frac{1}{2} \left( m(\bar{\v{x}}) - \sbr{\textcolor{algcol}{\v{y}^c_t}, {\v{y}}_t^*} \right) + \mathrm{K}(\bar{\v{x}}, \bar{\v{x}}) \mathbf{s}_\theta(t, \bar{\v{x}}, \sbr{\textcolor{algcol}{\v{y}^c_t}, \tilde{\v{y}}_t^*}) \right\} + \sqrt{\gamma} \mathrm{K}(\bar{\v{x}}, \bar{\v{x}})^{1/2}
-% 		Z \) \Comment{Euler-Maruyama step} \For{$l \in \{1, \dots, L \}$} \State $\textcolor{algcol}{\v{y}^c_{t-\gamma} \sim p_{t-\gamma, \v{x}^c}(\v{y}^c_{t-\gamma} | \v{y}^c_0)}$ \Comment{Noise context outputs} \State $Z \sim \c{N}(0, \m{I})$ \Comment{Sample tangent noise} \State \( \sbr{\textunderscore, \tilde{\v{y}}_{t-\gamma}^*} = \sbr{\textunderscore, \tilde{\v{y}}_{t-\gamma}^*} + \frac{\gamma}{2} \mathrm{K}(\bar{\v{x}}, \bar{\v{x}}) \mathbf{s}_\theta(t-\gamma, \bar{\v{x}}, \sbr{\textcolor{algcol}{\v{y}^c_{t-\gamma}}, \tilde{\v{y}}_{t-\gamma}^*}) + \sqrt{\gamma} \mathrm{K}(\bar{\v{x}}, \bar{\v{x}})^{1/2} Z \) \Comment{Langevin step} \EndFor \State \( \v{y}_{t-\gamma}^* = \tilde{\v{y}}_{t-\gamma}^*\) \EndFor \State {\v{s}eries return} \({\v{y}}_\epsilon^*\) \end{algorithmic} \end{algorithm} 
-
-% \subsection{\textsc{RePaint}~\parencite{lugmayr2022repaint} correspondance} 
-
 In this section, we show that: \begin{enumerate}[label=(\alph*)] \item \Cref{alg:conditioning_langevin} and \cref{alg:conditioning_renoising} \texttt{Repaint} from \cite{lugmayr2022repaint} are equivalent in a specific setting.
 	\item There exists a continuous limit (SDE) for both procedures.
 	      This SDE targets a probability density which \emph{does not} correspond to $p(x_{t_0} | x_0^c)$.
@@ -473,9 +243,9 @@ Combining \eqref{eq:sde_back} and \eqref{eq:sde_forward}, we get that for any $k
 Remarking that $(Z_k)_{k \in \N} = ((Z_k^1 + Z_k^3)/\sqrt{2})_{k \in \N}$ is a family of $d$-dimensional Gaussian random variables with zero mean and identity covariance matrix, we get that for any $k \in \N$ \begin{equation} \label{eq:iterates} X_{k+1} = X_k + 2 (1 -\mathrm{e}^{-\gamma}) \nabla_{x_k} \log p_{t_0}([X_k, X_k^c]) + \sqrt{2} (1 - \mathrm{e}^{-2\gamma})^{1/2} Z_k , \end{equation} where we recall that $X_k^c = \mathrm{e}^{-t_0} X_0^c + (1-\mathrm{e}^{-2t_0})^{1/2} Z_k^0$.
 Note that the process \eqref{eq:iterates} is another version of the \texttt{Repaint} algorithm \cite{lugmayr2022repaint}, where we have concatenated the denoising and noising procedure.
 With this formulation, it is clear that \texttt{Repaint} is equivalent to \Cref{alg:conditioning_langevin}.
-In what follows, we identify the limitating SDE of this process.
+In what follows, we identify the limiting SDE of this process.
 
-In what follows, we describe the limiting behavior of \eqref{eq:iterates} under mild assumptions on the target distribution.
+In what follows, we describe the limiting behaviour of \eqref{eq:iterates} under mild assumptions on the target distribution.
 In what follows, for any $x_{t_0} \in \R^d$, we denote \begin{equation} \textstyle b(x_{t_0}) = 2\int_{\R^p} \nabla_{x_{t_0}} \log p_{t_0}([x_{t_0}, x_{t_0}^c]) p_{t_0|0}(x_{t_0}^c|x_0^c) \mathrm{d} x_{t_0}^c .
 \end{equation}
 We emphasize that $b/2 \neq \nabla_{x_{t_0}} \log p(\cdot | x_0^c)$.
@@ -493,7 +263,7 @@ We introduce the following assumption.
 \Cref{assum:sde} ensures that there exists a unique strong
 are studied in
 \textcite{de2022convergence}.
-In the theoretical literature on diffusion models the Lipschitzness assumption is classical, see 
+In the theoretical literature on diffusion models the Lipschitz assumption is classical, see 
 
 We denote $((\v{X}_t^\gamma)_{t \geq 0})_{\gamma > 0}$ the family of processes such that for any $k \in \N$ and $\gamma >0$, we have for any $t \in \cobr{k \gamma, (k+1)\gamma}$, $\v{X}_t^\gamma = (1 - (t - k\gamma)/\gamma) \v{X}_{k\gamma}^\gamma + (t - k\gamma)/\gamma \v{X}_{(k+1)\gamma}^\gamma$ and \begin{equation} \v{X}_{(k+1)\gamma}^\gamma = \v{X}_{k\gamma}^\gamma + 2(1-\mathrm{e}^{-\gamma}) \nabla_{\v{X}_{k\gamma}^\gamma} \log p_{t_0}([\v{X}_{k\gamma}^\gamma, \v{X}_{k\gamma}^{c,n}]) + \sqrt{2}(1-\mathrm{e}^{-2\gamma})^{1/2} \v{Z}_{k\gamma}^\gamma , \end{equation} where $(\v{Z}_{k\gamma}^\gamma)_{k \in \N, \gamma > 0}$ is a family of independent $d$-dimensional Gaussian random variables with zero mean and identity covariance matrix and for any $k\in \N$, $\gamma > 0$, $\v{X}_{k\gamma}^{c,\gamma} = \mathrm{e}^{-t_0} x_0^c + (1 - \mathrm{e}^{-2t_0})^{1/2} \v{Z}_{k\gamma}^{0,\gamma}$, where $(\v{Z}_{k\gamma}^{0,\gamma})_{k \in \N, \gamma > 0}$ is a family of independent $p$-dimensional Gaussian random variables with zero mean and identity covariance matrix.
 This is a \emph{linear interpolation} of the \texttt{Repaint} algorithm in the form of \eqref{eq:iterates}.
@@ -507,11 +277,12 @@ Under \Cref{assum:sde}, \eqref{eq:target_sde} admits a unique strong solution.
 The rest of the section is dedicated to the proof of the following result.
 
 \begin{theorem}
+	Assume \cref{assum:sde}. Then \(\lim_{n\to\infty}\del{\v{X}_t^{1/n}}_{t \geq 0} = \del{x\v{X}_t}_{t \geq 0}\).
 	\label{thm:convergence_repaint}
 \end{theorem}
 
 This result is an application of \textcite[Theorem 11.2.3]{stroock2007multidimensional}.
-It explicits what is the \emph{continuous} limit of the \texttt{Repaint} algorithm \cite{lugmayr2022repaint}.
+It explains the \emph{continuous} limit of the \texttt{Repaint} algorithm \cite{lugmayr2022repaint}.
 
 In what follows, we verify that the assumptions of this result hold in our setting.
 For any $\gamma > 0$ and $x \in \R^d$, we define \begin{align}  & \textstyle b_\gamma(x) = (2/\gamma)[ (1- \mathrm{e}^{-\gamma}) \int_{\R^d} \nabla_{x_{t_0}} \log p_{t_0}([x_{t_0}, x_{t_0}^c]) p_{t_0|0}(x_{t_0}^c|x_0^c) \mathrm{d} x_{t_0}^c \\ &\qquad \qquad \qquad \textstyle - (1/\gamma) \E\sbr{(\v{X}_{(k+1)\gamma}^\gamma - \v{X}_{k \gamma}^\gamma)\mathbf{1}_{\norm{\v{X}_{(k+1)\gamma}^\gamma - \v{X}_{k \gamma}^\gamma} \geq 1} \vert \v{X}_{k \gamma} = x} , \\ &\textstyle \Sigma_\gamma(x) = (4/\gamma)(1- \mathrm{e}^{-\gamma})^2 \int_{\R^d} \nabla_{x_{t_0}} \log p_{t_0}([x_{t_0}, x_{t_0}^c])^{\otimes 2} p_{t_0|0}(x_{t_0}^c|x_0^c) \mathrm{d} x_{t_0}^c + (2/\gamma)(1- \mathrm{e}^{-2\gamma}) \m{I} \\ &\qquad \qquad \qquad \textstyle - (1/\gamma) \E\sbr{(\v{X}_{(k+1)\gamma}^\gamma - \v{X}_{k \gamma}^\gamma)^{\otimes 2}\mathbf{1}_{\norm{\v{X}_{(k+1)\gamma}^\gamma - \v{X}_{k \gamma}^\gamma} \geq 1} \vert \v{X}_{k \gamma} = x} .
@@ -632,8 +403,8 @@ We refer to \cref{tab:app:score-param} for a detailed derivation of the score pa
 The dataset in the top row of the figure originates from a Squared Exponential (SE) GP with lengthscale $\ell = 0.25$.
 We compare the performance of three different limiting kernels: white (blue), a SE with a longer lengthscale $\ell=1$ (orange), and a SE with a shorter lengthscale $\ell=0.1$ (green).
 As the dataset is Gaussian, we have access to the true score.
-We observe that, across the different parameterisations, the white limiting kernel performance best.
-However, note that for the White kernel $K = I$ and thus the different parameterisations become identical.
+We observe that, across the different parametrisations, the white limiting kernel performance best.
+However, note that for the White kernel $K = I$ and thus the different parametrisations become identical.
 For non-white limiting kernels we see a reduction in performance for both the approximate and exact score.
 We attribute this to the additional complexity of learning a non-diagonal covariance.
 
@@ -715,9 +486,9 @@ We further note that in this experiment we used the true score (available becaus
 \label{sec:app_vec_gp}
 
 \paragraph{Data}
-We create synthetic datasets using samples from two-dimensional zero-mean GPs with the following $\groupE{2}$-equivariant kernels: a diagonal Squared-Exponential ({\scshape SE}) kernel, a zero curl ({\scshape Curl-free}) kernel and a zero divergence ({\scshape Div-free}) kernel, as described in \cref{sec:en_equiv_kernels}.
+We create synthetic datasets using samples from two-dimensional zero-mean Gaussian Processes with the following $\groupE{2}$-equivariant kernels: a diagonal Squared-Exponential ({\scshape SE}) kernel, a zero curl ({\scshape Curl-free}) kernel and a zero divergence ({\scshape Div-free}) kernel, as described in \cref{sec:en_equiv_kernels}.
 We set the variance to $\sigma^2=1$ and the lengthscale to $\ell=\sqrt{5}$.
-We evaluate these GPs on a disk grid, created via a 2D grid with $30 \times 30$ points regularly space on $[-10, 10]^2$ and keeping only the points inside the disk of radius $10$.
+We evaluate these Gaussian Processes on a disk grid, created via a 2D grid with $30 \times 30$ points regularly space on $[-10, 10]^2$ and keeping only the points inside the disk of radius $10$.
 We create a training dataset of size $80\times10^3$.
 and a test dataset of size $10\times10^3$.
 
@@ -767,7 +538,7 @@ Using a 2-output RBF kernel with no covariance between the latitude and longitud
 The hyperparameters of this kernel were optimised using a maximum likelihood grid search over the data.
 Note that this model places density outside the bounding box of $[-90, 90] \times [-180, 180]$ that defines the range of latitude and longitude, and so does not place a proper distribution on the space of paths on the sphere.
 
-The \textsc{Stereographic GP ($\R \to \R^2/\{0\}$)} instead transformed the data under a sterographicc projection centred at the north pole, and used the same GP and optimisation as above.
+The \textsc{Stereographic GP ($\R \to \R^2/\{0\}$)} instead transformed the data under a stereographic projection centred at the north pole, and used the same GP and optimisation as above.
 Since this model only places density on a set of measure zero that does not correspond to the sphere, it does induce a proper distribution on the space of paths on the sphere.
 
 The \textsc{NDP ($\R\to\R^2$)} uses the same preprocessing as \textsc{GP ($\R\to\R^2$)} but uses a Neural Diffusion Process from \cite{dutordoir2022Neural} to model the data.

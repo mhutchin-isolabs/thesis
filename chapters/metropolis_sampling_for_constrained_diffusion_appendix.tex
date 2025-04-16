@@ -1,115 +1,8 @@
 
 \section*{Organization of the appendix}
-% \label{sec:app_overview}
-% In \Cref{sec:riemannain_intro_dupref}, we recall some basic concepts of Riemannian geometry which are key to defining discretisations of the reflected Brownian motion.
-% In \Cref{sec:reflected_discretisation}, we give some details on the reflection step in reflected discretizations.
-In \Cref{sec:rejection-convergence}, we prove the convergence of the rejection and Metropolis discretizations to the true reflected Brownian Motion.
+In \Cref{sec:rejection-convergence}, we prove the convergence of the rejection and Metropolis discretisations to the true reflected Brownian Motion.
 The geospatial dataset with non-convex constraints based on wildfire incidence rates in the continental United States is presented \Cref{app_sec:wildfire_data}.
 All supplementary experimental details and empirical results are gathered in \Cref{sec:experimental_appendix}.
-
-% \section{Manifold concepts}
-% \label{sec:riemannain_intro_dupref}
-
-% In the following, we aim to introduce key concepts that underpin diffusion models on Riemannian manifolds, with a particular focus on notions relevant to the reflected Brownian motion that we build on in~\Cref{sec:reflected_discretisation}.
-% For a more thorough treatment with reference to reflected diffusion models, we refer to \cite{fishman2023diffusion}.
-% For a detailed presentation of smooth manifolds, see \textcite{lee2013smooth}.
-
-% A Riemannian manifold is a tuple $(\c{M}, \mathfrak{g})$ with $\c{M}$ a smooth manifold and $\mathfrak{g}$ a metric that imbues the manifold with a notion of distance and curvature and is defined as a smooth positive-definite inner product on each of the tangent spaces of the manifold: \[\mathfrak{g}(p): \mathrm{T}_p\c{M} \times \mathrm{T}_p\c{M} \to \R.
-% \]
-% The tangent space $\mathrm{T}_p$ of a point \(p\) on a manifold is an extension of the notion of tangent planes and can be thought of as the space of derivatives of scalar functions on the manifold at that point.
-
-% To establish how different tangent spaces relate to one another, we need to additionally introduce the concept of a \emph{connection}.
-% This is a map that takes two vector fields and produces a derivative of the first with respect to the second, typically written as \(\nabla(X, Y) = \nabla_X Y\).
-% While there are infinitely many connections on any given manifold, the \emph{Levi-Cevita} emerges as a natural choice if we impose the following two conditions: \begin{enumerate}[label=(\roman*)] \item \(X \cdot (\mathfrak{g}(Y,Z)) = \mathfrak{g}(\nabla_X Y, Z) + \mathfrak{g}(Y, \nabla_X Z)\), \item \(\sbr{X, Y} = \nabla_X Y - \nabla_Y X\), \end{enumerate} where \(\sbr{\cdot, \cdot}\) is the Lie bracket.
-% These conditions ensure that the connection is (i) metric-preserving and (ii) torsion-free, with the latter guaranteeing a unique connection and integrability on the manifold.
-
-% Using the metric and Levi-Cevita connection, we can define a number of key concepts: \paragraph{Geodesic.
-% } \emph{Geodesics} extend the Euclidean notion of `straight lines' to manifolds.
-% They are defined as the unique path \(\gamma: (0,1) \to \c{M}\) such that $\nabla_{\gamma'}\gamma' = 0$ and are the shortest path between two points on a manifold, in the sense that \(\textstyle{L(\gamma) = \int_0^1 \sqrt{\mathfrak{g}(\gamma(t))(\gamma'(t), \gamma(t))} } \mathrm{d}t \) is minimal.
-
-% \paragraph{Exponential map.}
-% The \emph{exponential map} on a manifold is given by the mapping between an element \(\v{v}\in T_p\c{M}\) of the tangent space at point \(p\) and the endpoint of the unique geodesic \(\gamma\) with \(\gamma(0) = p\) and \(\gamma'(0) = \v{v}\).
-
-% \paragraph{Intersection.}
-% The \emph{intersection} along a geodesic is the first point at which the geodesic intersects the boundary.
-% We recall that the boundary is defined by $f=0$.
-% We can define this via an optimisation problem: compute the minimum $t > 0$ such that we have that $\exp_\mathfrak{g}(x, t z)$ is a root of $f$: $f(\exp_\mathfrak{g}(x, t z)) = 0$.
-% We will say that $\exp_\mathfrak{g}(x, t z) = \intersect_\mathfrak{g} (x, z; f) $ and that $t = \arg\intersect_\mathfrak{g} (x, z; f)$.
-
-% \paragraph{Parallel transport.}
-% We say that a vector field \(X\) is \emph{parallel} to a curve \(\gamma: (0,1)\to\c{M}\) if \(\nabla_{\gamma'} X = 0\), where \(\gamma': (0,1)\to \mathrm{T}_{\gamma(t)}\c{M}\).
-
-% For two points on the manifold \(p,q\in\c{M}\) that are connected by a curve \(\gamma\), and an initial vector \(X_0 \in \mathrm{T}_p\c{M}\), there is a unique vector field \(X\) that is parallel to \(\gamma\) such that \(X(p) = X_0\).
-% This induces a map between the tangent spaces at \(p\) and \(q\) \(\tau_\gamma: \mathrm{T}_p\c{M} \to \mathrm{T}_q\c{M}\), which is referred to as the \emph{parallel transport} of tangent vectors between \(p\) and \(q\) and satisfies the condition that for \(\v{v}, \v{u} \in \mathrm{T}_p\c{M}\) \(\mathfrak{g}(p)(\v{v}, \v{u}) = \mathfrak{g}(q)(\tau_\gamma(\v{v}), \tau_\gamma(\v{u})).
-% \)
-
-% \paragraph{Reflection.}
-% For an element \(\v{v}\in T_p\c{M}\) in the tangent space of the manifold at point $p$ and a constraint characterised by its unit normal vector \(\v{n}\in T_p\c{M}\), the \emph{reflection} of \(\v{v}\) in the tangent space is given by $\v{v}' = \v{v} - 2\mathfrak{g}(\v{v},\v{n}) \v{n}$.
-
-% \section{Full Reflected Discretisation}
-% \label{sec:reflected_discretisation}
-
-% Here, we reproduce the central algorithm for the full discretisation of the reflected Brownian motion (\Cref{alg:app_reflected_random_walk}) derived for Euclidean models in \cite{lou2023reflected} and for Reimannian models in \cite{fishman2023diffusion}.
-% Its central component is the \emph{Reflected Step Algorithm} (\Cref{alg:app_reflected_step_algorithm}), which gives a generic computation for the reflection in any manifold.
-
-% Due to the need to balance speed and numerical instability issues around the boundary, an efficient practical implementation of the reflected step is highly non-trivial, even for simple polytopes in Euclidean space.
-% More complex geometries and boundaries make this problem significantly worse: a constraint on the trace of SPD matrices under the log-Cholesky metric of \cite{lin2019riemannian} requires solving complex non-convex optimisation problems for each sample at each discretised sampling step in both the forward and reverse process.
-% This motivates our work in this paper.
-
-% These problems motivated the development of our Metropolis approximation, which significantly simplifies the random walk.
-% Instead of requiring the intersection, parallel transport and reflection, we simply need to be able to evaluate the constraint functions $f_i$.
-% We highlight this simplicity in \Cref{alg:app_metropolis_random_walk}.
-
-% \begin{algorithm}[H]
-% 	\begin{algorithmic}
-% 		\Require \(x \in \c{M}\), \(\v{v} \in \mathrm{T}_x\c{M}\), \(\{f_i\}_{i \in \c{I}}\)
-% 		\State \(\ell \gets \norm{\v{v}}_\mathfrak{g}\)
-% 		\State \(\v{s} \gets \v{v} / \norm{\v{v}}_\mathfrak{g}\)
-% 		\While{\(\ell \geq 0\)}
-% 		\State \(d_i =  \arg\intersect_\mathfrak{g} (x, z; f_i )\)
-% 		\State \(i \gets \arg\min_i\; d_i \)
-% 		\State \(\alpha \gets \min\del{d_i, \ell} \)
-% 		\State \(x' \gets \exp_\mathfrak{g}\del{x, \alpha\v{s}}\)
-% 		\State \(\v{s} \gets \paralleltransport_\mathfrak{g}\del{x, \v{s}, x'} \)
-% 		\State \(\v{s} \gets \reflect\del{\v{s}, f_i}\)
-% 		\State \(\ell \gets \ell - \alpha\)
-% 		\State \(x \gets x'\)
-% 		\EndWhile
-% 		\State \textbf{return} \(x\)
-% 	\end{algorithmic}
-% 	\caption{\emph{Reflected Step Algorithm}.
-% 		The algorithm operates by repeatedly taking geodesic steps until one of the constraints is violated, or until the step is fully taken.
-% 		Upon hitting the boundary, we parallel-transport the tangent vector to the boundary and then reflect it against it.
-% 		We then start a new geodesic from this point in the new direction.
-% 		The \({\arg} \intersect_t\) function computes the distance one must travel along a geodesic in direction \(\v{s}\) until constraint \(f_i\) is violated.
-% 		For a discussion of \(\paralleltransport\), \(\exp_\mathfrak{g}\) and \(\reflect\) see \cref{sec:riemannain_intro}.
-% 	}
-% 	\label{alg:app_reflected_step_algorithm}
-% \end{algorithm}
-
-% \begin{algorithm}[H]
-% 	\caption{\emph{Reflected Random Walk}.
-% 		Discretisation of the SDE $\mathrm{d} \v{X}_t = b(t, \v{X}_t) \mathrm{d} t + \mathrm{d} \v{B}_t - \mathrm{d} \v{k}_t$.
-% 	}
-% 	\label{alg:app_reflected_random_walk}
-% 	\begin{algorithmic}
-% 		\State {\bfseries Require:} $T, N, X_0^\gamma, \{f_i\}_{i \in \c{I}}$
-% 		\State $\gamma = T / N$
-% 		\For{$k \in \{0, \dots, N-1\}$}
-% 		\State $Z_{k+1} \sim \mathrm{N}(0, \m{I})$
-% 		\State $X_{k+1}^\gamma = \text{ReflectedStep}[X_{k}^\gamma, \sqrt{\gamma}
-% 			Z_{k+1}, \{f_i\}_{i \in \c{I}}]$ \EndFor \State {\bfseries return} $\{ X_k^\gamma\}_{k=0}^{N}$ \end{algorithmic} \end{algorithm} \begin{algorithm} \caption{\emph{Metropolis Random Walk}.
-% 		Discretisation of the SDE $\mathrm{d} \v{X}_t = b(t, \v{X}_t) \mathrm{d} t + \mathrm{d} \v{B}_t - \mathrm{d} \v{k}_t$.
-% 	}
-% 	\label{alg:app_metropolis_random_walk}
-% 	\begin{algorithmic}
-% 		\State {\bfseries Require:} $T, N, X_0^\gamma, \{f_i\}_{i \in \c{I}}$
-% 		\State $\gamma = T / N$
-% 		\For{$k \in \{0, \dots, N-1\}$}
-% 		\State $Z_{k+1} \sim \mathrm{N}(0, \m{I})$
-% 		\State \(X' \gets \exp_\mathfrak{g}\del{X_{k}^\gamma, \sqrt{\gamma}
-% 			Z_{k+1}}\) \If{$\max_{i\in\c{I}} f_i(X') \leq 0$} \State $X_{k+1}^\gamma = X'$ \Else \State $X_{k+1}^\gamma = X_{k}^\gamma$ \EndIf \EndFor \State {\bfseries return} $\{ X_k^\gamma\}_{k=0}^{N}$ \end{algorithmic} \end{algorithm} 
-			
 			
 \section{Convergence to the reflected process}\label{sec:rejection-convergence} \def \Kker {\mathrm{K}} In this note, we assume that $\c{M} = \cbrcolon{x \in \R^d}{\Phi(x) > 0}$ is compact, with $\Phi \in \c{C}^2(\R^d, \R)$.
 We have that $\partial \c{M} = \cbrcolon{x \in \R^d}{\Phi(x) = 0}$.
@@ -140,10 +33,10 @@ Our goal is to show the following theorem.
 	To prove the theorem one needs to control the drift and diffusion matrix inside $\c{M}$ and show that it converges to $0$ and $\m{I}$ respectively.
 	The technical part of the proof comes from the control of the drift coefficient near the boundary.
 	In particular, we show that if the intermediate drift is large then we are close to the boundary and the intermediate drift is pointing inward.
-	To investigate the local properties of the drift near the boundary we rely on the notion of tubular neighborhood, see \cite[Theorem 6.24]{lee2013smooth}.
+	To investigate the local properties of the drift near the boundary we rely on the notion of tubular neighbourhood, see \cite[Theorem 6.24]{lee2013smooth}.
 \end{proof}
 
-Some key properties of the tubular neighborhood are stated in \Cref{sec:tubular_properties}.
+Some key properties of the tubular neighbourhood are stated in \Cref{sec:tubular_properties}.
 We then establish a few technical lemmas about the tail probability of some distributions in \Cref{sec:technical_lemmas}.
 Controls on the diffusion matrix and lower bounds on the probability of belonging in $\c{M}$ are given in \Cref{sec:lower_control}.
 Properties of large drift terms are given in \Cref{sec:large_drift_properties}.
@@ -151,7 +44,7 @@ The convergence of the drift and diffusion matrix on compact sets is given in \C
 The convergence of the boundary terms is investigated in \Cref{sec:convergence_boundary}.
 Finally, we conclude the proof in \Cref{sec:submartingale}.
 
-\subsection{Properties of the tubular neighborhood}
+\subsection{Properties of the tubular neighbourhood}
 \label{sec:tubular_properties}
 
 Using the results of \cite{lee2013smooth}, we establish the existence of an open set of $\cl{\c{M}}$ (for the induced topology of $\R^d$) satisfying several important properties.
@@ -188,7 +81,7 @@ Using the results of \cite{lee2013smooth}, we establish the existence of an open
 \begin{proof}
 	Let $\gamma \in \del{0, \bar{\gamma}}$ with $\bar{\gamma} = 1$.
 	First, note that for any $\bar{x} \in \partial \c{M}$, the normal space is given by $\cbrcolon{\alpha \nabla \Phi(\bar{x})}{\alpha \in \R}$.
-	Using this result and \cite[Theorem 6.24]{lee2013smooth} there exists $\tilde{r}_0 > 0$ such that $\sf{U}_0 = \cbrcolon{\bar{x} + \alpha \nabla \Phi(\bar{x})}{\bar{x} \in \partial \c{M}, \ \alpha \in \del{-\tilde{r}_0, \tilde{r}_0}} \subset \R^d$ is open\footnote{This is the tubular neighborhood theorem which is key to the rest of the proof.
+	Using this result and \cite[Theorem 6.24]{lee2013smooth} there exists $\tilde{r}_0 > 0$ such that $\sf{U}_0 = \cbrcolon{\bar{x} + \alpha \nabla \Phi(\bar{x})}{\bar{x} \in \partial \c{M}, \ \alpha \in \del{-\tilde{r}_0, \tilde{r}_0}} \subset \R^d$ is open\footnote{This is the tubular neighbourhood theorem which is key to the rest of the proof.
 	}.
 	We have that for any $\alpha \in \cobr{-r_0, 0}$ and $\bar{x} \in \partial \c{M}$ \begin{align} \Phi(\bar{x}+\alpha \nabla \Phi(\bar{x})) &= \textstyle{\Phi(\bar{x}) + \alpha \norm{\nabla \Phi(\bar{x})}^2 + \int_0^1 \nabla^2 \Phi(\bar{x}+t\alpha \nabla \Phi(\bar{x}))(\alpha \nabla \Phi(\bar{x}))^{\otimes 2} \mathrm{d} t } \\ &\leq \alpha + \tilde{C}_0 \alpha^2 < 0, \end{align} with $r_0 = \min(\tilde{r}_0, 1/(2\tilde{C}_0 ))$, where we have used that $\Phi(\bar{x}) = 0$, $\norm{\nabla \Phi(\bar{x})}=1$ and defined $\tilde{C}_0 = \sup \cbrcolon{\norm{\nabla^2 \Phi(\bar{x}+\alpha \nabla \Phi(\bar{x}))}}{\bar{x} \in \partial \c{M}, \ \alpha \in \cbr{-\tilde{r}_0,\tilde{r}_0}}$.
 	Reciprocally, we have for any $\alpha \in \cobr{0,r_0}$ and $\bar{x} \in \partial \c{M}$ \begin{align} \Phi(\bar{x}+\alpha \nabla \Phi(\bar{x})) &= \textstyle{\Phi(\bar{x}) + \alpha \norm{\nabla \Phi(\bar{x})}^2 + \int_0^1 \nabla^2 \Phi(\bar{x}+t\alpha \nabla \Phi(\bar{x}))(\alpha \nabla \Phi(\bar{x}))^{\otimes 2} \mathrm{d} t } \geq \alpha - C_0 \alpha^2, \end{align} where we have used that $\Phi(\bar{x}) =0$, $\norm{\nabla \Phi(\bar{x})}=1$ and defined \[C_0 = \sup \cbrcolon{\norm{\nabla^2 \Phi(\bar{x}+\alpha \nabla \Phi(\bar{x}))}}{\bar{x} \in \partial \c{M}, \ \alpha \in \cbr{-r_0,r_0}}.\]
@@ -364,7 +257,7 @@ The following lemma allow us to give a lower bound to the quantity $\E\sbr{\bm{1
 \end{proof}
 
 Note that the result of \Cref{lemma:lower_bound_prob} can be improved to $1/2-\varepsilon$ for any $\varepsilon > 0$.
-In particular this result tells us that for $\gamma > 0$ small enough, $\cl{\c{M}}$ looks like the \emph{hyperplane} from the point of view of the Gaussian with variance $\gamma$ centered on $\partial \c{M}$.
+In particular this result tells us that for $\gamma > 0$ small enough, $\cl{\c{M}}$ looks like the \emph{hyperplane} from the point of view of the Gaussian with variance $\gamma$ centred on $\partial \c{M}$.
 
 \paragraph{Bound on moments of order two and higher.}
 
@@ -523,7 +416,7 @@ We recall that $\c{M}$ does \emph{not} include its boundary $\partial \c{M}$.
 \subsection{Convergence on the boundary}
 \label{sec:convergence_boundary}
 
-Finally, we investigate the behavior at the boundary of the diffusion matrix and the drift.
+Finally, we investigate the behaviour at the boundary of the diffusion matrix and the drift.
 First, we show that there is a lower bound to the diffusion matrix near the boundary.
 Second, we show that the renormalized drift converges to the outward normal.
 
@@ -555,7 +448,7 @@ Second, we show that the renormalized drift converges to the outward normal.
 	Combining this result and \eqref{eq:inter_lower_sigma} concludes the proof upon letting $\varepsilon = 1/16$.
 \end{proof}
 
-Finally, we investigate the behavior of the normalized drift near the boundary.
+Finally, we investigate the behaviour of the normalized drift near the boundary.
 
 \begin{proposition}
 	\label{prop:condition_duo_iv}
@@ -896,26 +789,6 @@ We refer to \cite{han2006inverse} for full detail on the reparametrisation and t
 	\caption{Visualisation of the data distribution in \(\mathbb{P}\subset\R^3\times\mathbb{T}^4\) using univariate marginal and pairwise bivariate plots.}
 	\label{fig:app_pairplots_loop_data}
 \end{figure}
-
-% \begin{figure}[H]
-% 	\centering
-% 	\begin{subfigure}[t]{\textwidth}
-% 		\centering
-% 		\includegraphics[width=\textwidth]{images/constraind_diffusion_rejection/pairplots/loops_polytope_data.pdf}
-% 		\caption{Plots of the univariate marginal and pairwise bivariate distributions of \num{1e5} samples from the data distribution in \(\mathbb{P}\subset\R^3\).}
-% 		\label{fig:app_pairplots_loop_polytope_data}
-% 	\end{subfigure}
-% 	\\
-% 	\begin{subfigure}{\textwidth}
-% 		\centering
-% 		\includegraphics[width=\textwidth]{images/constraind_diffusion_rejection/pairplots/loops_torus_data.pdf}
-% 		\caption{Plots of the univariate marginal and pairwise bivariate distributions of \num{1e5} samples from the data distribution in \(\mathbb{T}^4\).}
-% 		\label{fig:app_pairplots_loop_torus_data}
-% 	\end{subfigure}
-% 	\caption{Visualisation of the data distribution in \(\mathbb{P}\subset\R^3\times\mathbb{T}^4\) using univariate marginal and pairwise bivariate plots.}
-% 	\label{fig:app_pairplots_loop_data}
-% \end{figure}
-
 
 \subsubsection{Visualisation of samples from our Metropolis sampling-based diffusion model}
 

@@ -6,78 +6,8 @@ Background on the Skorokhod problem is given in \Cref{sec:refl-brown-moti}.
 In \cref{sec:impl-score-match} we derive the implicit score matching loss.
 We give details about the likelihood evaluation in \Cref{sec:likel-eval}.
 Then in \cref{sec:time-revers-refl} we prove the time-reversal formula of reflected Brownian motion.
-% In \cref{sec:protein_background} we give some background on the conformational modelling of proteins backbone for the experiment in \cref{subsec:protein_loops}.
-% In \cref{sec:robotic_arm} we detail the geometrical constraint arising from the configurational robotics arm modelling experiment from \cref{subsec:psd_matrices}.
+
 Additional results, training and miscellaneous experimental details are reported in \Cref{sec:exp_details}.
-
-% \section{Manifold concepts}
-% \label{sec:riemannain_intro}
-% For readers unfamiliar with Riemannian geometry here we give a brief overview of some of the key concepts.
-% This is not a technical introduction, but a conceptual one for the understanding of terms.
-% For a technical introduction, we refer readers to \textcite{lee2013smooth}.
-% A Riemannian manifold is a tuple \((\c{M}, \mathfrak{g})\) with \(\c{M}\) a smooth manifold and \(\mathfrak{g}\) a metric which defines an inner product on tangent spaces.
-
-% \begin{figure}
-% 	\includegraphics[width=2in]{images/constrained_diffusion/manifold/charts.pdf}
-% 	\caption{Example charts of the 2D manifold \(\c{S}^2\).}
-% \end{figure}
-% A \emph{smooth manifold} is a topological space which locally can be described by Euclidean space.
-% It is characterised by a family of \emph{charts} \(\{U \subset \c{M}, \phi: U \to \R^d\}\), homeomorphic mappings between subsets of the manifold and Euclidean space.
-% The collection of charts must cover the whole manifold.
-% For the manifolds to be smooth the charts must be smooth, and the transition between charts where their domains overlap must also be smooth.
-
-% The \emph{metric} on a Riemannian manifold gives the manifold a notion of distance and curvature.
-% The same underlying smooth manifold with different metrics can look wildly different.
-% The metric is defined as a smooth choice of positive definite inner product on each of the tangent spaces of the manifold.
-% That is we have at every point a symmetric bilinear map \[\mathfrak{g}(p): \mathrm{T}_p\c{M} \times \mathrm{T}_p\c{M} \to \R\] The tangent space of a point on a manifold is the generalisation of the notion of tangent planes and can be thought of as the space of derivatives of scalar functions on the manifold at that point.
-% The collection of all tangent spaces is written as \(\mathrm{T}\c{M} = \bigcup_{p\in \c{M}} \mathrm{T}_p \c{M}\) and is called the tangent bundle.
-% It is also manifold.
-% Vector fields on manifolds are defined by making a choice of tangent vector at every point on the manifold in a smooth fashion.
-% The space of vector fields is written at \(\Gamma\del{\mathrm{T}\c{M}}\) and is more technically the space of \emph{sections} of the tangent bundle.
-
-% One thing that the metric itself does not immediately define is how different tangent spaces at points on the manifold relate to one another.
-% For this, we need additionally the concept of a \emph{connection}.
-% A connection is a map that takes two vector fields and produces a derivative of the first with respect to the second, that is a function \(\nabla: \Gamma(\mathrm{T}\c{M}) \times \Gamma(\mathrm{T}\c{M}) \to \Gamma(\mathrm{T}\c{M})\) and it typically written as \(\nabla(X, Y) = \nabla_X Y\).
-% Such a connection must for \(X, Y,Z\in\Gamma(\mathrm{T}\c{M})\) and smooth functions on the manifold \(a,b: \c{M}\to\R\) obey the following conditions: \begin{enumerate}[label=(\alph*)] \item \(\nabla_{aX + bY}Z = a\nabla_X Z + b\nabla_Y Z\), \item \(\nabla_X(Y+Z) = \nabla_X Y + \nabla_X Z\), \item \(\nabla_X(aY) = \partial_X aY + a \nabla_X Y\), \end{enumerate} where \( \partial_X aY \) is the regular \emph{directional derivative} of \(aY\) in the direction \(X\).
-% These conditions ensure the connection is a well-defined derivative.
-
-% \begin{figure}
-% 	\includegraphics[width=2in]{images/constrained_diffusion/manifold/torsion_transport.pdf}
-% 	\caption{\emph{Top:}
-% 		Parallel transport of vectors along the red path with non-zero torsion.
-% 		\emph{Bottom:}
-% 		Parallel transport of vectors along the red path with zero torsion.
-% 		Both under the Euclidean metric.
-% 	}
-% \end{figure}
-% On a given manifold, there are infinitely many connections.
-% Fortunately, there is a natural choice, called the \emph{Levi-Cevita} connection if we impose two additional conditions: \begin{enumerate}[label=(\alph*)] \item \(X \cdot (\mathfrak{g}(Y,Z)) = \mathfrak{g}(\nabla_X Y, Z) + \mathfrak{g}(Y, \nabla_X Z)\), \item \(\sbr{X, Y} = \nabla_X Y - \nabla_Y X\), \end{enumerate} where \(\sbr{\cdot, \cdot}\) is the Lie bracket.
-% The first condition ensures that the metric is preserved by the connection.
-% That is to say, the \emph{parallel transport} (to be defined shortly) using the connection leaves inner products unchanged on the manifold.
-% The second ensures the connection is \emph{torsion-free}.
-% The change in tangent space along a geodesic (again to be defined shortly) can be described in two parts, the \emph{curvature}, how the tangent space rotates perpendicular to the direction of travel, and the torsion, how the tangent space rotates around the axis of the direction of travel.
-% The curvature of the connection is uniquely fixed by the other 4 conditions (the well-defined derivative and preservation of the metric).
-% The torsion however is not fixed.
-% By requiring it to be zero we ensure a unique connection.
-% The requirement of zero torsion also has implications for ensuring integrability on the manifold.
-
-% With the metric and the Levi-Cevita connection in hand, we can define a number of key concepts.
-
-% \begin{figure}
-% 	\includegraphics[width=2in]{images/constrained_diffusion/manifold/parallel_transport.pdf}
-% 	\caption{Parallel transport of vectors along a path on the sphere.}
-% \end{figure}
-% We say that a vector field \(X\) is \emph{parallel} to a curve \(\gamma: (0,1)\to\c{M}\) if \[\nabla_{\gamma'} X = 0\] where \(\gamma': (0,1)\to \mathrm{T}_{\gamma(t)}\c{M}\) is the derivative of the path.
-% For two points on the manifold \(p,q\in\c{M}\) and a curve between them, \(\gamma\), \(\gamma(0)=p\), \(\gamma(1)=q\), for an initial vector \(X_0 \in \mathrm{T}_p\c{M}\) there is a unique vector field \(X\) that is parallel to \(\gamma\) such that \(X(p) = X_0\).
-% This induces a map between the tangent spaces at \(p\) and \(q\) \[\tau_\gamma: \mathrm{T}_p\c{M} \to \mathrm{T}_q\c{M}\] This map is referred as the \emph{parallel transport} of tangent vectors between \(p\) and \(q\), and this satisfies the condition that for \(\v{v}, \v{u} \in \mathrm{T}_p\c{M}\) \[\mathfrak{g}(p)(\v{v}, \v{u}) = \mathfrak{g}(q)(\tau_\gamma(\v{v}), \tau_\gamma(\v{u})).
-% \]
-
-% A \emph{geodesic} on a manifold is the unique path on the manifold \(\gamma: (0,1) \to \c{M}\) such that \(\nabla_{\gamma'}\gamma' = 0\).
-% It is also the shortest path between two points on a manifold in the sense that \[{L(\gamma) = \int_0^1 \sqrt{\mathfrak{g}(\gamma(t))(\gamma'(t), \gamma(t))}, }\] is minimal out of any path between the start and end of the geodesic.
-% Geodesics give the notion of `straight lines' on manifolds.
-% We define the \emph{exponential map} on a manifold as the mapping between an element of the tangent space at point \(p\), \(\v{v}\in T_p\c{M}\) and the endpoint of the unique geodesic \(\gamma\) with \(\gamma(0) = p\) and \(\gamma'(0) = \v{v}\).
-% In the tangent space of a manifold, we require the notion of a reflection in order to reflect geodesics off of boundary constraints.
-% If at a point in the manifold with have \(\v{v}\in T_p\c{M}\) and a unit vector normal to the constraint \(\v{n}\in T_p\c{M}\), then the reflection of this vector is given by \(\v{v}' = \v{v} - 2\mathfrak{g}(\v{v},\v{n}) \v{n}\).
 
 \section{Brownian motion in local coordinates}
 \label{sec:brownian}
@@ -164,7 +94,7 @@ We recall that the total variation of a finite (not necessarily non-negative) me
 \begin{proof}
 	Since \(x \mapsto \mathrm{div}(\mathfrak{g}^{-1})(x)\) and \(x \mapsto \mathfrak{g}^{-1}\) are smooth and \(\mathfrak{g}^{-1}(x)\) is positive definite for any \(x \in \c{M}\), we have that \((\v{X}_t)_{t \geq 0}\) is \(\pi\)-irreducible, extending \cite[Lemma 1.4]{bhattacharya1978criteria} to \(\c{M}\) and using \cite[Proposition 2.1]{meyn1993stability}.
 	In addition, \((\v{X}_t)_{t \geq 0}\) is \(\mathrm{T}\)-Feller using \cite[Proposition 3.3]{meyn1993stability}.
-	Combining these results and the fact that \(\c{M}\) is bounde, we get that \((\v{X}_t)_{t \geq 0}\) is positive Harris recurrent \cite[Theorem 3.2]{meyn1993stability}.
+	Combining these results and the fact that \(\c{M}\) is bound, we get that \((\v{X}_t)_{t \geq 0}\) is positive Harris recurrent \cite[Theorem 3.2]{meyn1993stability}.
 	The uniform distribution \(\pi\) is an invariant distribution for \eqref{eq:langevin_hessian_manifold}.
 	Since \((\v{X}_t)_{t \geq 0}\) is \(\pi\)-irreducible, we get that this invariant measure is unique.
 	Hence, we conclude using \cite[Theorem 6.1]{meyn1993stability}.
@@ -316,18 +246,6 @@ Interestingly, we found that these issues early on in the sampling are smoothed 
 \section{Proof of \cref{thm:reflected_likelihood_ode}}
 \label{sec:likel-eval}
 
-% One key advantage of constructing a continuous noising process is that, similarly to \textcite{song2020score}, we can evaluate the model's likelihood via the following \emph{probability flow} Ordinary Differential Equation (ODE).
-% In particular, for the Langevin dynamics (\ref{eq:langevin_hessian_manifold}) which we recall \begin{equation} { \mathrm{d} \v{X}_t = \tfrac{1}{2} \mathrm{div}(\mathfrak{g}^{-1})(\v{X}_t) \mathrm{d} t + \mathfrak{g}(\v{X}_t)^{-\frac{1}{2}} \mathrm{d} \v{B}_t, } \end{equation} the following ODE has the same marginal density \begin{equation} \label{eq:probability_flow_hessian_manifold} { \mathrm{d} {\v{Y}}_t = \left[ \tfrac{1}{2} \nabla \cdot \mathfrak{g}^{-1}(\v{Y}_t) - \tfrac{1}{2} \mathfrak{g}^{-1}(\v{Y}_t) \nabla \log p_t(\v{Y}_t) \right] \mathrm{d} t .
-% 	}
-% \end{equation}
-
-% We conclude this section with a derivation of the equivalent ODE.
-% We highlight that the ODE representation for reflected diffusion models was first derived in \cite{lou2023reflected}.
-% We recall that if \(\c{M} \subset \R^d\) is a bounded open set with smooth boundary then \cite[Theorem 2.2]{burdzy2004heat} ensures that the reflected Brownian motion admits a density with respect to.
-% the Lebesgue measure.
-% We denote \(p_t\) this smooth density.
-
-
 \begin{proof}
 	Since the distributions of \((\bar{\mathbf{B}}_t)_{t \in \cbr{0,T}}\) and \((\mathbf{X}_t)_{t \in \cbr{0,T}}\) satisfy the same Fokker-Planck equation whenever these processes are well-defined.
 	Therefore, we first show that the process \((\mathbf{X}_t)_{t \in \cbr{0,T}}\) is well-defined and stay in \(\mathcal{M}\) at all times.
@@ -417,132 +335,6 @@ Using \eqref{eq:first_equality}, we have that for any \(t \in \cbr{0,T}\) \begin
 	}
 \end{equation}
 Using \eqref{eq:skorokhod_app}, we have for any \(t \in \cbr{0,T}\) \begin{equation} {\abs{\v{j}}_t = \int_0^t \mathbf{1}_{\v{Y}_s \in \partial \c{M}} \mathrm{d} \abs{\v{j}}_s , \quad \v{j}_t = \int_0^t \v{n}(\bar{\v{Y}}_s) \mathrm{d} \abs{\v{j}}_s ,} \end{equation} which concludes the proof.
-
-% \section{Configurational modelling of robotic arms under manipulability constraints}
-% \label{sec:robotic_arm}
-
-% Accurately determining and specifying the movement of a robotic arm and the forces it exerts is a fundamental problem in many real-world robotics applications.
-% A widely-used set of descriptors for modelling the flexibility of a given joint configuration are so-called manipulability ellipsoids \parencite{yoshikawa1985manipulability}, which are kinetostatic performance measures that quantify the ability to move or exert forces along different directions.
-% \textcite{jaquier2021geometry} present a geometric framework to learn trajectories of manipulability ellipsoids by making use of the fact any ellipsoid \(M\in\mathbb{R}^N\) is defined by the set of points \(\{\mathbf{x}\vert\mathbf{x}^T\mathbf{A}\mathbf{x}=1\}\) where \(\mathbf{A}\) lies on the manifold of \(N\times N\) symmetric positive definite matrices \(S^N_{++}\).
-
-% In many practical settings, it is desirable to constrain the minimal or maximal volume of a manipulability ellipsoid to retain motional flexibility or limit the magnitude of the exerted force.
-% This necessitates lower or upper limits on the determinant of \(\textbf{A}\), translating into constraints on \(S^N_{++}\).
-% To model this, we make use of one of the datasets introduced by \textcite{jaquier2021geometry}, containing demonstrations of a robotic arm drawing different letters in the plane, providing the respective positional trajectories (\(\mathbb{R}^2\)) and velocity manipulability ellipsoids (\(S^2_{++}\)).
-
-% We use the processing routines provided by \textcite{jaquier2021geometry} to interpolate the trajectories into \(10^4\) distinct points, for each of which we derive the position \(\mathbf{x}\in\mathbb{R}^2\) and the PSD matrix $$ \mathbf{A}=\begin{pmatrix} a & b \\ b & c \end{pmatrix}\in S^2_{++}.
-% $$
-% parametrising the velocity manipulability ellipsoid \(M\in\mathbb{R}^2\).
-% The resulting data is split into training, validation, and test sets by trajectory and visualised in~\Cref{fig:spd_L}.
-% We add a small amount of Gaussian noise to these trajectories, which is shown as the target distribution in \ref{sec:app_spd_exp}.
-
-% \begin{figure}[H]
-% 	\centering
-% 	\begin{subfigure}{0.4\textwidth}
-% 		\centering
-% 		\includegraphics[width=\linewidth]{images/constrained_diffusion/L_r2.pdf}
-% 		\caption{}
-% 		\label{fig:spd_L_r2}
-% 	\end{subfigure}
-% 	\hspace{1.5cm}
-% 	\begin{subfigure}{0.4\textwidth}
-% 		\centering
-% 		\includegraphics[width=\linewidth]{images/constrained_diffusion/L_spd.pdf}
-% 		\caption{}
-% 		\label{fig:spd_L_ell}
-% 	\end{subfigure}
-% 	\caption{Positional trajectories \(\mathbf{x}\in\mathbb{R}^2\) (a) and the parameters \(l_{11}, l_{12}, l_{22}\) of the the SPD matrix \(\mathbf{A}\in S^2_{++}\) (b) for the letter \textsc{L}.}
-% 	\label{fig:spd_L}
-% \end{figure}
-
-% \section{Conformational modelling of polypeptide backbones under end point constraints}
-% \label{sec:protein_background}
-
-% Polypeptides and proteins constitute an important class of biogenic macromolecules that underpin most aspects of organic life.
-% Accurately modelling their conformational ensembles, i.e. the set of three-dimensional structures they assume under physiological conditions, is essential to both understanding the biological function of existing and designing the enzymatic or therapeutic properties of novel proteins \parencite{lane2023protein}.
-% Motivated by the success of diffusion models in computer vision and natural language processing, there has been considerable interest in applying them to learn and sample from distributions over the conformational space of protein structures \parencite{watson2022Broadly, trippe2022Diffusion, wu2022protein}.
-
-% \subsection{Problem parameterisation}
-% \label{sec:protein_param}
-
-% Proteins are biopolymers in which a sequence of \(N\) amino acids is joined together through \(N-1\) peptide bonds, resulting in a so-called polypeptide backbone with protruding amino acid residues.
-% As the deviation of chemical bond lengths and angles from their theoretical optimum is generally negligible, the problem of modelling the three-dimensional structure of this polypeptide chain is often reframed in the space of the internal torsion angles \(\Phi\) and \(\Psi\) (see~\Cref{fig:peptide_chain} for an illustration), which can be modelled on a \((2N-2)\)-dimensional torus \(\mathbb{T}^{2N-2}\).
-
-% \begin{figure}[h]
-% 	\centering
-% 	\begin{subfigure}{0.45\textwidth}
-% 		\centering
-% 		\includegraphics[width=\linewidth]{images/constrained_diffusion/peptide_chain.pdf}
-% 		\caption{A commonly-used approximate parameterisation of backbone geometry only considers the \(C_\alpha\) torsion angles \(\Phi\) and \(\Psi\).}
-% 		\label{fig:peptide_chain}
-% 	\end{subfigure}
-% 	\hspace{0.5cm}
-% 	\begin{subfigure}{0.45\textwidth}
-% 		\centering
-% 		\includegraphics[width=\linewidth]{images/constrained_diffusion/ca_trace.pdf}
-% 		\caption{As peptide bond orientations can be inferred relatively reliably, researchers often only model the \(C_\alpha\) traces.}
-% 		\label{fig:peptide_trace}
-% 	\end{subfigure}
-% 	\caption{Standard approaches to modelling the conformations of polypeptide backbones.}
-% 	\label{fig:peptide}
-% \end{figure}
-
-% In many data-scarce practical settings such as antibody or enzyme design, it is often unnecessary or even undesirable to model the structure of an entire protein, as researchers are primarily interested in specific functional sites with distinct biochemical properties.
-% However, generating conformational ensembles for such substructural elements necessitates positional constraints on their endpoints to ensure that they can be accommodated by the remaining scaffold.
-% While it is conceivable that a diffusion model could derive such constraints from limited experimental data, we argue that it is much more efficient and precise to encode them explicitly.
-
-% For this purpose, we adopt the distance constraint formulation from \textcite{han2006inverse} and interpret the backbone as a spatial chain with \(N\) spherical joints and fixed-length links (see~\Cref{fig:cyclic_peptide} for an illustration).
-% After selecting a suitable anchor point, the geometry of the polypeptide chain is fully specified by \begin{enumerate*}[label=(\alph*)] \item the set of link lengths \(\mathbf{\ell}=\{\ell_j\}_{j=1}^{N}\), \item the set of vectors \(\mathbf{r}=\{r(1,j)\}_{j=2}^{N}\) between the anchor point and each atom in the chain, and \item the set of dihedral angles\end{enumerate*} \[ \mathbf{T}=\left\{\arccos\left(\frac{\vert\langle r(1,j)\times r(1,j+1), r(1,j+1)\times r(1,j+2)\rangle\vert}{\vert r(1,j)\times r(1,j+1)\vert\vert r(1,j+1) r(1,j+2)\vert}\right)\right\}_{j=2}^{N-2}\in\mathbb{T}^{N-3} \] between any three consecutive vectors.
-% After specifying the fixed bond lengths \(\ell\), including an arbitrary anchor point distance \(d_\text{anchor}=\ell_N=r(1,N)\), the set of valid vectors \(\mathbf{r}\) is given by the convex polytope \(\mathbb{P}\subseteq\mathbb{R}^3\) defined by the following linear constraints (see~\Cref{fig:convex_polytope_loop_illustration} for an illustration): 
-
-% \[ \begin{array}{rcl} r(1,3) & \leq & \ell_1+\ell_2 , \\ -r(1,3) & \leq & -\left|\ell_1-\ell_2\right|, \\ \end{array} \] $$ \left.
-% 	\begin{array}{rcl}
-% 		r(1, j)-r(1, j+1)  & \leq & \ell_j,  \\
-% 		-r(1, j)+r(1, j+1) & \leq & \ell_j,  \\
-% 		-r(j)-r(j+1)       & \leq & -\ell_j,
-% 	\end{array}\right\}3 \leq j \leq N-2, \\
-% $$
-% $$
-% 	\begin{array}{rcl}
-% 		r(1, N-1)  & \leq & \ell_{N-1}+d_\text{anchor},               \\
-% 		-r(1, N-1) & \leq & -\left|\ell_{N-1}-d_\text{anchor}\right|.
-% 	\end{array}
-% $$
-
-% \begin{figure}[h]
-% 	\centering
-% 	\begin{subfigure}[t]{0.45\textwidth}
-% 		\centering
-% 		\includegraphics[width=0.7\linewidth]{images/constrained_diffusion/cyclic_peptide.pdf}
-% 		\caption{An illustrative diagram of the proposed parameterisation for modelling the \(C_\alpha\) trace geometry of the cyclic peptide \textsc{c-AAGAGG}.}
-% 		\label{fig:cyclic_peptide}
-% 	\end{subfigure}
-% 	\hfill
-% 	\begin{subfigure}[t]{0.45\textwidth}
-% 		\centering
-% 		\includegraphics[width=\linewidth]{images/constrained_diffusion/hull.pdf}
-% 		\caption{The convex polytope constraining the diagonals of the triangles for the given bond lengths in the illustrated molecule.
-% 			The total design space is the product of this polytope with the 4D flat torus.
-% 		}
-% 		\label{fig:convex_polytope_loop_illustration}
-% 	\end{subfigure}
-% 	\caption{Parameterising the conformational space of polypeptide backbones under anchor point distance constraints.}
-% 	\label{fig:han_and_rudolph_rep}
-% \end{figure}
-
-% This means that the set of all valid polypeptide backbone conformations is defined by the product manifold \(\mathbb{P}\times\mathbb{T}^{N-3}\), enabling us to train diffusion models that exclusively generate conformations with a fixed anchor point distance \(d_\text{anchor}\).
-
-% \subsection{Data generation and model training}
-% \label{sec:protein_data}
-
-% As a proof-of-concept for the practicality of our methods, we chose to model the conformational distribution of the cyclic peptide \textsc{c-AAGAGG}.
-% Cyclic peptides are an increasingly important drug modality with therapeutic uses ranging from antimicrobials to oncology, exhibiting circular polypeptide backbones (i.e. \(d_\text{anchor}=0\)) that confer a range of desirable pharmacodynamic and pharmacokinetic properties \parencite{dougherty2019understanding}.
-% To reduce the dimension of the problem, we only consider the \(C_\alpha\) traces (with fixed \(C_\alpha\)-\(C_\alpha\) link distances of 3.6 \AA) instead of the full polypeptide backbone (see \cref{fig:peptide_trace}), although we note that our framework is fully applicable to both settings.
-
-% To derive a suitable dataset, the product manifold \(\mathbb{P}\times\mathbb{T}^3\) describing the conformations of cyclic \(C_\alpha\) traces of length \(N=6\) was constructed (see~\Cref{fig:cyclic_peptide,fig:convex_polytope_loop_illustration} for an illustration) and used to generate \(10^7\) uniform samples satisfying the anchor point distance constraint \(d_\text{anchor}=0\).
-% Subsequently, an estimate of the free energy \(E_i\) of each sample \(i\) was obtained by (1) reconstructing the full-atom peptide from each \(C_\alpha\) trace using the \textsc{PULCHRA} algorithm \parencite{rotkiewicz2008fast}, (2) relaxing all non-\(C_\alpha\) backbone and side-chain atoms (keeping the \(C_\alpha\) positions fixed), and (3) quantifying the potential energy of each of the resulting conformations using the \textsc{OpenMM} suite of molecular dynamics tools \parencite{eastman2017openmm}, and the \textsc{AMBER} force field \parencite{hornak2006comparison}.
-% These free energy estimates were then used to approximate the Boltzmann distribution over conformational states \[ { p_B(i) \propto \exp\left(-\frac{E_i}{k_BT}\right),} \] where temperature was set to \(T=\SI{273.15}{\kelvin}\) and \(k_B=\SI{1.380649e-23}{\joule\per\kelvin}\) is the Boltzmann constant.
-% We then apply a very minor amount of smoothing to the resulting distribution by running forward Brownian motion on both the polytope and the torus for 10 steps, using a small step size of \(\num{5e-3}\) and the respective metrics.
-% Finally, a subsample of \(10^6\) \(C_\alpha\) traces was drawn from this distribution and used for training and evaluating our models.
 \section{Experimental details}
 \label{sec:exp_details}
 
@@ -604,7 +396,7 @@ We construct the training and test datasets by sampling for both \(100 000\) poi
 
 \paragraph{Simplex \(\Delta^n\).}
 
-Similarly, to parameterise the simplex as a convex polytope we set the matrix and constraints to be given by 
+Similarly, to parametrise the simplex as a convex polytope we set the matrix and constraints to be given by 
 
 \begin{equation} A = \begin{pmatrix} -1 & 0 & \dots & 0 \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \dots & -1 \\ 1 & 1 & 1 & 1 \end{pmatrix}, \;\; b = \begin{pmatrix} 0 \\\vdots\\0\\1 \end{pmatrix}.
 \end{equation}
@@ -697,7 +489,7 @@ It is a convex polytope in \(\R^{n^2}\) and has dimension \(d = (n-1)^2\).
 		\label{fig:spd_ll_reflected}
 	\end{subfigure}
 	\caption{
-		Pairwise and marginals distributions over the coefficients \(\mathrm{L}_{11}, \mathrm{L}_{21}, \mathrm{L}_{22}\) of the lower triangle matrix parameterising SPD matrices \(\mathrm{M} = \mathrm{L} \mathrm{L}^\top\) (which represent the manipulability ellipsoids of the robotic arms).
+		Pairwise and marginals distributions over the coefficients \(\mathrm{L}_{11}, \mathrm{L}_{21}, \mathrm{L}_{22}\) of the lower triangle matrix parametrising SPD matrices \(\mathrm{M} = \mathrm{L} \mathrm{L}^\top\) (which represent the manipulability ellipsoids of the robotic arms).
 	}
 	\label{fig:spd}
 \end{figure}

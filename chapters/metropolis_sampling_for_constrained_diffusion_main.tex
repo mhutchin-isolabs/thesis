@@ -10,24 +10,9 @@
 	}
 	\label{fig:1d_trajectories}
 \end{figure*}
-% In recent years, denoising diffusion models \parencite{sohl2015deep,song2019generative,song2020score,ho2020denoising} have emerged as a powerful paradigm for generative modelling, achieving state-of-the-art performance across a range of domains.
-% They work by progressively adding noise to data following a Stochastic Differential Equation (SDE)---the forward \emph{noising} process---until it is close to the invariant distribution of the SDE.
-% The generative model is then given by an approximation of the associated time-reversed \emph{denoising} process, which is also an SDE whose drift depends on the gradient of the logarithmic densities of the forward process, referred to as the \emph{Stein score}.
-
-% Building on the success of diffusion models for image generation tasks, \textcite{de2022riemannian} and \textcite{huang2022riemannian} have recently extended this framework to a wide range of Riemannian manifolds, enabling the specification of inherent structural properties of the modelled domain.
-% This has broadened the applicability of diffusion models to problems in the natural and engineering sciences, including the conformational modelling of small molecules \parencite{jing2022torsional, corso2023diffdock}, proteins \parencite{trippe2022Diffusion,watson2022Broadly,yim2023se} and robotic platforms \parencite{urain2022se}.
-
-% However, in many data-scarce or safety-critical settings, researchers may want to restrict the modelled domain further by specifying problem-informed constraints to make maximal use of limited experimental data or prevent unwanted behaviour \parencite{Morris2002,han2006inverse,Thiele2013,lukens2020practical}.
-% As illustrated in~\cref{fig:intro_figure}, such domain-informed constraints can be naturally represented as a \emph{Riemannian manifold with boundary}.
-% Training diffusion models on such constrained manifolds is thus an important problem that requires principled noising processes---and corresponding discretisations---that stay within the constrained set.
 
 \lettrine{I}{n the previous chapter} we extended the applicability of diffusion models to inequality-constrained manifolds by investigating the generative modelling applications of classic sampling schemes based on log-barrier methods \parencite{Kannan2009,lee2017Geodesic,noble2022Barrier,kook2022sampling,gatmiry2022convergence,lee2018convergence} and the reflected Brownian motion \parencite{williams1987Reflected,petit1997Time,shkolnikov2013Timereversal}.
 While empirically promising, the proposed algorithms can be computationally and numerically burdensome, and require bespoke implementations for different manifolds and constraints.
-
-% \textcite{lou2023reflected} have investigated the use of reflected diffusion models for image modelling.
-% They focus on the high-dimensional hypercube, as this setting admits a theoretically grounded treatment of the \emph{static thresholding} method which is widely used in image models such as \textcite{saharia2022photorealistic}.
-% Their method exhibits robust scaling properties and impressive visual results in this framework.
-% However, the introduced samplers suffer from the same limitations as the previous method for more complex manifolds and constraints than the hypercube.
 
 In this chapter, we propose a new method for generative modelling on constrained manifolds based on a Metropolis discretisation of the reflected Brownian motion.
 This Metropolised discretisation has two main advantages:
@@ -39,88 +24,6 @@ Our core theoretical contribution is to show that this new discretisation conver
 
 To the best of our knowledge, this is the first time that such a process has been investigated in a machine learning context, or elsewhere.
 We demonstrate that our method attains improved empirical results on manifolds with convex and non-convex constraints by applying it to a range of problems from geospatial modelling, robotics and protein design.
-
-% \begin{figure}[t]
-% 	\centering
-% 	\begin{subfigure}[b]{0.23\textwidth}
-% 		\centering
-% 		\includegraphics[width=\linewidth]{images/constraind_diffusion_rejection/intro_figure_euclidean@600x-100.jpg}
-% 		\caption{\(\R^3\)}
-% 		\label{fig:intro_figure_euclidean}
-% 	\end{subfigure}
-% 	\hfill
-% 	\begin{subfigure}[b]{0.23\textwidth}
-% 		\centering
-% 		\includegraphics[width=\linewidth]{images/constraind_diffusion_rejection/intro_figure_manifold@600x-100.jpg}
-% 		\caption{\(\c{S}^2\subset\R^3\)}
-% 		\label{fig:intro_figure_manifold}
-% 	\end{subfigure}
-% 	\hfill
-% 	\begin{subfigure}[b]{0.23\textwidth}
-% 		\centering
-% 		\includegraphics[width=\linewidth]{images/constraind_diffusion_rejection/intro_figure_constrained@600x-100.jpg}
-% 		\caption{\(\c{M}\subset\c{S}^2\subset\R^3\)}
-% 		\label{fig:intro_figure_constrained}
-% 	\end{subfigure}
-% 	\caption{When operating in data-scarce settings, it is often helpful to provide a model with as much prior information about the domain as possible.
-% 		Consider a distribution over a subset \(\c{M}\) of the unit sphere \(\c{S}^2\subset\R^3\).
-% 		While a Euclidean diffusion model can approximate the distribution in \(\R^3\) (a), directly modelling it on \(\c{S}^2\) can make learning significantly easier (b).
-% 		Reducing the problem space even further by only constructing a diffusion model on \(\c{M}\) can lead to even better performance (c).
-% 	}
-% 	\label{fig:intro_figure}
-% \end{figure}
-
-% \section{Background}
-
-% \paragraph{Riemannian manifolds.}
-% A Riemannian manifold is defined as a tuple \((\c{M}, \mathfrak{g})\) with \(\c{M}\) a smooth manifold and \(\mathfrak{g}\) a metric defining an inner product on tangent spaces.
-% In this work, we will use the exponential map \(\exp_x: \mathrm{T}_x \c{M} \rightarrow \c{M}\), as well as the extension of the gradient \(\nabla\), divergence \(\dive\) and Laplace \(\Delta\) operators to \(\c{M}\).
-% All of these quantities can be defined in local coordinates in terms of the metric\footnote{if the connection chosen on the Riemannian manifold is the L\'{e}vi-Civita connection}.
-% The extension of the Laplace operator to \(\c{M}\) is called the Laplace-Beltrami operator, also denoted \(\Delta\) when there is no ambiguity.
-
-% Using \(\Delta\), we can define a Brownian motion on \(\c{M}\), denoted \((\v{B}_t)_{t \geq 0}\) and with density with respect to.
-% the volume form of \(\c{M}\) denoted \(p_t\) for any \( t > 0\).
-% We refer to \textcite{lee2013smooth} for a thorough treatment of Riemannian manifolds and to \textcite{hsu2002stochastic} for details on stochastic analysis on manifolds.
-
-% In the following, we consider a manifold \(\c{M}\) defined by \begin{equation} \label{eq:constrained_dupref} \c{M} = \cbrcolon{x \in \c{N}}{f_i(x) < 0 , \ i \in \c{I}}, \end{equation} where \((\c{N}, \mathfrak{g})\) is a Riemannian manifold, \(\c{I}\) is an arbitrary finite indexing family and for any \(i \in \c{I}\), \(f_i\in \c{C}(\c{N}, \R)\).
-% Since \(\c{I}\) is finite and \(f_i\) continuous for any \(i \in \c{I}\), \(\c{M}\) is an open set of \(\c{N}\) and inherits its metric \(\mathfrak{g}\).
-% This captures simple Euclidean polytopes and complex constrained spaces like~\Cref{fig:intro_figure}.
-
-
-
-% \paragraph{Denoising diffusion models.}
-% \label{sec:sgm_dupref}
-% Denoising diffusion models \parencite{song2019generative,ho2020denoising,song2020score} work as follows: let \((\v{X}_{t})_{t \in \cbr{0,T}}\) be a \textit{noising process} that corrupts the original data distribution \(p_0\).
-% We assume that \((\v{X}_t)_{t \geq 0}\) converges to \(\mathrm{N}(0,\sigma^2\m{I})\), with \(\sigma > 0\).
-% Several such processes exist, but in practice we consider the Ornstein-Uhlenbeck (OU) process, also referred as VP-SDE, which is defined by the following Stochastic Differential Equation (SDE) \begin{equation} \label{eq:ornstein_uhlenbeck_dupref} \mathrm{d} \v{X}_t = - \tfrac{1}{2}\v{X}_t \mathrm{d} t + \sigma \mathrm{d} \v{B}_t, \qquad \v{X}_0 \sim p_0.
-% \end{equation}
-% Under conditions on \(p_0\), for any \(T > 0\), \((\v{Y}_t)_{t \in \cbr{0,T}} = (\v{X}_{T-t})_{t \in \cbr{0,T}}\) is also the (weak) solution to a SDE \parencite{anderson1982reverse,haussmann1986time,cattiaux2021time} \begin{equation} \label{eq:time_reversal_dupref2} \textstyle \mathrm{d} \v{Y}_t = \{\tfrac{1}{2}\v{Y}_t + \sigma^2 \nabla \log p_{T-t}(\v{Y}_t)\} \mathrm{d} t + \sigma \mathrm{d} \v{B}_t, \ \v{Y}_0 \sim p_T, \end{equation} where \(p_t\) denotes the density of \(\v{X}_t\).
-
-% In practice, \(\nabla \log p_t \) is approximated with a score network \((t,x) \mapsto s_\theta(t,x)\) trained by minimising either a denoising score matching (\(\mathrm{dsm}\)) loss or an implicit score matching (\(\mathrm{ism}\)) loss \parencite{vincent2011connection} \begin{equation} \label{eq:implicit_sm_dupref} \textstyle{ \ell(\theta) = \E_{t \sim \c{U}([0,T]), (\v{X}_0, \v{X}_t)}[ \lambda_t ( \frac{1}{2} \norm{ s_\theta(t, \v{X}_t) }^2 + \dive(s_\theta)(t, \v{X}_t))],} \end{equation} where \(\lambda_t >0\).
-% For a flexible score network, the global minimiser \(\theta^\star = \mathrm{argmin}_{\theta}\c{L}(\theta)\) satisfies \(s_{\theta^\star}(t, \cdot)=\nabla \log p_t\).
-% \textcite{de2022riemannian}
-% and \textcite{huang2022riemannian} have extended denoising diffusion models to the
-% Riemannian setting.
-% The time-reversal formula \eqref{eq:time_reversal_dupref2} remains the same, replacing the Euclidean gradient with its Riemannian equivalent.
-% The \textrm{ism} loss can still be computed in that setting.
-% However, the samplers used in the Riemannian setting differ from the classical Euler-Maruyama discretisation used in the Euclidean framework.
-% \textcite{de2022riemannian}
-% use Geodesic Random Walks \parencite{jorgensen1975central}, which ensure that the
-% samples remain on the manifold at every step.
-% In this paper, we propose a sampler with similar properties in the case of \emph{constrained} manifolds.
-
-% \paragraph{Reflected SDE.}
-% We conclude this section by recalling the framework for studying reflected SDEs, which is introduced via the notion of the \emph{Skorokhod problem}.
-% For simplicity, we present this in the Euclidean space \(\R^d\), but note that reflected processes can be defined on arbitrary smooth manifolds \(\c{N}\).
-% In the case of the Brownian motion, a solution to the Skorokhod problem is a process of the form \((\bar{\v{B}}_t, \v{k}_t)_{t \geq 0}\).
-% Locally, \((\bar{\v{B}}_t)_{t \geq 0}\) can be seen as a regular Brownian motion \((\v{B}_t)_{t \geq 0}\) while \((\v{k}_t)_{t \geq 0}\) forces \((\bar{\v{B}}_t)_{t \geq 0}\) to remain in \(\c{M}\).
-% Under mild additional regularity conditions on \(\c{M}\) and \((\bar{\v{B}}_t, \v{k}_t)_{t \geq 0}\), see \cite{skorokhod1961stochastic}, \((\bar{\v{B}}_t, \v{k}_t)_{t \geq 0}\) is a solution to the \emph{Skorokhod problem} if for any \(t \geq 0\) \begin{equation} \label{eq:rbm_dupref} \bar{\v{B}}_t = \bar{\v{B}}_0 + \v{B}_t - \v{k}_t \in \c{M}, \end{equation} \(\textstyle{\abs{\v{k}}_t = \int_0^t \mathbf{1}_{\bar{\v{B}}_s \in \partial \c{M}} \mathrm{d} \abs{\v{k}}_s}\) and \(\textstyle{\v{k}_t = \int_0^t \v{n}(\bar{\v{B}}_s) \mathrm{d} \abs{\v{k}}_s ,}\) where \((\abs{\v{k}}_t)_{t \geq 0}\) is the total variation of \((\v{k}_t)_{t \geq 0}\)\footnote{In this case \((\v{k}_t)_{t \geq 0}\) is not regular enough, but if it were in the class \(\c{C}^1\), its total variation would be given by \(\int_0^t \abs{\partial_t \v{k}_t} \mathrm{d} s\) in the one-dimensional case.
-% }.
-
-% Let us provide some intuition on this definition.
-% When \((\bar{\v{B}}_t)_{t \geq 0}\) hits the boundary \(\partial \c{M}\), \(-\v{k}_t\) pushes the process back into \(\c{M}\) along the inward normal \(-\v{n}(\bar{\v{B}}_t)\), according to \(\textstyle{\v{k}_t = \int_0^t \v{n}(\bar{\v{B}}_s) \mathrm{d} \abs{\v{k}}_s}\).
-% The condition \(\textstyle{\abs{\v{k}}_t = \int_0^t \mathbf{1}_{\bar{\v{B}}_s \in \partial \c{M}} \mathrm{d} \abs{\v{k}}_s}\) is more technical and can be seen as imposing that \(\v{k}_t\) remains constant so long as \((\bar{\v{B}}_t)_{t \geq 0}\) does not hit \(\partial \c{M}\).
-% We refer to \cite{fishman2023diffusion} and \cite{lou2023reflected} for a more thorough introduction of these notions in the context of diffusion models.
 
 \section{Diffusion models for constrained manifolds via Metropolis sampling}
 \label{sec:methodology}
@@ -238,13 +141,9 @@ Hence, this method enables the principled extension of diffusion models to arbit
 	\small
 	\caption{Comparison of the advantages and disadvantages of the different constrained (Riemannian) diffusion models covered in~\Cref{sec:practical_constraints} with regard to training the score function and preserving the geometry of the domain. The methods proposed in \cref{cpt:constrained_domains} and this chapter can be applied to arbitrary manifolds while preserving the underlying geometry of the manifold. However, this comes at the cost of making denoising score matching intractable and falling back on implicit score matching. By contrast the methods of \textcite{lou2023reflected,liu2024mirror} allow for the use of denoising score matching, but are limited to being applied ot Euclidean space, or warping the underlying geometry of a space. It should be noted that if the reflected method of \cref{cpt:constrained_domains} is applied to the same setting as \textcite{lou2023reflected} then we can make use of denoising score matching in the same way.}
 	\label{tab:general_method_comparison2}
-	% to improve formatting we use \thead for non-block-aligned line breaks
-	% in the header, as that's automatically set to \small we adjust
-	% the rest of the table to small as well and then rescale
-	% it to textwidth
 	\vspace{1em}
 	\begin{tabular}{lcccc}
-		& \multicolumn{2}{c}{\(\overbracket{\mspace{200mu}}^{\text{\small Both required for fast DSM loss}}\)} &  & \\ %\multicolumn{2}{c}{\(\overbracket{\mspace{200mu}}^{\text{\small Preserves inductive biases}}\)} \\
+		& \multicolumn{2}{c}{\(\overbracket{\mspace{200mu}}^{\text{\small Both required for fast DSM loss}}\)} &  & \\
 		\toprule
 		\scshape \bfseries Diffusion Model & \scshape \thead[c]{Tractable \\conditional score} & \scshape \thead[c]{Simulation-free\\forward sampling} & \scshape \thead[c]{Modelling                            \\domain}  & \scshape \thead[c]{Preserves\\metric of \(\c{M}\)} \\
 		\midrule
@@ -261,104 +160,6 @@ Hence, this method enables the principled extension of diffusion models to arbit
 		\bottomrule
 	\end{tabular}
 \end{table*}
-
-% \subsection{Relating the Metropolis sampler to the reflected Brownian motion}
-% \label{sec:theoretical_convergence}
-
-% In this section, we prove that the proposed Metropolis sampling-based process, \cref{alg:metropolis_approx}, corresponds to a valid discretization of the reflected process, justifying its use in diffusion models.
-% Here we focus on a concise presentation of the core concepts and the main results.
-% A full proof can be found in \cref{sec:rejection-convergence}.
-% For simplicity, we restrict ourselves to the Euclidean setting.
-% All of our results require particular assumptions on \(\c{M}\), which we discuss at the end of this section.
-% We begin with a definition of the Metropolis approximation of RBM.
-
-% \begin{definition}[Metropolis approximation of reflect Brownian motion]
-% 	For any \(\gamma >0\) and \(k \in \N\), let \(X_0^\gamma \in \c{M}\) and \(X_{k+1}^\gamma = X_k^\gamma + \sqrt{\gamma} Z_k^\gamma\) if \(X_k^\gamma + \sqrt{\gamma} Z_k^\gamma \in \c{M}\) and \(X_k^\gamma\) otherwise.
-% 	The sequence \((X_k^\gamma)_{k \in \N}\) is called the {Metropolis approximation of RBM}.
-% \end{definition}
-% For any \(\gamma > 0\), we consider \((\v{X}_t^\gamma)_{t \geq 0}\), the linear interpolation of \((X^\gamma_k)_{k \in \N}\) such that for any \(k \in \N\), \(\v{X}_{k \gamma}^\gamma = X_k^\gamma\).
-% The following result is the main theoretical contribution of our paper.
-
-% \begin{theorem}
-% 	\label{thm:weak_convergence_metropolis}
-% 	Under assumptions on \(\c{M}\), for any \(T \geq 0\), \((\v{X}_t^\gamma)_{t \in \cbr{0,T}}\) weakly converges to the RBM \((\bar{\v{B}}_t)_{t \in \cbr{0,T}}\) as \(\gamma \to 0\).
-
-% \end{theorem}
-
-% The rest of the section is devoted to a high level presentation of the proof of \Cref{thm:weak_convergence_metropolis}.
-% It is theoretically impractical to work directly with the Metropolis approximation of RBM.
-% Instead, we introduce an auxiliary process, show this converges to the RBM, and finally prove that the convergence of the auxiliary process implies the convergence of our Metropolis discretisation.
-
-% \begin{definition}
-% 	For any \(\gamma > 0\) and \(k \in \N\), let \(\hat{X}_0^\gamma = x \in \c{M}\) and \(\hat{X}_{k+1}^\gamma = \hat{X}_k^\gamma + \sqrt{\gamma} Z_k^\gamma\) with \(Z_k^\gamma\) a Gaussian random variable conditioned on \(\hat{X}_k^\gamma + \sqrt{\gamma} Z_k^\gamma \in \c{M}\).
-% 	The sequence \((\hat{X}_k^\gamma)_{k \in \N}\) is called the Rejection approximation of RBM.
-% \end{definition}
-
-% \begin{algorithm}[H]
-% 	\caption{\emph{Rejection approximation of reflected Brownian motion}}
-% 	\label{alg:rejection_sampling}
-% 	\begin{algorithmic}
-% 		\Require \(p \in \c{M}\), \(\{f_i\}_{i \in \c{I}}\)
-% 		\State Sample \(\v{v} \sim \mathrm{N}(0,\m{I}) \in \mathrm{T}_p\c{M}\)
-% 		\State \(p' \gets \exp_{p}(\v{v})\)
-% 		\While{\(f_i(p') \geq 0\ \text{for any}\ i\)}
-% 		\State Sample \(\v{v} \sim \mathrm{Id}(0,1) \in \mathrm{T}_p\c{M}\)
-% 		\State \(p' \gets \exp_{p}(\v{v})\)
-% 		\EndWhile
-% 		\Return \(p'\)
-% 	\end{algorithmic}
-% \end{algorithm}
-
-% We call this process \emph{Rejection approximation of RBM} since in practice, \(Z_k^\gamma\) is sampled using rejection sampling, see~\Cref{alg:rejection_sampling}.
-% For any \(\gamma > 0\), we also consider \((\hat{\v{X}}_t^\gamma)_{t \geq 0}\), the linear interpolation of \((\hat{X}^\gamma_k)_{k \in \N}\) such that for any \(k \in \N\), \(\hat{\v{X}}_{k \gamma}^\gamma = \hat{X}_k^\gamma\).
-% In~\Cref{sec:rejection-convergence}, we prove the following result.
-
-% \begin{theorem}
-% 	\label{thm:weak_convergence_rejection}
-% 	Under assumptions on \(\c{M}\), for any \(T \geq 0\), \((\hat{\v{X}}_t^\gamma)_{t \in \cbr{0,T}}\) weakly converges to the Reflected Brownian Motion \((\bar{\v{B}}_t)_{t \in \cbr{0,T}}\) as \(\gamma \to 0\).
-
-% \end{theorem}
-
-% \begin{proof}
-% 	Here we give some elements of the proof.
-% 	Details and full derivations are postponed to \Cref{sec:rejection-convergence}.
-% 	Our approach is based on the invariance principle of \cite{stroock1971diffusion}.
-% 	More precisely, we show that we can compute an equivalent `drift' and `diffusion matrix' for the discretised process and that, as \(\gamma \to 0\), the drift converges to zero and the diffusion matrix converges to \(\m{I}\).
-% 	In the Euclidean setting, this result, accompanied by mild regularity and growth assumptions, ensures that the discretization weakly converges to the original SDE.
-% 	However, the case with boundary is much more complicated, primarily because the approximate drift might explode near the boundary, thus we need to verify exactly how the drift behaves as \(\gamma \to 0\) and as the process approaches the boundary.
-% 	We show that the \emph{normalised} drift converges to the inward normal near the boundary.
-% 	This ensures that \begin{enumerate*}[label=(\alph*)] \item in the interior of \(\c{M}\) the drift converges to zero, i.e.~locally in the interior of \(\c{M}\) the Brownian motion and the Reflected Brownian Motion coincide, \item on the boundary, the drift pushes the samples inside the manifold according to the inward normal, mimicking \((\v{k}_t)_{t \geq 0}\) in \eqref{eq:rbm_dupref}.
-% 	\end{enumerate*}
-% 	Finally, with results from \cite{stroock1971diffusion} and \cite{kang2017submartingale}, we show the convergence to the RBM.
-
-% \end{proof}
-
-% Our next step is to show that the approximate drift and diffusion matrix of the Metropolised process are upper and lower bounded by their counterparts in the rejection process.
-% While the upper-bound is easy to derive, the lower-bound requires the following result.
-
-% \begin{proposition}
-% 	\label{lemma:lower_bound_prob_main}
-% 	Under assumptions on \(\c{M}\), \(\forall \; \varepsilon > 0\), \(\exists \; \bar{\gamma} >0\) such that for any \(\gamma \in \del{0, \bar{\gamma}}\) and for any \(x \in \c{M}\), \(\gamma \in \del{0, \bar{\gamma}}\) and \(Z \sim \mathrm{N}(0, \m{I})\) we have \(\mathbb{P}(x + \sqrt{\gamma} Z \in \c{M}) \geq 1/2-\varepsilon\), with \(Z \sim \mathrm{N}(0, \m{I})\).
-% \end{proposition}
-
-% \Cref{lemma:lower_bound_prob_main} tells us that \emph{locally} the boundary
-% looks like a half-space when integrating with respect to. a Gaussian measure.
-% A corollary is that, for \(\gamma > 0\) small enough and for any \(k \in \N\), the probability that \(X_{k+1}^\gamma = X_k^\gamma\) is upper bounded \emph{uniformly} with respect to.
-% \(X_k^\gamma \in \c{M}\).
-% The proof of \Cref{lemma:lower_bound_prob_main} uses \Cref{thm:tubul-neighb} in~\Cref{sec:rejection-convergence}, whose proof relies on the concept of \emph{tubular neighborhoods} \parencite{lee2013smooth}.
-
-% Having established the lower and upper bound, we can conclude the proof by noting that the approximate drift and the diffusion matrix in the rejection and Metropolis case coincide as \(\gamma \to 0\).
-% This is enough to apply the same results as before, giving the desired convergence.
-
-% \paragraph{Assumptions on \(\c{M}\).}
-% Before concluding this section, we detail the assumptions we make on \(\c{M}\).
-% For \Cref{thm:weak_convergence_metropolis} to hold, we assume that \(\c{M} = \cbrcolon{x \in \R^d}{\Phi(x) > 0}\) is bounded, with \(\Phi \in \c{C}^2(\R^d, \R)\) concave.
-% We have that \(\partial \c{M} = \cbrcolon{x \in \R^d}{\Phi(x) = 0}\).
-% In addition, we assume that for any \(x \in \partial \c{M}\), \(\norm{\nabla \Phi(x)} = 1\).
-% These assumptions match those \cite{stroock1971diffusion} use for their study of the existence of solutions to the RBM.
-% While it seems possible to relax the \emph{global} existence of \(\Phi\) to a \emph{local} one, the regularity assumption of the domain is key.
-% This regularity is essential to establish \Cref{lemma:lower_bound_prob_main} and the associated geometrical result on tubular neighborhoods.
-% We also emphasize that the smoothness of the domain is central in the results of \cite{kang2017submartingale} on the equivalence of two definitions of RBMs which we rely on.
 
 \subsection{Convergence of the Metropolis sampler to the reflected Brownian motion}
 \label{sec:theoretical_convergence}
@@ -573,7 +374,7 @@ Details of the experimental set up can be found in \cref{sec:app_implementationa
 		\caption{Uniform distribution}
 		\label{fig:app:synthetic_hypercube_uniform}
 	\end{subfigure}
-	\caption{Qualitiative comparison of samples from the data distribution, our Metropolis model, a Reflected model and the uniform distribution for a synthetic bimodal distribution on $[-1, 1]^2$.}
+	\caption{Qualitative comparison of samples from the data distribution, our Metropolis model, a Reflected model and the uniform distribution for a synthetic bimodal distribution on $[-1, 1]^2$.}
 	\label{fig:app:synthetic_hypercube}
 \end{figure}
 
@@ -603,7 +404,7 @@ Details of the experimental set up can be found in \cref{sec:app_implementationa
 		\caption{Uniform distribution}
 		\label{fig:app:synthetic_simplex_uniform}
 	\end{subfigure}
-	\caption{Qualitiative comparison of samples from the data distribution, our Metropolis model, a Reflected model and the uniform distribution for a synthetic bimodal distribution on $\Delta^2$.}
+	\caption{Qualitative comparison of samples from the data distribution, our Metropolis model, a Reflected model and the uniform distribution for a synthetic bimodal distribution on $\Delta^2$.}
 	\label{fig:app:synthetic_simplex}
 \end{figure}
 
@@ -619,7 +420,7 @@ Details of the experimental set up can be found in \cref{sec:app_implementationa
 \end{figure}
 
 In this section, we investigate the scalability of the proposed Metropolis diffusion models by applying them to synthetic bimodal distributions over the \(d\)-dimensional hypercube \([-1, 1]^d\) and unit simplex \(\Delta^{d}\).
-A quantitative comparison of the log-likelihood of a held-out test set is presented in~\cref{tab:synthetic_polytope_dupref}, while a visual comparisons of the fitted distributions are shown in \cref{fig:app:synthetic_hypercube,fig:app:synthetic_simplex}.
+A quantitative comparison of the log-likelihood of a held-out test set is presented in~\cref{tab:synthetic_polytope_dupref}, while visual comparisons of the fitted distributions are shown in \cref{fig:app:synthetic_hypercube,fig:app:synthetic_simplex}.
 
 We find that our Metropolis models outperform reflected approaches across all dimensions and constraint geometries by a substantial and statistically significant margin while training in one tenth of the time.
 
@@ -637,14 +438,6 @@ We quantify the empirical performance of different methods by evaluating the log
 
 Again, we find that our Metropolis model outperforms the reflected approach by a statistically significant margin while training 7-8 times as fast.
 Qualitative visual comparisons of samples from the true distribution, the trained diffusion models and the uniform distribution are presented in~\cref{fig:robotic_arm,fig:loop}, with full univariate marginal and pairwise bivariate correlation plots postponed to~\cref{sec:app_robotic_arms_spd,sec:app_loop_pairplots}.
-
-
-% \paragraph{Constrained configurational modelling of robotic arms.}
-% The problem of modelling the configurations and trajectories of a robotic arm can be formulated as learning a distribution over the locations and manipulability ellipsoids of its joints, parameterised on \(\R^d\times\c{S}_{++}^d\), where \(\c{S}_{++}^d\) is the manifold of symmetric positive-definite (SPD) \(d\times d\) matrices \parencite{yoshikawa1985manipulability, jaquier2021geometry}.
-% For practical robotics applications, it may be desirable to restrict the maximal velocity with which a robotic arm can move or the maximum force it can exert.
-% This manifests in a trace constraint \(C>0\) on \(\c{S}_{++}^d\), resulting in a constrained manifold \(\{M\in\c{S}_{++}^d:\sum_{i=1}^dM_{ii} < C\}\).
-% Following \cite{fishman2023diffusion}, we parametrise this constraint via the Cholesky decomposition \parencite{lin2019riemannian} and use the resulting setup to model the dataset presented in \cite{jaquier2021geometry}.
-
 
 \begin{figure}[t]
 	\centering
@@ -711,16 +504,10 @@ Qualitative visual comparisons of samples from the true distribution, the traine
 		\label{fig:loop_uniform}
 	\end{subfigure}
 	\caption{A qualitative comparison of \(10^5\) samples from the data distribution, our Metropolis diffusion model, a reflected diffusion model and the uniform distribution for the constrained modelling of manipulability ellipsoids of robotic arms.
-		For visual clarity, the figures show the SPD matricies plotted .
+		For visual clarity, the figures show the SPD matrices plotted.
 	}
 	\label{fig:robotic_arm}
 \end{figure}
-
-% \paragraph{Conformational modelling of protein backbones.}
-% Modelling the conformational ensembles of proteins is a data-scarce problem with a range of important applications in biotechnology and drug discovery \parencite{lane2023protein}.
-% In many practical settings, it may often be unnecessary to model the structural ensembles of an entire protein, as researchers are primarily interested in specific functional sites that are embedded in a structurally conserved scaffold \parencite{huang2016coming}.
-% Modelling the conformational ensembles of such substructural elements requires positional constraints on their endpoints to ensure that they can be accommodated by the remaining protein.
-% Using the parametrisation and dataset presented in \cite{fishman2023diffusion}, we formulate the problem of modelling the backbone conformations of a cyclic peptide of length \(N=6\) as learning a distribution over the product of a polytope \(\mathbb{P}\subset\R^{3}\) and the hypertorus \(\mathbb{T}^{4}\).
 
 \begin{table}[h]
 	\caption{
@@ -744,14 +531,14 @@ Qualitative visual comparisons of samples from the true distribution, the traine
 \label{sec:exp_wildfires}
 
 Motivated by the strong empirical performance of our approach on tasks with challenging convex constraints, we investigate its ability to approximate distributions whose support is restricted to manifolds with highly non-convex boundaries---a setting that is intractable with existing approaches.
-To this end, we derived a geospatial dataset based on wildfire incidence rates within the continental United State  and train a Metropolis diffusion model constrained by the corresponding country borders on the sphere \(\c{S}^2\).
+To this end, we derived a geospatial dataset based on wildfire incidence rates within the continental United States and train a Metropolis diffusion model constrained by the corresponding country borders on the sphere \(\c{S}^2\).
 
 \subsubsection{Dataset}
 \label{sec:wildfire_data_dataset}
-To create the datset we retrieved the rasterised version of the wildfire data provided by \textcite{welty2020combined}.
+To create the dataset we retrieved the rasterised version of the wildfire data provided by \textcite{welty2020combined}.
 This was converted it to a spherical geodetic coordinate system using the \textsc{Cartopy} library \parencite{Cartopy}, and drew a weighted subsample of size \num{1e6}.
 We then retrieved the country borders of the continental United States from \textcite{natural_earth_data} and mapped them to the same geodetic reference frame as the wildfire data.
-A visualization of the resulting dataset is presented in~\cref{fig:wildfire_data_dist}.
+A visualization of the resulting dataset are presented in~\cref{fig:wildfire_data_dist}.
 
 \subsubsection{Point-in-spherical-polytope algorithms}
 \label{sec:wildfire_data_algo}
@@ -779,13 +566,11 @@ This demonstrates that our approach is able to successfully model challenging mu
 
 \begin{table}[h]
     \setlength{\tabcolsep}{8pt}
-    % align it with top of paragram by subtracting default padding
     \caption{MMD ($\downarrow$) of a held-out test set for the geospatial modelling dataset. Means and standard deviations are computed over 3 different runs. Average training time is provided in hours.
     }
     \vspace{5pt}
     \label{tab:wildfire_riemann}
     \centering
-    %\small
     \begin{tabular}{ccccc}
     \toprule
     \scshape Model & \scshape Domain & \scshape MMD & \scshape runtime & \scshape {\% in boundary} \\
@@ -794,7 +579,6 @@ This demonstrates that our approach is able to successfully model challenging mu
      Metropolis & $\mathbb{P}\subset\mathcal{S}^2$ & $\mathbf{0.1388\pm_{0.015}}$  & $3.86$ & $\mathbf{100.0}$\\
     \bottomrule
     \end{tabular}
-% \end{wraptable}
 \end{table}
 
 \begin{figure}[t]
